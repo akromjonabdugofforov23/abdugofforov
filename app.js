@@ -748,17 +748,47 @@ closePinModal.addEventListener('click', () => {
     pinModal.classList.remove('active');
     document.body.style.overflow = '';
 });
-// O'rniga mana buni joylashtiring:
-pinSubmitBtn.addEventListener('click', () => {
-    handleAdminLogin(pinInput.value.trim());
-});
+// 752-qatordan boshlab fayl oxirigacha bo'lgan kod o'rniga shu qismni qo'ying:
 
-pinInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        handleAdminLogin(pinInput.value.trim());
+// Admin panelga kirish so'rovi
+async function handleAdminLogin(pinInputValue) {
+    try {
+        const response = await fetch('/check-pin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ pin: pinInputValue })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("Xush kelibsiz, Admin!");
+            pinModal.classList.remove('active');
+            openAdminPanel();
+            localStorage.setItem('isAdmin', 'true');
+        } else {
+            alert(data.message || "Kirish taqiqlandi!");
+        }
+    } catch (error) {
+        console.error("Xavfsizlik tizimida xatolik:", error);
+        alert("Server bilan aloqa o'rnatib bo'lmadi.");
     }
-});
-// Admin panelga kirishni tekshirish funksiyasi
+}
+
+// Hodisalarni tinglovchilar (Tugma bosilishi va Enter)
+if (pinSubmitBtn && pinInput) {
+    pinSubmitBtn.addEventListener('click', () => {
+        handleAdminLogin(pinInput.value.trim());
+    });
+
+    pinInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            handleAdminLogin(pinInput.value.trim());
+        }
+    });
+}// Admin panelga kirishni tekshirish funksiyasi
 async function handleAdminLogin(pinInputValue) {
     try {
         // Cloudflare Pages avtomat ravishda /functions/check-pin.js faylini /check-pin manziliga xavfsiz API qilib ulaydi
