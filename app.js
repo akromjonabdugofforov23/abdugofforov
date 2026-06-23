@@ -748,9 +748,8 @@ closePinModal.addEventListener('click', () => {
     pinModal.classList.remove('active');
     document.body.style.overflow = '';
 });
-// 752-qatordan boshlab fayl oxirigacha bo'lgan kod o'rniga shu qismni qo'ying:
 
-// Admin panelga kirish so'rovi
+// Admin panelga kirish so'rovi (Xavfsiz Serverless API)
 async function handleAdminLogin(pinInputValue) {
     try {
         const response = await fetch('/check-pin', {
@@ -765,11 +764,11 @@ async function handleAdminLogin(pinInputValue) {
 
         if (data.success) {
             alert("Xush kelibsiz, Admin!");
-            pinModal.classList.remove('active');
-            openAdminPanel();
+            if (typeof pinModal !== 'undefined') pinModal.classList.remove('active');
+            if (typeof openAdminPanel === 'function') openAdminPanel();
             localStorage.setItem('isAdmin', 'true');
         } else {
-            alert(data.message || "Kirish taqiqlandi!");
+            alert(data.message || "Noto'g'ri PIN-kod!");
         }
     } catch (error) {
         console.error("Xavfsizlik tizimida xatolik:", error);
@@ -777,18 +776,26 @@ async function handleAdminLogin(pinInputValue) {
     }
 }
 
-// Hodisalarni tinglovchilar (Tugma bosilishi va Enter)
-if (pinSubmitBtn && pinInput) {
-    pinSubmitBtn.addEventListener('click', () => {
-        handleAdminLogin(pinInput.value.trim());
-    });
+// Hodisalarni tinglovchilar (Faqat elementlar mavjud bo'lsa ishlaydi)
+document.addEventListener('DOMContentLoaded', () => {
+    const submitBtn = document.getElementById('pinSubmitBtn') || (typeof pinSubmitBtn !== 'undefined' ? pinSubmitBtn : null);
+    const inputField = document.getElementById('pinInput') || (typeof pinInput !== 'undefined' ? pinInput : null);
 
-    pinInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            handleAdminLogin(pinInput.value.trim());
-        }
-    });
-}// Admin panelga kirishni tekshirish funksiyasi
+    if (submitBtn && inputField) {
+        // Klik bo'lganda
+        submitBtn.addEventListener('click', () => {
+            handleAdminLogin(inputField.value.trim());
+        });
+
+        // Enter bosilganda
+        inputField.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                handleAdminLogin(inputField.value.trim());
+            }
+        });
+    }
+});
+// Admin panelga kirishni tekshirish funksiyasi
 async function handleAdminLogin(pinInputValue) {
     try {
         // Cloudflare Pages avtomat ravishda /functions/check-pin.js faylini /check-pin manziliga xavfsiz API qilib ulaydi
