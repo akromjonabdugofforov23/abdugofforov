@@ -765,13 +765,11 @@ async function handleAdminLogin(pinInputValue) {
             },
             body: JSON.stringify({ pin: pinInputValue })
         });
-
         const data = await response.json();
-
         if (data.success) {
             alert("Xush kelibsiz, Admin!");
-            adminModal.style.display = 'none';
-            
+          pinModal.classList.remove('active');
+            openAdminPanel();            
             // Sizning kodingizdagi admin panelni ko'rsatish mantiqi:
             showAdminDashboard(); 
             localStorage.setItem('isAdmin', 'true');
