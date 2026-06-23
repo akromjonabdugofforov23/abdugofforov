@@ -748,12 +748,16 @@ closePinModal.addEventListener('click', () => {
     pinModal.classList.remove('active');
     document.body.style.overflow = '';
 });
-
-pinSubmitBtn.addEventListener('click', handlePinSubmit);
-pinInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') handlePinSubmit();
+// O'rniga mana buni joylashtiring:
+pinSubmitBtn.addEventListener('click', () => {
+    handleAdminLogin(pinInput.value.trim());
 });
 
+pinInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        handleAdminLogin(pinInput.value.trim());
+    }
+});
 // Admin panelga kirishni tekshirish funksiyasi
 async function handleAdminLogin(pinInputValue) {
     try {
