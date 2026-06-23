@@ -86,7 +86,7 @@ const defaultPosts = [
     }
 ];
 
-// State (Holat) - Abdugofforov rebrending kalitlari bilan boshlash
+// State (Holat)
 let posts = JSON.parse(localStorage.getItem('abdu_posts')) || defaultPosts;
 let currentTab = 'home'; 
 let filterType = 'all'; 
@@ -191,7 +191,6 @@ function initMouseFollower() {
         follower.classList.remove('active');
     });
 
-    // Lerp yordamida silliq harakatlantirish
     function animateFollower() {
         const lerpFactor = 0.12;
         followerX += (mouseX - followerX) * lerpFactor;
@@ -204,7 +203,6 @@ function initMouseFollower() {
     }
     animateFollower();
 
-    // Hover effektlari
     document.addEventListener('mouseover', (e) => {
         if (e.target.closest('a, button, .post-card, .filter-tag, .form-input, .form-textarea, .modal-close')) {
             follower.classList.add('cursor-hover');
@@ -234,7 +232,6 @@ updateClock();
 
 async function fetchWeather() {
     try {
-        // Buloqboshi koordinatalari: 40.6932 N, 72.4836 E
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=40.6932&longitude=72.4836&current=temperature_2m,weather_code&timezone=Asia%2FTashkent');
         const data = await res.json();
         
@@ -307,10 +304,8 @@ function renderPosts() {
     blogGrid.classList.add('animate-fade-in');
 
     const filtered = posts.filter(post => {
-        // Tab navigatsiyasi
         if (currentTab === 'projects' && post.type !== 'project') return false;
 
-        // Toolbar filtr tugmalari
         if (filterType !== 'all') {
             if (filterType === 'memory' && !['memory', 'news', 'ideas', 'lessons', 'events'].includes(post.type)) return false;
             if (filterType === 'project' && post.type !== 'project') return false;
@@ -322,7 +317,6 @@ function renderPosts() {
             if (filterType === 'image' && post.type !== 'image') return false;
         }
 
-        // Qidiruv
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
             const matchesTitle = post.title.toLowerCase().includes(query);
@@ -357,11 +351,9 @@ function renderPosts() {
                     <span class="post-meta">🎵 ${escapeHTML(post.category)}</span>
                     <h2 class="post-title">${escapeHTML(post.title)}</h2>
                     <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
-                    
                     <div class="music-player-container">
                         <audio src="${post.content}" controls class="music-audio-player" style="width:100%; margin-top:10px;"></audio>
                     </div>
-
                     <div class="post-footer" style="margin-top: 15px;">
                         <span class="post-date">${formatDate(post.date)}</span>
                         <div class="post-stats">
@@ -386,7 +378,6 @@ function renderPosts() {
                     <span class="post-meta">🖼️ ${escapeHTML(post.category)}</span>
                     <h2 class="post-title">${escapeHTML(post.title)}</h2>
                     <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
-                    
                     <div class="post-footer">
                         <span class="post-date">${formatDate(post.date)}</span>
                         <div class="post-stats">
@@ -472,7 +463,6 @@ navLogo.addEventListener('click', (e) => {
     if (homeLink) homeLink.click();
 });
 
-// Toolbar filtrlari
 filterTags.addEventListener('click', (e) => {
     const btn = e.target.closest('.filter-tag');
     if (!btn) return;
@@ -489,7 +479,6 @@ searchInput.addEventListener('input', (e) => {
     renderPosts();
 });
 
-// Like bosish
 function handleLike(postId) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
@@ -749,52 +738,22 @@ closePinModal.addEventListener('click', () => {
     document.body.style.overflow = '';
 });
 
-// Admin panelga kirish so'rovi (Xavfsiz Serverless API)
-async function handleAdminLogin(pinInputValue) {
-    try {
-        const response = await fetch('/check-pin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ pin: pinInputValue })
-        });
+pinSubmitBtn.addEventListener('click', handlePinSubmit);
+pinInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handlePinSubmit();
+});
 
-        const data = await response.json();
-
-        if (data.success) {
-            alert("Xush kelibsiz, Admin!");
-            if (typeof pinModal !== 'undefined' && pinModal) pinModal.classList.remove('active');
-            if (typeof openAdminPanel === 'function') openAdminPanel();
-            localStorage.setItem('isAdmin', 'true');
-        } else {
-            alert(data.message || "Noto'g'ri PIN-kod!");
-        }
-    } catch (error) {
-        console.error("Xavfsizlik tizimida xatolik:", error);
-        alert("Server bilan aloqa o'rnatib bo'lmadi.");
+function handlePinSubmit() {
+    const pin = pinInput.value.trim();
+    if (pin === '0509') { 
+        pinModal.classList.remove('active');
+        openAdminPanel();
+    } else {
+        pinError.style.display = 'block';
+        pinInput.value = '';
+        pinInput.focus();
     }
 }
-
-// Hodisalarni tinglovchilar (Faqat elementlar mavjud bo'lsa ishlaydi)
-document.addEventListener('DOMContentLoaded', () => {
-    const submitBtn = document.getElementById('pinSubmitBtn') || (typeof pinSubmitBtn !== 'undefined' ? pinSubmitBtn : null);
-    const inputField = document.getElementById('pinInput') || (typeof pinInput !== 'undefined' ? pinInput : null);
-
-    if (submitBtn && inputField) {
-        // Klik bo'lganda
-        submitBtn.addEventListener('click', () => {
-            handleAdminLogin(inputField.value.trim());
-        });
-
-        // Enter bosilganda
-        inputField.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                handleAdminLogin(inputField.value.trim());
-            }
-        });
-    }
-});
 
 // 13. Admin Panel Boshqaruvi
 function openAdminPanel() {
@@ -811,7 +770,6 @@ closeAdminPanelBtn.addEventListener('click', () => {
     document.body.style.overflow = '';
 });
 
-// Tablararo navigatsiya
 adminTabPlansBtn.addEventListener('click', () => {
     adminTabPlansBtn.classList.add('active');
     adminTabPortBtn.classList.remove('active');
@@ -1016,25 +974,21 @@ function checkPortfolioAccess() {
     if (token) {
         const tokenIndex = portfolioTokens.indexOf(token);
         if (tokenIndex !== -1) {
-            // Bir martalik kirish: token o'chiriladi
             portfolioTokens.splice(tokenIndex, 1);
             localStorage.setItem('abdu_portfolio_tokens', JSON.stringify(portfolioTokens));
 
             renderPortfolioView();
             
-            // Portfolioni ko'rsatish
             document.querySelector('.hero').style.display = 'none';
             mainContent.style.display = 'none';
             document.querySelector('.footer').style.display = 'none';
             portfolioView.style.display = 'block';
 
-            // Sichqonchani portfolio rejimiga (qizil neon) o'tkazish
             const follower = document.getElementById('cursor-follower');
             if (follower) {
                 follower.classList.add('portfolio-mode');
             }
         } else {
-            // Eskirgan token
             document.querySelector('.hero').style.display = 'none';
             mainContent.style.display = 'none';
             document.querySelector('.footer').style.display = 'none';
