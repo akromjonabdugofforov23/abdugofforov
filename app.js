@@ -23,7 +23,7 @@ const defaultPosts = [
         category: "Saboqlar",
         type: "lessons",
         excerpt: "Til o'rganish shunchaki qoidalar emas, balki yangi madaniyat, dunyoqarash va yangi muhit estetikasiga sho'ng'ish demakdir.",
-        content: "Til o'rganish shunchaki qoidalar emas, balki yangi madaniyat, dunyoqarash va yangi muhit estetikasiga sho'ng'ish demakdir.\n\nNemis tilini o'rganishni boshlaganimda, har bir yangi so'z ortida butun bir falsafa borligini angladim. Masalan, 'Waldeinsamkeit' so'zi - o'rmonda yolg'iz qolib, tabiat bilan uyg'unlashish hissini anglatadi. Til orqali odamlarni, ularning yashash tarzini va eng asosiysi o'zimizni boshqacha anglashni boshlaymiz. Sayohatlar esa bu bilimlarni sinash uchun eng zo'r maydondir.",
+        content: "Til o'rganish shunchaki qoidalar emas, balki yangi madaniyat, dunyoqarash va yangi muhit estetikasiga sho'ng'ish demakdir.\n\nNemis tilini o'rganishni boshlaganimda, har bir yangi so'z ortida butun bir falsafa borligini angladim. Masalan, 'Waldeinsamkeit' so'zi - o'rmonda yolg'iz qolib, tabiat bilan uyg'unlashish hissini anglatadi. Til orqali odamlarni, ularning yashash tarzini va eng asosiysi o'zimizni boshqacha anglashni boshlaymiz. Sayohatlar ise bu bilimlarni sinash uchun eng zo'r maydondir.",
         image: "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?q=80&w=1000",
         date: "2026-06-18",
         likes: 9,
@@ -764,7 +764,7 @@ async function handleAdminLogin(pinInputValue) {
 
         if (data.success) {
             alert("Xush kelibsiz, Admin!");
-            if (typeof pinModal !== 'undefined') pinModal.classList.remove('active');
+            if (typeof pinModal !== 'undefined' && pinModal) pinModal.classList.remove('active');
             if (typeof openAdminPanel === 'function') openAdminPanel();
             localStorage.setItem('isAdmin', 'true');
         } else {
@@ -795,32 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-// Admin panelga kirishni tekshirish funksiyasi
-async function handleAdminLogin(pinInputValue) {
-    try {
-        // Cloudflare Pages avtomat ravishda /functions/check-pin.js faylini /check-pin manziliga xavfsiz API qilib ulaydi
-        const response = await fetch('/check-pin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ pin: pinInputValue })
-        });
-        const data = await response.json();
-        if (data.success) {
-            alert("Xush kelibsiz, Admin!");
-          pinModal.classList.remove('active');
-            openAdminPanel();            
-            // Sizning kodingizdagi admin panelni ko'rsatish mantiqi:
-            showAdminDashboard(); 
-            localStorage.setItem('isAdmin', 'true');
-        } else {
-            alert(data.message || "Kirish taqiqlandi!");
-        }
-    } catch (error) {
-        console.error("Xavfsizlik tizimida xatolik:", error);
-        alert("Server bilan aloqa o'rnatib bo'lmadi.");
-    }
+
 // 13. Admin Panel Boshqaruvi
 function openAdminPanel() {
     adminPanelModal.classList.add('active');
