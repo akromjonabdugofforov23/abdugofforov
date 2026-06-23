@@ -754,18 +754,34 @@ pinInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handlePinSubmit();
 });
 
-function handlePinSubmit() {
-    const pin = pinInput.value.trim();
-    if (pin === '0509') { // Yangilangan Maxfiy PIN
-        pinModal.classList.remove('active');
-        openAdminPanel();
-    } else {
-        pinError.style.display = 'block';
-        pinInput.value = '';
-        pinInput.focus();
-    }
-}
+// Admin panelga kirishni tekshirish funksiyasi
+async function handleAdminLogin(pinInputValue) {
+    try {
+        // Cloudflare Pages avtomat ravishda /functions/check-pin.js faylini /check-pin manziliga xavfsiz API qilib ulaydi
+        const response = await fetch('/check-pin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ pin: pinInputValue })
+        });
 
+        const data = await response.json();
+
+        if (data.success) {
+            alert("Xush kelibsiz, Admin!");
+            adminModal.style.display = 'none';
+            
+            // Sizning kodingizdagi admin panelni ko'rsatish mantiqi:
+            showAdminDashboard(); 
+            localStorage.setItem('isAdmin', 'true');
+        } else {
+            alert(data.message || "Kirish taqiqlandi!");
+        }
+    } catch (error) {
+        console.error("Xavfsizlik tizimida xatolik:", error);
+        alert("Server bilan aloqa o'rnatib bo'lmadi.");
+    }
 // 13. Admin Panel Boshqaruvi
 function openAdminPanel() {
     adminPanelModal.classList.add('active');
