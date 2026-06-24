@@ -554,26 +554,24 @@
 
     <div class="glz-overlay" id="glz-overlay"></div>
 
-<script src="storage.js"></script>
-<script>
-// ===== KAY ADMIN PANEL =====
+// ===== CLOUDFLARE BACKEND SOZLAMALARI =====
+const WORKER_URL = "https://germaniya-blog-backend.akromjonabdugofforov23.workers.dev";
 const ADMIN_HASH = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
 
-// Postlarni IndexedDB orqali o'qish/yozish (katta rasm/audio sig'imi uchun)
-function getPosts() {
-    if (window.Store && Store.ready) return Store.get('abdu_posts') || [];
-    return JSON.parse(localStorage.getItem('abdu_posts') || '[]');
-}
-function setPosts(arr) {
-    if (window.Store && Store.ready) Store.set('abdu_posts', arr);
-    else localStorage.setItem('abdu_posts', JSON.stringify(arr));
+// ===== SERVERDAN POSTLARNI O'QISH =====
+async function getPostsFromServer() {
+    try {
+        const response = await fetch(`${WORKER_URL}/get-articles`);
+        const posts = await response.json();
+        return posts;
+    } catch (e) {
+        console.error("Postlarni yuklashda xatolik:", e);
+        return [];
+    }
 }
 
-// Sahifa yuklanishida xotirani hydrate qilib, keyin admin holatini tekshiramiz
+// Sahifa yuklanishida admin holatini tekshiramiz
 (async function initKay() {
-    if (window.Store) {
-        try { await Store.init(['abdu_posts']); } catch (e) { console.warn('Store init:', e); }
-    }
     if (sessionStorage.getItem('kay_admin') === 'true') showAdminPanel();
 })();
 
@@ -607,14 +605,6 @@ async function tryLogin() {
         localStorage.removeItem('kay_lock');
         localStorage.removeItem('kay_lockcount');
         addLog('success', 'Muvaffaqiyatli kirish');
-        // Ixtiyoriy: Telegram bildirishnomasi (server env sozlangan bo'lsa)
-        try {
-            fetch('/notify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ event: 'admin_login', note: 'Admin panelga kirildi' })
-            }).catch(() => {});
-        } catch (e) {}
         showAdminPanel();
     } else {
         const attempts = parseInt(localStorage.getItem('kay_attempts') || '0') + 1;
@@ -654,8 +644,8 @@ function checkLock() {
 }
 checkLock();
 
-// ===== ADMIN PANEL =====
-function showAdminPanel() {
+// ===== ADMIN PANEL KO'RINIShI =====
+async function showAdminPanel() {
     document.getElementById('pin-screen').style.display = 'none';
     document.getElementById('admin-screen').classList.add('show');
 
@@ -666,8 +656,10 @@ function showAdminPanel() {
     const dateEl = document.getElementById('glz-date');
     if (dateEl) dateEl.textContent = new Date().toLocaleDateString('uz-UZ', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    loadStats();
-    loadPosts();
+    // Serverdan postlarni yuklab olamiz
+    const posts = await getPostsFromServer();
+    loadStats(posts);
+    loadPosts(posts);
     loadTasks();
     loadPortfolioForm();
     loadSecurityLog();
@@ -683,16 +675,22 @@ document.getElementById('logout-btn').addEventListener('click', () => {
 
 // ===== SIDEBAR NAV / TABLAR =====
 document.querySelectorAll('.admin-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
+    tab.addEventListener('click', async () => {
         document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         tab.classList.add('active');
         document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
         const titleEl = document.getElementById('glz-page-title');
         if (titleEl) titleEl.textContent = tab.dataset.title || tab.textContent.trim();
-        // mobil sidebarni yopish
+        
         document.getElementById('glz-sidebar').classList.remove('open');
         document.getElementById('glz-overlay').classList.remove('show');
+
+        if (tab.dataset.tab === 'posts' || tab.dataset.tab === 'dashboard') {
+            const posts = await getPostsFromServer();
+            loadPosts(posts);
+            loadStats(posts);
+        }
     });
 });
 
@@ -706,12 +704,14 @@ document.getElementById('glz-overlay').addEventListener('click', () => {
     document.getElementById('glz-overlay').classList.remove('show');
 });
 
-// Qidiruv (postlar bo'yicha)
-document.getElementById('admin-search').addEventListener('input', () => loadPosts());
+// Qidiruv
+document.getElementById('admin-search').addEventListener('input', async () => {
+    const posts = await getPostsFromServer();
+    loadPosts(posts);
+});
 
 // ===== STATISTIKA =====
-function loadStats() {
-    const posts = getPosts();
+function loadStats(posts) {
     const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
     const totalLikes = posts.reduce((s, p) => s + (p.likes || 0), 0);
     const activeTasks = tasks.filter(t => t.status !== 'done').length;
@@ -727,13 +727,14 @@ function loadStats() {
     set('side-tasks', activeTasks);
 }
 
-// ===== POSTLAR =====
-function loadPosts() {
-    let posts = getPosts();
+// ===== POSTLARNI RO'YXATGA CHIQARISH =====
+function loadPosts(posts) {
     const q = (document.getElementById('admin-search')?.value || '').trim().toLowerCase();
-    if (q) posts = posts.filter(p => (p.title || '').toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q));
+    if (q) posts = posts.filter(p => (p.title || '').toLowerCase().includes(q) || (p.city || '').toLowerCase().includes(q));
 
     const list = document.getElementById('admin-posts-list');
+    if (!list) return;
+
     if (!posts.length) {
         list.innerHTML = '<div class="glz-empty">' + (q ? 'Hech narsa topilmadi' : 'Hali post yo\'q') + '</div>';
     } else {
@@ -742,40 +743,25 @@ function loadPosts() {
                 <img src="${p.image||''}" onerror="this.style.display='none'">
                 <div class="info">
                     <div class="t">${p.title}</div>
-                    <div class="m">${p.category} · ${p.date} · ❤️ ${p.likes||0}</div>
+                    <div class="m">${p.city || 'Germaniya'} · ${p.date}</div>
                 </div>
                 <div class="acts">
-                    <button class="icon-btn" onclick="editPost(${p.id})" title="Tahrirlash">✏️</button>
-                    <button class="icon-btn danger" onclick="deletePost(${p.id})" title="O'chirish">🗑️</button>
+                    <button class="icon-btn danger" onclick="alert('O\'chirish funksiyasi keyingi bosqichda qo\'shiladi')" title="O'chirish">🗑️</button>
                 </div>
             </div>
         `).join('');
     }
 
-    // Dashboard — so'nggi postlar
     const recent = document.getElementById('dash-recent');
     if (recent) {
-        const all = getPosts();
-        recent.innerHTML = all.length
-            ? all.slice(0, 4).map(p => `
+        recent.innerHTML = posts.length
+            ? posts.slice(0, 4).map(p => `
                 <div class="glz-mini-row">
                     <img src="${p.image||''}" onerror="this.style.display='none'">
-                    <div><strong>${p.title}</strong><small>${p.category} · ❤️ ${p.likes||0}</small></div>
+                    <div><strong>${p.title}</strong><small>${p.city || 'Germaniya'} · ${p.date}</small></div>
                 </div>`).join('')
             : '<div class="glz-empty">Hali post yo\'q</div>';
     }
-}
-
-function deletePost(id) {
-    if (!confirm('O\'chirasizmi?')) return;
-    const posts = getPosts();
-    setPosts(posts.filter(p => p.id !== id));
-    loadPosts(); loadStats();
-}
-
-function editPost(id) {
-    sessionStorage.setItem('kay_edit_post', id);
-    window.location.href = '/';
 }
 
 // ===== REJALAR =====
@@ -819,13 +805,13 @@ document.getElementById('admin-task-form').addEventListener('submit', e => {
     tasks.push({ id: Date.now(), title, status });
     localStorage.setItem('abdu_tasks', JSON.stringify(tasks));
     document.getElementById('task-title-input').value = '';
-    loadTasks(); loadStats();
+    loadTasks();
 });
 
 function deleteTask(id) {
     const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
     localStorage.setItem('abdu_tasks', JSON.stringify(tasks.filter(t => t.id !== id)));
-    loadTasks(); loadStats();
+    loadTasks();
 }
 
 // ===== PORTFOLIO =====
@@ -906,12 +892,7 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
 
 document.getElementById('reset-all-btn').addEventListener('click', () => {
     if (!confirm('BARCHA ma\'lumotlar o\'chadi! Ishonchingiz komilmi?')) return;
-    if (!confirm('Bu amalni qaytarib bo\'lmaydi. Davom etasizmi?')) return;
-    if (window.Store) Store.remove('abdu_posts');
-    ['abdu_posts','abdu_tasks','abdu_portfolio','abdu_portfolio_tokens','kay_logs'].forEach(k => localStorage.removeItem(k));
+    ['abdu_tasks','abdu_portfolio','abdu_portfolio_tokens','kay_logs'].forEach(k => localStorage.removeItem(k));
     alert('Tozalandi');
-    loadStats(); loadPosts(); loadTasks();
-});
-</script>
-</body>
-</html>
+    showAdminPanel();
+}); 
