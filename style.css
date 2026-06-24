@@ -761,57 +761,73 @@ a {
 
 /* Mobil qurilmalar uchun moslashuv */
 @media (max-width: 768px) {
-    .navbar {
-        padding: 15px 0;
+    .navbar { padding: 15px 0; }
+    .logo { font-size: 22px; }
+
+    /* Hamburger ko'rinadi */
+    .hamburger { display: flex; }
+
+    /* Nav mobil drawer */
+    .nav-right {
+        position: fixed;
+        top: 0; right: -280px;
+        width: 280px; height: 100vh;
+        background: var(--bg-primary);
+        border-left: 1px solid var(--border-color);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 80px 24px 24px;
+        gap: 8px;
+        z-index: 999;
+        transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: -8px 0 32px rgba(0,0,0,0.15);
     }
-    
+    .nav-right.open {
+        right: 0;
+    }
     .nav-links {
-        display: none; /* In a full-blown mobile menu we could toggle this, or keep it simple */
-    }
-
-    /* Simple adaptation for demo: keep the active icons or links simple */
-    .logo {
-        font-size: 22px;
-    }
-
-    .hero-title {
-        font-size: 28px;
-    }
-
-    .toolbar {
+        display: flex !important;
         flex-direction: column;
-        align-items: stretch;
+        width: 100%;
+        gap: 4px;
     }
+    .nav-links a {
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 15px;
+        width: 100%;
+    }
+    .nav-links a:hover, .nav-links a.active {
+        background: var(--card-bg);
+    }
+    .mobile-overlay { display: block; }
 
-    .search-box {
-        max-width: 100%;
-    }
+    /* Hero */
+    .hero-title { font-size: 28px; }
 
-    .form-row {
-        grid-template-columns: 1fr;
-    }
+    /* Toolbar */
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .search-box { max-width: 100%; }
 
-    .footer .container {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
+    /* Form */
+    .form-row { grid-template-columns: 1fr; }
 
-    .footer-socials a {
-        margin: 0 10px;
-    }
+    /* Footer */
+    .footer .container { flex-direction: column; gap: 15px; text-align: center; }
+    .footer-socials a { margin: 0 10px; }
 
-    .modal-body {
-        padding: 20px;
-    }
+    /* Modal */
+    .modal-body { padding: 20px; }
+    .modal-post-title { font-size: 24px; }
+    .modal-post-image { height: 200px; }
 
-    .modal-post-title {
-        font-size: 24px;
-    }
+    /* Yozish tugmasi mobil da kichik */
+    #add-post-btn span { display: none; }
+}
 
-    .modal-post-image {
-        height: 200px;
-    }
+@media (max-width: 480px) {
+    .hero-title { font-size: 22px; }
+    .widgets-row { grid-template-columns: 1fr !important; }
 }
 
 /* --- WIDGETS ROW --- */
@@ -1081,3 +1097,97 @@ a {
 }
 
 
+
+/* ===== HAMBURGER MENYU ===== */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 1001;
+    order: 3;
+}
+.hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text-primary);
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center;
+}
+.hamburger.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+.hamburger.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobil overlay */
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.mobile-overlay.active {
+    opacity: 1;
+}
+
+/* ===== SKELETON LOADER ===== */
+@keyframes shimmer {
+    0% { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+}
+.skeleton {
+    background: linear-gradient(90deg,
+        var(--card-bg) 25%,
+        var(--border-color) 50%,
+        var(--card-bg) 75%
+    );
+    background-size: 400px 100%;
+    animation: shimmer 1.4s infinite linear;
+    border-radius: 8px;
+}
+.skeleton-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 0;
+}
+.skeleton-img { height: 200px; width: 100%; }
+.skeleton-body { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.skeleton-title { height: 20px; width: 75%; }
+.skeleton-text { height: 14px; width: 100%; }
+.skeleton-text.short { width: 55%; }
+.skeleton-meta { height: 12px; width: 40%; }
+
+/* ===== KARD ANIMATSIYALAR ===== */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.post-card {
+    animation: fadeInUp 0.4s ease both;
+}
+.post-card:nth-child(1) { animation-delay: 0.05s; }
+.post-card:nth-child(2) { animation-delay: 0.10s; }
+.post-card:nth-child(3) { animation-delay: 0.15s; }
+.post-card:nth-child(4) { animation-delay: 0.20s; }
+.post-card:nth-child(5) { animation-delay: 0.25s; }
+.post-card:nth-child(6) { animation-delay: 0.30s; }
