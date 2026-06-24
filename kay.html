@@ -442,13 +442,28 @@
     </div><!-- /admin-screen -->
 </div><!-- /kay-wrap -->
 
+<script src="storage.js"></script>
 <script>
 // ===== KAY ADMIN PANEL =====
 const ADMIN_HASH = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
 
-// Sahifa yuklanishida admin holati tekshiruvi
-const alreadyAdmin = sessionStorage.getItem('kay_admin') === 'true';
-if (alreadyAdmin) showAdminPanel();
+// Postlarni IndexedDB orqali o'qish/yozish (katta rasm/audio sig'imi uchun)
+function getPosts() {
+    if (window.Store && Store.ready) return Store.get('abdu_posts') || [];
+    return JSON.parse(localStorage.getItem('abdu_posts') || '[]');
+}
+function setPosts(arr) {
+    if (window.Store && Store.ready) Store.set('abdu_posts', arr);
+    else localStorage.setItem('abdu_posts', JSON.stringify(arr));
+}
+
+// Sahifa yuklanishida xotirani hydrate qilib, keyin admin holatini tekshiramiz
+(async function initKay() {
+    if (window.Store) {
+        try { await Store.init(['abdu_posts']); } catch (e) { console.warn('Store init:', e); }
+    }
+    if (sessionStorage.getItem('kay_admin') === 'true') showAdminPanel();
+})();
 
 // ===== PIN LOGIKASI =====
 async function hashPin(pin) {
@@ -480,6 +495,7 @@ async function tryLogin() {
         sessionStorage.setItem('kay_admin', 'true');
         localStorage.removeItem('kay_attempts');
         localStorage.removeItem('kay_lock');
+        localStorage.removeItem('kay_lockcount');
         addLog('success', 'Muvaffaqiyatli kirish');
         showAdminPanel();
     } else {
@@ -489,10 +505,15 @@ async function tryLogin() {
         addLog('fail', `Noto'g'ri PIN urinish #${attempts}`);
 
         if (attempts >= 3) {
-            const lockTime = Date.now() + 60000;
+            // Eskalatsiyalanuvchi blok: har safar davomiylik ikki barobar oshadi
+            const lockCount = parseInt(localStorage.getItem('kay_lockcount') || '0') + 1;
+            localStorage.setItem('kay_lockcount', lockCount);
+            const lockSeconds = Math.min(60 * Math.pow(2, lockCount - 1), 3600); // 60s, 120s, 240s ... maks 1 soat
+            const lockTime = Date.now() + lockSeconds * 1000;
             localStorage.setItem('kay_lock', lockTime);
             localStorage.removeItem('kay_attempts');
-            pinError.textContent = "3 marta xato! 60 soniya kuting.";
+            addLog('fail', `Blok faollashtirildi: ${lockSeconds}s`);
+            pinError.textContent = `3 marta xato! ${lockSeconds} soniya kuting.`;
         } else {
             pinError.textContent = `Noto'g'ri PIN (${attempts}/3)`;
         }
@@ -556,7 +577,7 @@ document.querySelectorAll('.admin-tab').forEach(tab => {
 
 // ===== STATISTIKA =====
 function loadStats() {
-    const posts = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
+    const posts = getPosts();
     const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
     const totalLikes = posts.reduce((s, p) => s + (p.likes || 0), 0);
     const activeTasks = tasks.filter(t => t.status !== 'done').length;
@@ -570,7 +591,7 @@ function loadStats() {
 
 // ===== POSTLAR =====
 function loadPosts() {
-    const posts = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
+    const posts = getPosts();
     const list = document.getElementById('admin-posts-list');
     if (!posts.length) {
         list.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">Hali post yo\'q</div>';
@@ -593,8 +614,8 @@ function loadPosts() {
 
 function deletePost(id) {
     if (!confirm('O\'chirasizmi?')) return;
-    const posts = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
-    localStorage.setItem('abdu_posts', JSON.stringify(posts.filter(p => p.id !== id)));
+    const posts = getPosts();
+    setPosts(posts.filter(p => p.id !== id));
     loadPosts(); loadStats();
 }
 
@@ -737,6 +758,7 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
 document.getElementById('reset-all-btn').addEventListener('click', () => {
     if (!confirm('BARCHA ma\'lumotlar o\'chadi! Ishonchingiz komilmi?')) return;
     if (!confirm('Bu amalni qaytarib bo\'lmaydi. Davom etasizmi?')) return;
+    if (window.Store) Store.remove('abdu_posts');
     ['abdu_posts','abdu_tasks','abdu_portfolio','abdu_portfolio_tokens','kay_logs'].forEach(k => localStorage.removeItem(k));
     alert('Tozalandi');
     loadStats(); loadPosts(); loadTasks();
