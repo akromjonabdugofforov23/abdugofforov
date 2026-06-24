@@ -16,7 +16,11 @@
     <nav class="navbar">
         <div class="container">
             <a href="#" class="logo" id="nav-logo">Abdugofforov<span>.</span></a>
-            <div class="nav-right">
+            <!-- Hamburger tugmasi (mobil) -->
+            <button class="hamburger" id="hamburger-btn" aria-label="Menyu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-right" id="nav-right">
                 <div class="nav-links" id="main-nav">
                     <a href="#" class="active" data-page="home">Bosh sahifa</a>
                     <a href="#" data-page="projects" id="nav-portfolio-link" style="display:none;">Loyihalar</a>
@@ -43,6 +47,8 @@
             </div>
         </div>
     </nav>
+    <!-- Mobil menyu overlay -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
  
     <!-- Hero Section -->
     <header class="hero animate-fade-in">
@@ -107,10 +113,14 @@
             </div>
             <div class="filter-tags" id="filter-tags">
                 <button class="filter-tag active" data-filter="all">Barchasi</button>
-                <button class="filter-tag" data-filter="kun">🌅 Kun</button>
-                <button class="filter-tag" data-filter="organganlarim">📚 O'rganganlarim</button>
-                <button class="filter-tag" data-filter="rejalar">🎯 Rejalar</button>
-                <button class="filter-tag" data-filter="musiqa">🎵 Musiqa</button>
+                <button class="filter-tag" data-filter="memory">Xotiralar</button>
+                <button class="filter-tag" data-filter="project">Loyihalar</button>
+                <button class="filter-tag" data-filter="news">Yangiliklar</button>
+                <button class="filter-tag" data-filter="ideas">G'oyalar</button>
+                <button class="filter-tag" data-filter="lessons">Saboqlar</button>
+                <button class="filter-tag" data-filter="events">Voqealar</button>
+                <button class="filter-tag" data-filter="music">Musiqa</button>
+                <button class="filter-tag" data-filter="image">Rasmlar</button>
             </div>
         </div>
 
