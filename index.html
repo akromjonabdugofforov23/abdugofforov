@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abdugofforov | Zamonaviy Blog</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigatsiya -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo" id="nav-logo">Abdugofforov<span>.</span></a>
+            <!-- Hamburger tugmasi (mobil) -->
+            <button class="hamburger" id="hamburger-btn" aria-label="Menyu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-right" id="nav-right">
+                <div class="nav-links" id="main-nav">
+                    <a href="#" class="active" data-page="home">Bosh sahifa</a>
+                    <a href="#" data-page="projects" id="nav-portfolio-link" style="display:none;">Loyihalar</a>
+                    <a href="#" data-page="deutsch" id="nav-deutsch-link">🇩🇪 Deutsch</a>
+                </div>
+                
+
+
+                <!-- Qorong'u rejim tugmasi -->
+                <button class="btn-icon theme-toggle" id="theme-btn" aria-label="Mavzuni o'zgartirish">
+                    <!-- Moon Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <!-- Sun Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+
+                <!-- Yangi post tugmasi -->
+                <button class="btn-primary" id="add-post-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Yozish
+                </button>
+            </div>
+        </div>
+    </nav>
+    <!-- Mobil menyu overlay -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+ 
+    <!-- Hero Section -->
+    <header class="hero animate-fade-in">
+        <div class="container">
+            <p class="hero-subtitle" id="hero-sub">Shaxsiy blog & Hikoyalar</p>
+            <h1 class="hero-title" id="hero-main-title">Vaqt sarguzashtlari va unutilmas xotiralar kundaligi.</h1>
+        </div>
+    </header>
+ 
+    <!-- Yashirin Portfolio Sahifasi -->
+    <div class="container portfolio-container animate-fade-in" id="portfolio-view" style="display: none; padding: 60px 0;">
+        <div class="portfolio-header" style="text-align: center; margin-bottom: 40px;">
+            <div class="portfolio-avatar-placeholder" style="width: 100px; height: 100px; border-radius: 50%; background: var(--accent-color); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; margin: 0 auto 20px auto; font-family: 'Playfair Display', serif;">A</div>
+            <h1 class="portfolio-name" id="port-display-name" style="font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 10px;">Abdugofforov</h1>
+            <p class="portfolio-title" id="port-display-title" style="font-size: 18px; color: var(--accent-color); font-weight: 600; margin-bottom: 15px;">Dasturchi</p>
+            <p class="portfolio-bio" id="port-display-bio" style="max-width: 600px; margin: 0 auto; color: var(--text-secondary); line-height: 1.8;">Men haqimda qisqacha bio...</p>
+        </div>
+        <div class="portfolio-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">🛠️ Texnologiyalar & Ko'nikmalar</h3>
+                <ul id="port-display-skills" style="list-style: none; display: flex; flex-wrap: wrap; gap: 10px; padding: 0;">
+                    <!-- Ko'nikmalar bu yerga yoziladi -->
+                </ul>
+            </div>
+            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">💼 Ish Tajribasi</h3>
+                <div id="port-display-experience" style="color: var(--text-secondary); line-height: 1.7;">
+                    <!-- Tajriba bu yerga yoziladi -->
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="btn-secondary" id="close-portfolio-btn">Bosh sahifaga qaytish</button>
+        </div>
+    </div>
+
+    <!-- Asosiy Kontent -->
+    <!-- Deutsch Test Sahifasi -->
+    <div class="container animate-fade-in" id="deutsch-view" style="display:none; padding: 40px 0;">
+        <div id="deutsch-content"></div>
+    </div>
+
+    <main class="container animate-fade-in" id="main-content">
+        <!-- Widgets Row (Ob-havo va Vaqt) -->
+        <div class="widgets-row">
+            <div class="widget-card clock-card">
+                <span class="widget-icon">⏰</span>
+                <div class="widget-info">
+                    <span id="widget-time">00:00:00</span>
+                    <span class="widget-date" id="widget-date">22.06.2026</span>
+                </div>
+            </div>
+            <div class="widget-card weather-card">
+                <span class="widget-icon" id="weather-icon">☁️</span>
+                <div class="widget-info">
+                    <span id="weather-temp">--°C</span>
+                    <span class="weather-desc" id="weather-desc">Yuklanmoqda...</span>
+                    <span class="weather-location">Buloqboshi, UZB</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Qidiruv va Filtrlar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" class="search-input" id="search-input" placeholder="Kundalikdan qidirish...">
+            </div>
+            <div class="filter-tags" id="filter-tags">
+                <button class="filter-tag active" data-filter="all">Barchasi</button>
+                <button class="filter-tag" data-filter="kun">🌅 Kun</button>
+                <button class="filter-tag" data-filter="organganlarim">📚 O'rganganlarim</button>
+                <button class="filter-tag" data-filter="rejalar">🎯 Rejalar</button>
+                <button class="filter-tag" data-filter="musiqa">🎵 Musiqa</button>
+            </div>
+        </div>
+
+        <!-- Postlar Panjarasi -->
+        <section class="blog-grid" id="blog-grid">
+            <!-- Dinamik postlar JavaScript orqali joylanadi -->
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Abdugofforov. Barcha huquqlar himoyalangan.</p>
+            <div class="footer-socials">
+                <a href="https://t.me" target="_blank" rel="noopener noreferrer">Telegram</a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Batafsil Ko'rish Modali (Post Detail Modal) -->
+    <div class="modal-overlay" id="post-detail-modal">
+        <div class="modal-container">
+            <button class="modal-close" id="close-detail-modal" aria-label="Yopish">&times;</button>
+            <div class="modal-body" id="detail-modal-body">
+                <!-- Post kontenti dinamik yuklanadi -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Yangi Post Qo'shish Modali (Add Post Modal) -->
+    <div class="modal-overlay" id="add-post-modal">
+        <div class="modal-container">
+            <button class="modal-close" id="close-add-modal" aria-label="Yopish">&times;</button>
+            <form class="write-form" id="new-post-form">
+                <h2 class="write-title">Yangi sahifa yaratish</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="post-title-input">Sarlavha</label>
+                        <input type="text" id="post-title-input" class="form-input" placeholder="Masalan: Toshkent qahratoni..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-category-input">Bekat / Yo'nalish</label>
+                        <input type="text" id="post-category-input" class="form-input" placeholder="Masalan: 1-Bekat • Yangi Qadamlar" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="post-type-input">Turi</label>
+                        <select id="post-type-input" class="form-input" style="height: 46px;">
+                            <option value="memory">Xotira (Blog post)</option>
+                            <option value="project">Loyiha (Portfolio item)</option>
+                            <option value="news">Yangiliklar</option>
+                            <option value="ideas">G'oyalar</option>
+                            <option value="lessons">Saboqlar</option>
+                            <option value="events">Voqealar</option>
+                            <option value="music">Musiqa (Audio)</option>
+                            <option value="image">Tasodifiy Rasm</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-image-input">Rasm URL (ixtiyoriy)</label>
+                        <input type="url" id="post-image-input" class="form-input" placeholder="Unsplash yoki rasm manzili">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-excerpt-input">Qisqacha ta'rif (Excerpt)</label>
+                    <input type="text" id="post-excerpt-input" class="form-input" placeholder="Post ro'yxatida ko'rinadigan qisqa matn..." required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-content-input">To'liq matn</label>
+                    <textarea id="post-content-input" class="form-textarea" placeholder="Bu yerga hikoyangizni yoki loyiha tafsilotlarini yozing..." required></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" id="cancel-add-btn">Bekor qilish</button>
+                    <button type="submit" class="btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+    <!-- JavaScript Mantiqi -->
+    <script src="app.js"></script>
+</body>
+</html>
