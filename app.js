@@ -712,24 +712,24 @@ newPostForm.addEventListener('submit', (e) => {
 
 // 12. PIN-Kod Kirish (Admin)
 adminBtn?.addEventListener('click', () => {
-    pinInput.value = '';
-    pinError.style.display = 'none';
-    pinModal.classList.add('active');
+    pinInput?.value = '';
+    pinError?.style.display = 'none';
+    pinModal?.classList.add('active');
     document.body.style.overflow = 'hidden';
 });
 
 document.getElementById('close-pin-modal')?.addEventListener('click', () => {
-    pinModal.classList.remove('active');
+    pinModal?.classList.remove('active');
     document.body.style.overflow = '';
 });
 
-pinSubmitBtn.addEventListener('click', handlePinSubmit);
-pinInput.addEventListener('keydown', (e) => {
+pinSubmitBtn?.addEventListener('click', handlePinSubmit);
+pinInput?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handlePinSubmit();
 });
 
 function handlePinSubmit() {
-    const pin = pinInput.value.trim();
+    const pin = pinInput?.value.trim();
     
     // Brute-force himoya
     const attempts = parseInt(sessionStorage.getItem('pin_attempts') || '0');
@@ -737,8 +737,8 @@ function handlePinSubmit() {
     
     if (Date.now() < lockUntil) {
         const secsLeft = Math.ceil((lockUntil - Date.now()) / 1000);
-        pinError.textContent = `Juda ko'p urinish! ${secsLeft} soniya kuting.`;
-        pinError.style.display = 'block';
+        pinError?.textContent = `Juda ko'p urinish! ${secsLeft} soniya kuting.`;
+        pinError?.style.display = 'block';
         return;
     }
     
@@ -752,8 +752,8 @@ function handlePinSubmit() {
         if (enteredHash === ADMIN_HASH) {
             sessionStorage.removeItem('pin_attempts');
             sessionStorage.removeItem('pin_lock_until');
-            pinError.textContent = 'PIN noto\'g\'ri!';
-            pinModal.classList.remove('active');
+            pinError?.textContent = 'PIN noto\'g\'ri!';
+            pinModal?.classList.remove('active');
             openAdminPanel();
         } else {
             const newAttempts = attempts + 1;
@@ -761,13 +761,13 @@ function handlePinSubmit() {
             if (newAttempts >= 3) {
                 const lockTime = Date.now() + 60000; // 60 soniya
                 sessionStorage.setItem('pin_lock_until', lockTime);
-                pinError.textContent = 'Juda ko\'p urinish! 60 soniya kuting.';
+                pinError?.textContent = 'Juda ko\'p urinish! 60 soniya kuting.';
                 sessionStorage.setItem('pin_attempts', '0');
             } else {
-                pinError.textContent = `PIN noto\'g\'ri! (${newAttempts}/3 urinish)`;
+                pinError?.textContent = `PIN noto\'g\'ri! (${newAttempts}/3 urinish)`;
             }
-            pinError.style.display = 'block';
-            pinInput.value = '';
+            pinError?.style.display = 'block';
+            pinInput?.value = '';
             pinInput.focus();
         }
     });
@@ -777,19 +777,19 @@ function handlePinSubmit() {
 function openAdminPanel() {
     sessionStorage.setItem('kay_admin', 'true');
     isAdmin = true;
-    adminPanelModal.classList.add('active');
+    adminPanelModal?.classList.add('active');
     document.body.style.overflow = 'hidden';
     document.body.classList.add('admin-mode');
     // Loyihalar nav havolasini admin uchun ko'rsatish
     const navPortfolioLink = document.getElementById('nav-portfolio-link');
     if (navPortfolioLink) navPortfolioLink.style.display = 'inline-flex';
-    adminTabPlansBtn.click();
+    adminTabPlansBtn?.click();
     renderTasks();
     loadPortfolioForm();
     renderPosts(); // Admin tugmalarini ko'rsatish uchun qayta render
 }
 
-closeAdminPanelBtn.addEventListener('click', () => {
+closeAdminPanelBtn?.addEventListener('click', () => {
     isAdmin = false;
     sessionStorage.removeItem('kay_admin');
     adminPanelModal?.classList.remove('active');
@@ -802,18 +802,18 @@ closeAdminPanelBtn.addEventListener('click', () => {
 });
 
 // Tablararo navigatsiya
-adminTabPlansBtn.addEventListener('click', () => {
-    adminTabPlansBtn.classList.add('active');
-    adminTabPortBtn.classList.remove('active');
-    adminPlansSection.style.display = 'block';
-    adminPortfolioSection.style.display = 'none';
+adminTabPlansBtn?.addEventListener('click', () => {
+    adminTabPlansBtn?.classList.add('active');
+    adminTabPortBtn?.classList.remove('active');
+    adminPlansSection?.style.display = 'block';
+    adminPortfolioSection?.style.display = 'none';
 });
 
-adminTabPortBtn.addEventListener('click', () => {
-    adminTabPortBtn.classList.add('active');
-    adminTabPlansBtn.classList.remove('active');
-    adminPortfolioSection.style.display = 'block';
-    adminPlansSection.style.display = 'none';
+adminTabPortBtn?.addEventListener('click', () => {
+    adminTabPortBtn?.classList.add('active');
+    adminTabPlansBtn?.classList.remove('active');
+    adminPortfolioSection?.style.display = 'block';
+    adminPlansSection?.style.display = 'none';
 });
 
 // Rejalar CRUD
@@ -1078,3 +1078,454 @@ initTheme();
 renderPosts();
 initMouseFollower();
 checkPortfolioAccess();
+
+
+// ===== DEUTSCH TESTLAR =====
+const deutschTests = {
+    a1: {
+        title: "A1 — Boshlang'ich daraja",
+        parts: [
+            {
+                partNum: 1,
+                name: "1-qism — Ko'rish va o'qish",
+                icon: "👁️",
+                sections: [
+                    {
+                        name: "📝 Ko'p tanlovli",
+                        type: "text",
+                        questions: [
+                            {
+                                q: "'Wie geht es Ihnen?' savoliga to'g'ri javob qaysi?",
+                                options: ["Ich heiße Akrom.", "Mir geht es gut, danke.", "Ich komme aus Usbekistan.", "Ich bin 25 Jahre alt."],
+                                answer: 1,
+                                explanation: "'Mir geht es gut, danke' = 'Yaxshi, rahmat.' Wie geht es Ihnen? = Qandaysiz? (rasmiy)."
+                            },
+                            {
+                                q: "Kechqurun xayrlashishda qaysi ibora to'g'ri?",
+                                options: ["Guten Morgen!", "Guten Tag!", "Guten Abend!", "Auf Wiedersehen!"],
+                                answer: 3,
+                                explanation: "'Auf Wiedersehen!' = Ko'rishguncha/Xayr. Guten Morgen = tong, Guten Tag = kun, Guten Abend = kech uchrashganda."
+                            },
+                            {
+                                q: "Qaysi gapda artikel to'g'ri ishlatilgan?",
+                                options: ["Der Buch ist neu.", "Die Mann ist groß.", "Das Auto ist schnell.", "Ein Frau singt."],
+                                answer: 2,
+                                explanation: "'das Auto' — to'g'ri. das Buch (kitob), der Mann (erkak), die Frau (ayol)."
+                            }
+                        ]
+                    },
+                    {
+                        name: "🖼️ Rasmli — nemischa toping",
+                        type: "image",
+                        questions: [
+                            {
+                                q: "Bu rasmda ko'ringan narsaning nemischa nomi?",
+                                image: "https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?w=400&q=80",
+                                imageAlt: "Yashil alma",
+                                options: ["die Banane", "der Apfel", "die Orange", "die Traube"],
+                                answer: 1,
+                                explanation: "'der Apfel' = alma. Mevalar: die Banane = banan, die Orange = apelsin, die Traube = uzum."
+                            },
+                            {
+                                q: "Bu joyning nemischa nomi?",
+                                image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&q=80",
+                                imageAlt: "Shifoxona",
+                                options: ["die Schule", "das Hotel", "das Krankenhaus", "die Bank"],
+                                answer: 2,
+                                explanation: "'das Krankenhaus' = shifoxona. Krank = kasal, Haus = uy. Hamshira uchun eng muhim so'z!"
+                            }
+                        ]
+                    },
+                    {
+                        name: "🖼️ Rasmli — o'zbekcha toping",
+                        type: "image_reverse",
+                        questions: [
+                            {
+                                q: "'der Hund' so'zining o'zbekcha tarjimasi?",
+                                image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80",
+                                imageAlt: "It",
+                                options: ["mushuk", "ot", "it", "qush"],
+                                answer: 2,
+                                explanation: "'der Hund' = it. Hayvonlar: die Katze = mushuk, das Pferd = ot, der Vogel = qush."
+                            },
+                            {
+                                q: "'das Brot' so'zining o'zbekcha tarjimasi?",
+                                image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80",
+                                imageAlt: "Non",
+                                options: ["pishloq", "sut", "non", "sariyog'"],
+                                answer: 2,
+                                explanation: "'das Brot' = non. Nemislar nonni juda yaxshi ko'radi — 300+ turi bor! Oziq-ovqat: der Käse = pishloq, die Milch = sut."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                partNum: 2,
+                name: "2-qism — Eshitish (Hören)",
+                icon: "🔊",
+                sections: [
+                    {
+                        name: "🔊 Hören — Eshitib tanlang",
+                        type: "audio",
+                        questions: [
+                            {
+                                q: "Ovozni eshiting — tarjimasini toping:",
+                                audio: "arbeiten",
+                                audioLang: "de-DE",
+                                displayWord: "arbeiten",
+                                options: ["o'ynamoq", "ishlаmoq", "o'qimoq", "yurmoq"],
+                                answer: 1,
+                                explanation: "'arbeiten' = ishlamoq. 'Ich arbeite im Krankenhaus' = Men shifoxonada ishlayman."
+                            },
+                            {
+                                q: "Ovozni eshiting — tarjimasini toping:",
+                                audio: "Guten Morgen",
+                                audioLang: "de-DE",
+                                displayWord: "Guten Morgen",
+                                options: ["Xayrli kech", "Xayrli kun", "Xayrli tong", "Xayr"],
+                                answer: 2,
+                                explanation: "'Guten Morgen' = Xayrli tong. Morgen = ertalab/ertaga."
+                            },
+                            {
+                                q: "Ovozni eshiting — tarjimasini toping:",
+                                audio: "Krankenschwester",
+                                audioLang: "de-DE",
+                                displayWord: "die Krankenschwester",
+                                options: ["doktor", "bemor", "aptekachi", "hamshira (ayol)"],
+                                answer: 3,
+                                explanation: "'die Krankenschwester' = hamshira (ayol). Krank + Schwester = kasal + opa. Erkak: der Krankenpfleger."
+                            },
+                            {
+                                q: "Ovozni eshiting — tarjimasini toping:",
+                                audio: "Wie heißen Sie",
+                                audioLang: "de-DE",
+                                displayWord: "Wie heißen Sie?",
+                                options: ["Qandaysiz?", "Qayerdansiz?", "Ismingiz nima?", "Necha yoshsiz?"],
+                                answer: 2,
+                                explanation: "'Wie heißen Sie?' = Ismingiz nima? (rasmiy). Norasmiy: 'Wie heißt du?'"
+                            },
+                            {
+                                q: "Ovozni eshiting — tarjimasini toping:",
+                                audio: "das Krankenhaus",
+                                audioLang: "de-DE",
+                                displayWord: "das Krankenhaus",
+                                options: ["maktab", "shifoxona", "do'kon", "mehmonxona"],
+                                answer: 1,
+                                explanation: "'das Krankenhaus' = shifoxona. Germaniyada eng ko'p ishlatadigan joylardan biri."
+                            },
+                            {
+                                q: "Ovozni eshiting — tarjimasini toping:",
+                                audio: "Ich komme aus Usbekistan",
+                                audioLang: "de-DE",
+                                displayWord: "Ich komme aus Usbekistan.",
+                                options: ["Men O'zbekistonda yashayaman.", "Men O'zbekistonlikman.", "Men O'zbekistonga boraman.", "Men O'zbekistonni yaxshi ko'raman."],
+                                answer: 1,
+                                explanation: "'Ich komme aus ...' = Men ... danman. Woher kommen Sie? savoliga shu bilan javob beriladi."
+                            },
+                            {
+                                q: "Ovozni eshiting — tarjimasini toping:",
+                                audio: "Auf Wiedersehen",
+                                audioLang: "de-DE",
+                                displayWord: "Auf Wiedersehen",
+                                options: ["Salom!", "Rahmat!", "Iltimos!", "Ko'rishguncha!"],
+                                answer: 3,
+                                explanation: "'Auf Wiedersehen' = Ko'rishguncha / Xayr (rasmiy). Norasmiy: 'Tschüss!'"
+                            },
+                            {
+                                q: "Ovozni eshiting — tarjimasini toping:",
+                                audio: "Ich verstehe nicht",
+                                audioLang: "de-DE",
+                                displayWord: "Ich verstehe nicht.",
+                                options: ["Men bilmayman.", "Men tushunmayapman.", "Men eshitmayapman.", "Men gapirmayman."],
+                                answer: 1,
+                                explanation: "'Ich verstehe nicht' = Men tushunmayapman. Juda muhim ibora! Shuningdek: 'Können Sie bitte langsamer sprechen?' = Sekinroq gapira olasizmi?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+};
+
+// Test holati
+let currentTest = null;
+let currentSection = 0;
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+function renderDeutschHome() {
+    const view = document.getElementById('deutsch-content');
+    view.innerHTML = `
+        <div style="text-align:center; margin-bottom:40px;">
+            <div style="font-size:48px; margin-bottom:12px;">🇩🇪</div>
+            <h2 style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px;">Nemis tili testlari</h2>
+            <p style="color:var(--text-secondary); font-size:15px;">O'z bilimingizni sinab ko'ring — har bir xato tushuntirma bilan</p>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:16px; max-width:800px; margin:0 auto;">
+            <div class="post-card" onclick="startTest('a1')" style="cursor:pointer; padding:28px; text-align:center; border:2px solid var(--accent-color);">
+                <div style="font-size:36px; margin-bottom:12px;">🌱</div>
+                <h3 style="font-size:18px; margin-bottom:8px;">A1 — Boshlang'ich</h3>
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Salomlashish, raqamlar, ranglar, artikel</p>
+                <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+                    <span class="filter-tag" style="margin:0;">20 ta savol</span>
+                    <span class="filter-tag" style="margin:0; color:var(--accent-color);">Hozir mavjud</span>
+                </div>
+            </div>
+            <div class="post-card" style="padding:28px; text-align:center; opacity:0.5;">
+                <div style="font-size:36px; margin-bottom:12px;">🌿</div>
+                <h3 style="font-size:18px; margin-bottom:8px;">A2 — Asosiy</h3>
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Tez kunda...</p>
+                <span class="filter-tag" style="margin:0;">Yaqinda</span>
+            </div>
+            <div class="post-card" style="padding:28px; text-align:center; opacity:0.5;">
+                <div style="font-size:36px; margin-bottom:12px;">🌳</div>
+                <h3 style="font-size:18px; margin-bottom:8px;">B1 — O'rta</h3>
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">TELC B1 tayyorgarlik</p>
+                <span class="filter-tag" style="margin:0;">Yaqinda</span>
+            </div>
+        </div>
+    `;
+}
+
+let currentPart = 0;
+
+function startTest(level) {
+    currentTest = deutschTests[level];
+    currentPart = 0;
+    currentSection = 0;
+    currentQuestion = 0;
+    score = 0;
+    answered = false;
+    renderPartIntro();
+}
+
+function renderPartIntro() {
+    const part = currentTest.parts[currentPart];
+    if (!part) { renderTestResult(); return; }
+    const totalQ = part.sections.reduce((s,sec) => s + sec.questions.length, 0);
+    document.getElementById('deutsch-content').innerHTML = \`
+        <div style="max-width:480px; margin:0 auto; text-align:center; padding:20px 0;">
+            <div style="font-size:48px; margin-bottom:16px;">\${part.icon}</div>
+            <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:8px;">\${part.name}</h2>
+            <p style="color:var(--text-secondary); margin-bottom:8px;">\${totalQ} ta savol</p>
+            \${currentPart === 1 ? '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:24px;">Har bir savol uchun nemischa ovoz avtomatik o\'qiladi</p>' : '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:24px;">Rasmlar va matnli savollar</p>'}
+            <button onclick="startPart()" class="btn-primary" style="padding:14px 32px; font-size:16px;">
+                Boshlash →
+            </button>
+            \${currentPart > 0 ? '' : ''}
+        </div>
+    \`;
+}
+
+function startPart() {
+    currentSection = 0;
+    currentQuestion = 0;
+    renderQuestion();
+}
+
+function speakText(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = lang || 'de-DE';
+    utt.rate = 0.85;
+    window.speechSynthesis.speak(utt);
+}
+
+function renderQuestion() {
+    const part = currentTest.parts[currentPart];
+    if (!part) { renderTestResult(); return; }
+    const section = part.sections[currentSection];
+    if (!section) { renderTestResult(); return; }
+    const q = section.questions[currentQuestion];
+    if (!q) { renderTestResult(); return; }
+
+    const totalQ = part.sections.reduce((s,sec) => s + sec.questions.length, 0);
+    const doneQ = part.sections.slice(0, currentSection).reduce((s,sec) => s + sec.questions.length, 0) + currentQuestion;
+    const pct = Math.round((doneQ / totalQ) * 100);
+    const isLastSection = currentSection === part.sections.length-1;
+    const isLast = isLastSection && currentQuestion === section.questions.length-1;
+    const sectionType = section.type || 'text';
+
+    // Savol qismi — turga qarab
+    let questionHTML = '';
+    if (sectionType === 'image' || sectionType === 'image_reverse') {
+        questionHTML = \`
+            <div class="post-card" style="padding:0; overflow:hidden; margin-bottom:16px;">
+                <img src="\${q.image}" alt="\${q.imageAlt}"
+                    style="width:100%; height:200px; object-fit:cover; display:block;">
+                <div style="padding:20px;">
+                    <p style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--accent-color); margin-bottom:8px;">Savol \${doneQ+1}</p>
+                    <h3 style="font-size:17px; line-height:1.5; margin:0;">\${q.q}</h3>
+                </div>
+            </div>\`;
+    } else if (sectionType === 'audio') {
+        questionHTML = \`
+            <div class="post-card" style="padding:28px; margin-bottom:16px; text-align:center;">
+                <p style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--accent-color); margin-bottom:16px;">Savol \${doneQ+1} — 🔊 Hören</p>
+                <div style="background:var(--tag-bg); border-radius:16px; padding:24px; margin-bottom:16px;">
+                    <div style="font-size:22px; font-weight:700; color:var(--text-primary); margin-bottom:16px; font-family:'Playfair Display',serif;">
+                        \${q.displayWord}
+                    </div>
+                    <button onclick="speakText('\${q.audio}', '\${q.audioLang}')"
+                        style="background:var(--accent-color); color:#000; border:none; border-radius:50px;
+                        padding:12px 28px; font-size:15px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                        🔊 Eshitish
+                    </button>
+                </div>
+                <p style="font-size:14px; color:var(--text-secondary);">\${q.q}</p>
+            </div>\`;
+        // Avtomatik o'qish
+        setTimeout(() => speakText(q.audio, q.audioLang), 300);
+    } else {
+        questionHTML = \`
+            <div class="post-card" style="padding:28px; margin-bottom:16px;">
+                <p style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--accent-color); margin-bottom:12px;">Savol \${doneQ+1}</p>
+                <h3 style="font-size:18px; line-height:1.5; margin:0;">\${q.q}</h3>
+            </div>\`;
+    }
+
+    document.getElementById('deutsch-content').innerHTML = \`
+        <div style="max-width:640px; margin:0 auto;">
+            <div style="margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:13px; color:var(--text-secondary);">\${section.name}</span>
+                    <span style="font-size:13px; color:var(--text-secondary);">\${doneQ+1} / \${totalQ}</span>
+                </div>
+                <div style="height:4px; background:var(--border-color); border-radius:2px;">
+                    <div style="height:4px; background:var(--accent-color); border-radius:2px; width:\${pct}%; transition:width 0.3s;"></div>
+                </div>
+            </div>
+            \${questionHTML}
+            <div id="options-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+                \${q.options.map((opt, i) => \`
+                    <button onclick="checkAnswer(\${i})" id="opt-\${i}"
+                        style="text-align:left; padding:14px 18px; border-radius:12px; border:1px solid var(--border-color);
+                        background:var(--card-bg); color:var(--text-primary); cursor:pointer; font-size:15px;
+                        transition:all 0.2s; display:flex; align-items:center; gap:12px;">
+                        <span style="width:28px; height:28px; border-radius:50%; background:var(--tag-bg);
+                        display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; flex-shrink:0;">
+                            \${['A','B','C','D'][i]}
+                        </span>
+                        \${opt}
+                    </button>
+                \`).join('')}
+            </div>
+            <div id="explanation-box" style="display:none;"></div>
+            <div id="next-btn-wrap" style="display:none; text-align:right; margin-top:16px;">
+                <button onclick="nextQuestion()" class="btn-primary">
+                    \${isLast ? 'Natijani ko\'rish 🏁' : 'Keyingi savol →'}
+                </button>
+            </div>
+        </div>
+    \`;
+    answered = false;
+}
+
+function checkAnswer(selected) {
+    if (answered) return;
+    answered = true;
+
+    const section = currentTest.sections[currentSection];
+    const q = section.questions[currentQuestion];
+    const isCorrect = selected === q.answer;
+    if (isCorrect) score++;
+
+    // Tugmalar rangini o'zgartirish
+    q.options.forEach((_, i) => {
+        const btn = document.getElementById('opt-' + i);
+        btn.style.cursor = 'default';
+        if (i === q.answer) {
+            btn.style.background = 'rgba(34,197,94,0.15)';
+            btn.style.borderColor = '#22c55e';
+            btn.style.color = '#22c55e';
+        } else if (i === selected && !isCorrect) {
+            btn.style.background = 'rgba(239,68,68,0.15)';
+            btn.style.borderColor = '#ef4444';
+            btn.style.color = '#ef4444';
+        }
+    });
+
+    // Izoh
+    const box = document.getElementById('explanation-box');
+    box.style.display = 'block';
+    box.innerHTML = `
+        <div style="padding:16px 20px; border-radius:12px; border:1px solid ${isCorrect ? '#22c55e' : '#ef4444'};
+            background:${isCorrect ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)'};">
+            <p style="font-weight:600; margin-bottom:6px; color:${isCorrect ? '#22c55e' : '#ef4444'};">
+                ${isCorrect ? '✅ To'g'ri!' : '❌ Noto'g'ri'}
+            </p>
+            <p style="font-size:14px; color:var(--text-primary); line-height:1.6;">💡 ${q.explanation}</p>
+        </div>
+    `;
+
+    document.getElementById('next-btn-wrap').style.display = 'block';
+}
+
+function nextQuestion() {
+    const part = currentTest.parts[currentPart];
+    const section = part.sections[currentSection];
+    currentQuestion++;
+    if (currentQuestion >= section.questions.length) {
+        currentSection++;
+        currentQuestion = 0;
+        if (currentSection >= part.sections.length) {
+            // Qism tugadi
+            currentPart++;
+            currentSection = 0;
+            if (currentPart >= currentTest.parts.length) {
+                renderTestResult();
+            } else {
+                renderPartIntro();
+            }
+            return;
+        }
+    }
+    renderQuestion();
+}
+
+function renderTestResult() {
+    const total = currentTest.parts.reduce((s,part) => s + part.sections.reduce((s2,sec) => s2 + sec.questions.length, 0), 0);
+    const pct = Math.round((score / total) * 100);
+    const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : '📚';
+    const msg = pct >= 80 ? 'Ajoyib natija! Siz A1 ni yaxshi bilasiz.' 
+              : pct >= 60 ? 'Yaxshi! Bir oz mashq qilsangiz mukammal bo'ladi.'
+              : 'Qo'rqmang! Qayta o'rganib, yana sinab ko'ring.';
+
+    document.getElementById('deutsch-content').innerHTML = `
+        <div style="max-width:480px; margin:0 auto; text-align:center;">
+            <div style="font-size:64px; margin-bottom:16px;">${emoji}</div>
+            <h2 style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px;">Test yakunlandi!</h2>
+            <p style="color:var(--text-secondary); margin-bottom:32px;">${msg}</p>
+
+            <div class="post-card" style="padding:32px; margin-bottom:24px;">
+                <div style="font-size:52px; font-weight:700; color:var(--accent-color); font-family:'Playfair Display',serif;">
+                    ${score}/${total}
+                </div>
+                <div style="font-size:15px; color:var(--text-secondary); margin-top:4px;">${pct}% to'g'ri</div>
+                <div style="height:8px; background:var(--border-color); border-radius:4px; margin-top:20px;">
+                    <div style="height:8px; background:var(--accent-color); border-radius:4px; width:${pct}%; transition:width 1s;"></div>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <button onclick="startTest('a1')" class="btn-primary">🔄 Qayta boshlash</button>
+                <button onclick="renderDeutschHome()" class="btn-secondary">← Testlar</button>
+            </div>
+        </div>
+    `;
+}
+
+// Nav Deutsch link
+document.getElementById('nav-deutsch-link')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById('main-content').style.display = 'none';
+    document.querySelector('.hero').style.display = 'none';
+    document.getElementById('deutsch-view').style.display = 'block';
+    renderDeutschHome();
+});
