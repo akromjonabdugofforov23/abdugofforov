@@ -757,14 +757,47 @@ pinInput.addEventListener('keydown', (e) => {
 
 function handlePinSubmit() {
     const pin = pinInput.value.trim();
-    if (pin === '0509') { // Yangilangan Maxfiy PIN
-        pinModal.classList.remove('active');
-        openAdminPanel();
-    } else {
+    
+    // Brute-force himoya
+    const attempts = parseInt(sessionStorage.getItem('pin_attempts') || '0');
+    const lockUntil = parseInt(sessionStorage.getItem('pin_lock_until') || '0');
+    
+    if (Date.now() < lockUntil) {
+        const secsLeft = Math.ceil((lockUntil - Date.now()) / 1000);
+        pinError.textContent = `Juda ko'p urinish! ${secsLeft} soniya kuting.`;
         pinError.style.display = 'block';
-        pinInput.value = '';
-        pinInput.focus();
+        return;
     }
+    
+    const ADMIN_HASH = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
+    const encoder = new TextEncoder();
+    const data = encoder.encode(pin);
+    crypto.subtle.digest('SHA-256', data).then(hashBuffer => {
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const enteredHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        
+        if (enteredHash === ADMIN_HASH) {
+            sessionStorage.removeItem('pin_attempts');
+            sessionStorage.removeItem('pin_lock_until');
+            pinError.textContent = 'PIN noto\'g\'ri!';
+            pinModal.classList.remove('active');
+            openAdminPanel();
+        } else {
+            const newAttempts = attempts + 1;
+            sessionStorage.setItem('pin_attempts', newAttempts);
+            if (newAttempts >= 3) {
+                const lockTime = Date.now() + 60000; // 60 soniya
+                sessionStorage.setItem('pin_lock_until', lockTime);
+                pinError.textContent = 'Juda ko\'p urinish! 60 soniya kuting.';
+                sessionStorage.setItem('pin_attempts', '0');
+            } else {
+                pinError.textContent = `PIN noto\'g\'ri! (${newAttempts}/3 urinish)`;
+            }
+            pinError.style.display = 'block';
+            pinInput.value = '';
+            pinInput.focus();
+        }
+    });
 }
 
 // 13. Admin Panel Boshqaruvi
