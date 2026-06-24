@@ -4,83 +4,14 @@
 const defaultPosts = [
     {
         id: 1,
-        title: "Toshkent qahratoni va kutilmagan hayajonlar",
-        category: "Yangiliklar",
-        type: "news",
-        excerpt: "Eski ko'rinishdagi zich matnlardan uzoqlashib, hayotning eng qiziqarli lahzalarini zamonaviy onlayn-jurnal formatida qayta kashf etamiz...",
-        content: "Eski ko'rinishdagi zich matnlardan uzoqlashib, hayotning eng qiziqarli lahzalarini zamonaviy onlayn-jurnal formatida qayta kashf etamiz.\n\nToshkentning sovuq qishi har doim o'ziga xos romantikaga ega. Qorli ko'chalar, issiq qahva hidi va kelajak rejalari haqidagi o'ylar. Ushbu sahifa mening shaxsiy xotiralarim, safarlarim va hayotiy tajribalarimni jamlaydigan yangi qadamdir. Biz bu yerda shunchaki yozmaymiz, balki har bir daqiqa qadrini his qilamiz.",
-        image: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=1000",
-        date: "2026-06-22",
-        likes: 14,
-        liked: false,
-        comments: [
-            { id: 1, author: "Farrux", text: "Ajoyib dizayn va samimiy so'zlar! Davomini kutamiz.", date: "2026-06-22" }
-        ]
-    },
-    {
-        id: 2,
-        title: "Nemis tili va yangi marralar sari sayohat",
-        category: "Saboqlar",
-        type: "lessons",
-        excerpt: "Til o'rganish shunchaki qoidalar emas, balki yangi madaniyat, dunyoqarash va yangi muhit estetikasiga sho'ng'ish demakdir.",
-        content: "Til o'rganish shunchaki qoidalar emas, balki yangi madaniyat, dunyoqarash va yangi muhit estetikasiga sho'ng'ish demakdir.\n\nNemis tilini o'rganishni boshlaganimda, har bir yangi so'z ortida butun bir falsafa borligini angladim. Masalan, 'Waldeinsamkeit' so'zi - o'rmonda yolg'iz qolib, tabiat bilan uyg'unlashish hissini anglatadi. Til orqali odamlarni, ularning yashash tarzini va eng asosiysi o'zimizni boshqacha anglashni boshlaymiz. Sayohatlar esa bu bilimlarni sinash uchun eng zo'r maydondir.",
-        image: "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?q=80&w=1000",
-        date: "2026-06-18",
-        likes: 9,
-        liked: false,
-        comments: []
-    },
-    {
-        id: 3,
-        title: "Ilk saboqlar va kutish hikmati",
-        category: "G'oyalar",
-        type: "ideas",
-        excerpt: "Ba'zida hayotdagi eng oddiy tuyulgan narsalar ham bizga vaqt nisbiyligi va sabr qilishning eng go'zal darslarini beradi.",
-        content: "Ba'zida hayotdagi eng oddiy tuyulgan narsalar ham bizga vaqt nisbiyligi va sabr qilishning eng go'zal darslarini beradi.\n\nPazandachilik - bu nafaqat masalliqlarni aralashtirish, balki olov, vaqt va hidlarning ajoyib simfoniyasidir. Biror shirinlik pishishini kutish jarayoni bizga sabr qilishni va har bir ish o'z vaqt-soati bilan go'zallashishini o'rgatadi. Oshxonadagi tajribalarim meni har doim tinchlantiradi va ijodiy erkinlik beradi.",
-        image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000",
-        date: "2026-06-10",
-        likes: 21,
-        liked: false,
-        comments: []
-    },
-    {
-        id: 4,
-        title: "Shaxsiy Brending va Minimalist Estetika",
-        category: "Loyihalar",
-        type: "project",
-        excerpt: "Abdugofforov brendining vizual identifikatsiyasi, ranglar uyg'unligi va minimalist dizayn konseptini ishlab chiqish jarayoni.",
-        content: "Abdugofforov brendining vizual identifikatsiyasi, ranglar uyg'unligi va minimalist dizayn konseptini ishlab chiqish jarayoni.\n\nUshbu loyihada maqsad - foydalanuvchiga qulay, ko'zni charchatmaydigan va shu bilan birga o'ziga xos retro-minimalizm hissini beruvchi interfeys yaratish edi. Shriftdan boshlab ranglargacha har bir detal shaxsiyatni va yozuvlarning nafisligini ko'rsatishga qaratilgan.",
-        image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1000",
-        date: "2026-06-01",
-        likes: 35,
-        liked: false,
-        comments: [
-            { id: 1, author: "Lola", text: "Dizayn va ranglar juda mos tushibdi. Juda ajoyib ish!", date: "2026-06-02" }
-        ]
-    },
-    {
-        id: 5,
-        title: "Lofi Beats - Chill Out Track",
-        category: "Musiqa",
-        type: "music",
-        excerpt: "Yozish va fikrni jamlash jarayonida tinglash uchun sokin musiqiy to'plam.",
-        content: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600",
-        date: "2026-06-21",
-        likes: 18,
-        liked: false,
-        comments: []
-    },
-    {
-        id: 6,
-        title: "Tog'lar go'zalligi - Tabiat Estetikasidan Lavha",
-        category: "Rasmlar",
-        type: "image",
-        excerpt: "Buloqboshi tog' etaklari va go'zal tabiat manzarasidan ilhomlangan estetik lahza.",
-        content: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1000",
-        image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600",
-        date: "2026-06-20",
-        likes: 29,
+        title: "Bugun boshladim",
+        category: "Kun",
+        type: "kun",
+        excerpt: "Har bir uzoq safar bitta qadamdan boshlanadi.",
+        content: "Har bir uzoq safar bitta qadamdan boshlanadi.\n\nBugun abdugofforov.uz ni yangidan boshladim. Oddiy, toza, faqat o'zim uchun. Nemischa o'rganish, hamshiralik, IT — barchasi shu yerda bir joyda bo'ladi.",
+        image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000",
+        date: "2026-06-24",
+        likes: 0,
         liked: false,
         comments: []
     }
@@ -313,14 +244,7 @@ function renderPosts() {
 
         // Toolbar filtr tugmalari
         if (filterType !== 'all') {
-            if (filterType === 'memory' && !['memory', 'news', 'ideas', 'lessons', 'events'].includes(post.type)) return false;
-            if (filterType === 'project' && post.type !== 'project') return false;
-            if (filterType === 'news' && post.type !== 'news') return false;
-            if (filterType === 'ideas' && post.type !== 'ideas') return false;
-            if (filterType === 'lessons' && post.type !== 'lessons') return false;
-            if (filterType === 'events' && post.type !== 'events') return false;
-            if (filterType === 'music' && post.type !== 'music') return false;
-            if (filterType === 'image' && post.type !== 'image') return false;
+            if (post.category.toLowerCase().replace(/[^a-z0-9]/g, '') !== filterType.toLowerCase().replace(/[^a-z0-9]/g, '')) return false;
         }
 
         // Qidiruv
