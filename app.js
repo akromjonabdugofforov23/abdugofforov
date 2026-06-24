@@ -287,7 +287,7 @@ function renderPosts() {
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         
                         <div class="music-player-container">
-                            <audio src="${post.content}" controls class="music-audio-player" style="width:100%; margin-top:10px;"></audio>
+                            <audio src="${post.audio || ''}" controls class="music-audio-player" style="width:100%; margin-top:10px;"></audio>
                         </div>
 
                         <div class="post-footer" style="margin-top: 15px;">
@@ -371,11 +371,38 @@ function renderPosts() {
     }, 400); // <-- setTimeout shu yerda yopildi
 } // <-- renderPosts funksiyasi shu yerda yopildi
 
+// Ko'rinishlarni almashtirish yordamchilari (asosiy <-> deutsch)
+function showMainView() {
+    const deutschView = document.getElementById('deutsch-view');
+    if (deutschView) deutschView.style.display = 'none';
+    const hero = document.querySelector('.hero');
+    if (hero) hero.style.display = '';
+    if (mainContent) mainContent.style.display = '';
+}
+
+function openDeutschView() {
+    if (mainContent) mainContent.style.display = 'none';
+    const hero = document.querySelector('.hero');
+    if (hero) hero.style.display = 'none';
+    const deutschView = document.getElementById('deutsch-view');
+    if (deutschView) deutschView.style.display = 'block';
+    renderDeutschHome();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // 9. SPA Routing Navigation
 mainNav.addEventListener('click', (e) => {
     e.preventDefault();
     const link = e.target.closest('a');
     if (!link) return;
+
+    // Kontakt havolasi — modal ochiladi, navigatsiya emas
+    if (link.id === 'nav-contact-link') {
+        openContactModal();
+        return;
+    }
+
+    showMainView();
 
     mainNav.querySelectorAll('a').forEach(a => a.classList.remove('active'));
     link.classList.add('active');
@@ -393,6 +420,21 @@ mainNav.addEventListener('click', (e) => {
 
     updateHeroContent();
     renderPosts();
+});
+
+// Kontakt modali
+const contactModal = document.getElementById('contact-modal');
+function openContactModal() {
+    contactModal?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeContactModal() {
+    contactModal?.classList.remove('active');
+    document.body.style.overflow = '';
+}
+document.getElementById('close-contact-modal')?.addEventListener('click', closeContactModal);
+contactModal?.addEventListener('click', (e) => {
+    if (e.target === contactModal) closeContactModal();
 });
 
 navLogo.addEventListener('click', (e) => {
@@ -451,6 +493,14 @@ function showSkeletons(count = 3) {
 filterTags.addEventListener('click', (e) => {
     const btn = e.target.closest('.filter-tag');
     if (!btn) return;
+
+    // Deutsch tugmasi — filtr emas, test sahifasini ochadi
+    if (btn.id === 'deutsch-tag-btn') {
+        openDeutschView();
+        return;
+    }
+
+    showMainView();
 
     filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
     btn.classList.add('active');
@@ -518,13 +568,13 @@ function openPostDetail(postId) {
         </div>
         
         ${post.type === 'music' 
-            ? `<div style="margin-bottom: 30px;"><img src="${post.image}" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 20px;"><audio src="${post.content}" controls style="width: 100%;"></audio></div>`
+            ? `<div style="margin-bottom: 30px;"><img src="${post.image}" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 20px;"><audio src="${post.audio || ''}" controls style="width: 100%;"></audio></div>`
             : post.type === 'image' 
-                ? `<div style="margin-bottom: 30px;"><img src="${post.content}" style="width: 100%; border-radius: 12px;"></div>`
+                ? `<div style="margin-bottom: 30px;"><img src="${post.image}" style="width: 100%; border-radius: 12px;"></div>`
                 : `<div class="modal-post-image" style="background-image: url('${post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000'}');"></div>`
         }
 
-        <div class="modal-post-text">${post.type === 'music' ? escapeHTML(post.excerpt) : escapeHTML(post.content)}</div>
+        <div class="modal-post-text">${post.type === 'music' ? escapeHTML(post.content || post.excerpt) : escapeHTML(post.content)}</div>
         
         <div class="comments-section">
             <h3 class="comments-title">Izohlar (${post.comments.length})</h3>
@@ -559,9 +609,20 @@ function openPostDetail(postId) {
             document.getElementById('post-title-input').value = post.title;
             document.getElementById('post-category-input').value = post.category;
             document.getElementById('post-type-input').value = post.type;
-            document.getElementById('post-image-input').value = post.image || '';
             document.getElementById('post-excerpt-input').value = post.excerpt;
             document.getElementById('post-content-input').value = post.content;
+
+            // Mavjud rasmni saqlab qolish (yangi fayl tanlanmasa o'zgarmaydi)
+            pendingImageData = post.image || null;
+            if (postImageUrlInput) postImageUrlInput.value = (post.image && post.image.startsWith('http')) ? post.image : '';
+            if (postImageFileInput) postImageFileInput.value = '';
+            showImagePreview(post.image || null);
+
+            // Mavjud audioni saqlab qolish
+            pendingAudioData = post.audio || null;
+            if (postAudioFileInput) postAudioFileInput.value = '';
+            showAudioPreview(post.audio || null);
+            toggleAudioGroup();
             
             closePostDetailModal();
             addPostModal.classList.add('active');
@@ -643,6 +704,11 @@ addPostBtn.addEventListener('click', () => {
     editingPostId = null;
     addPostModal.querySelector('.write-title').textContent = "Yangi sahifa yaratish";
     newPostForm.reset();
+    pendingImageData = null;
+    pendingAudioData = null;
+    showImagePreview(null);
+    showAudioPreview(null);
+    toggleAudioGroup();
     addPostModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 });
@@ -651,6 +717,10 @@ function closeAddPostModal() {
     addPostModal.classList.remove('active');
     document.body.style.overflow = '';
     newPostForm.reset();
+    pendingImageData = null;
+    pendingAudioData = null;
+    showImagePreview(null);
+    showAudioPreview(null);
 }
 
 closeAddModal.addEventListener('click', closeAddPostModal);
@@ -659,16 +729,140 @@ addPostModal.addEventListener('click', (e) => {
     if (e.target === addPostModal) closeAddPostModal();
 });
 
+// ===== FAYL YUKLASH: rasm va audio (telefondan) =====
+let pendingImageData = null; // data URL yoki tashqi havola
+let pendingAudioData = null; // audio data URL
+
+const postImageFileInput = document.getElementById('post-image-file');
+const postImageUrlInput = document.getElementById('post-image-input');
+const postImagePreview = document.getElementById('post-image-preview');
+const postAudioFileInput = document.getElementById('post-audio-file');
+const postAudioPreview = document.getElementById('post-audio-preview');
+const postAudioGroup = document.getElementById('post-audio-group');
+const postTypeInput = document.getElementById('post-type-input');
+
+// Rasmni canvas orqali kichraytirib JPEG data URL ga aylantirish (xotira tejaladi)
+function compressImage(file, maxSize = 1200, quality = 0.8) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+                if (width > height && width > maxSize) {
+                    height = Math.round(height * maxSize / width);
+                    width = maxSize;
+                } else if (height >= width && height > maxSize) {
+                    width = Math.round(width * maxSize / height);
+                    height = maxSize;
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+function showImagePreview(src) {
+    if (!postImagePreview) return;
+    if (src) {
+        postImagePreview.style.backgroundImage = `url('${src}')`;
+        postImagePreview.style.display = 'block';
+    } else {
+        postImagePreview.style.display = 'none';
+        postImagePreview.style.backgroundImage = '';
+    }
+}
+
+function showAudioPreview(src) {
+    if (!postAudioPreview) return;
+    if (src) {
+        postAudioPreview.innerHTML = `<audio src="${src}" controls style="width:100%;"></audio>`;
+        postAudioPreview.style.display = 'block';
+    } else {
+        postAudioPreview.innerHTML = '';
+        postAudioPreview.style.display = 'none';
+    }
+}
+
+function toggleAudioGroup() {
+    if (!postAudioGroup || !postTypeInput) return;
+    postAudioGroup.style.display = postTypeInput.value === 'music' ? 'block' : 'none';
+}
+
+// Rasm fayl tanlanganda — kichraytirib saqlaymiz
+postImageFileInput?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+        const dataUrl = await compressImage(file);
+        pendingImageData = dataUrl;
+        if (postImageUrlInput) postImageUrlInput.value = ''; // fayl ustun turadi
+        showImagePreview(dataUrl);
+    } catch (err) {
+        alert("Rasmni o'qishda xatolik yuz berdi.");
+    }
+});
+
+// Rasm havolasi (URL) kiritilganda
+postImageUrlInput?.addEventListener('input', (e) => {
+    const url = e.target.value.trim();
+    if (url) {
+        pendingImageData = url;
+        showImagePreview(url);
+    } else if (!postImageFileInput?.files.length) {
+        pendingImageData = null;
+        showImagePreview(null);
+    }
+});
+
+// Audio fayl tanlanganda
+postAudioFileInput?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 4 * 1024 * 1024) {
+        alert("Audio fayl juda katta (4MB dan oshmasin). Iltimos kichikroq fayl tanlang.");
+        e.target.value = '';
+        return;
+    }
+    try {
+        pendingAudioData = await readFileAsDataURL(file);
+        showAudioPreview(pendingAudioData);
+    } catch (err) {
+        alert("Audioni o'qishda xatolik yuz berdi.");
+    }
+});
+
+postTypeInput?.addEventListener('change', toggleAudioGroup);
+
 newPostForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const title = document.getElementById('post-title-input').value.trim();
     const category = document.getElementById('post-category-input').value.trim();
     const type = document.getElementById('post-type-input').value;
-    let image = document.getElementById('post-image-input').value.trim();
     const excerpt = document.getElementById('post-excerpt-input').value.trim();
     const content = document.getElementById('post-content-input').value.trim();
 
+    // Rasm: yuklangan fayl / havola, bo'lmasa standart rasm
+    let image = pendingImageData;
     if (!image) {
         if (type === 'music') {
             image = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600';
@@ -677,6 +871,12 @@ newPostForm.addEventListener('submit', (e) => {
         } else {
             image = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600';
         }
+    }
+
+    // Musiqa uchun audio shart
+    if (type === 'music' && !pendingAudioData) {
+        alert("Musiqa posti uchun audio fayl yuklang.");
+        return;
     }
 
     if (editingPostId) {
@@ -689,7 +889,8 @@ newPostForm.addEventListener('submit', (e) => {
                 type,
                 image,
                 excerpt,
-                content
+                content,
+                audio: type === 'music' ? pendingAudioData : (posts[postIndex].audio || null)
             };
         }
         editingPostId = null;
@@ -702,6 +903,7 @@ newPostForm.addEventListener('submit', (e) => {
             excerpt,
             content,
             image,
+            audio: type === 'music' ? pendingAudioData : null,
             date: new Date().toISOString().split('T')[0],
             likes: 0,
             liked: false,
@@ -710,7 +912,12 @@ newPostForm.addEventListener('submit', (e) => {
         posts.unshift(newPost);
     }
 
-    savePosts();
+    try {
+        savePosts();
+    } catch (err) {
+        alert("Saqlashda xatolik: brauzer xotirasi to'lgan bo'lishi mumkin. Iltimos kamroq yoki kichikroq rasm/audio ishlating.");
+        return;
+    }
     renderPosts();
     closeAddPostModal();
 });
@@ -1539,13 +1746,5 @@ function renderTestResult() {
     `;
 }
 
-// Nav Deutsch link
-document.getElementById('nav-deutsch-link')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-    e.target.classList.add('active');
-    document.getElementById('main-content').style.display = 'none';
-    document.querySelector('.hero').style.display = 'none';
-    document.getElementById('deutsch-view').style.display = 'block';
-    renderDeutschHome();
-});
+// Nav Deutsch havolasi endi pastdagi filtrlar yonidagi tugma orqali ishlaydi
+// (yuqoridagi filterTags ishlovchisiga qarang)
