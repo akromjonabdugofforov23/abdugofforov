@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /kay.html
 Disallow: /functions/
+
+Sitemap: https://abdugofforov.uz/sitemap.xml
