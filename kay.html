@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kay — Boshqaruv Paneli</title>
+    <!-- Robots ga ko'rsatma: indekslama -->
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== KAY ADMIN SAHIFA STILLARI ===== */
+        body { min-height: 100vh; background: var(--bg-primary); }
+
+        .kay-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* PIN ekrani */
+        .pin-screen {
+            width: 100%;
+            max-width: 360px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+        .pin-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        .pin-logo span { color: var(--accent-color); }
+        .pin-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+        .pin-input-wrap {
+            position: relative;
+            margin-bottom: 12px;
+        }
+        .pin-input-wrap input {
+            width: 100%;
+            text-align: center;
+            font-size: 28px;
+            letter-spacing: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .pin-error {
+            color: #ff4d4d;
+            font-size: 12px;
+            margin-bottom: 12px;
+            min-height: 18px;
+            display: none;
+        }
+        .pin-btn {
+            width: 100%;
+            justify-content: center;
+            padding: 14px;
+            font-size: 15px;
+        }
+        .pin-attempts {
+            margin-top: 16px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        .pin-back {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .pin-back:hover { color: var(--accent-color); }
+
+        /* Admin panel */
+        .admin-screen {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .admin-header-left h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        .admin-header-left p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .admin-header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Stats kartalar */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+        }
+        .stat-num {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent-color);
+            font-family: 'Playfair Display', serif;
+        }
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Tab tizimi */
+        .admin-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0;
+            overflow-x: auto;
+        }
+        .admin-tab {
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .admin-tab.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+        }
+        .admin-tab:hover { color: var(--text-primary); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Xavfsizlik log */
+        .security-log {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .log-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .log-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+        }
+        .log-item:last-child { border-bottom: none; }
+        .log-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .log-dot.ok { background: #22c55e; }
+        .log-dot.fail { background: #ef4444; }
+        .log-time { color: var(--text-secondary); font-size: 11px; margin-left: auto; }
+
+        /* Sozlamalar */
+        .settings-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        .settings-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .admin-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+<div class="kay-wrap">
+
+    <!-- ===== PIN EKRANI ===== -->
+    <div class="pin-screen" id="pin-screen">
+        <div class="pin-logo">Kay<span>.</span></div>
+        <div class="pin-subtitle">Boshqaruv paneli — faqat siz uchun</div>
+
+        <div class="pin-input-wrap">
+            <input type="password" id="pin-input" class="form-input"
+                   placeholder="••••" maxlength="6" autocomplete="off"
+                   inputmode="numeric">
+        </div>
+        <div class="pin-error" id="pin-error"></div>
+        <button class="btn-primary pin-btn" id="pin-submit-btn">Kirish</button>
+        <div class="pin-attempts" id="pin-attempts"></div>
+        <a href="/" class="pin-back">← Asosiy sahifaga qaytish</a>
+    </div>
+
+    <!-- ===== ADMIN EKRANI ===== -->
+    <div class="admin-screen" id="admin-screen">
+
+        <!-- Header -->
+        <div class="admin-header">
+            <div class="admin-header-left">
+                <h1>Boshqaruv Paneli</h1>
+                <p id="admin-greeting">Xush kelibsiz, Akromjon</p>
+            </div>
+            <div class="admin-header-right">
+                <a href="/" class="btn-secondary" style="text-decoration:none;">🏠 Saytga o'tish</a>
+                <button class="btn-secondary" id="logout-btn">Chiqish</button>
+            </div>
+        </div>
+
+        <!-- Statistika kartalar -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-num" id="stat-posts">0</div>
+                <div class="stat-lbl">Jami postlar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="stat-likes">0</div>
+                <div class="stat-lbl">Jami likelar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="stat-tasks">0</div>
+                <div class="stat-lbl">Faol rejalar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="stat-days">0</div>
+                <div class="stat-lbl">Kun yozildi</div>
+            </div>
+        </div>
+
+        <!-- Tablar -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="posts">📝 Postlar</button>
+            <button class="admin-tab" data-tab="tasks">📋 Rejalar</button>
+            <button class="admin-tab" data-tab="portfolio">💼 Portfolio</button>
+            <button class="admin-tab" data-tab="security">🔐 Xavfsizlik</button>
+            <button class="admin-tab" data-tab="settings">⚙️ Sozlamalar</button>
+        </div>
+
+        <!-- POSTLAR TAB -->
+        <div class="tab-content active" id="tab-posts">
+            <div id="admin-posts-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+
+        <!-- REJALAR TAB -->
+        <div class="tab-content" id="tab-tasks">
+            <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:20px;margin-bottom:20px;">
+                <form id="admin-task-form" class="settings-section" style="margin:0;">
+                    <div class="settings-title">Yangi Reja</div>
+                    <input type="hidden" id="task-edit-id">
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label>Vazifa nomi</label>
+                        <input type="text" id="task-title-input" class="form-input" placeholder="Masalan: B1 imtihoni" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:16px;">
+                        <label>Holati</label>
+                        <select id="task-status-input" class="form-input">
+                            <option value="todo">Bajariladigan</option>
+                            <option value="progress">Bajarilayotgan</option>
+                            <option value="done">Bajarilgan</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Saqlash</button>
+                </form>
+
+                <div class="settings-section" style="margin:0;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                    <div class="settings-title" style="width:100%;">Bajarilish Foizi</div>
+                    <div style="position:relative;width:120px;height:120px;">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle cx="60" cy="60" r="50" stroke="var(--border-color)" stroke-width="8" fill="transparent"/>
+                            <circle cx="60" cy="60" r="50" id="progress-ring-circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" stroke-dasharray="314.16" stroke-dashoffset="314.16" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset 0.3s ease;"/>
+                        </svg>
+                        <span id="chart-percentage-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;font-weight:700;">0%</span>
+                    </div>
+                    <div style="display:flex;gap:15px;font-size:11px;margin-top:15px;">
+                        <div>🔴 Todo: <span id="count-todo">0</span></div>
+                        <div>🟡 Progress: <span id="count-progress">0</span></div>
+                        <div>🟢 Done: <span id="count-done">0</span></div>
+                    </div>
+                </div>
+            </div>
+            <div id="admin-task-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+
+        <!-- PORTFOLIO TAB -->
+        <div class="tab-content" id="tab-portfolio">
+            <div class="settings-section">
+                <div class="settings-title">Portfolio Ma'lumotlari</div>
+                <form id="admin-port-settings-form">
+                    <div class="form-row" style="margin-bottom:15px;">
+                        <div class="form-group">
+                            <label>F.I.SH</label>
+                            <input type="text" id="port-name-input" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Kasb / Mutaxassislik</label>
+                            <input type="text" id="port-title-input" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:15px;">
+                        <label>Bio</label>
+                        <textarea id="port-bio-input" class="form-textarea" required></textarea>
+                    </div>
+                    <div class="form-row" style="margin-bottom:15px;">
+                        <div class="form-group">
+                            <label>Ko'nikmalar (vergul bilan)</label>
+                            <input type="text" id="port-skills-input" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Tajriba</label>
+                            <input type="text" id="port-experience-input" class="form-input" placeholder="Kompaniya (Yil); ...">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Saqlash</button>
+                </form>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-title">Bir martalik kirish havolasi</div>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:15px;">Portfolio sahifasini boshqalarga ko'rsatish uchun vaqtinchalik havola.</p>
+                <button class="btn-primary" id="generate-token-btn">Havola yaratish</button>
+                <div id="generated-link-box" style="margin-top:15px;background:var(--tag-bg);padding:15px;border-radius:8px;display:none;">
+                    <div style="display:flex;gap:10px;align-items:center;">
+                        <input type="text" id="generated-link-input" class="form-input" style="font-size:13px;" readonly>
+                        <button class="btn-primary" id="copy-link-btn" style="flex-shrink:0;padding:10px 15px;">Nusxa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- XAVFSIZLIK TAB -->
+        <div class="tab-content" id="tab-security">
+            <div class="security-log">
+                <div class="log-header">
+                    <span>🔐 Kirish loglari</span>
+                    <button class="btn-secondary" id="clear-log-btn" style="font-size:12px;padding:6px 12px;">Tozalash</button>
+                </div>
+                <div id="security-log-list">
+                    <div class="log-item" style="color:var(--text-secondary);justify-content:center;">Hali log yo'q</div>
+                </div>
+            </div>
+
+            <div class="settings-section" style="margin-top:16px;">
+                <div class="settings-title">Xavfsizlik holati</div>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;">
+                        <span>🔒 HTTPS</span><span style="color:#22c55e;font-weight:500;">Faol</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;">
+                        <span>🛡️ PIN himoya</span><span style="color:#22c55e;font-weight:500;">Faol</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;">
+                        <span>🤖 robots.txt (noindex)</span><span style="color:#22c55e;font-weight:500;">Faol</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;">
+                        <span>⏱️ Brute-force himoya</span><span style="color:#22c55e;font-weight:500;">Faol (3 urinish → 60s)</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;">
+                        <span>☁️ Cloudflare WAF</span><span style="color:#f59e0b;font-weight:500;">Tekshiring</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOZLAMALAR TAB -->
+        <div class="tab-content" id="tab-settings">
+            <div class="settings-section">
+                <div class="settings-title">Sayt sozlamalari</div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label>Sayt nomi</label>
+                    <input type="text" id="setting-site-name" class="form-input" value="Abdugofforov">
+                </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label>Tavsif (Hero subtitle)</label>
+                    <input type="text" id="setting-site-desc" class="form-input" value="Vaqt sarguzashtlari va unutilmas xotiralar kundaligi.">
+                </div>
+                <button class="btn-primary" id="save-settings-btn">Saqlash</button>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-title" style="color:#ef4444;">Xavfli zona</div>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:15px;">Barcha postlar, rejalar va ma'lumotlarni o'chirish. Bu amalni qaytarib bo'lmaydi.</p>
+                <button class="btn-secondary" id="reset-all-btn" style="color:#ef4444;border-color:rgba(239,68,68,0.3);">Hammasini tozalash</button>
+            </div>
+        </div>
+
+    </div><!-- /admin-screen -->
+</div><!-- /kay-wrap -->
+
+<script>
+// ===== KAY ADMIN PANEL =====
+const ADMIN_HASH = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
+
+// Sahifa yuklanishida admin holati tekshiruvi
+const alreadyAdmin = sessionStorage.getItem('kay_admin') === 'true';
+if (alreadyAdmin) showAdminPanel();
+
+// ===== PIN LOGIKASI =====
+async function hashPin(pin) {
+    const data = new TextEncoder().encode(pin);
+    const buf = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+const pinInput = document.getElementById('pin-input');
+const pinError = document.getElementById('pin-error');
+const pinAttempts = document.getElementById('pin-attempts');
+
+async function tryLogin() {
+    const pin = pinInput.value.trim();
+    if (!pin) return;
+
+    // Blok tekshiruvi
+    const lockUntil = parseInt(localStorage.getItem('kay_lock') || '0');
+    if (Date.now() < lockUntil) {
+        const s = Math.ceil((lockUntil - Date.now()) / 1000);
+        pinError.textContent = `${s} soniya kuting...`;
+        pinError.style.display = 'block';
+        return;
+    }
+
+    const hash = await hashPin(pin);
+    if (hash === ADMIN_HASH) {
+        // Muvaffaqiyatli kirish
+        sessionStorage.setItem('kay_admin', 'true');
+        localStorage.removeItem('kay_attempts');
+        localStorage.removeItem('kay_lock');
+        addLog('success', 'Muvaffaqiyatli kirish');
+        showAdminPanel();
+    } else {
+        // Noto'g'ri PIN
+        const attempts = parseInt(localStorage.getItem('kay_attempts') || '0') + 1;
+        localStorage.setItem('kay_attempts', attempts);
+        addLog('fail', `Noto'g'ri PIN urinish #${attempts}`);
+
+        if (attempts >= 3) {
+            const lockTime = Date.now() + 60000;
+            localStorage.setItem('kay_lock', lockTime);
+            localStorage.removeItem('kay_attempts');
+            pinError.textContent = "3 marta xato! 60 soniya kuting.";
+        } else {
+            pinError.textContent = `Noto'g'ri PIN (${attempts}/3)`;
+        }
+        pinError.style.display = 'block';
+        pinInput.value = '';
+        pinInput.focus();
+    }
+}
+
+document.getElementById('pin-submit-btn').addEventListener('click', tryLogin);
+pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+// Lock holatini ko'rsatish
+function checkLock() {
+    const lockUntil = parseInt(localStorage.getItem('kay_lock') || '0');
+    if (Date.now() < lockUntil) {
+        const s = Math.ceil((lockUntil - Date.now()) / 1000);
+        pinAttempts.textContent = `Bloklangan: ${s}s`;
+        setTimeout(checkLock, 1000);
+    } else {
+        pinAttempts.textContent = '';
+    }
+}
+checkLock();
+
+// ===== ADMIN PANEL =====
+function showAdminPanel() {
+    document.getElementById('pin-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+
+    // Salomlashuv
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Xayrli tong' : hour < 18 ? 'Xayrli kun' : 'Xayrli kech';
+    document.getElementById('admin-greeting').textContent = `${greeting}, Akromjon 👋`;
+
+    loadStats();
+    loadPosts();
+    loadTasks();
+    loadPortfolioForm();
+    loadSecurityLog();
+}
+
+// Chiqish
+document.getElementById('logout-btn').addEventListener('click', () => {
+    sessionStorage.removeItem('kay_admin');
+    document.getElementById('admin-screen').style.display = 'none';
+    document.getElementById('pin-screen').style.display = 'block';
+    pinInput.value = '';
+    pinError.style.display = 'none';
+});
+
+// ===== TABLAR =====
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+});
+
+// ===== STATISTIKA =====
+function loadStats() {
+    const posts = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
+    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
+    const totalLikes = posts.reduce((s, p) => s + (p.likes || 0), 0);
+    const activeTasks = tasks.filter(t => t.status !== 'done').length;
+    const uniqueDays = new Set(posts.map(p => p.date)).size;
+
+    document.getElementById('stat-posts').textContent = posts.length;
+    document.getElementById('stat-likes').textContent = totalLikes;
+    document.getElementById('stat-tasks').textContent = activeTasks;
+    document.getElementById('stat-days').textContent = uniqueDays;
+}
+
+// ===== POSTLAR =====
+function loadPosts() {
+    const posts = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
+    const list = document.getElementById('admin-posts-list');
+    if (!posts.length) {
+        list.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:40px;">Hali post yo\'q</div>';
+        return;
+    }
+    list.innerHTML = posts.map(p => `
+        <div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:16px;display:flex;align-items:center;gap:16px;">
+            <img src="${p.image||''}" style="width:60px;height:60px;border-radius:8px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">
+            <div style="flex:1;min-width:0;">
+                <div style="font-weight:500;font-size:14px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.title}</div>
+                <div style="font-size:12px;color:var(--text-secondary);">${p.category} · ${p.date} · ❤️ ${p.likes||0}</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-shrink:0;">
+                <button class="btn-secondary" style="font-size:12px;padding:6px 12px;" onclick="editPost(${p.id})">✏️</button>
+                <button class="btn-secondary" style="font-size:12px;padding:6px 12px;color:#ef4444;" onclick="deletePost(${p.id})">🗑️</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function deletePost(id) {
+    if (!confirm('O\'chirasizmi?')) return;
+    const posts = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
+    localStorage.setItem('abdu_posts', JSON.stringify(posts.filter(p => p.id !== id)));
+    loadPosts(); loadStats();
+}
+
+function editPost(id) {
+    // Asosiy saytga o'tib tahrirlash
+    sessionStorage.setItem('kay_edit_post', id);
+    window.location.href = '/';
+}
+
+// ===== REJALAR =====
+function loadTasks() {
+    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
+    const list = document.getElementById('admin-task-list');
+
+    const todo = tasks.filter(t => t.status === 'todo').length;
+    const progress = tasks.filter(t => t.status === 'progress').length;
+    const done = tasks.filter(t => t.status === 'done').length;
+    const total = tasks.length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+
+    document.getElementById('count-todo').textContent = todo;
+    document.getElementById('count-progress').textContent = progress;
+    document.getElementById('count-done').textContent = done;
+    document.getElementById('chart-percentage-text').textContent = pct + '%';
+    const circle = document.getElementById('progress-ring-circle');
+    if (circle) circle.style.strokeDashoffset = 314.16 - (314.16 * pct / 100);
+
+    if (!tasks.length) {
+        list.innerHTML = '<div style="text-align:center;color:var(--text-secondary);padding:20px;">Reja yo\'q</div>';
+        return;
+    }
+    const icons = { todo: '🔴', progress: '🟡', done: '🟢' };
+    list.innerHTML = tasks.map(t => `
+        <div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;">
+            <span>${icons[t.status]||'⚪'}</span>
+            <span style="flex:1;font-size:14px;">${t.title}</span>
+            <button class="btn-secondary" style="font-size:12px;padding:5px 10px;color:#ef4444;" onclick="deleteTask(${t.id})">✕</button>
+        </div>
+    `).join('');
+}
+
+document.getElementById('admin-task-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const title = document.getElementById('task-title-input').value.trim();
+    const status = document.getElementById('task-status-input').value;
+    if (!title) return;
+    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
+    tasks.push({ id: Date.now(), title, status });
+    localStorage.setItem('abdu_tasks', JSON.stringify(tasks));
+    document.getElementById('task-title-input').value = '';
+    loadTasks(); loadStats();
+});
+
+function deleteTask(id) {
+    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
+    localStorage.setItem('abdu_tasks', JSON.stringify(tasks.filter(t => t.id !== id)));
+    loadTasks(); loadStats();
+}
+
+// ===== PORTFOLIO =====
+function loadPortfolioForm() {
+    const info = JSON.parse(localStorage.getItem('abdu_portfolio') || '{}');
+    if (info.name) document.getElementById('port-name-input').value = info.name;
+    if (info.title) document.getElementById('port-title-input').value = info.title;
+    if (info.bio) document.getElementById('port-bio-input').value = info.bio;
+    if (info.skills) document.getElementById('port-skills-input').value = info.skills;
+    if (info.experience) document.getElementById('port-experience-input').value = info.experience;
+}
+
+document.getElementById('admin-port-settings-form').addEventListener('submit', e => {
+    e.preventDefault();
+    localStorage.setItem('abdu_portfolio', JSON.stringify({
+        name: document.getElementById('port-name-input').value,
+        title: document.getElementById('port-title-input').value,
+        bio: document.getElementById('port-bio-input').value,
+        skills: document.getElementById('port-skills-input').value,
+        experience: document.getElementById('port-experience-input').value,
+    }));
+    alert('Portfolio saqlandi ✅');
+});
+
+document.getElementById('generate-token-btn').addEventListener('click', () => {
+    const token = Math.random().toString(36).slice(2, 10);
+    const tokens = JSON.parse(localStorage.getItem('abdu_portfolio_tokens') || '[]');
+    tokens.push(token);
+    localStorage.setItem('abdu_portfolio_tokens', JSON.stringify(tokens));
+    const link = `${window.location.origin}/?portfolio=${token}`;
+    document.getElementById('generated-link-input').value = link;
+    document.getElementById('generated-link-box').style.display = 'block';
+});
+
+document.getElementById('copy-link-btn').addEventListener('click', () => {
+    const input = document.getElementById('generated-link-input');
+    navigator.clipboard.writeText(input.value).then(() => {
+        document.getElementById('copy-link-btn').textContent = 'Nusxalandi ✅';
+        setTimeout(() => document.getElementById('copy-link-btn').textContent = 'Nusxa', 2000);
+    });
+});
+
+// ===== XAVFSIZLIK LOG =====
+function addLog(type, message) {
+    const logs = JSON.parse(localStorage.getItem('kay_logs') || '[]');
+    logs.unshift({
+        type,
+        message,
+        time: new Date().toLocaleString('uz-UZ')
+    });
+    localStorage.setItem('kay_logs', JSON.stringify(logs.slice(0, 50)));
+}
+
+function loadSecurityLog() {
+    const logs = JSON.parse(localStorage.getItem('kay_logs') || '[]');
+    const list = document.getElementById('security-log-list');
+    if (!logs.length) {
+        list.innerHTML = '<div class="log-item" style="color:var(--text-secondary);justify-content:center;">Hali log yo\'q</div>';
+        return;
+    }
+    list.innerHTML = logs.map(l => `
+        <div class="log-item">
+            <div class="log-dot ${l.type === 'success' ? 'ok' : 'fail'}"></div>
+            <span>${l.message}</span>
+            <span class="log-time">${l.time}</span>
+        </div>
+    `).join('');
+}
+
+document.getElementById('clear-log-btn').addEventListener('click', () => {
+    if (!confirm('Loglarni tozalash?')) return;
+    localStorage.removeItem('kay_logs');
+    loadSecurityLog();
+});
+
+// ===== SOZLAMALAR =====
+document.getElementById('save-settings-btn').addEventListener('click', () => {
+    localStorage.setItem('kay_site_name', document.getElementById('setting-site-name').value);
+    localStorage.setItem('kay_site_desc', document.getElementById('setting-site-desc').value);
+    alert('Sozlamalar saqlandi ✅');
+});
+
+document.getElementById('reset-all-btn').addEventListener('click', () => {
+    if (!confirm('BARCHA ma\'lumotlar o\'chadi! Ishonchingiz komilmi?')) return;
+    if (!confirm('Bu amalni qaytarib bo\'lmaydi. Davom etasizmi?')) return;
+    ['abdu_posts','abdu_tasks','abdu_portfolio','abdu_portfolio_tokens','kay_logs'].forEach(k => localStorage.removeItem(k));
+    alert('Tozalandi');
+    loadStats(); loadPosts(); loadTasks();
+});
+</script>
+</body>
+</html>
