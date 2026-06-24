@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abdugofforov | Zamonaviy Blog</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigatsiya -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo" id="nav-logo">Abdugofforov<span>.</span></a>
+            <div class="nav-right">
+                <div class="nav-links" id="main-nav">
+                    <a href="#" class="active" data-page="home">Bosh sahifa</a>
+                    <a href="#" data-page="projects">Loyihalar</a>
+                </div>
+                
+                <!-- Admin Boshqaruvi -->
+                <button class="btn-icon" id="admin-btn" aria-label="Admin boshqaruvi" title="Admin panel">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </button>
+
+                <!-- Qorong'u rejim tugmasi -->
+                <button class="btn-icon theme-toggle" id="theme-btn" aria-label="Mavzuni o'zgartirish">
+                    <!-- Moon Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <!-- Sun Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+
+                <!-- Yangi post tugmasi -->
+                <button class="btn-primary" id="add-post-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Yozish
+                </button>
+            </div>
+        </div>
+    </nav>
+ 
+    <!-- Hero Section -->
+    <header class="hero animate-fade-in">
+        <div class="container">
+            <p class="hero-subtitle" id="hero-sub">Shaxsiy blog & Hikoyalar</p>
+            <h1 class="hero-title" id="hero-main-title">Vaqt sarguzashtlari va unutilmas xotiralar kundaligi.</h1>
+        </div>
+    </header>
+ 
+    <!-- Yashirin Portfolio Sahifasi -->
+    <div class="container portfolio-container animate-fade-in" id="portfolio-view" style="display: none; padding: 60px 0;">
+        <div class="portfolio-header" style="text-align: center; margin-bottom: 40px;">
+            <div class="portfolio-avatar-placeholder" style="width: 100px; height: 100px; border-radius: 50%; background: var(--accent-color); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; margin: 0 auto 20px auto; font-family: 'Playfair Display', serif;">A</div>
+            <h1 class="portfolio-name" id="port-display-name" style="font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 10px;">Abdugofforov</h1>
+            <p class="portfolio-title" id="port-display-title" style="font-size: 18px; color: var(--accent-color); font-weight: 600; margin-bottom: 15px;">Dasturchi</p>
+            <p class="portfolio-bio" id="port-display-bio" style="max-width: 600px; margin: 0 auto; color: var(--text-secondary); line-height: 1.8;">Men haqimda qisqacha bio...</p>
+        </div>
+        <div class="portfolio-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">🛠️ Texnologiyalar & Ko'nikmalar</h3>
+                <ul id="port-display-skills" style="list-style: none; display: flex; flex-wrap: wrap; gap: 10px; padding: 0;">
+                    <!-- Ko'nikmalar bu yerga yoziladi -->
+                </ul>
+            </div>
+            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">💼 Ish Tajribasi</h3>
+                <div id="port-display-experience" style="color: var(--text-secondary); line-height: 1.7;">
+                    <!-- Tajriba bu yerga yoziladi -->
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="btn-secondary" id="close-portfolio-btn">Bosh sahifaga qaytish</button>
+        </div>
+    </div>
+
+    <!-- Asosiy Kontent -->
+    <main class="container animate-fade-in" id="main-content">
+        <!-- Widgets Row (Ob-havo va Vaqt) -->
+        <div class="widgets-row">
+            <div class="widget-card clock-card">
+                <span class="widget-icon">⏰</span>
+                <div class="widget-info">
+                    <span id="widget-time">00:00:00</span>
+                    <span class="widget-date" id="widget-date">22.06.2026</span>
+                </div>
+            </div>
+            <div class="widget-card weather-card">
+                <span class="widget-icon" id="weather-icon">☁️</span>
+                <div class="widget-info">
+                    <span id="weather-temp">--°C</span>
+                    <span class="weather-desc" id="weather-desc">Yuklanmoqda...</span>
+                    <span class="weather-location">Buloqboshi, UZB</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Qidiruv va Filtrlar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" class="search-input" id="search-input" placeholder="Kundalikdan qidirish...">
+            </div>
+            <div class="filter-tags" id="filter-tags">
+                <button class="filter-tag active" data-filter="all">Barchasi</button>
+                <button class="filter-tag" data-filter="memory">Xotiralar</button>
+                <button class="filter-tag" data-filter="project">Loyihalar</button>
+                <button class="filter-tag" data-filter="news">Yangiliklar</button>
+                <button class="filter-tag" data-filter="ideas">G'oyalar</button>
+                <button class="filter-tag" data-filter="lessons">Saboqlar</button>
+                <button class="filter-tag" data-filter="events">Voqealar</button>
+                <button class="filter-tag" data-filter="music">Musiqa</button>
+                <button class="filter-tag" data-filter="image">Rasmlar</button>
+            </div>
+        </div>
+
+        <!-- Postlar Panjarasi -->
+        <section class="blog-grid" id="blog-grid">
+            <!-- Dinamik postlar JavaScript orqali joylanadi -->
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Abdugofforov. Barcha huquqlar himoyalangan.</p>
+            <div class="footer-socials">
+                <a href="https://t.me" target="_blank" rel="noopener noreferrer">Telegram</a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Batafsil Ko'rish Modali (Post Detail Modal) -->
+    <div class="modal-overlay" id="post-detail-modal">
+        <div class="modal-container">
+            <button class="modal-close" id="close-detail-modal" aria-label="Yopish">&times;</button>
+            <div class="modal-body" id="detail-modal-body">
+                <!-- Post kontenti dinamik yuklanadi -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Yangi Post Qo'shish Modali (Add Post Modal) -->
+    <div class="modal-overlay" id="add-post-modal">
+        <div class="modal-container">
+            <button class="modal-close" id="close-add-modal" aria-label="Yopish">&times;</button>
+            <form class="write-form" id="new-post-form">
+                <h2 class="write-title">Yangi sahifa yaratish</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="post-title-input">Sarlavha</label>
+                        <input type="text" id="post-title-input" class="form-input" placeholder="Masalan: Toshkent qahratoni..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-category-input">Bekat / Yo'nalish</label>
+                        <input type="text" id="post-category-input" class="form-input" placeholder="Masalan: 1-Bekat • Yangi Qadamlar" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="post-type-input">Turi</label>
+                        <select id="post-type-input" class="form-input" style="height: 46px;">
+                            <option value="memory">Xotira (Blog post)</option>
+                            <option value="project">Loyiha (Portfolio item)</option>
+                            <option value="news">Yangiliklar</option>
+                            <option value="ideas">G'oyalar</option>
+                            <option value="lessons">Saboqlar</option>
+                            <option value="events">Voqealar</option>
+                            <option value="music">Musiqa (Audio)</option>
+                            <option value="image">Tasodifiy Rasm</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-image-input">Rasm URL (ixtiyoriy)</label>
+                        <input type="url" id="post-image-input" class="form-input" placeholder="Unsplash yoki rasm manzili">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-excerpt-input">Qisqacha ta'rif (Excerpt)</label>
+                    <input type="text" id="post-excerpt-input" class="form-input" placeholder="Post ro'yxatida ko'rinadigan qisqa matn..." required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-content-input">To'liq matn</label>
+                    <textarea id="post-content-input" class="form-textarea" placeholder="Bu yerga hikoyangizni yoki loyiha tafsilotlarini yozing..." required></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" id="cancel-add-btn">Bekor qilish</button>
+                    <button type="submit" class="btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PIN Kod Kirish Modali -->
+    <div class="modal-overlay" id="pin-modal">
+        <div class="modal-container" style="max-width: 320px; text-align: center;">
+            <button class="modal-close" id="close-pin-modal" aria-label="Yopish">&times;</button>
+            <div class="modal-body" style="padding: 30px;">
+                <h3 style="margin-bottom: 20px; font-family: 'Playfair Display', serif;">Admin Kirish</h3>
+                <input type="password" id="pin-input" class="form-input" placeholder="4 xonali PIN-kod" maxlength="4" style="text-align: center; font-size: 24px; letter-spacing: 8px; margin-bottom: 20px;">
+                <div id="pin-error" style="color: #ff4d4d; font-size: 12px; margin-bottom: 10px; display: none;">Noto'g'ri PIN-kod!</div>
+                <button class="btn-primary" id="pin-submit-btn" style="width: 100%; justify-content: center;">Kirish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modali -->
+    <div class="modal-overlay" id="admin-panel-modal">
+        <div class="modal-container" style="max-width: 800px;">
+            <button class="modal-close" id="close-admin-panel-btn" aria-label="Yopish">&times;</button>
+            <div class="modal-body" style="padding: 30px;">
+                <h2 class="write-title" style="margin-bottom: 20px; font-family: 'Playfair Display', serif;">Boshqaruv Paneli</h2>
+                
+                <div class="filter-tags" style="margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                    <button class="filter-tag active" id="admin-tab-plans-btn">📋 Rejalar & Grafiklar</button>
+                    <button class="filter-tag" id="admin-tab-port-btn">💼 Portfolio Sozlamalari</button>
+                </div>
+
+                <!-- Rejalar va Grafiklar -->
+                <div id="admin-plans-section">
+                    <div class="admin-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <form id="admin-task-form" style="background: var(--tag-bg); padding: 20px; border-radius: 12px;">
+                            <h4 style="margin-bottom: 12px;">Yangi Reja Qo'shish</h4>
+                            <input type="hidden" id="task-edit-id">
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label for="task-title-input">Vazifa nomi</label>
+                                <input type="text" id="task-title-input" class="form-input" placeholder="Masalan: Sayt dizaynini yakunlash" required>
+                             </div>
+                             <div class="form-group" style="margin-bottom: 15px;">
+                                 <label for="task-status-input">Holati</label>
+                                 <select id="task-status-input" class="form-input">
+                                     <option value="todo">Bajariladigan (Todo)</option>
+                                     <option value="progress">Bajarilayotgan (In Progress)</option>
+                                     <option value="done">Bajarilgan (Done)</option>
+                                 </select>
+                             </div>
+                             <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">Rejani saqlash</button>
+                        </form>
+
+                        <div class="chart-container" style="background: var(--tag-bg); padding: 20px; border-radius: 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                             <h4 style="margin-bottom: 15px;">Bajarilish Foizi</h4>
+                             
+                             <div class="progress-svg-wrapper" style="position: relative; width: 120px; height: 120px;">
+                                 <svg width="120" height="120" viewBox="0 0 120 120">
+                                     <circle cx="60" cy="60" r="50" stroke="var(--border-color)" stroke-width="8" fill="transparent" />
+                                     <circle cx="60" cy="60" r="50" id="progress-ring-circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" stroke-dasharray="314.16" stroke-dashoffset="314.16" transform="rotate(-90 60 60)" style="transition: stroke-dashoffset 0.3s ease;" />
+                                 </svg>
+                                 <span id="chart-percentage-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; font-weight: 700;">0%</span>
+                             </div>
+
+                             <div style="display: flex; gap: 15px; font-size: 11px; margin-top: 15px;">
+                                 <div>🔴 Todo: <span id="count-todo">0</span></div>
+                                 <div>🟡 Progress: <span id="count-progress">0</span></div>
+                                 <div>🟢 Done: <span id="count-done">0</span></div>
+                             </div>
+                        </div>
+                    </div>
+
+                    <h3 style="font-family: 'Playfair Display', serif; margin: 20px 0 10px 0;">Rejalar ro'yxati</h3>
+                    <div id="admin-task-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 220px; overflow-y: auto; padding-right: 5px;">
+                        <!-- Dinamik rejalar -->
+                    </div>
+                </div>
+
+                <!-- Portfolio Sozlamalari -->
+                <div id="admin-portfolio-section" style="display: none;">
+                    <form id="admin-port-settings-form">
+                        <div class="form-row" style="margin-bottom: 15px;">
+                            <div class="form-group">
+                                <label for="port-name-input">F.I.SH (Ism)</label>
+                                <input type="text" id="port-name-input" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="port-title-input">Kasb / Mutaxassislik</label>
+                                <input type="text" id="port-title-input" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label for="port-bio-input">Tarjimai hol / Bio</label>
+                            <textarea id="port-bio-input" class="form-textarea" required></textarea>
+                        </div>
+                        <div class="form-row" style="margin-bottom: 15px;">
+                            <div class="form-group">
+                                <label for="port-skills-input">Ko'nikmalar (vergul bilan ajrating)</label>
+                                <input type="text" id="port-skills-input" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="port-experience-input">Tajriba (Kompaniya (Yil); ...)</label>
+                                <input type="text" id="port-experience-input" class="form-input" placeholder="Freelancer (2024-2026); Google (2026)" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" style="margin-bottom: 20px;">Portfolio ma'lumotlarini saqlash</button>
+                    </form>
+
+                    <div style="border-top: 1px dashed var(--border-color); padding-top: 20px;">
+                        <h4 style="margin-bottom: 10px;">Bir martalik kirish havolasi yaratish</h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">
+                            Ushbu tugmani bosish orqali portfoliongizni ko'rsatish uchun yangi bir martalik havola yaratiladi.
+                        </p>
+                        <button type="button" class="btn-primary" id="generate-token-btn">Havola yaratish</button>
+                        
+                        <div id="generated-link-box" style="margin-top: 15px; background: var(--tag-bg); padding: 15px; border-radius: 8px; display: none;">
+                            <p style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px;">Bir martalik havola:</p>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="text" id="generated-link-input" class="form-input" style="font-size: 13px;" readonly>
+                                <button type="button" class="btn-primary" id="copy-link-btn" style="flex-shrink: 0; padding: 10px 15px;">Nusxa olish</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Mantiqi -->
+    <script src="app.js"></script>
+</body>
+</html>
