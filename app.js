@@ -233,6 +233,9 @@ function updateHeroContent() {
 
 // 8. Postlarni filtrlash va render qilish
 function renderPosts() {
+    // Skeleton ko'rsatish (tez o'chadi)
+    showSkeletons(3);
+    setTimeout(() => {
     blogGrid.innerHTML = '';
     blogGrid.classList.remove('animate-fade-in');
     void blogGrid.offsetWidth;
@@ -398,6 +401,52 @@ navLogo.addEventListener('click', (e) => {
 });
 
 // Toolbar filtrlari
+
+// ===== HAMBURGER MENYU =====
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const navRight = document.getElementById('nav-right');
+const mobileOverlay = document.getElementById('mobile-overlay');
+
+function openMobileMenu() {
+    hamburgerBtn.classList.add('active');
+    navRight.classList.add('open');
+    mobileOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeMobileMenu() {
+    hamburgerBtn.classList.remove('active');
+    navRight.classList.remove('open');
+    mobileOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+hamburgerBtn.addEventListener('click', () => {
+    navRight.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
+});
+mobileOverlay.addEventListener('click', closeMobileMenu);
+
+// Nav link bosilganda menyu yopilsin
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', closeMobileMenu);
+});
+
+// ===== SKELETON LOADER =====
+function showSkeletons(count = 3) {
+    const grid = document.getElementById('posts-grid');
+    if (!grid) return;
+    grid.innerHTML = Array(count).fill(`
+        <div class="skeleton-card">
+            <div class="skeleton skeleton-img"></div>
+            <div class="skeleton-body">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text short"></div>
+                <div class="skeleton skeleton-meta"></div>
+            </div>
+        </div>
+    `).join('');
+}
+
 filterTags.addEventListener('click', (e) => {
     const btn = e.target.closest('.filter-tag');
     if (!btn) return;
