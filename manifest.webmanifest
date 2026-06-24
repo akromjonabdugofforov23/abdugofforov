@@ -1,0 +1,22 @@
+{
+  "name": "Abdugofforov — Shaxsiy blog",
+  "short_name": "Abdugofforov",
+  "description": "Kundalik xotiralar, g'oyalar, musiqa, nemis tili testlari va so'z kartochkalari.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0c1e30",
+  "theme_color": "#d4a373",
+  "lang": "uz",
+  "dir": "ltr",
+  "categories": ["education", "lifestyle", "books"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

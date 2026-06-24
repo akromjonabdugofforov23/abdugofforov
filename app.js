@@ -301,7 +301,7 @@ function renderPosts() {
                         </div>
 
                         <div class="post-footer" style="margin-top: 15px;">
-                            <span class="post-date">${formatDate(post.date)}</span>
+                            <span class="post-date">${formatDate(post.date)} · ⏱ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -326,7 +326,7 @@ function renderPosts() {
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)}</span>
+                            <span class="post-date">${formatDate(post.date)} · ⏱ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -350,7 +350,7 @@ function renderPosts() {
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)}</span>
+                            <span class="post-date">${formatDate(post.date)} · ⏱ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -590,16 +590,18 @@ function openPostDetail(postId) {
     if (!post) return;
 
     detailModalBody.innerHTML = `
-        ${isAdmin ? `<div class="modal-actions-bar">
-            <button class="btn-secondary btn-sm edit-post-btn">✏️ Tahrirlash</button>
-            <button class="btn-secondary btn-sm delete-post-btn" style="color: #ff4d4d; border-color: rgba(255, 77, 77, 0.2);">🗑️ O'chirish</button>
-        </div>` : ''}
+        <div class="modal-actions-bar">
+            <button class="btn-secondary btn-sm share-post-btn">🔗 Ulashish</button>
+            ${isAdmin ? `<button class="btn-secondary btn-sm edit-post-btn">✏️ Tahrirlash</button>
+            <button class="btn-secondary btn-sm delete-post-btn" style="color: #ff4d4d; border-color: rgba(255, 77, 77, 0.2);">🗑️ O'chirish</button>` : ''}
+        </div>
         
         <div class="modal-post-header">
             <span class="post-meta">${escapeHTML(post.category)}</span>
             <h1 class="modal-post-title">${escapeHTML(post.title)}</h1>
             <div class="modal-post-meta">
                 <span>📅 ${formatDate(post.date)}</span>
+                <span>⏱ ${readingTime(post)}</span>
                 <span class="post-stat" id="modal-like-${post.id}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                     <span>${post.likes}</span>
@@ -624,6 +626,7 @@ function openPostDetail(postId) {
         }
 
         <div class="modal-post-text">${post.type === 'music' ? escapeHTML(post.content || post.excerpt) : escapeHTML(post.content)}</div>
+        ${renderTags(post)}
         
         <div class="comments-section">
             <h3 class="comments-title">Izohlar (${post.comments.length})</h3>
@@ -660,6 +663,8 @@ function openPostDetail(postId) {
             document.getElementById('post-type-input').value = post.type;
             document.getElementById('post-excerpt-input').value = post.excerpt;
             document.getElementById('post-content-input').value = post.content;
+            const tagsInput = document.getElementById('post-tags-input');
+            if (tagsInput) tagsInput.value = (post.tags || []).join(', ');
 
             // Mavjud rasmni saqlab qolish (yangi fayl tanlanmasa o'zgarmaydi)
             pendingImageData = post.image || null;
@@ -697,6 +702,9 @@ function openPostDetail(postId) {
     const detailPlayBtn = document.getElementById(`detail-play-${post.id}`);
     if (detailPlayBtn) detailPlayBtn.addEventListener('click', () => playMusic(post));
 
+    const shareBtn = detailModalBody.querySelector('.share-post-btn');
+    if (shareBtn) shareBtn.addEventListener('click', () => sharePost(post));
+
     const commentForm = document.getElementById('modal-comment-form');
     commentForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -723,6 +731,13 @@ function openPostDetail(postId) {
 
     postDetailModal.classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    // Deep-link (ulashiladigan havola) va dinamik meta
+    currentDetailPostId = post.id;
+    try {
+        history.pushState({ post: post.id }, '', `?post=${post.id}`);
+    } catch (e) { /* file:// muhitida o'tkazib yuboriladi */ }
+    setMeta(`${post.title} | Abdugofforov`, post.excerpt || DEFAULT_DESC);
 }
 
 function renderComments(commentsList) {
@@ -736,6 +751,15 @@ function renderComments(commentsList) {
                 <span class="comment-date">${formatDate(comment.date)}</span>
             </div>
             <p class="comment-text">${escapeHTML(comment.text)}</p>
+            ${comment.reply ? `
+                <div class="comment-reply">
+                    <div class="comment-meta">
+                        <span class="comment-author">↳ ${escapeHTML(comment.reply.author)}</span>
+                        <span class="comment-date">${formatDate(comment.reply.date)}</span>
+                    </div>
+                    <p class="comment-text">${escapeHTML(comment.reply.text)}</p>
+                </div>` : ''}
+            ${isAdmin && !comment.reply ? `<button class="btn-secondary btn-sm comment-reply-btn" onclick="replyToComment(${comment.id})" style="margin-top:8px;">↳ Javob berish</button>` : ''}
         </div>
     `).join('');
 }
@@ -743,6 +767,16 @@ function renderComments(commentsList) {
 function closePostDetailModal() {
     postDetailModal.classList.remove('active');
     document.body.style.overflow = '';
+    // Deep-link va meta'ni tiklash
+    if (currentDetailPostId != null) {
+        currentDetailPostId = null;
+        try {
+            if (new URLSearchParams(location.search).has('post')) {
+                history.pushState({}, '', location.pathname);
+            }
+        } catch (e) { /* o'tkazib yuboriladi */ }
+        setMeta(DEFAULT_TITLE, DEFAULT_DESC);
+    }
 }
 
 closeDetailModal.addEventListener('click', closePostDetailModal);
@@ -878,6 +912,8 @@ newPostForm.addEventListener('submit', (e) => {
     const type = document.getElementById('post-type-input').value;
     const excerpt = document.getElementById('post-excerpt-input').value.trim();
     const content = document.getElementById('post-content-input').value.trim();
+    const tagsRaw = document.getElementById('post-tags-input') ? document.getElementById('post-tags-input').value : '';
+    const tags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean).slice(0, 8);
 
     // Rasm: yuklangan fayl / havola, bo'lmasa standart rasm
     let image = pendingImageData;
@@ -916,6 +952,7 @@ newPostForm.addEventListener('submit', (e) => {
                 image,
                 excerpt,
                 content,
+                tags,
                 artist: type === 'music' ? artist : (posts[postIndex].artist || null),
                 link: type === 'music' ? link : (posts[postIndex].link || null)
             };
@@ -930,6 +967,7 @@ newPostForm.addEventListener('submit', (e) => {
             excerpt,
             content,
             image,
+            tags,
             artist: type === 'music' ? artist : null,
             link: type === 'music' ? link : null,
             date: new Date().toISOString().split('T')[0],
@@ -1524,13 +1562,16 @@ function renderFlashcardsHome() {
             <div style="font-size:48px; margin-bottom:12px;">🃏</div>
             <h2 style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px;">${i18n.t('fc.title')}</h2>
             <p style="color:var(--text-secondary);">${i18n.t('fc.subtitle')}</p>
+            <div style="margin-top:14px; display:inline-flex; gap:10px; align-items:center; background:var(--tag-bg); padding:8px 16px; border-radius:30px; font-size:13px;">
+                🔥 <b>${getFcStreak()}</b> kunlik streak
+            </div>
         </div>
         <div class="fc-deck-grid">
             ${decks.map(d => `
                 <div class="post-card fc-deck-card" onclick="startFlashcards('${d.key}')">
                     <div class="fc-deck-emoji">${i18n.t(d.i).split(' ')[0]}</div>
                     <h3>${i18n.t(d.i)}</h3>
-                    <span class="fc-deck-count">${flashcardDecks[d.key].length}</span>
+                    <span class="fc-deck-count">${fcMasteredCount(d.key)} / ${flashcardDecks[d.key].length}</span>
                 </div>
             `).join('')}
         </div>
@@ -1540,7 +1581,18 @@ function renderFlashcardsHome() {
 function startFlashcards(key) {
     if (!flashcardDecks[key]) return;
     fcDeckKey = key;
-    fcOrder = flashcardDecks[key].map((_, i) => i);
+    // Spaced repetition: muddati kelgan (yoki yangi) kartalar oldinga
+    const prog = fcProgress();
+    const now = Date.now();
+    const idxs = flashcardDecks[key].map((_, i) => i);
+    idxs.sort((a, bb) => {
+        const da = (prog[fcCardKey(key, a)] && prog[fcCardKey(key, a)].due) || 0;
+        const db = (prog[fcCardKey(key, bb)] && prog[fcCardKey(key, bb)].due) || 0;
+        const ka = da <= now ? 0 : da;
+        const kb = db <= now ? 0 : db;
+        return ka - kb;
+    });
+    fcOrder = idxs;
     fcIndex = 0;
     renderFlashcard();
 }
@@ -1554,7 +1606,7 @@ function renderFlashcard() {
         <div style="max-width:560px; margin:0 auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:10px;">
                 <button class="btn-secondary btn-sm" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
-                <span style="color:var(--text-muted); font-size:13px;">${fcIndex + 1} / ${deck.length}</span>
+                <span style="color:var(--text-muted); font-size:13px;">🔥 ${getFcStreak()} &nbsp;·&nbsp; ${fcIndex + 1} / ${deck.length}</span>
                 <button class="btn-secondary btn-sm" onclick="shuffleFlashcards()">${i18n.t('fc.shuffle')}</button>
             </div>
             <div class="flashcard" id="flashcard">
@@ -1568,10 +1620,14 @@ function renderFlashcard() {
                     </div>
                 </div>
             </div>
-            <div style="display:flex; justify-content:space-between; gap:12px; margin-top:24px;">
+            <div style="display:flex; justify-content:space-between; gap:12px; margin-top:18px;">
                 <button class="btn-secondary" onclick="prevFlashcard()">${i18n.t('fc.prev')}</button>
                 <button class="btn-primary" onclick="flipFlashcard()">${i18n.t('fc.flip')}</button>
                 <button class="btn-secondary" onclick="nextFlashcard()">${i18n.t('fc.next')}</button>
+            </div>
+            <div style="display:flex; gap:12px; margin-top:12px;">
+                <button class="btn-secondary" style="flex:1; border-color:rgba(248,113,113,0.4); color:#ef4444;" onclick="fcAnswer(false)">✗ Bilmayman</button>
+                <button class="btn-primary" style="flex:1; background:#22c55e; border-color:#22c55e; color:#fff;" onclick="fcAnswer(true)">✓ Bilaman</button>
             </div>
         </div>
     `;
@@ -1695,6 +1751,175 @@ function initScrollReveal() {
 }
 
 
+// ===== PWA, DEEP-LINK (ulashiladigan post havolasi) VA ULASHISH =====
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+    }
+}
+
+const DEFAULT_TITLE = document.title;
+const DEFAULT_DESC = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+let currentDetailPostId = null;
+
+function setMeta(title, desc) {
+    document.title = title;
+    const m = document.querySelector('meta[name="description"]');
+    if (m && desc) m.setAttribute('content', desc);
+}
+
+function openPostFromUrl() {
+    const id = new URLSearchParams(window.location.search).get('post');
+    if (!id) return;
+    const post = posts.find(p => String(p.id) === String(id));
+    if (post) openPostDetail(post.id);
+}
+
+function sharePost(post) {
+    const url = `${location.origin}/?post=${post.id}`;
+    if (navigator.share) {
+        navigator.share({ title: post.title, text: post.excerpt || '', url }).catch(() => {});
+    } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => alert('Havola nusxalandi:\n' + url)).catch(() => prompt('Havola:', url));
+    } else {
+        prompt('Havola:', url);
+    }
+}
+
+// ===== O'QISH VAQTI VA TEGLAR =====
+function escapeAttr(s) { return String(s || '').replace(/['"\\<>&]/g, ''); }
+
+function readingTime(post) {
+    const text = ((post.content || '') + ' ' + (post.excerpt || '')).trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    return Math.max(1, Math.round(words / 180)) + ' daqiqa';
+}
+
+function renderTags(post) {
+    if (!post.tags || !post.tags.length) return '';
+    return `<div class="post-tags">${post.tags.map(t =>
+        `<button class="tag-pill" onclick="filterByTag('${escapeAttr(t)}')">#${escapeHTML(t)}</button>`
+    ).join('')}</div>`;
+}
+
+function filterByTag(tag) {
+    closePostDetailModal();
+    showMainView();
+    currentTab = 'home';
+    filterType = 'all';
+    searchQuery = tag;
+    const si = document.getElementById('search-input');
+    if (si) si.value = tag;
+    document.querySelectorAll('#filter-tags .filter-tag').forEach(t => t.classList.remove('active'));
+    document.querySelector('#filter-tags [data-filter="all"]')?.classList.add('active');
+    renderPosts();
+    window.scrollTo({ top: 220, behavior: 'smooth' });
+}
+
+// ===== IZOHGA ADMIN JAVOBI =====
+function replyToComment(commentId) {
+    if (!isAdmin || currentDetailPostId == null) return;
+    const post = posts.find(p => p.id === currentDetailPostId);
+    if (!post) return;
+    const comment = post.comments.find(c => c.id === commentId);
+    if (!comment) return;
+    const text = prompt('Javobingiz:');
+    if (!text || !text.trim()) return;
+    comment.reply = { author: 'Akromjon (admin)', text: text.trim(), date: new Date().toISOString().split('T')[0] };
+    savePosts();
+    const list = document.getElementById('modal-comments-list');
+    if (list) list.innerHTML = renderComments(post.comments);
+}
+
+// ===== NEMIS TESTLARI — NATIJALAR TARIXI =====
+function saveTestResult(level, score, total) {
+    const hist = JSON.parse(localStorage.getItem('deutsch_history') || '[]');
+    hist.unshift({ level, score, total, pct: total ? Math.round(score / total * 100) : 0, date: new Date().toISOString() });
+    localStorage.setItem('deutsch_history', JSON.stringify(hist.slice(0, 50)));
+}
+function getTestHistory() {
+    return JSON.parse(localStorage.getItem('deutsch_history') || '[]');
+}
+function renderTestHistory() {
+    const hist = getTestHistory();
+    if (!hist.length) return '';
+    const rows = hist.slice(0, 6).map(h => {
+        const d = new Date(h.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short' });
+        const color = h.pct >= 80 ? '#34d399' : h.pct >= 60 ? '#fbbf24' : '#f87171';
+        return `<div style="display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border-color);">
+            <span style="text-transform:uppercase;font-weight:600;width:42px;">${escapeHTML(h.level)}</span>
+            <div style="flex:1;height:6px;background:var(--border-color);border-radius:3px;overflow:hidden;">
+                <div style="height:100%;width:${h.pct}%;background:${color};"></div>
+            </div>
+            <span style="width:70px;text-align:right;color:var(--text-secondary);">${h.score}/${h.total} · ${h.pct}%</span>
+            <span style="width:56px;text-align:right;color:var(--text-muted);font-size:11px;">${d}</span>
+        </div>`;
+    }).join('');
+    return `<div class="post-card" style="max-width:680px;margin:30px auto 0;padding:22px;">
+        <h3 style="font-size:16px;margin-bottom:12px;">📈 Sizning natijalaringiz</h3>
+        ${rows}
+    </div>`;
+}
+
+// ===== FLASHCARD — SPACED REPETITION (Leitner) + STREAK =====
+const FC_INTERVALS = [0, 1, 2, 4, 7, 15]; // box raqami -> kunlar
+function fcProgress() { return JSON.parse(localStorage.getItem('fc_progress') || '{}'); }
+function fcSaveProgress(p) { localStorage.setItem('fc_progress', JSON.stringify(p)); }
+function fcCardKey(deck, idx) { return deck + ':' + idx; }
+
+function fcAnswer(known) {
+    const prog = fcProgress();
+    const key = fcCardKey(fcDeckKey, fcOrder[fcIndex]);
+    let box = (prog[key] && prog[key].box) || 1;
+    box = known ? Math.min(box + 1, 5) : 1;
+    prog[key] = { box, due: Date.now() + FC_INTERVALS[box] * 86400000 };
+    fcSaveProgress(prog);
+    updateFcStreak();
+    if (fcIndex < fcOrder.length - 1) { fcIndex++; renderFlashcard(); }
+    else renderFlashcardDone();
+}
+
+function updateFcStreak() {
+    const today = new Date().toISOString().split('T')[0];
+    const s = JSON.parse(localStorage.getItem('fc_streak') || '{"count":0,"last":""}');
+    if (s.last === today) return s.count;
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    s.count = (s.last === yesterday) ? (s.count + 1) : 1;
+    s.last = today;
+    localStorage.setItem('fc_streak', JSON.stringify(s));
+    return s.count;
+}
+function getFcStreak() {
+    return (JSON.parse(localStorage.getItem('fc_streak') || '{"count":0}').count) || 0;
+}
+function fcMasteredCount(deckKey) {
+    const prog = fcProgress();
+    let n = 0;
+    (flashcardDecks[deckKey] || []).forEach((_, i) => {
+        const e = prog[fcCardKey(deckKey, i)];
+        if (e && e.box >= 4) n++;
+    });
+    return n;
+}
+function renderFlashcardDone() {
+    const view = document.getElementById('flashcards-content');
+    if (!view) return;
+    const mastered = fcMasteredCount(fcDeckKey);
+    const total = flashcardDecks[fcDeckKey].length;
+    view.innerHTML = `
+        <div style="max-width:480px;margin:0 auto;text-align:center;">
+            <div style="font-size:60px;margin-bottom:14px;">🎉</div>
+            <h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:8px;">To'plam yakunlandi!</h2>
+            <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;·&nbsp; 🔥 Streak: <b>${getFcStreak()} kun</b></p>
+            <div style="display:flex;gap:12px;justify-content:center;">
+                <button class="btn-primary" onclick="startFlashcards('${fcDeckKey}')">🔄 Qayta</button>
+                <button class="btn-secondary" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
+            </div>
+        </div>`;
+}
+
 async function bootstrap() {
     // 3D kirish animatsiyasi darhol boshlanadi
     initIntroSplash();
@@ -1735,6 +1960,8 @@ async function bootstrap() {
     renderPosts();
     checkPortfolioAccess();
     initScrollReveal();
+    registerServiceWorker();
+    openPostFromUrl();
 }
 
 bootstrap();
@@ -2113,6 +2340,7 @@ function renderDeutschHome() {
                 </div>
             </div>
         </div>
+        ${renderTestHistory()}
     `;
 }
 
@@ -2182,7 +2410,7 @@ function renderQuestion() {
     if (sectionType === 'image' || sectionType === 'image_reverse') {
         questionHTML = `
             <div class="post-card" style="padding:0; overflow:hidden; margin-bottom:16px;">
-                <img src="${q.image}" alt="${q.imageAlt}"
+                <img src="${q.image}" alt="${q.imageAlt}" loading="lazy" decoding="async"
                     style="width:100%; height:200px; object-fit:cover; display:block;">
                 <div style="padding:20px;">
                     <p style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--accent-color); margin-bottom:8px;">Savol ${doneQ+1}</p>
@@ -2324,6 +2552,9 @@ function renderTestResult() {
               : pct >= 60 ? "Yaxshi! Bir oz mashq qilsangiz mukammal boʻladi."
               : "Qoʻrqmang! Qayta oʻrganib, yana sinab koʻring.";
 
+    // Natijani tarixga saqlaymiz
+    saveTestResult(currentLevel, score, total);
+
     document.getElementById('deutsch-content').innerHTML = `
         <div style="max-width:480px; margin:0 auto; text-align:center;">
             <div style="font-size:64px; margin-bottom:16px;">${emoji}</div>
@@ -2346,6 +2577,7 @@ function renderTestResult() {
                 <button onclick="renderDeutschHome()" class="btn-secondary">← Testlar</button>
             </div>
         </div>
+        ${renderTestHistory()}
     `;
 }
 

@@ -1737,3 +1737,41 @@ a {
     .fc-text { font-size: 20px; }
     .flashcard { height: 240px; }
 }
+
+
+/* ===== POST TEGLARI (hashtag) ===== */
+.post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0 30px;
+}
+.tag-pill {
+    background: var(--tag-bg);
+    border: 1px solid var(--border-color);
+    color: var(--accent-color);
+    padding: 5px 14px;
+    border-radius: var(--radius-pill, 30px);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+}
+.tag-pill:hover {
+    background: var(--accent-color);
+    color: #fff;
+    border-color: var(--accent-color);
+}
+
+/* ===== IZOHGA ADMIN JAVOBI ===== */
+.comment-reply {
+    margin-top: 12px;
+    margin-left: 16px;
+    padding: 12px 16px;
+    border-left: 3px solid var(--accent-color);
+    background: var(--tag-bg);
+    border-radius: 0 10px 10px 0;
+}
+
+/* ===== ULASHISH/ACTIONS BAR — moslashuv ===== */
+.modal-actions-bar { flex-wrap: wrap; }

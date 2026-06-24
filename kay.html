@@ -607,6 +607,14 @@ async function tryLogin() {
         localStorage.removeItem('kay_lock');
         localStorage.removeItem('kay_lockcount');
         addLog('success', 'Muvaffaqiyatli kirish');
+        // Ixtiyoriy: Telegram bildirishnomasi (server env sozlangan bo'lsa)
+        try {
+            fetch('/notify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'admin_login', note: 'Admin panelga kirildi' })
+            }).catch(() => {});
+        } catch (e) {}
         showAdminPanel();
     } else {
         const attempts = parseInt(localStorage.getItem('kay_attempts') || '0') + 1;
