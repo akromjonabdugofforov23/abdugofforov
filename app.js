@@ -229,11 +229,11 @@ function updateHeroContent() {
     heroSection.classList.add('animate-fade-in');
 
     if (currentTab === 'home') {
-        heroSub.textContent = "Shaxsiy blog & Hikoyalar";
-        heroMainTitle.textContent = "Vaqt sarguzashtlari va unutilmas xotiralar kundaligi.";
+        heroSub.textContent = i18n.t('hero.subtitle');
+        heroMainTitle.textContent = i18n.t('hero.title');
     } else if (currentTab === 'projects') {
-        heroSub.textContent = "Ijodiy Loyihalar";
-        heroMainTitle.textContent = "Amalga oshirilgan g'oyalar, dizaynlar va dasturiy ishlar.";
+        heroSub.textContent = i18n.t('hero.subtitle.projects');
+        heroMainTitle.textContent = i18n.t('hero.title.projects');
     }
 }
 
@@ -291,9 +291,13 @@ function renderPosts() {
                         <span class="post-meta">🎵 ${escapeHTML(post.category)}</span>
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
-                        
-                        <div class="music-player-container">
-                            <audio src="${post.audio || ''}" controls class="music-audio-player" style="width:100%; margin-top:10px;"></audio>
+
+                        <div class="music-actions">
+                            ${post.artist ? `<span class="music-artist">🎤 ${escapeHTML(post.artist)}</span>` : ''}
+                            <div class="music-btn-row">
+                                ${post.link ? `<button class="btn-primary btn-sm music-play-btn" data-id="${post.id}">${i18n.t('music.listen')}</button>` : ''}
+                                ${post.link ? `<a class="btn-secondary btn-sm music-open-btn" href="${safeUrl(post.link)}" target="_blank" rel="noopener noreferrer">${i18n.t('music.open')}</a>` : ''}
+                            </div>
                         </div>
 
                         <div class="post-footer" style="margin-top: 15px;">
@@ -314,7 +318,7 @@ function renderPosts() {
             } else if (post.type === 'image') {
                 card.innerHTML = `
                     <div class="post-image-wrapper image-gallery-card">
-                        <div class="post-image" style="background-image: url('${post.image}');"></div>
+                        <div class="post-image zoomable-bg" data-zoom-src="${safeImageUrl(post.image)}" style="background-image: url('${post.image}');"></div>
                     </div>
                     <div class="post-content">
                         <span class="post-meta">🖼️ ${escapeHTML(post.category)}</span>
@@ -365,8 +369,15 @@ function renderPosts() {
             card.addEventListener('click', (e) => {
                 if (e.target.closest('.like-btn')) {
                     handleLike(post.id);
-                } else if (e.target.closest('audio') || e.target.closest('.music-player-container')) {
-                    // Audio tinglash
+                } else if (e.target.closest('.zoomable-bg')) {
+                    const z = e.target.closest('.zoomable-bg');
+                    openLightbox(z.getAttribute('data-zoom-src'));
+                } else if (e.target.closest('.music-open-btn')) {
+                    // Havola yangi oynada ochiladi — batafsil oyna ochilmasin
+                    e.stopPropagation();
+                } else if (e.target.closest('.music-play-btn')) {
+                    e.stopPropagation();
+                    playMusic(post);
                 } else {
                     openPostDetail(post.id);
                 }
@@ -378,10 +389,12 @@ function renderPosts() {
     }, 400); // <-- setTimeout shu yerda yopildi
 } // <-- renderPosts funksiyasi shu yerda yopildi
 
-// Ko'rinishlarni almashtirish yordamchilari (asosiy <-> deutsch)
+// Ko'rinishlarni almashtirish yordamchilari (asosiy <-> deutsch <-> kartochka)
 function showMainView() {
     const deutschView = document.getElementById('deutsch-view');
     if (deutschView) deutschView.style.display = 'none';
+    const flashView = document.getElementById('flashcards-view');
+    if (flashView) flashView.style.display = 'none';
     const hero = document.querySelector('.hero');
     if (hero) hero.style.display = '';
     if (mainContent) mainContent.style.display = '';
@@ -391,9 +404,23 @@ function openDeutschView() {
     if (mainContent) mainContent.style.display = 'none';
     const hero = document.querySelector('.hero');
     if (hero) hero.style.display = 'none';
+    const flashView = document.getElementById('flashcards-view');
+    if (flashView) flashView.style.display = 'none';
     const deutschView = document.getElementById('deutsch-view');
     if (deutschView) deutschView.style.display = 'block';
     renderDeutschHome();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openFlashcardsView() {
+    if (mainContent) mainContent.style.display = 'none';
+    const hero = document.querySelector('.hero');
+    if (hero) hero.style.display = 'none';
+    const deutschView = document.getElementById('deutsch-view');
+    if (deutschView) deutschView.style.display = 'none';
+    const flashView = document.getElementById('flashcards-view');
+    if (flashView) flashView.style.display = 'block';
+    renderFlashcardsHome();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -507,6 +534,12 @@ filterTags.addEventListener('click', (e) => {
         return;
     }
 
+    // Kartochka tugmasi — flashcards sahifasini ochadi
+    if (btn.id === 'flashcards-tag-btn') {
+        openFlashcardsView();
+        return;
+    }
+
     showMainView();
 
     filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
@@ -575,10 +608,19 @@ function openPostDetail(postId) {
         </div>
         
         ${post.type === 'music' 
-            ? `<div style="margin-bottom: 30px;"><img src="${post.image}" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 20px;"><audio src="${post.audio || ''}" controls style="width: 100%;"></audio></div>`
+            ? `<div style="margin-bottom: 30px;">
+                   <img src="${post.image}" class="zoomable" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; cursor: zoom-in;">
+                   <div class="music-actions" style="justify-content:flex-start;">
+                       ${post.artist ? `<span class="music-artist">🎤 ${escapeHTML(post.artist)}</span>` : ''}
+                       <div class="music-btn-row">
+                           ${post.link ? `<button class="btn-primary btn-sm" id="detail-play-${post.id}">${i18n.t('music.listen')}</button>` : ''}
+                           ${post.link ? `<a class="btn-secondary btn-sm" href="${safeUrl(post.link)}" target="_blank" rel="noopener noreferrer">${i18n.t('music.open')}</a>` : ''}
+                       </div>
+                   </div>
+               </div>`
             : post.type === 'image' 
-                ? `<div style="margin-bottom: 30px;"><img src="${post.image}" style="width: 100%; border-radius: 12px;"></div>`
-                : `<div class="modal-post-image" style="background-image: url('${post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000'}');"></div>`
+                ? `<div style="margin-bottom: 30px;"><img src="${post.image}" class="zoomable" style="width: 100%; border-radius: 12px; cursor: zoom-in;"></div>`
+                : `<div class="modal-post-image zoomable-bg" data-zoom-src="${safeImageUrl(post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000')}" style="background-image: url('${post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000'}'); cursor: zoom-in;"></div>`
         }
 
         <div class="modal-post-text">${post.type === 'music' ? escapeHTML(post.content || post.excerpt) : escapeHTML(post.content)}</div>
@@ -625,11 +667,10 @@ function openPostDetail(postId) {
             if (postImageFileInput) postImageFileInput.value = '';
             showImagePreview(post.image || null);
 
-            // Mavjud audioni saqlab qolish
-            pendingAudioData = post.audio || null;
-            if (postAudioFileInput) postAudioFileInput.value = '';
-            showAudioPreview(post.audio || null);
-            toggleAudioGroup();
+            // Musiqa maydonlari (ijrochi + havola)
+            if (postArtistInput) postArtistInput.value = post.artist || '';
+            if (postLinkInput) postLinkInput.value = post.link || '';
+            toggleMusicGroup();
             
             closePostDetailModal();
             addPostModal.classList.add('active');
@@ -652,6 +693,9 @@ function openPostDetail(postId) {
     modalLikeBtn.addEventListener('click', () => {
         handleLike(post.id);
     });
+
+    const detailPlayBtn = document.getElementById(`detail-play-${post.id}`);
+    if (detailPlayBtn) detailPlayBtn.addEventListener('click', () => playMusic(post));
 
     const commentForm = document.getElementById('modal-comment-form');
     commentForm.addEventListener('submit', (e) => {
@@ -712,10 +756,8 @@ addPostBtn.addEventListener('click', () => {
     addPostModal.querySelector('.write-title').textContent = "Yangi sahifa yaratish";
     newPostForm.reset();
     pendingImageData = null;
-    pendingAudioData = null;
     showImagePreview(null);
-    showAudioPreview(null);
-    toggleAudioGroup();
+    toggleMusicGroup();
     addPostModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 });
@@ -725,9 +767,7 @@ function closeAddPostModal() {
     document.body.style.overflow = '';
     newPostForm.reset();
     pendingImageData = null;
-    pendingAudioData = null;
     showImagePreview(null);
-    showAudioPreview(null);
 }
 
 closeAddModal.addEventListener('click', closeAddPostModal);
@@ -736,16 +776,15 @@ addPostModal.addEventListener('click', (e) => {
     if (e.target === addPostModal) closeAddPostModal();
 });
 
-// ===== FAYL YUKLASH: rasm va audio (telefondan) =====
+// ===== FAYL YUKLASH: rasm (telefondan) + musiqa (havola orqali) =====
 let pendingImageData = null; // data URL yoki tashqi havola
-let pendingAudioData = null; // audio data URL
 
 const postImageFileInput = document.getElementById('post-image-file');
 const postImageUrlInput = document.getElementById('post-image-input');
 const postImagePreview = document.getElementById('post-image-preview');
-const postAudioFileInput = document.getElementById('post-audio-file');
-const postAudioPreview = document.getElementById('post-audio-preview');
-const postAudioGroup = document.getElementById('post-audio-group');
+const postMusicGroup = document.getElementById('post-music-group');
+const postArtistInput = document.getElementById('post-artist-input');
+const postLinkInput = document.getElementById('post-link-input');
 const postTypeInput = document.getElementById('post-type-input');
 
 // Rasmni canvas orqali kichraytirib JPEG data URL ga aylantirish (xotira tejaladi)
@@ -798,20 +837,9 @@ function showImagePreview(src) {
     }
 }
 
-function showAudioPreview(src) {
-    if (!postAudioPreview) return;
-    if (src) {
-        postAudioPreview.innerHTML = `<audio src="${src}" controls style="width:100%;"></audio>`;
-        postAudioPreview.style.display = 'block';
-    } else {
-        postAudioPreview.innerHTML = '';
-        postAudioPreview.style.display = 'none';
-    }
-}
-
-function toggleAudioGroup() {
-    if (!postAudioGroup || !postTypeInput) return;
-    postAudioGroup.style.display = postTypeInput.value === 'music' ? 'block' : 'none';
+function toggleMusicGroup() {
+    if (!postMusicGroup || !postTypeInput) return;
+    postMusicGroup.style.display = postTypeInput.value === 'music' ? 'block' : 'none';
 }
 
 // Rasm fayl tanlanganda — kichraytirib saqlaymiz
@@ -840,24 +868,7 @@ postImageUrlInput?.addEventListener('input', (e) => {
     }
 });
 
-// Audio fayl tanlanganda
-postAudioFileInput?.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (file.size > 25 * 1024 * 1024) {
-        alert("Audio fayl juda katta (25MB dan oshmasin). Iltimos kichikroq fayl tanlang.");
-        e.target.value = '';
-        return;
-    }
-    try {
-        pendingAudioData = await readFileAsDataURL(file);
-        showAudioPreview(pendingAudioData);
-    } catch (err) {
-        alert("Audioni o'qishda xatolik yuz berdi.");
-    }
-});
-
-postTypeInput?.addEventListener('change', toggleAudioGroup);
+postTypeInput?.addEventListener('change', toggleMusicGroup);
 
 newPostForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -880,10 +891,18 @@ newPostForm.addEventListener('submit', (e) => {
         }
     }
 
-    // Musiqa uchun audio shart
-    if (type === 'music' && !pendingAudioData) {
-        alert("Musiqa posti uchun audio fayl yuklang.");
-        return;
+    // Musiqa uchun havola shart (YouTube/Telegram/...)
+    const artist = postArtistInput ? postArtistInput.value.trim() : '';
+    const link = postLinkInput ? postLinkInput.value.trim() : '';
+    if (type === 'music') {
+        if (!link) {
+            alert("Musiqa posti uchun YouTube yoki Telegram havolasini kiriting.");
+            return;
+        }
+        if (!/^https?:\/\//i.test(link)) {
+            alert("Havola http:// yoki https:// bilan boshlanishi kerak.");
+            return;
+        }
     }
 
     if (editingPostId) {
@@ -897,7 +916,8 @@ newPostForm.addEventListener('submit', (e) => {
                 image,
                 excerpt,
                 content,
-                audio: type === 'music' ? pendingAudioData : (posts[postIndex].audio || null)
+                artist: type === 'music' ? artist : (posts[postIndex].artist || null),
+                link: type === 'music' ? link : (posts[postIndex].link || null)
             };
         }
         editingPostId = null;
@@ -910,7 +930,8 @@ newPostForm.addEventListener('submit', (e) => {
             excerpt,
             content,
             image,
-            audio: type === 'music' ? pendingAudioData : null,
+            artist: type === 'music' ? artist : null,
+            link: type === 'music' ? link : null,
             date: new Date().toISOString().split('T')[0],
             likes: 0,
             liked: false,
@@ -1307,6 +1328,308 @@ function formatDate(dateStr) {
     }
 }
 
+// ===== XAVFSIZ URL TEKSHIRUVI =====
+function safeUrl(url) {
+    if (!url) return '#';
+    return /^https?:\/\//i.test(url) ? url : '#';
+}
+
+// Rasmlar uchun — http(s) va data:image ga ruxsat (yuklangan rasmlar data: bo'ladi)
+function safeImageUrl(url) {
+    if (!url) return '#';
+    return (/^https?:\/\//i.test(url) || /^data:image\//i.test(url)) ? url : '#';
+}
+
+// ===== RASM LIGHTBOX (bosilganda kattalashtirish) =====
+function openLightbox(src) {
+    if (!src || src === '#') return;
+    const lb = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    if (!lb || !img) return;
+    img.src = src;
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    if (!lb) return;
+    lb.classList.remove('active');
+    const img = document.getElementById('lightbox-img');
+    if (img) img.src = '';
+    document.body.style.overflow = '';
+}
+
+function initLightbox() {
+    const lb = document.getElementById('lightbox');
+    const closeBtn = document.getElementById('lightbox-close');
+    if (lb) lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+    // Delegatsiya: <img class="zoomable"> va modal ichidagi .zoomable-bg
+    document.addEventListener('click', (e) => {
+        const img = e.target.closest('img.zoomable');
+        if (img) { openLightbox(img.getAttribute('src')); return; }
+        const bg = e.target.closest('.zoomable-bg');
+        if (bg && bg.closest('.modal-body')) {
+            openLightbox(bg.getAttribute('data-zoom-src'));
+        }
+    });
+}
+
+// ===== DOIMIY MUSIQA PLEYERI (faqat kompyuter/noutbook) =====
+function isDesktopPlayer() {
+    return window.matchMedia('(min-width: 769px) and (hover: hover)').matches;
+}
+
+function getYouTubeId(url) {
+    if (!url) return null;
+    const patterns = [
+        /youtube\.com\/watch\?v=([\w-]{11})/,
+        /youtu\.be\/([\w-]{11})/,
+        /youtube\.com\/embed\/([\w-]{11})/,
+        /youtube\.com\/shorts\/([\w-]{11})/,
+        /music\.youtube\.com\/watch\?v=([\w-]{11})/
+    ];
+    for (const p of patterns) {
+        const m = url.match(p);
+        if (m) return m[1];
+    }
+    return null;
+}
+
+function playMusic(post) {
+    const link = post && post.link;
+    if (!link) return;
+    const ytId = getYouTubeId(link);
+
+    // Telefon/planshet yoki YouTube bo'lmagan havola — yangi oynada ochiladi
+    if (!isDesktopPlayer() || !ytId) {
+        window.open(safeUrl(link), '_blank', 'noopener');
+        return;
+    }
+
+    const player = document.getElementById('mini-player');
+    const frame = document.getElementById('mini-player-frame');
+    if (!player || !frame) return;
+    document.getElementById('mini-player-title').textContent = post.title || 'Musiqa';
+    document.getElementById('mini-player-artist').textContent = post.artist || '';
+    frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0" title="YouTube player" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width:100%; height:100%;"></iframe>`;
+    player.classList.add('active');
+}
+
+function stopMusic() {
+    const player = document.getElementById('mini-player');
+    const frame = document.getElementById('mini-player-frame');
+    if (frame) frame.innerHTML = '';
+    if (player) player.classList.remove('active');
+}
+
+function initMiniPlayer() {
+    const closeBtn = document.getElementById('mini-player-close');
+    if (closeBtn) closeBtn.addEventListener('click', stopMusic);
+}
+
+// ===== KARTOCHKALAR (FLASHCARDS) MA'LUMOTLARI =====
+const flashcardDecks = {
+    // Nemis → O'zbek so'zlar
+    de_uz: [
+        { front: "das Haus", back: "uy" },
+        { front: "der Freund", back: "do'st" },
+        { front: "die Arbeit", back: "ish" },
+        { front: "lernen", back: "o'rganmoq" },
+        { front: "die Gesundheit", back: "sog'liq" },
+        { front: "das Wasser", back: "suv" },
+        { front: "die Liebe", back: "sevgi / muhabbat" },
+        { front: "der Himmel", back: "osmon" },
+        { front: "wichtig", back: "muhim" },
+        { front: "die Zukunft", back: "kelajak" },
+        { front: "der Schlüssel", back: "kalit" },
+        { front: "danken", back: "minnatdorchilik bildirmoq" }
+    ],
+    // O'zbek → Nemis so'zlar
+    uz_de: [
+        { front: "kitob", back: "das Buch" },
+        { front: "ona", back: "die Mutter" },
+        { front: "shahar", back: "die Stadt" },
+        { front: "non", back: "das Brot" },
+        { front: "yo'l", back: "der Weg" },
+        { front: "vaqt", back: "die Zeit" },
+        { front: "do'stlik", back: "die Freundschaft" },
+        { front: "ishlamoq", back: "arbeiten" },
+        { front: "go'zal", back: "schön" },
+        { front: "tezkor / tez", back: "schnell" },
+        { front: "bilim", back: "das Wissen" },
+        { front: "yurak", back: "das Herz" }
+    ],
+    // Grammatika savollari
+    grammar: [
+        { front: "Artikel: ___ Buch", back: "das Buch (neytral rod)" },
+        { front: "Ko'plik: das Kind → ?", back: "die Kinder" },
+        { front: "Perfekt: 'machen' yordamchi fe'li?", back: "haben → ich habe gemacht" },
+        { front: "'gehen' Perfektda?", back: "sein → ich bin gegangen" },
+        { front: "Akkusativ: 'Ich sehe ___ Mann.'", back: "den Mann (der → den)" },
+        { front: "Dativ: 'mit ___ Auto'", back: "mit dem Auto (das → dem)" },
+        { front: "Qiyosiy: gut → ?", back: "besser (yaxshiroq), am besten (eng yaxshi)" },
+        { front: "'weil' dan keyin fe'l qayerda?", back: "Gap oxirida (ergash gap)" },
+        { front: "Modal: 'Ich ___ schwimmen.' (qila olaman)", back: "kann (können)" },
+        { front: "Possessiv: 'mening kitobim'", back: "mein Buch" }
+    ],
+    // Gaplar (kundalik iboralar)
+    sentences: [
+        { front: "Wie geht es dir?", back: "Ahvoling qanday?" },
+        { front: "Ich verstehe das nicht.", back: "Men buni tushunmayapman." },
+        { front: "Können Sie mir helfen?", back: "Menga yordam bera olasizmi?" },
+        { front: "Wie viel kostet das?", back: "Bu qancha turadi?" },
+        { front: "Ich komme aus Usbekistan.", back: "Men O'zbekistondanman." },
+        { front: "Wo ist der Bahnhof?", back: "Bekat (vokzal) qayerda?" },
+        { front: "Es tut mir leid.", back: "Kechirasiz / Afsusdaman." },
+        { front: "Ich hätte gern einen Kaffee.", back: "Men bir qahva olardim." },
+        { front: "Sprechen Sie Englisch?", back: "Siz inglizcha gapirasizmi?" },
+        { front: "Bis bald!", back: "Tez orada ko'rishguncha!" }
+    ],
+    // Faylasuf / olimlarning gaplari (Zitate) — DE + UZ
+    quotes: [
+        { front: "„Der Mensch ist, was er isst.“ — Ludwig Feuerbach", back: "Inson o'zi yegan narsadir. (ya'ni inson mohiyati uning hayot tarzida) — Lyudvig Feyerbax" },
+        { front: "„Ich denke, also bin ich.“ — René Descartes", back: "Men o'ylayapman, demak men borman. — Rene Dekart" },
+        { front: "„Wissen ist Macht.“ — Francis Bacon", back: "Bilim — bu kuch. — Frensis Bekon" },
+        { front: "„Der Weg ist das Ziel.“ — Konfuzius", back: "Yo'lning o'zi maqsaddir. — Konfutsiy" },
+        { front: "„Was mich nicht umbringt, macht mich stärker.“ — Friedrich Nietzsche", back: "Meni o'ldirmagan narsa meni kuchliroq qiladi. — Fridrix Nitsshe" },
+        { front: "„Die Zeit ist das, was man an der Uhr abliest.“ — Albert Einstein", back: "Vaqt — bu soatdan o'qiladigan narsa. — Albert Eynshteyn" },
+        { front: "„Der Anfang ist die Hälfte des Ganzen.“ — Aristoteles", back: "Boshlanish — butun ishning yarmidir. — Aristotel" },
+        { front: "„Hilf dir selbst, dann hilft dir Gott.“ — (Sprichwort)", back: "O'zingga o'zing yordam ber, shunda Xudo ham yordam beradi. — (Maqol)" },
+        { front: "„Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.“ — Bertolt Brecht", back: "Kurashgan yutqazishi mumkin. Kurashmagan esa allaqachon yutqazgan. — Bertolt Brext" },
+        { front: "„Die Grenzen meiner Sprache sind die Grenzen meiner Welt.“ — Ludwig Wittgenstein", back: "Tilimning chegaralari — dunyomning chegaralaridir. — Lyudvig Vitgenshteyn" }
+    ]
+};
+
+// ===== KARTOCHKALAR HOLATI VA KO'RINISHI =====
+let fcDeckKey = null;
+let fcOrder = [];
+let fcIndex = 0;
+
+function renderFlashcardsHome() {
+    const view = document.getElementById('flashcards-content');
+    if (!view) return;
+    const decks = [
+        { key: 'de_uz', i: 'deck.de_uz' },
+        { key: 'uz_de', i: 'deck.uz_de' },
+        { key: 'grammar', i: 'deck.grammar' },
+        { key: 'sentences', i: 'deck.sentences' },
+        { key: 'quotes', i: 'deck.quotes' }
+    ];
+    view.innerHTML = `
+        <div style="text-align:center; margin-bottom:36px;">
+            <div style="font-size:48px; margin-bottom:12px;">🃏</div>
+            <h2 style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px;">${i18n.t('fc.title')}</h2>
+            <p style="color:var(--text-secondary);">${i18n.t('fc.subtitle')}</p>
+        </div>
+        <div class="fc-deck-grid">
+            ${decks.map(d => `
+                <div class="post-card fc-deck-card" onclick="startFlashcards('${d.key}')">
+                    <div class="fc-deck-emoji">${i18n.t(d.i).split(' ')[0]}</div>
+                    <h3>${i18n.t(d.i)}</h3>
+                    <span class="fc-deck-count">${flashcardDecks[d.key].length}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function startFlashcards(key) {
+    if (!flashcardDecks[key]) return;
+    fcDeckKey = key;
+    fcOrder = flashcardDecks[key].map((_, i) => i);
+    fcIndex = 0;
+    renderFlashcard();
+}
+
+function renderFlashcard() {
+    const view = document.getElementById('flashcards-content');
+    const deck = flashcardDecks[fcDeckKey];
+    if (!view || !deck) { renderFlashcardsHome(); return; }
+    const card = deck[fcOrder[fcIndex]];
+    view.innerHTML = `
+        <div style="max-width:560px; margin:0 auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:10px;">
+                <button class="btn-secondary btn-sm" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
+                <span style="color:var(--text-muted); font-size:13px;">${fcIndex + 1} / ${deck.length}</span>
+                <button class="btn-secondary btn-sm" onclick="shuffleFlashcards()">${i18n.t('fc.shuffle')}</button>
+            </div>
+            <div class="flashcard" id="flashcard">
+                <div class="flashcard-inner">
+                    <div class="flashcard-face flashcard-front">
+                        <div class="fc-text">${escapeHTML(card.front)}</div>
+                        <span class="fc-hint">${i18n.t('fc.tapHint')}</span>
+                    </div>
+                    <div class="flashcard-face flashcard-back">
+                        <div class="fc-text">${escapeHTML(card.back)}</div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; gap:12px; margin-top:24px;">
+                <button class="btn-secondary" onclick="prevFlashcard()">${i18n.t('fc.prev')}</button>
+                <button class="btn-primary" onclick="flipFlashcard()">${i18n.t('fc.flip')}</button>
+                <button class="btn-secondary" onclick="nextFlashcard()">${i18n.t('fc.next')}</button>
+            </div>
+        </div>
+    `;
+    const fcEl = document.getElementById('flashcard');
+    if (fcEl) fcEl.addEventListener('click', flipFlashcard);
+}
+
+function flipFlashcard() {
+    const fc = document.getElementById('flashcard');
+    if (fc) fc.classList.toggle('flipped');
+}
+
+function nextFlashcard() {
+    const deck = flashcardDecks[fcDeckKey];
+    if (!deck) return;
+    fcIndex = (fcIndex + 1) % deck.length;
+    renderFlashcard();
+}
+
+function prevFlashcard() {
+    const deck = flashcardDecks[fcDeckKey];
+    if (!deck) return;
+    fcIndex = (fcIndex - 1 + deck.length) % deck.length;
+    renderFlashcard();
+}
+
+function shuffleFlashcards() {
+    for (let i = fcOrder.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [fcOrder[i], fcOrder[j]] = [fcOrder[j], fcOrder[i]];
+    }
+    fcIndex = 0;
+    renderFlashcard();
+}
+
+// ===== TIL (i18n) BOSHQARUVI =====
+function initLanguage() {
+    const sel = document.getElementById('lang-select');
+    if (sel) {
+        sel.value = i18n.getLang();
+        sel.addEventListener('change', () => i18n.setLang(sel.value));
+    }
+    i18n.applyStaticTranslations();
+    document.documentElement.setAttribute('lang', i18n.getLang());
+
+    // Til o'zgarganda dinamik qismlarni qayta chizamiz
+    document.addEventListener('langchange', () => {
+        updateHeroContent();
+        renderPosts();
+        const deutschView = document.getElementById('deutsch-view');
+        const flashView = document.getElementById('flashcards-view');
+        if (deutschView && deutschView.style.display !== 'none') renderDeutschHome();
+        if (flashView && flashView.style.display !== 'none') {
+            fcDeckKey ? renderFlashcard() : renderFlashcardsHome();
+        }
+    });
+}
+
 // ===== 3D KIRISH ANIMATSIYASINI YASHIRISH =====
 function initIntroSplash() {
     const splash = document.getElementById('intro-splash');
@@ -1376,9 +1699,16 @@ async function bootstrap() {
     // 3D kirish animatsiyasi darhol boshlanadi
     initIntroSplash();
 
+    // Til (i18n) — statik tarjimalar va til tanlagich
+    initLanguage();
+
     // Mavzu va kursorni darhol ishga tushiramiz (ma'lumotga bog'liq emas)
     initTheme();
     initMouseFollower();
+
+    // Yangi imkoniyatlar
+    initLightbox();
+    initMiniPlayer();
 
     // Postlarni IndexedDB'dan yuklash (yoki localStorage'dan migratsiya)
     try {

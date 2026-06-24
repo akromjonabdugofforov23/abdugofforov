@@ -1456,3 +1456,284 @@ a {
 @media (hover: none) {
     #cursor-follower { display: none !important; }
 }
+
+
+/* ============================================================
+   QO'SHIMCHA DIZAYN TOKENLARI (CSS Variables — o'lcham/radius)
+   ============================================================ */
+:root {
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-pill: 30px;
+    --space-xs: 6px;
+    --space-sm: 12px;
+    --space-md: 20px;
+    --space-lg: 32px;
+    --space-xl: 48px;
+    --maxw-content: 1100px;
+    --maxw-narrow: 560px;
+    --player-h: 76px;
+    --z-player: 9500;
+    --z-lightbox: 99000;
+}
+
+/* ============================================================
+   TIL TANLAGICH (Language switcher)
+   ============================================================ */
+.lang-select {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-pill);
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: border-color var(--transition-speed) ease;
+}
+.lang-select:hover { border-color: var(--accent-color); }
+
+/* ============================================================
+   RASM LIGHTBOX (bosilganda kattalashtirish)
+   ============================================================ */
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-lightbox);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.9);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+    padding: 4vw;
+}
+.lightbox.active { opacity: 1; visibility: visible; }
+.lightbox img {
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: var(--radius-md);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    transform: scale(0.92);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    object-fit: contain;
+}
+.lightbox.active img { transform: scale(1); }
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 26px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.lightbox-close:hover { background: rgba(255, 255, 255, 0.3); transform: rotate(90deg); }
+
+/* ============================================================
+   DOIMIY MUSIQA PLEYERI (faqat kompyuter/noutbook)
+   ============================================================ */
+.mini-player {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%) translateY(140%);
+    width: min(560px, 92vw);
+    z-index: var(--z-player);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 10px 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+.mini-player.active { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+.mini-player-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+.mini-player-icon {
+    font-size: 22px;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--tag-bg);
+    border-radius: 50%;
+}
+.mini-player-meta { display: flex; flex-direction: column; min-width: 0; }
+.mini-player-meta strong {
+    font-size: 14px;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.mini-player-meta small { font-size: 12px; color: var(--text-muted); }
+.mini-player-frame {
+    width: 160px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #000;
+}
+.mini-player-frame iframe { border: 0; display: block; }
+.mini-player-close {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.mini-player-close:hover { background: var(--tag-bg); }
+
+/* Telefon/planshetda ichki pleyer ko'rsatilmaydi */
+@media (max-width: 768px), (hover: none) {
+    .mini-player { display: none !important; }
+}
+
+/* ============================================================
+   MUSIQA KARTA HARAKATLARI (Flexbox)
+   ============================================================ */
+.music-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+}
+.music-artist {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+.music-btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+}
+.music-open-btn { display: inline-flex; align-items: center; }
+
+/* ============================================================
+   FLASHCARDS (KARTOCHKALAR) — Grid + 3D flip
+   ============================================================ */
+.flashcard-tag {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    font-weight: 600;
+}
+.flashcard-tag:hover {
+    background: var(--accent-color);
+    color: #fff;
+    border-color: var(--accent-color);
+}
+
+.fc-deck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-md);
+    max-width: 760px;
+    margin: 0 auto;
+}
+.fc-deck-card {
+    cursor: pointer;
+    padding: var(--space-lg) var(--space-md);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.fc-deck-emoji { font-size: 34px; }
+.fc-deck-card h3 { font-size: 16px; font-weight: 600; }
+.fc-deck-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--tag-bg);
+    padding: 3px 12px;
+    border-radius: var(--radius-pill);
+}
+
+.flashcard {
+    perspective: 1200px;
+    width: 100%;
+    height: 280px;
+    cursor: pointer;
+}
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-style: preserve-3d;
+}
+.flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+.flashcard-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: var(--space-lg);
+    text-align: center;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+.flashcard-front { background: var(--card-bg); }
+.flashcard-back {
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: #fff;
+    transform: rotateY(180deg);
+    border-color: transparent;
+}
+[data-theme="dark"] .flashcard-back {
+    background: linear-gradient(135deg, #00ff88, #00d2ff);
+    color: #06070c;
+}
+.fc-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    line-height: 1.4;
+    font-weight: 600;
+}
+.fc-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 480px) {
+    .fc-text { font-size: 20px; }
+    .flashcard { height: 240px; }
+}
