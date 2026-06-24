@@ -23,7 +23,7 @@ let currentTab = 'home';
 let filterType = 'all'; 
 let searchQuery = '';
 let editingPostId = null;
-let isAdmin = false; // Admin holati - PIN kiritilganda true bo'ladi
+let isAdmin = sessionStorage.getItem('kay_admin') === 'true';
 
 // Rejalar va Portfolio state
 let tasks = JSON.parse(localStorage.getItem('abdu_tasks')) || [];
@@ -60,7 +60,7 @@ const closeAddModal = document.getElementById('close-add-modal');
 const newPostForm = document.getElementById('new-post-form');
 
 // Admin Modallari va tugmalari
-const adminBtn = document.getElementById('admin-btn');
+const adminBtn = document.getElementById('admin-btn'); // kay.html da bor
 const pinModal = document.getElementById('pin-modal');
 const closePinModal = document.getElementById('close-pin-modal');
 const pinInput = document.getElementById('pin-input');
@@ -711,14 +711,14 @@ newPostForm.addEventListener('submit', (e) => {
 });
 
 // 12. PIN-Kod Kirish (Admin)
-adminBtn.addEventListener('click', () => {
+adminBtn?.addEventListener('click', () => {
     pinInput.value = '';
     pinError.style.display = 'none';
     pinModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 });
 
-closePinModal.addEventListener('click', () => {
+document.getElementById('close-pin-modal')?.addEventListener('click', () => {
     pinModal.classList.remove('active');
     document.body.style.overflow = '';
 });
@@ -775,6 +775,7 @@ function handlePinSubmit() {
 
 // 13. Admin Panel Boshqaruvi
 function openAdminPanel() {
+    sessionStorage.setItem('kay_admin', 'true');
     isAdmin = true;
     adminPanelModal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -790,7 +791,8 @@ function openAdminPanel() {
 
 closeAdminPanelBtn.addEventListener('click', () => {
     isAdmin = false;
-    adminPanelModal.classList.remove('active');
+    sessionStorage.removeItem('kay_admin');
+    adminPanelModal?.classList.remove('active');
     document.body.classList.remove('admin-mode');
     // Loyihalar nav havolasini yashirish
     const navPortfolioLink = document.getElementById('nav-portfolio-link');
