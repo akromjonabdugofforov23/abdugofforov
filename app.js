@@ -1088,18 +1088,20 @@ function handlePinSubmit() {
         return;
     }
     
-    const ADMIN_HASH = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
-    const encoder = new TextEncoder();
-    const data = encoder.encode(pin);
-    crypto.subtle.digest('SHA-256', data).then(hashBuffer => {
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const enteredHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        
-        if (enteredHash === ADMIN_HASH) {
+    if (!pin) return;
+
+    // PIN ni SERVERDA tekshiramiz — hash KODDA saqlanmaydi (server /check-pin hal qiladi)
+    fetch('/check-pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin })
+    })
+    .then(r => r.json().catch(() => ({})))
+    .then(data => {
+        if (data && data.success) {
             sessionStorage.removeItem('pin_attempts');
             sessionStorage.removeItem('pin_lock_until');
-            // PIN ni admin sessiyasi uchun saqlaymiz (yozish/o'chirishda serverga
-            // yuborish uchun kerak). Tab yopilganda avtomatik o'chadi.
+            // PIN ni admin sessiyasi uchun saqlaymiz (server yozishlarida kerak bo'ladi).
             sessionStorage.setItem('kay_admin_pin', pin);
             pinModal?.classList.remove('active');
             openAdminPanel();
@@ -1116,8 +1118,11 @@ function handlePinSubmit() {
             }
             if (pinError) pinError.style.display = 'block';
             if (pinInput) pinInput.value = '';
-            pinInput.focus();
+            pinInput?.focus();
         }
+    })
+    .catch(() => {
+        if (pinError) { pinError.textContent = 'Server bilan bog\'lanib bo\'lmadi'; pinError.style.display = 'block'; }
     });
 }
 

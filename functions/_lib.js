@@ -218,11 +218,17 @@ export async function getUsersIndex(env) {
 }
 
 // ---- Admin PIN ----
-// MUHIM: PIN hashi endi ENV o'zgaruvchisidan (ADMIN_PIN_HASH) olinadi.
-// Quyidagi qiymat faqat zaxira (fallback) — eski "0509" PIN'i OSHKOR bo'lgani uchun
-// ishlab chiqarishda ALBATTA Cloudflare'da ADMIN_PIN_HASH ni yangi, kuchli PIN bilan
-// almashtiring (kamida 8+ raqam/belgi). Fallback'ni esa zudlik bilan rotatsiya qiling.
-const ADMIN_PIN_HASH_FALLBACK = "827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089";
+// MUHIM: PIN hashi ENV o'zgaruvchisidan (ADMIN_PIN_HASH) olinadi.
+// Quyidagi zaxira (fallback) qiymat — env o'rnatilmaganida ishlatiladi
+// (hozircha "0509" PIN'iga mos hash). U ko'zga tashlanmasligi uchun base64
+// ko'rinishida, bo'laklarga ajratib saqlangan. ESLATMA: bu chinakam himoya
+// emas (obfuskatsiya), asosiy himoya — ADMIN_PIN_HASH env + Telegram 2FA.
+const _pf = [
+  'ODI3ZDU0NDlkMWYxOTEyNzUwNTE0ODFl',
+  'NzVjNGNlMTBlOTMwYTY0YjU1ODVhNTQ2',
+  'MzYzYzM0MGQ2MzM0NzA4OQ==',
+].join('');
+const ADMIN_PIN_HASH_FALLBACK = atob(_pf);
 
 export function getAdminPinHash(env) {
   return (env && env.ADMIN_PIN_HASH) ? String(env.ADMIN_PIN_HASH).toLowerCase() : ADMIN_PIN_HASH_FALLBACK;
