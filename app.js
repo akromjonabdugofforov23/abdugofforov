@@ -702,20 +702,19 @@ function openPostDetail(postId) {
             <div class="comments-list" id="modal-comments-list">
                 ${renderComments(post.comments)}
             </div>
-            
+            ${(window.Auth && Auth.isLoggedIn()) ? `
             <form class="comment-form" id="modal-comment-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="comment-author-input">Ismingiz</label>
-                        <input type="text" id="comment-author-input" class="form-input" placeholder="Ismingizni kiriting..." required>
-                    </div>
-                </div>
+                <input type="hidden" id="comment-author-input" value="${escapeHTML(Auth.user.name || Auth.user.username)}">
                 <div class="form-group">
-                    <label for="comment-text-input">Izoh matni</label>
+                    <label for="comment-text-input">Izoh — <span style="color:var(--color-purple-light);">${escapeHTML(Auth.user.name || Auth.user.username)}</span> nomidan</label>
                     <textarea id="comment-text-input" class="form-textarea" placeholder="Fikringizni yozib qoldiring..." required></textarea>
                 </div>
                 <button type="submit" class="btn-primary" style="align-self: flex-end;">Izoh qoldirish</button>
-            </form>
+            </form>` : `
+            <div class="comment-login-prompt" style="text-align:center; padding:20px; border:1px dashed var(--glass-border); border-radius:12px; margin-top:16px;">
+                <p style="color:var(--text-secondary); margin-bottom:12px; font-size:14px;">Izoh qoldirish uchun tizimga kiring</p>
+                <button class="btn-primary" type="button" onclick="openAuthModal('login')" style="margin:0 auto;">Kirish / Ro'yxatdan o'tish</button>
+            </div>`}
         </div>
     `;
 
@@ -775,7 +774,7 @@ function openPostDetail(postId) {
     if (shareBtn) shareBtn.addEventListener('click', () => sharePost(post));
 
     const commentForm = document.getElementById('modal-comment-form');
-    commentForm.addEventListener('submit', (e) => {
+    if (commentForm) commentForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const authorInput = document.getElementById('comment-author-input');
         const textInput = document.getElementById('comment-text-input');
@@ -793,8 +792,7 @@ function openPostDetail(postId) {
         document.getElementById('modal-comments-list').innerHTML = renderComments(post.comments);
         document.querySelector('.comments-title').textContent = `Izohlar (${post.comments.length})`;
         
-        authorInput.value = '';
-        textInput.value = '';
+        if (textInput) textInput.value = '';
         renderPosts();
     });
 
@@ -1848,6 +1846,170 @@ function initFloatingAddBtn() {
     });
 }
 
+// ===== O'QUVCHI AUTH UI (login / register / profil) =====
+let _authMode = 'login'; // 'login' | 'register'
+
+function openAuthModal(mode) {
+    _authMode = mode || 'login';
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    setAuthMode(_authMode);
+    const err = document.getElementById('auth-error');
+    if (err) { err.textContent = ''; err.classList.remove('show'); }
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('auth-username')?.focus(), 100);
+}
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+function setAuthMode(mode) {
+    _authMode = mode;
+    const isReg = mode === 'register';
+    document.getElementById('auth-tab-login')?.classList.toggle('active', !isReg);
+    document.getElementById('auth-tab-register')?.classList.toggle('active', isReg);
+    const nameGroup = document.getElementById('auth-name-group');
+    if (nameGroup) nameGroup.style.display = isReg ? 'flex' : 'none';
+    const hint = document.getElementById('auth-username-hint');
+    if (hint) hint.style.display = isReg ? 'block' : 'none';
+    const submit = document.getElementById('auth-submit');
+    if (submit) submit.textContent = isReg ? "Ro'yxatdan o'tish" : 'Kirish';
+    const pwd = document.getElementById('auth-password');
+    if (pwd) pwd.setAttribute('autocomplete', isReg ? 'new-password' : 'current-password');
+}
+
+function updateAuthUI() {
+    const loginBtn = document.getElementById('login-btn');
+    const userMenu = document.getElementById('user-menu');
+    if (!window.Auth) return;
+
+    if (Auth.isLoggedIn()) {
+        const u = Auth.user;
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (userMenu) userMenu.style.display = 'inline-flex';
+        const initial = (u.name || u.username || '?').charAt(0).toUpperCase();
+        const av = document.getElementById('user-avatar');
+        if (av) av.textContent = initial;
+        const nameLabel = document.getElementById('user-name-label');
+        if (nameLabel) nameLabel.textContent = u.name || u.username;
+        const ddName = document.getElementById('user-dd-name');
+        if (ddName) ddName.textContent = u.name || u.username;
+        const ddUser = document.getElementById('user-dd-username');
+        if (ddUser) ddUser.textContent = '@' + u.username;
+    } else {
+        // Admin bo'lmaganda login tugmasi ko'rinadi (admin-mode'da CSS yashiradi)
+        if (loginBtn) loginBtn.style.display = '';
+        if (userMenu) userMenu.style.display = 'none';
+    }
+}
+
+function initAuthUI() {
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) loginBtn.addEventListener('click', () => openAuthModal('login'));
+
+    document.getElementById('close-auth-modal')?.addEventListener('click', closeAuthModal);
+    document.getElementById('auth-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'auth-modal') closeAuthModal();
+    });
+
+    document.getElementById('auth-tab-login')?.addEventListener('click', () => setAuthMode('login'));
+    document.getElementById('auth-tab-register')?.addEventListener('click', () => setAuthMode('register'));
+
+    document.getElementById('auth-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const err = document.getElementById('auth-error');
+        const submit = document.getElementById('auth-submit');
+        const name = document.getElementById('auth-name')?.value.trim() || '';
+        const username = document.getElementById('auth-username')?.value.trim() || '';
+        const password = document.getElementById('auth-password')?.value || '';
+
+        if (err) { err.textContent = ''; err.classList.remove('show'); }
+        if (submit) { submit.disabled = true; submit.textContent = 'Iltimos kuting...'; }
+
+        let data;
+        if (_authMode === 'register') {
+            data = await Auth.register(name, username, password);
+        } else {
+            data = await Auth.login(username, password);
+        }
+
+        if (submit) { submit.disabled = false; submit.textContent = _authMode === 'register' ? "Ro'yxatdan o'tish" : 'Kirish'; }
+
+        if (data && data.ok) {
+            closeAuthModal();
+            updateAuthUI();
+            showToast('✅ Xush kelibsiz, ' + (Auth.user.name || Auth.user.username) + '!', 'success');
+        } else {
+            if (err) {
+                err.textContent = (data && data.message) || 'Xatolik yuz berdi';
+                err.classList.add('show');
+            }
+        }
+    });
+
+    // Foydalanuvchi menyusi (dropdown)
+    const chip = document.getElementById('user-chip');
+    const dropdown = document.getElementById('user-dropdown');
+    if (chip && dropdown) {
+        chip.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('open');
+        });
+        document.addEventListener('click', () => dropdown.classList.remove('open'));
+    }
+
+    document.getElementById('user-logout-btn')?.addEventListener('click', async () => {
+        await Auth.logout();
+        updateAuthUI();
+        showToast('Tizimdan chiqdingiz', 'info');
+    });
+
+    document.getElementById('user-results-btn')?.addEventListener('click', () => {
+        dropdown?.classList.remove('open');
+        openMyResults();
+    });
+
+    // Mening natijalarim modali
+    document.getElementById('close-myresults-modal')?.addEventListener('click', () => {
+        document.getElementById('myresults-modal')?.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    document.getElementById('myresults-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'myresults-modal') {
+            e.currentTarget.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+function openMyResults() {
+    const modal = document.getElementById('myresults-modal');
+    const content = document.getElementById('myresults-content');
+    if (!modal || !content) return;
+    const hist = (window.Auth && Auth.getLocalResults) ? Auth.getLocalResults() : [];
+    if (!hist.length) {
+        content.innerHTML = '<p style="color:var(--text-secondary);">Hali test ishlamadingiz. Deutsch bo\'limidan test tanlang!</p>';
+    } else {
+        const rows = hist.slice(0, 30).map(h => {
+            const d = new Date(h.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+            const color = h.pct >= 80 ? '#34d399' : h.pct >= 60 ? '#fbbf24' : '#f87171';
+            return `<div style="display:flex;align-items:center;gap:10px;font-size:13px;padding:10px 0;border-bottom:1px solid var(--glass-border);">
+                <span style="text-transform:uppercase;font-weight:700;width:60px;color:var(--color-purple-light);">${escapeHTML(String(h.level || ''))}</span>
+                <div style="flex:1;height:6px;background:var(--glass-border);border-radius:3px;overflow:hidden;">
+                    <div style="height:100%;width:${h.pct}%;background:${color};"></div>
+                </div>
+                <span style="width:64px;text-align:right;color:var(--text-secondary);">${h.score}/${h.total}</span>
+                <span style="width:90px;text-align:right;color:var(--text-muted);font-size:11px;">${d}</span>
+            </div>`;
+        }).join('');
+        content.innerHTML = rows;
+    }
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
 
 // ===== PWA, DEEP-LINK (ulashiladigan post havolasi) VA ULASHISH =====
 function registerServiceWorker() {
@@ -2322,6 +2484,13 @@ async function bootstrap() {
     initHeroCta();
     init3DTilt();
     initFloatingAddBtn();
+
+    // O'quvchi auth — token bo'lsa tiklaymiz, UI'ni yangilaymiz
+    initAuthUI();
+    if (window.Auth) {
+        await Auth.restore();
+        updateAuthUI();
+    }
 }
 
 bootstrap();
@@ -2979,8 +3148,20 @@ function renderTestResult() {
               : pct >= 60 ? "Yaxshi! Bir oz mashq qilsangiz mukammal boʻladi."
               : "Qoʻrqmang! Qayta oʻrganib, yana sinab koʻring.";
 
-    // Natijani tarixga saqlaymiz
+    // Natijani tarixga saqlaymiz (lokal)
     saveTestResult(currentLevel, score, total);
+
+    // Login bo'lgan o'quvchi natijasini serverga ham yuboramiz (admin ko'radi)
+    if (window.Auth && Auth.isLoggedIn()) {
+        Auth.submitResult({
+            testId: currentLevel,
+            testTitle: levelName,
+            score: score,
+            total: total,
+        }).then(r => {
+            if (r && r.ok) showToast('📊 Natija saqlandi', 'success');
+        });
+    }
 
     document.getElementById('deutsch-content').innerHTML = `
         <div style="max-width:480px; margin:0 auto; text-align:center;">
