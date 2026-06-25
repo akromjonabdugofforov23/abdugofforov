@@ -318,6 +318,29 @@
         <a href="/" class="pin-back">← Asosiy sahifaga qaytish</a>
     </div>
 
+    <!-- ===== TELEGRAM TASDIQLASH EKRANI (2FA) ===== -->
+    <div class="pin-screen" id="tg-screen" style="display:none;">
+        <div class="pin-avatar" style="background: linear-gradient(135deg, #0088cc, #229ED9); font-size: 36px;">✈️</div>
+        <div class="pin-logo">Telegram<span>.</span></div>
+        <div class="pin-subtitle">
+            Telegramingizga 6 xonali kod yubordik.<br>
+            <span id="tg-target-info" style="color: var(--accent-color); font-size:12px;">@herrr_kai23</span>
+        </div>
+
+        <div class="pin-input-wrap">
+            <input type="text" id="tg-code-input" class="form-input"
+                   placeholder="••••••" maxlength="6" autocomplete="one-time-code" inputmode="numeric"
+                   pattern="\d{6}">
+        </div>
+        <div class="pin-error" id="tg-error"></div>
+        <button class="btn-primary pin-btn" id="tg-submit-btn">Tasdiqlash</button>
+        <div class="pin-attempts" id="tg-attempts"></div>
+        <div style="margin-top: 16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+            <button class="btn-secondary" id="tg-resend-btn" type="button" style="font-size:12px;">🔄 Qayta yuborish</button>
+            <button class="btn-secondary" id="tg-cancel-btn" type="button" style="font-size:12px;">← Ortga</button>
+        </div>
+    </div>
+
     <!-- ===== ADMIN DASHBOARD ===== -->
     <div class="glz" id="admin-screen">
 
@@ -602,20 +625,59 @@ async function tryLogin() {
 
     const hash = await hashPin(pin);
     if (hash === ADMIN_HASH) {
-        sessionStorage.setItem('kay_admin', 'true');
+        // PIN to'g'ri — endi 2FA: Telegram ga kod yuboramiz
         localStorage.removeItem('kay_attempts');
         localStorage.removeItem('kay_lock');
         localStorage.removeItem('kay_lockcount');
-        addLog('success', 'Muvaffaqiyatli kirish');
-        // Ixtiyoriy: Telegram bildirishnomasi (server env sozlangan bo'lsa)
+        addLog('success', 'PIN to\'g\'ri — Telegram tasdiqlash kerak');
+
+        // Tugmani vaqtincha o'chirib qo'yamiz
+        const submitBtn = document.getElementById('pin-submit-btn');
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Telegramga yuborilmoqda...'; }
+
+        try {
+            const res = await fetch('/admin/request-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin })
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (data.ok && data.sessionId) {
+                // TG kod ekranini ochamiz
+                window.__authSession = { sessionId: data.sessionId, pin };
+                showTgScreen();
+                addLog('info', 'Telegramga kod yuborildi');
+            } else if (data.configured === false || (res.status === 503 && /telegram/i.test(data.message || ''))) {
+                // Telegram sozlanmagan — eski PIN-only rejimga qaytamiz
+                addLog('info', 'Telegram sozlanmagan — PIN bilan kirildi (legacy)');
+                sessionStorage.setItem('kay_admin', 'true');
+                sessionStorage.setItem('kay_admin_pin', pin);
+                showAdminPanel();
+            } else {
+                // Boshqa xato (KV yo'q, PIN noto'g'ri va h.k.)
+                pinError.textContent = data.message || 'Server xatosi';
+                pinError.style.display = 'block';
+                pinInput.value = '';
+            }
+        } catch (e) {
+            // Tarmoq xatosi — eski rejimga fallback
+            addLog('fail', 'Server bilan bog\'lanib bo\'lmadi — legacy rejim');
+            sessionStorage.setItem('kay_admin', 'true');
+            sessionStorage.setItem('kay_admin_pin', pin);
+            showAdminPanel();
+        } finally {
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Kirish'; }
+        }
+
+        // Ixtiyoriy: eski notify endpoint (bot xabari)
         try {
             fetch('/notify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ event: 'admin_login', note: 'Admin panelga kirildi' })
+                body: JSON.stringify({ event: 'admin_login_attempt', note: 'Admin paneliga kirish urinishi' })
             }).catch(() => {});
         } catch (e) {}
-        showAdminPanel();
     } else {
         const attempts = parseInt(localStorage.getItem('kay_attempts') || '0') + 1;
         localStorage.setItem('kay_attempts', attempts);
@@ -641,6 +703,156 @@ async function tryLogin() {
 
 document.getElementById('pin-submit-btn').addEventListener('click', tryLogin);
 pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+// ===== TELEGRAM 2FA EKRANI =====
+function showPinScreen() {
+    document.getElementById('tg-screen').style.display = 'none';
+    document.getElementById('pin-screen').style.display = 'block';
+    pinInput.value = '';
+    pinError.style.display = 'none';
+    pinInput.focus();
+}
+function showTgScreen() {
+    document.getElementById('pin-screen').style.display = 'none';
+    document.getElementById('tg-screen').style.display = 'block';
+    const tgInput = document.getElementById('tg-code-input');
+    const tgErr = document.getElementById('tg-error');
+    tgInput.value = '';
+    tgErr.style.display = 'none';
+    tgInput.focus();
+    startTgCountdown();
+}
+
+let tgCountdownTimer = null;
+function startTgCountdown() {
+    const attemptsEl = document.getElementById('tg-attempts');
+    let secs = 300; // 5 daqiqa
+    if (tgCountdownTimer) clearInterval(tgCountdownTimer);
+    function tick() {
+        if (secs <= 0) {
+            attemptsEl.textContent = '⏱ Kod eskirdi — qaytadan yuboring';
+            clearInterval(tgCountdownTimer);
+            return;
+        }
+        const mm = Math.floor(secs / 60);
+        const ss = (secs % 60).toString().padStart(2, '0');
+        attemptsEl.textContent = `Kod amal qilish muddati: ${mm}:${ss}`;
+        secs--;
+    }
+    tick();
+    tgCountdownTimer = setInterval(tick, 1000);
+}
+
+async function verifyTgCode() {
+    const tgInput = document.getElementById('tg-code-input');
+    const tgErr = document.getElementById('tg-error');
+    const submitBtn = document.getElementById('tg-submit-btn');
+
+    const code = (tgInput.value || '').trim();
+    if (!/^\d{6}$/.test(code)) {
+        tgErr.textContent = "Kod 6 xonali raqam bo'lishi kerak";
+        tgErr.style.display = 'block';
+        return;
+    }
+    if (!window.__authSession || !window.__authSession.sessionId) {
+        tgErr.textContent = 'Sessiya yo\'q — qaytadan PIN kiriting';
+        tgErr.style.display = 'block';
+        setTimeout(showPinScreen, 1500);
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Tekshirilmoqda...';
+
+    try {
+        const res = await fetch('/admin/verify-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                sessionId: window.__authSession.sessionId,
+                code,
+            })
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (data.ok && data.token) {
+            // Muvaffaqiyatli kirish — token saqlaymiz va admin panelga o'tamiz
+            sessionStorage.setItem('kay_admin', 'true');
+            sessionStorage.setItem('kay_admin_token', data.token);
+            sessionStorage.setItem('kay_admin_pin', window.__authSession.pin); // backward compat fallback
+            window.__authSession = null;
+            if (tgCountdownTimer) clearInterval(tgCountdownTimer);
+            addLog('success', 'Telegram tasdiqlandi — admin panel ochildi');
+            showAdminPanel();
+        } else {
+            tgErr.textContent = data.message || "Kod noto'g'ri";
+            tgErr.style.display = 'block';
+            tgInput.value = '';
+            tgInput.focus();
+            addLog('fail', "Telegram kod noto'g'ri");
+            if (res.status === 429 || /eskirgan|topilmadi/i.test(data.message || '')) {
+                // Sessiya tugagan — PIN ekraniga qaytamiz
+                setTimeout(showPinScreen, 1800);
+            }
+        }
+    } catch (e) {
+        tgErr.textContent = "Tarmoq xatosi: " + (e.message || 'bog\'lanib bo\'lmadi');
+        tgErr.style.display = 'block';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Tasdiqlash';
+    }
+}
+
+async function resendTgCode() {
+    if (!window.__authSession || !window.__authSession.pin) {
+        showPinScreen();
+        return;
+    }
+    const btn = document.getElementById('tg-resend-btn');
+    const tgErr = document.getElementById('tg-error');
+    btn.disabled = true;
+    btn.textContent = 'Yuborilmoqda...';
+    try {
+        const res = await fetch('/admin/request-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin: window.__authSession.pin })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (data.ok && data.sessionId) {
+            window.__authSession.sessionId = data.sessionId;
+            tgErr.textContent = "";
+            tgErr.style.display = 'none';
+            startTgCountdown();
+            addLog('info', 'Telegramga yangi kod yuborildi');
+        } else {
+            tgErr.textContent = data.message || "Qayta yuborishda xato";
+            tgErr.style.display = 'block';
+        }
+    } catch (e) {
+        tgErr.textContent = "Tarmoq xatosi";
+        tgErr.style.display = 'block';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '🔄 Qayta yuborish';
+    }
+}
+
+document.getElementById('tg-submit-btn').addEventListener('click', verifyTgCode);
+document.getElementById('tg-code-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') verifyTgCode();
+});
+// Faqat raqam kiritish
+document.getElementById('tg-code-input').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+});
+document.getElementById('tg-resend-btn').addEventListener('click', resendTgCode);
+document.getElementById('tg-cancel-btn').addEventListener('click', () => {
+    if (tgCountdownTimer) clearInterval(tgCountdownTimer);
+    window.__authSession = null;
+    showPinScreen();
+});
 
 function checkLock() {
     const lockUntil = parseInt(localStorage.getItem('kay_lock') || '0');
@@ -675,6 +887,8 @@ function showAdminPanel() {
 
 document.getElementById('logout-btn').addEventListener('click', () => {
     sessionStorage.removeItem('kay_admin');
+    sessionStorage.removeItem('kay_admin_token');
+    sessionStorage.removeItem('kay_admin_pin');
     document.getElementById('admin-screen').classList.remove('show');
     document.getElementById('pin-screen').style.display = 'block';
     pinInput.value = '';

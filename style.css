@@ -46,6 +46,13 @@
     box-sizing: border-box;
 }
 
+/* Sayt mobil/vebda yon tomonga sira surulmaydigan bo'lsin */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-x: none; /* iOS/Android'da chap-o'ng "bounce" ham bo'lmasin */
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -845,15 +852,17 @@ a {
         gap: 10px;
     }
     .search-box { max-width: 100%; }
+    /* Filter teglar — gorizontal surilmasin, balki yon-ketin wrap qilsin */
     .filter-tags {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        scrollbar-width: none;
-        margin: 0 calc(-1 * var(--container-pad));
-        padding: 4px var(--container-pad);
+        flex-wrap: wrap;
+        overflow-x: visible;
+        margin: 0;
+        padding: 0;
+        gap: 8px;
     }
-    .filter-tags::-webkit-scrollbar { display: none; }
-    .filter-tag { flex-shrink: 0; }
+    .filter-tag {
+        flex-shrink: 0;
+    }
 
     /* Blog grid — mobilda 1 ustun, butun kenglikda */
     .blog-grid {

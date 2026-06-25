@@ -181,31 +181,40 @@
         },
 
         // Postlarni serverga yuborish (admin uchun)
+        // auth: { token?: string, pin?: string }
+        //   - token (yangi): Telegram 2FA dan keyin olingan admin token
+        //   - pin (eski): faqat Telegram sozlanmagan bo'lsa ishlatiladi
         // Muvaffaqiyatda { ok: true } qaytaradi, aks holda { ok: false, ... }
-        async pushPosts(posts, pin) {
-            if (!pin || typeof pin !== 'string') {
-                return { ok: false, reason: 'no_pin', message: 'PIN topilmadi — admin sessiyasi tugagan.' };
+        async pushPosts(posts, auth) {
+            // Backward compat: agar string berilgan bo'lsa, PIN deb qabul qilamiz
+            if (typeof auth === 'string') auth = { pin: auth };
+            auth = auth || {};
+
+            if (!auth.token && !auth.pin) {
+                return { ok: false, reason: 'no_auth', message: 'Admin sessiyasi tugagan — qayta kiring.' };
             }
+
+            const headers = { 'Content-Type': 'application/json' };
+            if (auth.token) headers['x-admin-token'] = auth.token;
+            if (auth.pin)   headers['x-admin-pin']   = auth.pin;
+
             try {
                 const res = await fetch(this.endpoint, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-admin-pin': pin,
-                    },
+                    headers,
                     body: JSON.stringify({ posts }),
                 });
                 const data = await res.json().catch(() => ({}));
 
                 if (res.status === 503) {
                     this.lastStatus.configured = false;
-                    return { ok: false, reason: 'not_configured', message: data.message || 'Server omborini sozlash kerak.' };
+                    return { ok: false, reason: 'not_configured', message: data.message || "Server omborini sozlash kerak." };
                 }
                 if (res.status === 401) {
-                    return { ok: false, reason: 'unauthorized', message: data.message || 'PIN noto\'g\'ri.' };
+                    return { ok: false, reason: 'unauthorized', message: data.message || "Ruxsat berilmadi." };
                 }
                 if (res.status === 413) {
-                    return { ok: false, reason: 'too_large', message: data.message || 'Ma\'lumot juda katta.' };
+                    return { ok: false, reason: 'too_large', message: data.message || "Ma'lumot juda katta." };
                 }
                 if (!res.ok) {
                     return { ok: false, reason: 'server_error', message: data.message || ('HTTP ' + res.status) };
@@ -215,7 +224,7 @@
                 return { ok: true, count: data.count || 0 };
             } catch (e) {
                 this.lastStatus.online = false;
-                return { ok: false, reason: 'network', message: (e && e.message) || 'Tarmoq xatosi.' };
+                return { ok: false, reason: 'network', message: (e && e.message) || "Tarmoq xatosi." };
             }
         },
     };
