@@ -578,16 +578,18 @@ a {
     overflow: hidden;
     border-radius: 18px;
     box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    height: 320px;
 }
 .carousel-track {
     display: flex;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.8s ease;
     width: 100%;
+    height: 100%;
 }
 .carousel-slide {
     min-width: 100%;
     position: relative;
-    aspect-ratio: 16/9;
+    height: 320px;
     overflow: hidden;
     background-color: #1a1a2e;
 }
@@ -597,19 +599,27 @@ a {
     object-fit: cover;
     display: block;
 }
-.carousel-geo-badge {
+.carousel-overlay {
     position: absolute;
-    bottom: 16px;
-    left: 16px;
-    background: rgba(0,0,0,0.65);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+    pointer-events: none;
+}
+.carousel-caption {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 80px;
     color: #fff;
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.3px;
+    line-height: 1.4;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    z-index: 2;
     pointer-events: none;
 }
 .carousel-btn {
@@ -656,13 +666,16 @@ a {
     transition: background 0.2s, transform 0.2s;
 }
 .carousel-dot.active {
-    background: #fff;
-    transform: scale(1.3);
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    transform: scale(1.4);
 }
 @media (max-width: 600px) {
-    .germany-carousel { border-radius: 12px; }
-    .carousel-geo-badge { font-size: 11px; padding: 6px 10px; bottom: 10px; left: 10px; }
+    .germany-carousel { border-radius: 12px; height: 220px; }
+    .carousel-slide { height: 220px; }
+    .carousel-caption { font-size: 13px; bottom: 14px; left: 14px; right: 60px; }
     .carousel-btn { width: 34px; height: 34px; font-size: 18px; }
+    .carousel-dots { bottom: 10px; right: 12px; }
+    .carousel-dot { width: 7px; height: 7px; }
 }
 
 /* ============================================================
