@@ -27,6 +27,13 @@
 # Eslatma: kay.html inline <script> va onclick/onerror ishlatadi, shuning uchun
 # bu sahifa uchun script-src 'unsafe-inline' bilan alohida CSP beriladi
 # (asosiy sayt /* esa qat'iy 'self' bilan qoladi).
+# MUHIM: foydalanuvchi /kay (toza URL) ga ham, /kay.html ga ham kirishi mumkin —
+# ikkalasi uchun ham bir xil CSP berilishi shart, aks holda inline script bloklanadi.
+/kay
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-cache, no-store, must-revalidate
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' data: blob:; connect-src 'self'
+
 /kay.html
   X-Robots-Tag: noindex, nofollow, noarchive
   Cache-Control: no-cache, no-store, must-revalidate
