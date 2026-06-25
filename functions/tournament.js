@@ -16,7 +16,7 @@ const SCORES_KEY = 'tournament:scores';
 const MAX_SCORES = 500;
 
 export async function onRequestOptions(context) {
-  return new Response(null, { headers: corsHeaders(context.request) });
+  return new Response(null, { headers: corsHeaders(context.request, context.env) });
 }
 
 export async function onRequestPost(context) {

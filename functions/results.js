@@ -14,7 +14,7 @@ const RESULTS_KEY = 'results:all';
 const MAX_RESULTS = 2000;
 
 export async function onRequestOptions(context) {
-  return new Response(null, { headers: corsHeaders(context.request) });
+  return new Response(null, { headers: corsHeaders(context.request, context.env) });
 }
 
 // Foydalanuvchi natijani yuboradi

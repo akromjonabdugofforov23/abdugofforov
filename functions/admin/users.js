@@ -7,7 +7,7 @@ import {
 } from '../_lib.js';
 
 export async function onRequestOptions(context) {
-  return new Response(null, { headers: corsHeaders(context.request) });
+  return new Response(null, { headers: corsHeaders(context.request, context.env) });
 }
 
 export async function onRequestGet(context) {

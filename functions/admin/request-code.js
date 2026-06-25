@@ -1,59 +1,21 @@
 // POST /admin/request-code
 // Body: { pin: "..." }
 //
-// 1. PIN ni tekshiradi
+// 1. PIN ni tekshiradi (hash ENV: ADMIN_PIN_HASH dan)
 // 2. 6-xonali kod yaratadi, KV ga saqlaydi (TTL 5 daqiqa)
 // 3. Telegram bot orqali admin chatga kod yuboradi
 // 4. Mijozga sessionId qaytaradi (verify-code'da kerak bo'ladi)
 //
 // Cloudflare env o'zgaruvchilari:
-//   POSTS_KV          — KV namespace bindingi (postlar bilan birga ishlatiladi)
+//   POSTS_KV           — KV namespace bindingi
+//   ADMIN_PIN_HASH     — admin PIN'ning SHA-256 hashi (kuchli PIN tanlang!)
 //   TELEGRAM_BOT_TOKEN — @BotFather'dan
-//   TELEGRAM_CHAT_ID   — admin chat ID raqami (@userinfobot'dan)
+//   TELEGRAM_CHAT_ID   — admin chat ID raqami
 
-const CORRECT_PIN_HASH = "827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089";
-const SESSION_TTL = 300; // 5 daqiqa
-
-const JSON_HEADERS = {
-  'Content-Type': 'application/json; charset=utf-8',
-  'X-Content-Type-Options': 'nosniff',
-  'Cache-Control': 'no-store',
-};
-
-function corsHeaders(request) {
-  return {
-    'Access-Control-Allow-Origin': request.headers.get('Origin') || '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Vary': 'Origin',
-  };
-}
-
-function jsonResponse(data, status, request) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { ...corsHeaders(request), ...JSON_HEADERS },
-  });
-}
-
-async function sha256Hex(text) {
-  const data = new TextEncoder().encode(text);
-  const buf = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-function timingSafeEqual(a, b) {
-  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
-  let r = 0;
-  for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return r === 0;
-}
-
-function randomHex(bytes) {
-  const arr = new Uint8Array(bytes);
-  crypto.getRandomValues(arr);
-  return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
-}
+import {
+  jsonResponse, corsHeaders, verifyAdminPin, randomHex,
+  getClientIp, rateLimit, tooManyRequests
+} from '../_lib.js';
 
 function random6digit() {
   const arr = new Uint32Array(1);
@@ -62,45 +24,48 @@ function random6digit() {
 }
 
 export async function onRequestOptions(context) {
-  return new Response(null, { headers: corsHeaders(context.request) });
+  return new Response(null, { headers: corsHeaders(context.request, context.env) });
 }
 
 export async function onRequestPost(context) {
   const { env, request } = context;
 
   if (!env.POSTS_KV) {
-    return jsonResponse({ ok: false, message: "KV ombori (POSTS_KV) bog'lanmagan." }, 503, request);
+    return jsonResponse({ ok: false, message: "KV ombori (POSTS_KV) bog'lanmagan." }, 503, request, env);
   }
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
     return jsonResponse({
       ok: false,
       configured: false,
       message: "Telegram bot sozlanmagan. TELEGRAM_BOT_TOKEN va TELEGRAM_CHAT_ID env o'zgaruvchilarini qo'shing."
-    }, 503, request);
+    }, 503, request, env);
   }
+
+  // IP bo'yicha rate-limit: 5 daqiqada 6 ta kod so'rovi
+  const rl = await rateLimit(env, request, 'admin-request-code', 6, 300);
+  if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
 
   // Brute-force ni biroz sekinlashtirish
   await new Promise(r => setTimeout(r, 150));
 
   let body;
   try { body = await request.json(); } catch (e) {
-    return jsonResponse({ ok: false, message: "Noto'g'ri JSON" }, 400, request);
+    return jsonResponse({ ok: false, message: "Noto'g'ri JSON" }, 400, request, env);
   }
 
   const pin = String(body.pin || '').trim();
-  if (!pin || pin.length > 12) {
-    return jsonResponse({ ok: false, message: "PIN topilmadi" }, 400, request);
+  if (!pin || pin.length > 64) {
+    return jsonResponse({ ok: false, message: "PIN topilmadi" }, 400, request, env);
   }
 
-  const pinHash = await sha256Hex(pin);
-  if (!timingSafeEqual(pinHash, CORRECT_PIN_HASH)) {
-    return jsonResponse({ ok: false, message: "PIN noto'g'ri" }, 401, request);
+  if (!(await verifyAdminPin(env, pin))) {
+    return jsonResponse({ ok: false, message: "PIN noto'g'ri" }, 401, request, env);
   }
 
   // Sessiya va kod
   const code = random6digit();
   const sessionId = randomHex(16);
-  const ip = request.headers.get('CF-Connecting-IP') || "noma'lum";
+  const ip = getClientIp(request);
   const ua = (request.headers.get('User-Agent') || '').substring(0, 80);
 
   try {
@@ -111,9 +76,9 @@ export async function onRequestPost(context) {
       ip,
       ua,
       createdAt: Date.now(),
-    }), { expirationTtl: SESSION_TTL });
+    }), { expirationTtl: 300 });
   } catch (e) {
-    return jsonResponse({ ok: false, message: "KV saqlashda xato" }, 500, request);
+    return jsonResponse({ ok: false, message: "KV saqlashda xato" }, 500, request, env);
   }
 
   // Telegram ga kod yuborish
@@ -138,17 +103,16 @@ export async function onRequestPost(context) {
     });
     if (!tgRes.ok) {
       const errText = await tgRes.text().catch(() => '');
-      // Sessiyani tozalaymiz (foydasiz)
       await env.POSTS_KV.delete(`auth:session:${sessionId}`).catch(() => {});
       return jsonResponse({
         ok: false,
         message: "Telegram xato: " + errText.substring(0, 150)
-      }, 502, request);
+      }, 502, request, env);
     }
   } catch (e) {
     await env.POSTS_KV.delete(`auth:session:${sessionId}`).catch(() => {});
-    return jsonResponse({ ok: false, message: "Telegram bilan bog'lanib bo'lmadi" }, 502, request);
+    return jsonResponse({ ok: false, message: "Telegram bilan bog'lanib bo'lmadi" }, 502, request, env);
   }
 
-  return jsonResponse({ ok: true, sessionId, expiresIn: SESSION_TTL }, 200, request);
+  return jsonResponse({ ok: true, sessionId, expiresIn: 300 }, 200, request, env);
 }

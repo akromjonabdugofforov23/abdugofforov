@@ -10,6 +10,29 @@ const JSON_HEADERS = {
   'Cache-Control': 'no-store'
 };
 
+// IP bo'yicha oddiy rate-limit (KV asosida) — bu endpoint autentifikatsiyasiz
+// bo'lgani uchun spam/abuse'ning oldini olish kerak.
+async function notifyRateLimit(env, request, max, windowSec) {
+  if (!env || !env.POSTS_KV) return true;
+  const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+  const key = `rl:notify:${ip}`;
+  const now = Date.now();
+  let rec = null;
+  try {
+    const raw = await env.POSTS_KV.get(key);
+    rec = raw ? JSON.parse(raw) : null;
+  } catch (e) { rec = null; }
+  if (!rec || now > rec.resetAt) {
+    rec = { count: 1, resetAt: now + windowSec * 1000 };
+    await env.POSTS_KV.put(key, JSON.stringify(rec), { expirationTtl: windowSec + 5 }).catch(() => {});
+    return true;
+  }
+  rec.count += 1;
+  const ttl = Math.max(1, Math.ceil((rec.resetAt - now) / 1000));
+  await env.POSTS_KV.put(key, JSON.stringify(rec), { expirationTtl: ttl + 5 }).catch(() => {});
+  return rec.count <= max;
+}
+
 export async function onRequestPost(context) {
   const { request, env } = context;
 
@@ -19,6 +42,15 @@ export async function onRequestPost(context) {
   // Sozlanmagan bo'lsa — xavfsiz tarzda o'tkazib yuboramiz
   if (!token || !chatId) {
     return new Response(JSON.stringify({ ok: false, configured: false }), { headers: JSON_HEADERS });
+  }
+
+  // Spam/abuse'ga qarshi: 10 daqiqada 10 ta xabar
+  const allowed = await notifyRateLimit(env, request, 10, 600);
+  if (!allowed) {
+    return new Response(JSON.stringify({ ok: false, message: 'rate_limited' }), {
+      status: 429,
+      headers: { ...JSON_HEADERS, 'Retry-After': '600' },
+    });
   }
 
   let payload = {};
