@@ -2624,6 +2624,14 @@ a {
 body.admin-mode #add-post-btn {
     display: inline-flex; /* admin uchun ko'rinadi */
 }
+
+/* Kirish tugmasi — mehmonlarga ko'rinadi, admin bo'lganda yashirin */
+#login-btn {
+    display: inline-flex;
+}
+body.admin-mode #login-btn {
+    display: none;
+}
 /* FAB allaqachon body.admin-mode bilan cheklangan (yuqorida) — qo'shimcha
    kafolat: admin bo'lmasa hech qachon ko'rinmasin */
 body:not(.admin-mode) .fab {

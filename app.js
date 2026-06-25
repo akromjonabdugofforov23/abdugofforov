@@ -1,21 +1,10 @@
 // Abdugofforov Blog & Portfolio - JavaScript Engine
 
 // 1. Dastlabki Ma'lumotlar (Boshlang'ich Postlar)
-const defaultPosts = [
-    {
-        id: 1,
-        title: "Bugun boshladim",
-        category: "Kun",
-        type: "kun",
-        excerpt: "Har bir uzoq safar bitta qadamdan boshlanadi.",
-        content: "Har bir uzoq safar bitta qadamdan boshlanadi.\n\nBugun abdugofforov.uz ni yangidan boshladim. Oddiy, toza, faqat o'zim uchun. Nemischa o'rganish, hamshiralik, IT — barchasi shu yerda bir joyda bo'ladi.",
-        image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000",
-        date: "2026-06-24",
-        likes: 0,
-        liked: false,
-        comments: []
-    }
-];
+// Boshlang'ich postlar yo'q — sayt toza boshlanadi.
+// Postlar faqat admin panelidan (PIN + Telegram) yoziladi va serverda
+// (Cloudflare KV) saqlanadi. Mehmonlar faqat o'qiydi.
+const defaultPosts = [];
 
 // State (Holat) - Abdugofforov rebrending kalitlari bilan boshlash
 // posts endi IndexedDB (Store) orqali yuklanadi — bootstrap() ichida hydrate qilinadi.
