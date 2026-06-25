@@ -1,42 +1,56 @@
 /* Abdugofforov Blog - Premium Design System */
 
-:root {
-    /* Light Mode Palette (Warm & Elegant) */
-    --bg-color: #fbfaf7;
-    --card-bg: #ffffff;
-    --text-primary: #1a1a1a;
-    --text-secondary: #5a5a5a;
-    --text-muted: #8e8d8a;
-    --accent-color: #d4a373; /* Muted Gold / Earthy Amber */
-    --accent-hover: #c39262;
-    --border-color: #eae7dc;
-    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.02);
-    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.04);
-    --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.08);
-    --navbar-bg: rgba(251, 250, 247, 0.85);
-    --modal-bg: rgba(255, 255, 255, 0.98);
-    --tag-bg: #f3efe0;
-    --transition-speed: 0.3s;
-    /* Layout */
-    --container-pad: clamp(14px, 3vw, 28px);
-}
+/* ============================================================
+   ABDUGOFFOROV — DARK FUTURISTIC PALETTE
+   Purple + Blue + Silver on deep navy/black
+   ============================================================ */
+:root, [data-theme="dark"], [data-theme="light"] {
+    /* Brand palette (asosiy ranglar) */
+    --color-bg-primary:     #0A0A1A;
+    --color-bg-secondary:   #0F0F2E;
+    --color-purple:         #8B5CF6;
+    --color-purple-light:   #A78BFA;
+    --color-blue:           #3B82F6;
+    --color-blue-light:     #60A5FA;
+    --color-silver:         #CBD5E1;
+    --color-silver-bright:  #F1F5F9;
+    --color-silver-dim:     #64748B;
 
-[data-theme="dark"] {
-    /* Dark Mode Palette (Cold Cyber Neon) */
-    --bg-color: #06070c;
-    --card-bg: #0c0e17;
-    --text-primary: #f3f4f6;
-    --text-secondary: #a1a8b9;
-    --text-muted: #626a7f;
-    --accent-color: #00ff88; /* Glowing Neon Green */
-    --accent-hover: #00d472;
-    --border-color: #171c2b;
-    --shadow-sm: 0 4px 20px rgba(0, 255, 136, 0.03);
-    --shadow-md: 0 10px 30px rgba(0, 210, 255, 0.1);
-    --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.6);
-    --navbar-bg: rgba(6, 7, 12, 0.85);
-    --modal-bg: rgba(12, 14, 23, 0.98);
-    --tag-bg: #141a29;
+    /* Semantik o'zgaruvchilar (eski kod bilan moslik uchun) */
+    --bg-color: var(--color-bg-primary);
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --text-primary: var(--color-silver-bright);
+    --text-secondary: var(--color-silver);
+    --text-muted: var(--color-silver-dim);
+    --accent-color: var(--color-purple);
+    --accent-hover: var(--color-purple-light);
+    --border-color: rgba(139, 92, 246, 0.18);
+
+    /* Shadow va glow effektlar */
+    --shadow-sm: 0 4px 20px rgba(139, 92, 246, 0.06);
+    --shadow-md: 0 10px 30px rgba(59, 130, 246, 0.12);
+    --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.6);
+    --glow-purple: 0 0 24px rgba(139, 92, 246, 0.45);
+    --glow-blue:   0 0 24px rgba(59, 130, 246, 0.40);
+
+    /* Glass effektlar */
+    --glass-bg: rgba(255, 255, 255, 0.04);
+    --glass-bg-strong: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-border-hover: rgba(167, 139, 250, 0.35);
+    --glass-blur: 14px;
+
+    --navbar-bg: rgba(10, 10, 26, 0.65);
+    --modal-bg: rgba(15, 15, 46, 0.96);
+    --tag-bg: rgba(139, 92, 246, 0.10);
+
+    /* Gradientlar */
+    --grad-primary: linear-gradient(135deg, var(--color-purple), var(--color-blue));
+    --grad-primary-soft: linear-gradient(135deg, rgba(139,92,246,0.85), rgba(59,130,246,0.85));
+    --grad-text: linear-gradient(135deg, #A78BFA 0%, #60A5FA 100%);
+
+    --transition-speed: 0.3s;
+    --container-pad: clamp(14px, 3vw, 28px);
 }
 
 /* Base Settings */
@@ -59,11 +73,42 @@ html {
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-color);
+    background-color: var(--color-bg-primary);
     color: var(--text-primary);
     line-height: 1.7;
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
     -webkit-font-smoothing: antialiased;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Gradient mesh fon — sayt tepasida sekin harakatlanadigan binafsha/ko'k dog'lar */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.18), transparent 45%),
+        radial-gradient(circle at 85% 25%, rgba(59, 130, 246, 0.16), transparent 50%),
+        radial-gradient(circle at 50% 90%, rgba(167, 139, 250, 0.12), transparent 55%),
+        var(--color-bg-primary);
+    animation: meshShift 20s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+@keyframes meshShift {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    100% { transform: translate3d(-2%, 1%, 0) scale(1.08); }
+}
+
+/* Particles canvas — hero ortida joylashadi */
+.particles-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.9;
 }
 
 .container {
@@ -95,16 +140,28 @@ a {
     animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Navigation Bar — bitta qatorli, logo + nav linklar + asboblar */
+/* ============================================================
+   NAVIGATION — Glassmorphism + Gradient logo
+   ============================================================ */
 .navbar {
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: var(--navbar-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border-color);
+    background: rgba(10, 10, 26, 0.55);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border-bottom: 1px solid var(--glass-border);
     transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+/* Gradient pastki chiziq — navbar ostida nozik aksent */
+.navbar::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139,92,246,0.6), rgba(59,130,246,0.6), transparent);
+    opacity: 0.6;
 }
 
 .navbar-row {
@@ -115,26 +172,36 @@ a {
     padding-bottom: 14px;
 }
 
-/* Eski 2-qator (navbar-links-row) endi kerak emas — agar HTML qoldirilsa ham yashiramiz */
 .navbar-links-row { display: none; }
 
+/* Gradient logo — Abdugofforov. */
 .logo {
     font-family: 'Playfair Display', serif;
     font-size: 26px;
     font-weight: 700;
     letter-spacing: -0.5px;
-    color: var(--text-primary);
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    transition: filter 0.3s ease;
 }
-
+.logo:hover {
+    filter: drop-shadow(0 0 12px rgba(167, 139, 250, 0.6));
+}
 .logo span {
-    color: var(--accent-color);
+    background: linear-gradient(135deg, #60A5FA, #A78BFA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .nav-right {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-left: auto; /* o'ng tomonga itarib turadi */
+    margin-left: auto;
 }
 
 .nav-links {
@@ -151,7 +218,7 @@ a {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--text-secondary);
+    color: var(--color-silver);
     cursor: pointer;
     padding: 8px 14px;
     border-radius: 999px;
@@ -160,7 +227,7 @@ a {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: color var(--transition-speed) ease, background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    transition: color 0.25s, background-color 0.25s, border-color 0.25s, box-shadow 0.25s;
     white-space: nowrap;
 }
 
@@ -171,130 +238,345 @@ a {
 }
 
 .nav-links a:hover {
-    color: var(--text-primary);
-    background-color: var(--tag-bg);
+    color: var(--color-silver-bright);
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
 }
 
 .nav-links a.active {
-    color: var(--accent-color);
-    background-color: var(--tag-bg);
-    border-color: var(--border-color);
+    color: #fff;
+    background: var(--grad-primary-soft);
+    border-color: transparent;
+    box-shadow: 0 4px 18px rgba(139, 92, 246, 0.35);
 }
+.nav-links a.active svg { color: #fff; }
 
-/* Theme Switcher and Add Button */
+/* Theme Switcher (icon tugma) — glass style */
 .btn-icon {
-    background: none;
-    border: none;
-    color: var(--text-primary);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--color-silver-bright);
     cursor: pointer;
     font-size: 18px;
-    padding: 8px;
+    padding: 7px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    transition: background-color 0.25s, color 0.25s, border-color 0.25s, transform 0.2s;
 }
 
 .btn-icon:hover {
-    background-color: var(--tag-bg);
+    background: var(--glass-bg-strong);
+    border-color: var(--glass-border-hover);
+    color: var(--color-purple-light);
+    transform: translateY(-1px);
 }
 
-.theme-toggle .sun-icon {
-    display: none;
-}
+.theme-toggle .sun-icon { display: none; }
+[data-theme="dark"] .theme-toggle .sun-icon { display: block; }
+[data-theme="dark"] .theme-toggle .moon-icon { display: none; }
 
-[data-theme="dark"] .theme-toggle .sun-icon {
-    display: block;
-}
-
-[data-theme="dark"] .theme-toggle .moon-icon {
-    display: none;
-}
-
+/* Yozish tugmasi — gradient + glow */
 .btn-primary {
-    background-color: var(--text-primary);
-    color: var(--bg-color);
-    border: 1px solid var(--text-primary);
-    padding: 8px 18px;
-    border-radius: 20px;
+    background: var(--grad-primary);
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 999px;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(139, 92, 246, 0.35);
+    transition: transform 0.2s, box-shadow 0.3s;
 }
-
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.4) 50%, transparent 75%);
+    transform: translateX(-100%);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
 .btn-primary:hover {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-    color: #ffffff;
     transform: translateY(-1px);
+    box-shadow: 0 6px 26px rgba(139, 92, 246, 0.5);
 }
+.btn-primary:hover::before { transform: translateX(100%); }
+.btn-primary:active { transform: translateY(0); }
 
-.btn-primary:active {
-    transform: translateY(1px);
-}
-
-/* Hero Section */
+/* ============================================================
+   HERO SECTION — particles canvas + typewriter + soat (logo'siz)
+   ============================================================ */
 .hero {
-    padding: 60px 0 40px 0;
-    text-align: center;
+    position: relative;
+    padding: 60px 0 80px 0;
+    overflow: hidden;
+    isolation: isolate;
 }
+
+.hero-inner {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 32px;
+}
+
+.hero-content { min-width: 0; }
 
 .hero-subtitle {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 2.5px;
-    color: var(--accent-color);
-    margin-bottom: 15px;
+    color: var(--color-purple-light);
+    margin-bottom: 14px;
     font-weight: 700;
 }
 
 .hero-title {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(24px, 4vw, 40px);
-    font-weight: 400;
-    line-height: 1.3;
-    max-width: 750px;
-    margin: 0 auto;
-    color: var(--text-primary);
+    font-size: clamp(34px, 5.5vw, 64px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--color-silver-bright);
+    margin-bottom: 14px;
+    letter-spacing: -1px;
 }
 
-/* Toolbar (Search & Filter) */
+/* Typewriter ko'rsatkichi */
+.hero-cursor {
+    display: inline-block;
+    color: var(--color-purple-light);
+    font-weight: 300;
+    margin-left: 2px;
+    animation: heroCursor 1s steps(2) infinite;
+}
+@keyframes heroCursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.hero-tagline {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+    letter-spacing: 0.3px;
+}
+.hero-tagline .dot {
+    color: var(--color-purple);
+    margin: 0 6px;
+    font-weight: 700;
+}
+
+/* CTA tugma — gradient + shimmer */
+.hero-cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 26px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: var(--grad-primary);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: var(--glow-purple);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.hero-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.45) 50%, transparent 75%);
+    transform: translateX(-100%);
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hero-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 32px rgba(139, 92, 246, 0.6), 0 8px 30px rgba(59, 130, 246, 0.35);
+}
+.hero-cta:hover::before { transform: translateX(100%); }
+.hero-cta:active { transform: translateY(0); }
+.hero-cta svg { stroke: #fff; }
+
+/* Hero soat — yangi dizayn, logo'siz */
+.hero-clock {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: 20px;
+    padding: 22px 26px;
+    min-width: 240px;
+    text-align: right;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.hero-clock::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(139,92,246,0.10), transparent 55%);
+    pointer-events: none;
+}
+.hero-clock-time {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    background: var(--grad-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+}
+.hero-clock-time .clock-digits {
+    display: inline-block;
+    min-width: 1.1em;
+    text-align: center;
+}
+.hero-clock-time .clock-colon {
+    color: var(--color-purple-light);
+    -webkit-text-fill-color: var(--color-purple-light);
+    margin: 0 1px;
+    animation: clockColonPulse 1s ease-in-out infinite;
+}
+@keyframes clockColonPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+.hero-clock-digits.flip { animation: heroDigitFlip 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes heroDigitFlip {
+    0%   { transform: translateY(-6px); opacity: 0; }
+    100% { transform: translateY(0);     opacity: 1; }
+}
+.hero-clock-date {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--color-silver-dim);
+    letter-spacing: 0.4px;
+}
+.hero-clock-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.3), transparent);
+    margin: 14px 0;
+}
+.hero-clock-weather {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+}
+.hero-clock-weather .weather-icon-emoji {
+    font-size: 32px;
+    line-height: 1;
+    filter: drop-shadow(0 4px 12px rgba(139,92,246,0.4));
+    transform-origin: center;
+}
+.hero-clock-weather-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+.hero-clock-temp {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-silver-bright);
+    line-height: 1.1;
+}
+.hero-clock-desc {
+    font-size: 12px;
+    color: var(--color-silver);
+}
+/* Ob-havo animatsiyalari hero soatga moslab */
+.hero-clock-weather[data-weather="sunny"] .weather-icon-emoji { animation: sunRot 18s linear infinite; }
+.hero-clock-weather[data-weather="partly"] .weather-icon-emoji,
+.hero-clock-weather[data-weather="cloudy"] .weather-icon-emoji,
+.hero-clock-weather[data-weather="foggy"]  .weather-icon-emoji { animation: cloudDrift 5s ease-in-out infinite; }
+.hero-clock-weather[data-weather="rainy"]  .weather-icon-emoji { animation: rainBounce 1.2s ease-in-out infinite; }
+.hero-clock-weather[data-weather="snowy"]  .weather-icon-emoji { animation: snowRot 6s linear infinite; }
+.hero-clock-weather[data-weather="storm"]  .weather-icon-emoji { animation: stormFlash 1.8s ease-in-out infinite; }
+.hero-clock-weather[data-weather="loading"] .weather-icon-emoji { animation: loadingPulse 1.6s ease-in-out infinite; opacity: 0.6; }
+@keyframes sunRot { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+@keyframes cloudDrift { 0%,100%{transform:translateX(0) translateY(0)} 25%{transform:translateX(3px) translateY(-1px)} 75%{transform:translateX(-3px) translateY(1px)} }
+@keyframes rainBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+@keyframes snowRot { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+@keyframes stormFlash { 0%,90%,100%{filter:drop-shadow(0 4px 12px rgba(139,92,246,0.4))} 92%,96%{filter:drop-shadow(0 0 18px rgba(255,255,150,0.95)) brightness(1.4)} }
+@keyframes loadingPulse { 0%,100%{opacity:0.5;transform:scale(0.95)} 50%{opacity:1;transform:scale(1)} }
+
+@media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 24px; }
+    .hero-clock { min-width: 0; text-align: left; }
+    .hero-clock-time { font-size: 28px; }
+    .hero-clock-weather { justify-content: flex-start; }
+    .hero-clock-weather-info { text-align: left; }
+}
+@media (max-width: 480px) {
+    .hero { padding: 40px 0 50px 0; }
+    .hero-title { font-size: 32px; line-height: 1.1; }
+    .hero-tagline { font-size: 13px; }
+    .hero-cta { padding: 12px 22px; font-size: 13px; }
+    .hero-clock { padding: 18px 20px; }
+    .hero-clock-time { font-size: 26px; }
+    .hero-clock-weather .weather-icon-emoji { font-size: 28px; }
+    .hero-clock-temp { font-size: 19px; }
+}
+
+/* ============================================================
+   TOOLBAR — Qidiruv va Filter
+   ============================================================ */
 .toolbar {
-    margin-top: 30px;
+    margin-top: 24px;
     margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
 }
 
 .search-box {
     position: relative;
-    max-width: 320px;
+    max-width: 340px;
     width: 100%;
 }
 
 .search-input {
     width: 100%;
-    padding: 10px 16px 10px 40px;
-    border: 1px solid var(--border-color);
-    background-color: var(--card-bg);
-    color: var(--text-primary);
-    border-radius: 30px;
+    padding: 11px 16px 11px 42px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--color-silver-bright);
+    border-radius: 999px;
     font-size: 14px;
     outline: none;
-    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
 }
+.search-input::placeholder { color: var(--color-silver-dim); }
 
 .search-input:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.15);
+    border-color: var(--color-purple-light);
+    background: var(--glass-bg-strong);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
 }
 
 .search-box::before {
@@ -305,9 +587,10 @@ a {
     transform: translateY(-50%);
     font-size: 14px;
     pointer-events: none;
-    opacity: 0.6;
+    opacity: 0.7;
 }
 
+/* Filter tablar — pill shaklida, kategoriyalar yon-ketin (wrap) */
 .filter-tags {
     display: flex;
     gap: 10px;
@@ -315,67 +598,145 @@ a {
 }
 
 .filter-tag {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    padding: 6px 16px;
-    border-radius: 20px;
+    background: var(--glass-bg);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 18px;
+    border-radius: 999px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    color: var(--text-secondary);
-    transition: all var(--transition-speed) ease;
+    color: var(--color-silver);
+    letter-spacing: 0.3px;
+    transition: color 0.25s, background 0.25s, border-color 0.25s, transform 0.2s, box-shadow 0.25s;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .filter-tag:hover {
-    color: var(--text-primary);
-    border-color: var(--text-primary);
+    color: var(--color-silver-bright);
+    border-color: rgba(167, 139, 250, 0.55);
+    background: var(--glass-bg-strong);
+    transform: translateY(-1px);
 }
 
 .filter-tag.active {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-    color: #ffffff;
+    background: var(--grad-primary);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(139, 92, 246, 0.45), 0 0 0 1px rgba(255,255,255,0.06) inset;
 }
 
-/* Blog Grid */
+/* Deutsch — alohida aksent (gradient border ko'rinishida) */
+.deutsch-tag {
+    border-color: rgba(96, 165, 250, 0.5);
+    color: var(--color-blue-light);
+}
+.deutsch-tag:hover {
+    border-color: var(--color-blue);
+    background: rgba(59, 130, 246, 0.10);
+    color: #fff;
+}
+
+/* Kartochka tugmasi — binafsha aksent */
+.flashcard-tag {
+    border-color: rgba(167, 139, 250, 0.5);
+    color: var(--color-purple-light);
+}
+.flashcard-tag:hover {
+    border-color: var(--color-purple);
+    background: rgba(139, 92, 246, 0.10);
+    color: #fff;
+}
+
+/* ============================================================
+   BLOG GRID + CARDS — 3D tilt + glassmorphism + gradient border
+   ============================================================ */
 .blog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: clamp(20px, 4vw, 40px);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: clamp(20px, 3vw, 30px);
     padding: 20px 0 80px 0;
 }
 
 .post-card {
-    background: var(--card-bg);
-    border-radius: 16px;
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: 18px;
     overflow: hidden;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--glass-border);
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
     height: 100%;
     cursor: pointer;
-    transition: transform var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1), 
-                box-shadow var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1),
-                border-color var(--transition-speed) ease;
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.4s ease,
+                border-color 0.4s ease;
+    will-change: transform;
+}
+
+/* Gradient border effekti — pseudo-element bilan */
+.post-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 18px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(139,92,246,0.5), rgba(59,130,246,0.5), rgba(139,92,246,0.2));
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Glow ostida — hover'da yorqinlashadi */
+.post-card::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 20px;
+    background: radial-gradient(80% 60% at 50% 0%, rgba(139,92,246,0.18), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 0;
 }
 
 .post-card:hover {
     transform: translateY(-6px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--accent-color);
+    box-shadow: 0 18px 60px rgba(139, 92, 246, 0.25), 0 4px 20px rgba(0,0,0,0.4);
+    border-color: transparent;
 }
+.post-card:hover::before { opacity: 1; }
+.post-card:hover::after  { opacity: 1; }
+
+/* Tilt aktiv bo'lganda translateY yo'q (JS class qo'yadi) */
+.post-card.tilting { transition: transform 0.05s linear, box-shadow 0.4s ease, border-color 0.4s ease; }
+.post-card.tilting:hover { transform: none; } /* JS o'zi transform belgilaydi */
 
 .post-image {
     height: 220px;
     background-size: cover;
     background-position: center;
     position: relative;
-    transition: transform 0.5s ease;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .post-card:hover .post-image {
-    transform: scale(1.03);
+    transform: scale(1.04);
 }
 
 .post-image-wrapper {
@@ -385,37 +746,39 @@ a {
 }
 
 .post-content {
-    padding: 28px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    position: relative;
+    z-index: 2;
 }
 
 .post-meta {
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: var(--accent-color);
+    letter-spacing: 1.5px;
+    color: var(--color-purple-light);
     display: block;
-    margin-bottom: 12px;
-    font-weight: 600;
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
 .post-title {
     font-family: 'Playfair Display', serif;
-    font-size: 21px;
-    line-height: 1.35;
+    font-size: 20px;
+    line-height: 1.3;
     margin-bottom: 12px;
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--color-silver-bright);
 }
 
 .post-excerpt {
     font-size: 14px;
-    color: var(--text-secondary);
+    color: var(--color-silver);
     font-weight: 400;
-    line-height: 1.6;
-    margin-bottom: 20px;
+    line-height: 1.65;
+    margin-bottom: 18px;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -427,21 +790,22 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 15px;
-    border-top: 1px solid var(--border-color);
+    padding-top: 14px;
+    border-top: 1px solid var(--glass-border);
     margin-top: auto;
 }
 
 .post-date {
-    font-size: 12px;
-    color: var(--text-muted);
+    font-size: 11px;
+    color: var(--color-silver-dim);
+    letter-spacing: 0.3px;
 }
 
 .post-stats {
     display: flex;
-    gap: 12px;
-    font-size: 13px;
-    color: var(--text-secondary);
+    gap: 14px;
+    font-size: 12px;
+    color: var(--color-silver);
 }
 
 .post-stat {
@@ -453,19 +817,19 @@ a {
 }
 
 .post-stat:hover {
-    color: var(--accent-color);
+    color: var(--color-purple-light);
 }
 
-/* Modals (Post Detail & Add Post) */
+/* Modals (Post Detail & Add Post) — Dark glass theme */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    background-color: rgba(10, 10, 26, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 200;
     display: flex;
     align-items: center;
@@ -481,14 +845,14 @@ a {
 }
 
 .modal-container {
-    background-color: var(--modal-bg);
+    background: linear-gradient(180deg, rgba(15, 15, 46, 0.96), rgba(10, 10, 26, 0.98));
     width: 92%;
     max-width: 750px;
     max-height: 85vh;
     border-radius: 20px;
     overflow-y: auto;
     box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--glass-border);
     position: relative;
     transform: translateY(30px);
     transition: transform var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1);
@@ -505,9 +869,9 @@ a {
     margin-right: 15px;
     margin-bottom: -35px;
     z-index: 10;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
+    background: var(--glass-bg-strong);
+    border: 1px solid var(--glass-border);
+    color: var(--color-silver-bright);
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -521,8 +885,9 @@ a {
 }
 
 .modal-close:hover {
-    background-color: var(--text-primary);
-    color: var(--bg-color);
+    background: var(--grad-primary);
+    color: #fff;
+    border-color: transparent;
     transform: rotate(90deg);
 }
 
@@ -735,14 +1100,25 @@ a {
     font-size: 16px;
 }
 
-/* Footer */
+/* Footer — gradient divider + glass background */
 .footer {
-    padding: 40px 0;
-    border-top: 1px solid var(--border-color);
+    padding: 40px 0 60px;
+    position: relative;
     font-size: 13px;
-    color: var(--text-muted);
-    background-color: var(--bg-color);
-    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    color: var(--color-silver-dim);
+    background: transparent;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(80%, 800px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-purple), var(--color-blue), transparent);
+    opacity: 0.7;
 }
 
 .footer .container {
@@ -753,11 +1129,14 @@ a {
 
 .footer-socials a {
     margin-left: 20px;
-    color: var(--text-secondary);
+    color: var(--color-silver);
+    font-weight: 500;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
 .footer-socials a:hover {
-    color: var(--accent-color);
+    color: var(--color-purple-light);
+    text-shadow: 0 0 12px rgba(167, 139, 250, 0.55);
 }
 
 /* Custom Scrollbar */
@@ -2443,4 +2822,85 @@ a {
     .weather-sparkle {
         animation: none !important;
     }
+}
+
+
+
+/* ============================================================
+   FLOATING ACTION BUTTON (FAB) — "+" mobilda
+   ============================================================ */
+.fab {
+    position: fixed;
+    right: 18px;
+    bottom: 22px;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: var(--grad-primary);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: none; /* default — yashirin, mobilda ko'rinadi */
+    align-items: center;
+    justify-content: center;
+    z-index: 90;
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s;
+    animation: fabPulse 2.6s ease-in-out infinite;
+    isolation: isolate;
+}
+
+/* Pulse halqa — atrofda yorqin to'lqin */
+.fab::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: var(--grad-primary);
+    opacity: 0.55;
+    z-index: -1;
+    animation: fabRing 2.6s ease-out infinite;
+}
+@keyframes fabRing {
+    0%   { transform: scale(1);    opacity: 0.55; }
+    80%  { transform: scale(1.45); opacity: 0; }
+    100% { transform: scale(1.45); opacity: 0; }
+}
+@keyframes fabPulse {
+    0%, 100% { box-shadow: 0 8px 32px rgba(139, 92, 246, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4); }
+    50%      { box-shadow: 0 8px 40px rgba(139, 92, 246, 0.85), 0 4px 18px rgba(59, 130, 246, 0.4); }
+}
+
+.fab:hover {
+    transform: scale(1.06) translateY(-2px);
+}
+.fab:active { transform: scale(0.96); }
+
+/* Mobilda yoki touch qurilmalarda ko'rinadi */
+@media (max-width: 768px), (pointer: coarse) {
+    .fab { display: flex; }
+}
+
+/* Foydalanuvchi animatsiyalarni o'chirgan bo'lsa */
+@media (prefers-reduced-motion: reduce) {
+    .fab, .fab::before { animation: none; }
+}
+
+/* ============================================================
+   SCROLL REVEAL — yangi mavzu uchun
+   ============================================================ */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+.reveal.reveal-down { transform: translateY(-30px); }
+.reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }

@@ -171,7 +171,8 @@ function updateClock() {
     const dateEl = document.getElementById('widget-date');
     if (dateEl) dateEl.textContent = now.toLocaleDateString('uz-UZ', dateOptions);
 
-    // Soat strelkalari — analog SVG ichida
+    // Soat strelkalari — analog SVG endi hero'da yo'q.
+    // Optional chaining bilan xavfsiz qoldiramiz (agar boshqa joyda ishlatilsa).
     const hh = parseInt(h, 10) % 12;
     const mm = parseInt(m, 10);
     const ss = parseInt(s, 10);
@@ -1763,6 +1764,8 @@ function initLanguage() {
     document.addEventListener('langchange', () => {
         updateHeroContent();
         renderPosts();
+        // Hero title typewriter qayta yuradi (yangi tilda)
+        if (typeof runTypewriter === 'function') runTypewriter();
         const deutschView = document.getElementById('deutsch-view');
         const flashView = document.getElementById('flashcards-view');
         if (deutschView && deutschView.style.display !== 'none') renderDeutschHome();
@@ -1832,8 +1835,31 @@ function observeReveal(el) {
 }
 
 function initScrollReveal() {
-    document.querySelectorAll('.widgets-row, .toolbar, .footer .container')
+    // Yangi dizaynda widget'lar hero ichida — eski selector kerak emas.
+    // Faqat toolbar va footer container'iga reveal qo'llaymiz.
+    document.querySelectorAll('.toolbar, .footer .container')
         .forEach(observeReveal);
+}
+
+// ===== FLOATING "+" TUGMA (faqat mobilda) =====
+function initFloatingAddBtn() {
+    const fab = document.getElementById('fab-add');
+    if (!fab) return;
+    fab.addEventListener('click', (e) => {
+        e.preventDefault();
+        // "Yozish" tugmasini chaqirib bersa o'sha modal ochiladi
+        const addBtn = document.getElementById('add-post-btn');
+        if (addBtn) {
+            addBtn.click();
+        } else {
+            // Backup: modal'ni to'g'ridan-to'g'ri ochish
+            const modal = document.getElementById('add-post-modal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+    });
 }
 
 
@@ -1857,10 +1883,27 @@ function setMeta(title, desc) {
 }
 
 function openPostFromUrl() {
-    const id = new URLSearchParams(window.location.search).get('post');
-    if (!id) return;
-    const post = posts.find(p => String(p.id) === String(id));
-    if (post) openPostDetail(post.id);
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('post');
+    if (id) {
+        const post = posts.find(p => String(p.id) === String(id));
+        if (post) openPostDetail(post.id);
+    }
+
+    // PWA shortcuts:  /?new=1  → "Yangi yozuv" modalini ochish
+    if (params.get('new') === '1') {
+        const addBtn = document.getElementById('add-post-btn');
+        if (addBtn) {
+            setTimeout(() => addBtn.click(), 300);
+        }
+    }
+
+    // /?view=deutsch  → Deutsch testlar sahifasiga o'tish
+    if (params.get('view') === 'deutsch') {
+        setTimeout(() => {
+            if (typeof openDeutschView === 'function') openDeutschView();
+        }, 300);
+    }
 }
 
 function sharePost(post) {
@@ -2006,6 +2049,217 @@ function renderFlashcardDone() {
         </div>`;
 }
 
+// ===== HERO PARTICLES (Canvas API) =====
+// Mayda nuqtalar suzib yuradi, sichqonchaga react qiladi, yaqinlashganda chiziq tortadi
+function initParticles() {
+    const canvas = document.getElementById('particles-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return; // Foydalanuvchi animatsiyalarni o'chirgan
+
+    let particles = [];
+    let mouse = { x: -9999, y: -9999, active: false };
+    let raf = null;
+
+    function size() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+    }
+
+    function spawn() {
+        const count = isMobile ? 40 : 90;
+        particles = [];
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        for (let i = 0; i < count; i++) {
+            const useBlue = Math.random() > 0.5;
+            particles.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                r: Math.random() * 1.6 + 0.6,
+                color: useBlue ? '59, 130, 246' : '139, 92, 246',
+                a: 0.45 + Math.random() * 0.35,
+            });
+        }
+    }
+
+    function step() {
+        const w = canvas.clientWidth, h = canvas.clientHeight;
+        ctx.clearRect(0, 0, w, h);
+
+        // Particle harakati
+        for (const p of particles) {
+            // Sichqonchaga itarish
+            if (mouse.active) {
+                const dx = p.x - mouse.x, dy = p.y - mouse.y;
+                const d2 = dx * dx + dy * dy;
+                if (d2 < 120 * 120) {
+                    const d = Math.sqrt(d2) || 1;
+                    p.vx += (dx / d) * 0.06;
+                    p.vy += (dy / d) * 0.06;
+                }
+            }
+            p.x += p.vx; p.y += p.vy;
+            // Tezlikni cheklash (juda tez bo'lib ketmasin)
+            p.vx = Math.max(-1, Math.min(1, p.vx * 0.99));
+            p.vy = Math.max(-1, Math.min(1, p.vy * 0.99));
+            // Chetlardan qaytishi
+            if (p.x < 0) { p.x = 0; p.vx *= -1; }
+            else if (p.x > w) { p.x = w; p.vx *= -1; }
+            if (p.y < 0) { p.y = 0; p.vy *= -1; }
+            else if (p.y > h) { p.y = h; p.vy *= -1; }
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${p.color}, ${p.a})`;
+            ctx.fill();
+        }
+
+        // Yaqin particlelarni chiziq bilan ulash
+        const LINK = isMobile ? 80 : 120;
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const a = particles[i], b = particles[j];
+                const dx = a.x - b.x, dy = a.y - b.y;
+                const d2 = dx * dx + dy * dy;
+                if (d2 < LINK * LINK) {
+                    const alpha = (1 - Math.sqrt(d2) / LINK) * 0.25;
+                    ctx.strokeStyle = `rgba(167, 139, 250, ${alpha})`;
+                    ctx.lineWidth = 0.7;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        raf = requestAnimationFrame(step);
+    }
+
+    function onMove(e) {
+        const rect = canvas.getBoundingClientRect();
+        const t = e.touches ? e.touches[0] : e;
+        mouse.x = t.clientX - rect.left;
+        mouse.y = t.clientY - rect.top;
+        mouse.active = true;
+    }
+    function onLeave() { mouse.active = false; }
+
+    size();
+    spawn();
+    step();
+    window.addEventListener('resize', () => { size(); spawn(); }, { passive: true });
+    canvas.parentElement.addEventListener('mousemove', onMove);
+    canvas.parentElement.addEventListener('mouseleave', onLeave);
+    canvas.parentElement.addEventListener('touchmove', onMove, { passive: true });
+
+    return () => { if (raf) cancelAnimationFrame(raf); };
+}
+
+// ===== HERO TYPEWRITER =====
+// hero-title-text'ning matnini harfma-harf qayta yozadi (langchange'da yangilanadi)
+let _typewriterTimer = null;
+function runTypewriter() {
+    const el = document.querySelector('.hero-title-text');
+    if (!el) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const full = (window.i18n && i18n.t) ? i18n.t('hero.title') : (el.getAttribute('data-final') || el.textContent || '');
+    el.setAttribute('data-final', full);
+    if (reduced) { el.textContent = full; return; }
+    if (_typewriterTimer) { clearInterval(_typewriterTimer); _typewriterTimer = null; }
+    el.textContent = '';
+    let i = 0;
+    const speed = 55;
+    _typewriterTimer = setInterval(() => {
+        if (i >= full.length) {
+            clearInterval(_typewriterTimer);
+            _typewriterTimer = null;
+            return;
+        }
+        el.textContent += full.charAt(i);
+        i++;
+    }, speed);
+}
+
+// CTA tugmasi — blog grid'iga skroll
+function initHeroCta() {
+    const btn = document.getElementById('hero-cta-btn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        const grid = document.getElementById('blog-grid');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+}
+
+// ===== 3D TILT EFFEKT (kartochkalar) =====
+// Mouse hover'da kartochka 3D buriladi. Touch qurilmalarda o'chiriladi.
+// Tilt observer DOM o'zgargach yangi kartochkalarga ham qo'shiladi.
+function init3DTilt() {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const touch = window.matchMedia('(pointer: coarse)').matches;
+    if (reduced || touch) return; // touch ekranlarda 3D tilt yo'q
+
+    const MAX = 12; // maksimal burchak (daraja)
+    const PERSPECTIVE = 1000;
+
+    function attach(card) {
+        if (card._tiltAttached) return;
+        card._tiltAttached = true;
+
+        let raf = null;
+        let bound = null;
+        function onMove(e) {
+            if (raf) return;
+            raf = requestAnimationFrame(() => {
+                raf = null;
+                if (!bound) bound = card.getBoundingClientRect();
+                const x = e.clientX - bound.left;
+                const y = e.clientY - bound.top;
+                const cx = bound.width / 2;
+                const cy = bound.height / 2;
+                const rx = ((y - cy) / cy) * -MAX;
+                const ry = ((x - cx) / cx) *  MAX;
+                card.style.transform =
+                    `perspective(${PERSPECTIVE}px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(8px)`;
+                card.classList.add('tilting');
+            });
+        }
+        function onEnter() { bound = card.getBoundingClientRect(); }
+        function onLeave() {
+            card.style.transform = '';
+            card.classList.remove('tilting');
+            bound = null;
+        }
+        card.addEventListener('mouseenter', onEnter);
+        card.addEventListener('mousemove', onMove);
+        card.addEventListener('mouseleave', onLeave);
+    }
+
+    function scan() {
+        document.querySelectorAll('.post-card').forEach(attach);
+    }
+
+    // Birinchi skanlash
+    scan();
+    // Yangi kartochkalar qo'shilganda
+    const grid = document.getElementById('blog-grid');
+    if (grid) {
+        const mo = new MutationObserver(() => scan());
+        mo.observe(grid, { childList: true });
+    }
+}
+
 async function bootstrap() {
     // 3D kirish animatsiyasi darhol boshlanadi
     initIntroSplash();
@@ -2067,6 +2321,13 @@ async function bootstrap() {
     initScrollReveal();
     registerServiceWorker();
     openPostFromUrl();
+
+    // Yangi: hero particles + typewriter + CTA tugmasi + 3D tilt + Floating +
+    initParticles();
+    runTypewriter();
+    initHeroCta();
+    init3DTilt();
+    initFloatingAddBtn();
 }
 
 bootstrap();

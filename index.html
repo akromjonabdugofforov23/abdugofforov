@@ -10,7 +10,7 @@
     <meta name="keywords" content="Abdugofforov, blog, kundalik, nemis tili, Deutsch, A1, A2, B1, test, kartochka, xotiralar, portfolio">
     <meta name="author" content="Abdugofforov">
     <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#d4a373">
+    <meta name="theme-color" content="#8B5CF6">
     <link rel="canonical" href="https://abdugofforov.uz/">
 
     <!-- Open Graph (ijtimoiy tarmoqlar) -->
@@ -115,11 +115,37 @@
         </div>
     </nav>
  
-    <!-- Hero Section -->
-    <header class="hero animate-fade-in">
-        <div class="container">
-            <p class="hero-subtitle" id="hero-sub" data-i18n="hero.subtitle">Shaxsiy blog & Hikoyalar</p>
-            <h1 class="hero-title" id="hero-main-title" data-i18n="hero.title">Vaqt sarguzashtlari va unutilmas xotiralar kundaligi.</h1>
+    <!-- Hero Section — particles + typewriter -->
+    <header class="hero animate-fade-in" id="hero">
+        <canvas class="particles-canvas" id="particles-canvas" aria-hidden="true"></canvas>
+        <div class="container hero-inner">
+            <div class="hero-content">
+                <p class="hero-subtitle" id="hero-sub" data-i18n="hero.subtitle">Shaxsiy blog & Hikoyalar</p>
+                <h1 class="hero-title" id="hero-main-title">
+                    <span class="hero-title-text" data-i18n="hero.title">Vaqt Sarguzashtlari</span><span class="hero-cursor">|</span>
+                </h1>
+                <p class="hero-tagline">Dasturchi <span class="dot">·</span> Yozuvchi <span class="dot">·</span> Tilshunos</p>
+                <button class="hero-cta" id="hero-cta-btn" type="button">
+                    <span>Yozuvlarni ko'rish</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+            </div>
+
+            <!-- Yangi soat dizayni — yonida logo yo'q, faqat raqamli vaqt va sana -->
+            <aside class="hero-clock" id="hero-clock" aria-label="Hozirgi vaqt">
+                <div class="hero-clock-time" id="widget-time">
+                    <span class="clock-digits" data-clock="h">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="s">00</span>
+                </div>
+                <div class="hero-clock-date" id="widget-date">--.--.----</div>
+                <div class="hero-clock-divider"></div>
+                <div class="hero-clock-weather" id="weather-card" data-weather="loading">
+                    <span class="weather-icon-emoji" id="weather-icon">☁️</span>
+                    <div class="hero-clock-weather-info">
+                        <span class="hero-clock-temp" id="weather-temp">--°</span>
+                        <span class="hero-clock-desc" id="weather-desc">Yuklanmoqda...</span>
+                    </div>
+                </div>
+            </aside>
         </div>
     </header>
  
@@ -162,48 +188,6 @@
     </div>
 
     <main class="container animate-fade-in" id="main-content">
-        <!-- Widgets Row (Soat va Ob-havo) — animatsiyali zamonaviy dizayn -->
-        <div class="widgets-row">
-            <div class="widget-card clock-card" id="clock-card">
-                <div class="widget-icon clock-svg" aria-hidden="true">
-                    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <linearGradient id="clockGrad" x1="0" y1="0" x2="1" y2="1">
-                                <stop offset="0%" stop-color="var(--accent-color)"/>
-                                <stop offset="100%" stop-color="var(--accent-hover)"/>
-                            </linearGradient>
-                        </defs>
-                        <circle cx="32" cy="32" r="28" fill="none" stroke="url(#clockGrad)" stroke-width="3" stroke-linecap="round" pathLength="100" class="clock-ring"/>
-                        <circle cx="32" cy="32" r="3" fill="url(#clockGrad)"/>
-                        <line x1="32" y1="32" x2="32" y2="16" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="clock-hand-h"/>
-                        <line x1="32" y1="32" x2="32" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="clock-hand-m"/>
-                        <line x1="32" y1="32" x2="32" y2="10" stroke="var(--accent-color)" stroke-width="1.5" stroke-linecap="round" class="clock-hand-s"/>
-                    </svg>
-                </div>
-                <div class="widget-info">
-                    <div class="clock-time" id="widget-time" aria-label="Hozirgi vaqt">
-                        <span class="clock-digits" data-clock="h">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="s">00</span>
-                    </div>
-                    <span class="widget-date" id="widget-date">--.--.----</span>
-                </div>
-                <span class="widget-pulse" aria-hidden="true"></span>
-            </div>
-
-            <div class="widget-card weather-card" id="weather-card" data-weather="loading">
-                <div class="widget-icon weather-icon-wrap" id="weather-icon-wrap" aria-hidden="true">
-                    <span class="weather-icon-emoji" id="weather-icon">☁️</span>
-                    <span class="weather-sparkle s1"></span>
-                    <span class="weather-sparkle s2"></span>
-                    <span class="weather-sparkle s3"></span>
-                </div>
-                <div class="widget-info">
-                    <span id="weather-temp">--°</span>
-                    <span class="weather-desc" id="weather-desc">Yuklanmoqda...</span>
-                    <span class="weather-location">📍 Buloqboshi, UZB</span>
-                </div>
-                <span class="widget-pulse" aria-hidden="true"></span>
-            </div>
-        </div>
 
         <!-- Qidiruv va Filtrlar -->
         <div class="toolbar">
@@ -211,13 +195,11 @@
                 <input type="text" class="search-input" id="search-input" placeholder="Kundalikdan qidirish..." data-i18n-placeholder="search.placeholder">
             </div>
             <div class="filter-tags" id="filter-tags">
-                <button class="filter-tag active" data-filter="all" data-i18n="filter.all">Barchasi</button>
-                <button class="filter-tag" data-filter="kun"><span data-i18n="filter.day">🌅 Kun</span></button>
-                <button class="filter-tag" data-filter="organganlarim"><span data-i18n="filter.learned">📚 O'rganganlarim</span></button>
-                <button class="filter-tag" data-filter="rejalar"><span data-i18n="filter.plans">🎯 Rejalar</span></button>
-                <button class="filter-tag" data-filter="musiqa"><span data-i18n="filter.music">🎵 Musiqa</span></button>
                 <button class="filter-tag flashcard-tag" id="flashcards-tag-btn" data-filter="__flashcards"><span data-i18n="filter.flashcards">🃏 Kartochka</span></button>
                 <button class="filter-tag deutsch-tag" id="deutsch-tag-btn" data-filter="__deutsch">🇩🇪 Deutsch</button>
+                <button class="filter-tag active" data-filter="all" data-i18n="filter.all">Barchasi</button>
+                <button class="filter-tag" data-filter="rejalar"><span data-i18n="filter.plans">🎯 Rejalar</span></button>
+                <button class="filter-tag" data-filter="musiqa"><span data-i18n="filter.music">🎵 Musiqa</span></button>
             </div>
         </div>
 
@@ -226,6 +208,14 @@
             <!-- Dinamik postlar JavaScript orqali joylanadi -->
         </section>
     </main>
+
+    <!-- Floating "+" tugma (faqat mobilda ko'rinadi) -->
+    <button type="button" class="fab" id="fab-add" aria-label="Yangi yozuv">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+    </button>
 
     <!-- Footer -->
     <footer class="footer">
