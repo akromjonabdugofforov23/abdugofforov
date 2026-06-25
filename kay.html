@@ -361,6 +361,7 @@
             <nav class="glz-nav">
                 <button class="glz-nav-item admin-tab active" data-tab="dashboard" data-title="Boshqaruv paneli"><span class="ico">🏠</span> Dashboard</button>
                 <button class="glz-nav-item admin-tab" data-tab="posts" data-title="Postlar"><span class="ico">📝</span> Postlar</button>
+                <button class="glz-nav-item admin-tab" data-tab="students" data-title="O'quvchilar va natijalar"><span class="ico">👥</span> O'quvchilar</button>
                 <button class="glz-nav-item admin-tab" data-tab="tasks" data-title="Rejalar"><span class="ico">📋</span> Rejalar</button>
                 <button class="glz-nav-item admin-tab" data-tab="portfolio" data-title="Portfolio"><span class="ico">💼</span> Portfolio</button>
                 <button class="glz-nav-item admin-tab" data-tab="security" data-title="Xavfsizlik"><span class="ico">🔐</span> Xavfsizlik</button>
@@ -437,6 +438,31 @@
                 <!-- POSTLAR TAB -->
                 <div class="tab-content" id="tab-posts">
                     <div id="admin-posts-list" class="glz-list"></div>
+                </div>
+
+                <!-- O'QUVCHILAR VA NATIJALAR TAB -->
+                <div class="tab-content" id="tab-students">
+                    <div class="glz-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+                        <div class="glz-card" style="margin:0;">
+                            <div class="glz-card-title">👥 Ro'yxatdan o'tganlar</div>
+                            <div id="students-count" style="font-size:32px;font-weight:700;color:#2dd4bf;">0</div>
+                            <div style="font-size:12px;color:#9aa;">jami o'quvchi</div>
+                        </div>
+                        <div class="glz-card" style="margin:0;">
+                            <div class="glz-card-title">📊 Test natijalari</div>
+                            <div id="results-count" style="font-size:32px;font-weight:700;color:#2dd4bf;">0</div>
+                            <div style="font-size:12px;color:#9aa;">jami ishlangan test</div>
+                        </div>
+                    </div>
+                    <div class="glz-card" style="margin-bottom:18px;">
+                        <div class="glz-card-title">👥 Foydalanuvchilar</div>
+                        <div id="students-list" style="overflow-x:auto;"><p style="color:#9aa;font-size:13px;">Yuklanmoqda...</p></div>
+                    </div>
+                    <div class="glz-card">
+                        <div class="glz-card-title">📊 Test natijalari jadvali</div>
+                        <p style="font-size:12px;color:#9aa;margin-bottom:12px;">Kim, qaysi test, nechta to'g'ri/xato, qachon</p>
+                        <div id="results-table" style="overflow-x:auto;"><p style="color:#9aa;font-size:13px;">Yuklanmoqda...</p></div>
+                    </div>
                 </div>
 
                 <!-- REJALAR TAB -->
@@ -931,6 +957,58 @@ document.getElementById('logout-btn').addEventListener('click', () => {
     pinError.style.display = 'none';
 });
 
+// ===== O'QUVCHILAR VA NATIJALAR =====
+function _adminHeaders() {
+    const h = {};
+    const token = sessionStorage.getItem('kay_admin_token');
+    const pin = sessionStorage.getItem('kay_admin_pin');
+    if (token) h['x-admin-token'] = token;
+    if (pin) h['x-admin-pin'] = pin;
+    return h;
+}
+function _esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+async function loadStudents() {
+    const usersBox = document.getElementById('students-list');
+    const resultsBox = document.getElementById('results-table');
+    if (!usersBox || !resultsBox) return;
+    try {
+        const res = await fetch('/admin/users', { headers: _adminHeaders() });
+        const data = await res.json().catch(() => ({}));
+        if (data.ok && Array.isArray(data.users)) {
+            document.getElementById('students-count').textContent = data.count || data.users.length;
+            usersBox.innerHTML = data.users.length ? `<table style="width:100%;border-collapse:collapse;font-size:14px;">
+                <thead><tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
+                    <th style="padding:8px 10px;">Ism</th><th style="padding:8px 10px;">Username</th><th style="padding:8px 10px;">Ro'yxatdan o'tgan</th>
+                </tr></thead><tbody>${data.users.map(u => {
+                    const d = u.createdAt ? new Date(u.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+                    return `<tr><td style="padding:8px 10px;font-weight:600;">${_esc(u.name)}</td><td style="padding:8px 10px;color:#9aa;">@${_esc(u.username)}</td><td style="padding:8px 10px;color:#9aa;font-size:12px;">${d}</td></tr>`;
+                }).join('')}</tbody></table>` : '<p style="color:#9aa;font-size:13px;">Hali hech kim ro\'yxatdan o\'tmagan.</p>';
+        } else {
+            usersBox.innerHTML = '<p style="color:#f87171;font-size:13px;">' + _esc(data.message || 'Yuklab bo\'lmadi (admin kerak)') + '</p>';
+        }
+    } catch (e) { usersBox.innerHTML = '<p style="color:#f87171;font-size:13px;">Serverga ulanib bo\'lmadi</p>'; }
+
+    try {
+        const res = await fetch('/results', { headers: _adminHeaders() });
+        const data = await res.json().catch(() => ({}));
+        if (data.ok && Array.isArray(data.results)) {
+            document.getElementById('results-count').textContent = data.count || data.results.length;
+            resultsBox.innerHTML = data.results.length ? `<table style="width:100%;border-collapse:collapse;font-size:14px;min-width:560px;">
+                <thead><tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
+                    <th style="padding:8px 10px;">O'quvchi</th><th style="padding:8px 10px;">Username</th><th style="padding:8px 10px;">Test</th><th style="padding:8px 10px;">To'g'ri</th><th style="padding:8px 10px;">Xato</th><th style="padding:8px 10px;">Foiz</th><th style="padding:8px 10px;">Sana</th>
+                </tr></thead><tbody>${data.results.map(r => {
+                    const d = new Date(r.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+                    const color = r.pct >= 80 ? '#34d399' : r.pct >= 60 ? '#fbbf24' : '#f87171';
+                    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.06);"><td style="padding:8px 10px;font-weight:600;">${_esc(r.name)}</td><td style="padding:8px 10px;color:#9aa;">@${_esc(r.username)}</td><td style="padding:8px 10px;">${_esc(r.testTitle || r.testId)}</td><td style="padding:8px 10px;color:#34d399;font-weight:600;">${r.score}</td><td style="padding:8px 10px;color:#f87171;font-weight:600;">${r.wrong}</td><td style="padding:8px 10px;color:${color};font-weight:700;">${r.pct}%</td><td style="padding:8px 10px;color:#9aa;font-size:12px;white-space:nowrap;">${d}</td></tr>`;
+                }).join('')}</tbody></table>` : '<p style="color:#9aa;font-size:13px;">Hali test ishlanmagan.</p>';
+        } else {
+            resultsBox.innerHTML = '<p style="color:#f87171;font-size:13px;">' + _esc(data.message || 'Yuklab bo\'lmadi') + '</p>';
+        }
+    } catch (e) { resultsBox.innerHTML = '<p style="color:#f87171;font-size:13px;">Serverga ulanib bo\'lmadi</p>'; }
+}
+
 // ===== SIDEBAR NAV / TABLAR =====
 document.querySelectorAll('.admin-tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -938,6 +1016,7 @@ document.querySelectorAll('.admin-tab').forEach(tab => {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         tab.classList.add('active');
         document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+        if (tab.dataset.tab === 'students') loadStudents();
         const titleEl = document.getElementById('glz-page-title');
         if (titleEl) titleEl.textContent = tab.dataset.title || tab.textContent.trim();
         // mobil sidebarni yopish

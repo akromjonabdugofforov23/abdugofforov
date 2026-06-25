@@ -2637,3 +2637,183 @@ body.admin-mode #login-btn {
 body:not(.admin-mode) .fab {
     display: none !important;
 }
+
+
+
+/* ============================================================
+   TURNIR (Tournament)
+   ============================================================ */
+.t-hero { text-align: center; margin-bottom: 28px; }
+.t-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: 16px;
+    padding: 22px;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+}
+.t-player {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+}
+.t-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--grad-primary);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.t-avatar-sm { width: 32px; height: 32px; font-size: 14px; }
+
+.t-start-btn { padding: 13px 30px; font-size: 15px; }
+
+/* Variantlar (turnir savol) */
+.t-opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    width: 100%;
+}
+.t-opt:hover { border-color: var(--color-purple-light); transform: translateY(-1px); }
+.t-opt-letter {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--tag-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+    color: var(--color-purple-light);
+}
+.t-opt-disabled { pointer-events: none; }
+.t-opt-correct {
+    background: rgba(34,197,94,0.15) !important;
+    border-color: #22c55e !important;
+    color: #22c55e !important;
+}
+.t-opt-correct .t-opt-letter { background: #22c55e; color: #fff; }
+.t-opt-wrong {
+    background: rgba(239,68,68,0.15) !important;
+    border-color: #ef4444 !important;
+    color: #ef4444 !important;
+}
+.t-opt-wrong .t-opt-letter { background: #ef4444; color: #fff; }
+
+/* Leaderboard */
+.t-lb-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--glass-border);
+    font-size: 14px;
+    text-align: left;
+}
+.t-lb-rank { width: 32px; font-weight: 700; flex-shrink: 0; text-align: center; }
+.t-lb-name { flex: 1; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t-lb-score { color: var(--text-secondary); font-size: 13px; }
+.t-lb-pct { width: 50px; text-align: right; color: var(--color-purple-light); font-weight: 700; }
+.t-badge-reg {
+    display: inline-block;
+    color: #22c55e;
+    font-size: 11px;
+    margin-left: 4px;
+}
+.tournament-tag {
+    border-color: rgba(251, 191, 36, 0.5);
+    color: #fbbf24;
+}
+.tournament-tag:hover {
+    border-color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+    color: #fff;
+}
+
+
+
+/* ============================================================
+   AUTH UI — login/register modal, foydalanuvchi menyusi
+   ============================================================ */
+.auth-tabs {
+    display: flex; gap: 6px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 4px; margin-bottom: 20px;
+}
+.auth-tab {
+    flex: 1; padding: 10px; border: none; background: transparent;
+    color: var(--text-secondary); font-size: 14px; font-weight: 600;
+    border-radius: 9px; cursor: pointer; transition: background 0.25s, color 0.25s;
+}
+.auth-tab.active {
+    background: var(--grad-primary); color: #fff;
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+}
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.auth-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.auth-error {
+    display: none; color: #fca5a5; font-size: 13px; padding: 8px 12px;
+    background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px;
+}
+.auth-error.show { display: block; }
+
+.user-menu { position: relative; display: inline-flex; }
+.user-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 12px 5px 5px; background: var(--glass-bg);
+    border: 1px solid var(--glass-border); border-radius: 999px;
+    cursor: pointer; color: var(--text-primary); transition: border-color 0.25s, background 0.25s;
+}
+.user-chip:hover { border-color: var(--glass-border-hover); background: var(--glass-bg-strong); }
+.user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--grad-primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; flex-shrink: 0;
+}
+.user-name {
+    font-size: 13px; font-weight: 600; max-width: 120px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.user-dropdown {
+    position: absolute; top: calc(100% + 8px); right: 0; min-width: 200px;
+    background: var(--modal-bg); border: 1px solid var(--glass-border);
+    border-radius: 14px; box-shadow: var(--shadow-lg); padding: 8px;
+    opacity: 0; visibility: hidden; transform: translateY(-6px);
+    transition: opacity 0.2s, transform 0.2s, visibility 0.2s; z-index: 150;
+    backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+.user-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.user-dropdown-head {
+    padding: 10px 12px; border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 6px; display: flex; flex-direction: column; gap: 2px;
+}
+.user-dropdown-head strong { font-size: 14px; color: var(--text-primary); }
+.user-dropdown-head small { font-size: 12px; color: var(--color-purple-light); }
+.user-dd-item {
+    width: 100%; text-align: left; padding: 10px 12px; border: none;
+    background: transparent; color: var(--text-secondary); font-size: 14px;
+    border-radius: 9px; cursor: pointer; transition: background 0.2s, color 0.2s;
+}
+.user-dd-item:hover { background: var(--glass-bg); color: var(--text-primary); }
+@media (max-width: 768px) {
+    .user-name { display: none; }
+    .user-chip { padding: 5px; }
+}
