@@ -88,7 +88,7 @@ a {
     animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Navigation Bar — 2 qatorli: tepada logo+asboblar, pastda nav linklar */
+/* Navigation Bar — bitta qatorli, logo + nav linklar + asboblar */
 .navbar {
     position: sticky;
     top: 0;
@@ -102,21 +102,14 @@ a {
 
 .navbar-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding-top: 16px;
-    padding-bottom: 12px;
+    gap: 10px;
+    padding-top: 14px;
+    padding-bottom: 14px;
 }
 
-.navbar-links-row {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding-bottom: 12px;
-    overflow-x: auto;
-    scrollbar-width: none;
-}
-.navbar-links-row::-webkit-scrollbar { display: none; }
+/* Eski 2-qator (navbar-links-row) endi kerak emas — agar HTML qoldirilsa ham yashiramiz */
+.navbar-links-row { display: none; }
 
 .logo {
     font-family: 'Playfair Display', serif;
@@ -133,14 +126,16 @@ a {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    margin-left: auto; /* o'ng tomonga itarib turadi */
 }
 
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     flex-wrap: nowrap;
+    margin-left: 18px;
 }
 
 .nav-links a {
@@ -148,9 +143,8 @@ a {
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.5px;
     color: var(--text-secondary);
-    position: relative;
     cursor: pointer;
     padding: 8px 14px;
     border-radius: 999px;
@@ -175,7 +169,7 @@ a {
 }
 
 .nav-links a.active {
-    color: var(--text-primary);
+    color: var(--accent-color);
     background-color: var(--tag-bg);
     border-color: var(--border-color);
 }
@@ -779,64 +773,76 @@ a {
 }
 
 /* ==========================================================
-   MOBIL MOSLASHUV (≤ 768px) — Professional, tepada doim ko'rinadigan nav
+   MOBIL MOSLASHUV (≤ 768px) — Bitta qatorli professional navbar
    ========================================================== */
 @media (max-width: 768px) {
+    /* Container — mobilda kichik padding, butun ekranni egallaydi */
+    :root { --container-pad: 12px; }
+
     .navbar-row {
-        padding-top: 12px;
+        padding-top: 10px;
         padding-bottom: 10px;
-    }
-    .navbar-links-row {
-        padding-bottom: 10px;
-        padding-top: 0;
         gap: 6px;
     }
-    .logo { font-size: 20px; }
-
-    .nav-right { gap: 8px; }
-
-    /* Nav linklarni mobilda gorizontal pill bar shaklida */
-    .nav-links {
-        width: 100%;
-        gap: 6px;
-        overflow-x: auto;
-        scrollbar-width: none;
-        padding-bottom: 2px;
+    .logo {
+        font-size: 19px;
+        letter-spacing: -0.4px;
     }
-    .nav-links::-webkit-scrollbar { display: none; }
+
+    .nav-right { gap: 6px; }
+    .nav-links { gap: 2px; margin-left: 6px; }
+
+    /* Mobilda nav linklar icon-only — bitta qatorga sig'ishi uchun */
     .nav-links a {
-        font-size: 12px;
-        letter-spacing: 0.4px;
-        padding: 8px 12px;
-        flex-shrink: 0;
+        font-size: 0; /* matnni yashirib, faqat icon qoldiramiz */
+        padding: 8px;
+        min-width: 36px;
+        min-height: 36px;
+        justify-content: center;
+        gap: 0;
     }
+    .nav-links a .nav-text { display: none; }
+    .nav-links a svg {
+        width: 18px;
+        height: 18px;
+    }
+    .nav-links a.active {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+        color: #fff;
+    }
+    .nav-links a.active svg { color: #fff; }
 
-    /* Mobil dagi Yozish tugmasini ixchamlash */
+    /* Yozish tugmasi — mobilda icon-only */
     #add-post-btn {
-        padding: 8px 12px;
+        padding: 0;
+        width: 36px;
+        height: 36px;
+        min-height: 36px;
+        border-radius: 50%;
+        justify-content: center;
     }
-    #add-post-btn span { display: none; }
+    #add-post-btn .nav-text { display: none; }
 
     /* Hero — mobilda kompakt */
-    .hero { padding: 30px 0 20px 0; }
-    .hero-title { font-size: 24px; line-height: 1.3; }
+    .hero { padding: 24px 0 16px 0; }
+    .hero-title { font-size: 22px; line-height: 1.3; }
     .hero-subtitle { font-size: 10px; letter-spacing: 2px; }
 
-    /* Widgets row — mobilda 1 ustun */
+    /* Widgets row — mobilda 1 ustun, butun kenglikda */
     .widgets-row {
         grid-template-columns: 1fr;
         gap: 12px;
-        margin-bottom: 20px;
+        margin: 14px 0 18px 0;
     }
-    .widget-card { padding: 14px 16px; }
 
     /* Toolbar — kompakt */
     .toolbar {
         flex-direction: column;
         align-items: stretch;
-        margin-top: 16px;
-        margin-bottom: 14px;
-        gap: 12px;
+        margin-top: 14px;
+        margin-bottom: 12px;
+        gap: 10px;
     }
     .search-box { max-width: 100%; }
     .filter-tags {
@@ -849,19 +855,19 @@ a {
     .filter-tags::-webkit-scrollbar { display: none; }
     .filter-tag { flex-shrink: 0; }
 
-    /* Blog grid — mobilda 1 ustun, kichikroq gap */
+    /* Blog grid — mobilda 1 ustun, butun kenglikda */
     .blog-grid {
         grid-template-columns: 1fr;
-        gap: 18px;
-        padding: 12px 0 60px 0;
+        gap: 16px;
+        padding: 8px 0 60px 0;
     }
     .post-image-wrapper, .post-image { height: 200px; }
-    .post-content { padding: 20px; }
-    .post-title { font-size: 19px; }
+    .post-content { padding: 18px; }
+    .post-title { font-size: 18px; }
 
     /* Form — mobilda 1 ustun */
     .form-row { grid-template-columns: 1fr; }
-    .write-form { padding: 24px 20px; }
+    .write-form { padding: 24px 18px; }
     .write-title { font-size: 22px; margin-bottom: 18px; }
 
     /* Footer — markazlash */
@@ -872,95 +878,47 @@ a {
     }
     .footer-socials a { margin: 0 10px; }
 
-    /* Modal — to'liq ekran, kattaroq padding */
+    /* Modal */
     .modal-body { padding: 20px; }
     .modal-post-title { font-size: 22px; }
     .modal-post-image { height: 200px; }
 
-    /* Drawer va hamburger eslatma — yo'q qilamiz */
+    /* Eski drawer/hamburger — yashirin */
     .hamburger,
     .mobile-overlay { display: none !important; }
+
+    /* iOS auto-zoom oldini olish */
+    .form-input, .form-textarea {
+        font-size: 15px;
+        padding: 11px 13px;
+    }
+    .btn-primary, .btn-secondary, .btn-icon { min-height: 36px; }
+    #cursor-follower { display: none !important; }
 }
 
 @media (max-width: 480px) {
-    .hero-title { font-size: 21px; }
-    .navbar-row { padding-top: 10px; padding-bottom: 8px; }
-    .logo { font-size: 19px; }
+    .hero-title { font-size: 20px; }
+    .logo { font-size: 18px; }
+    /* Juda kichik ekranlarda nav linklari icon-only bo'lib qoladi */
 }
 
-/* --- WIDGETS ROW --- */
+@media (max-width: 360px) {
+    :root { --container-pad: 10px; }
+    .logo { font-size: 17px; }
+    .nav-links a { padding: 6px; min-width: 32px; min-height: 32px; }
+    .nav-links a svg { width: 16px; height: 16px; }
+    #add-post-btn { width: 32px; height: 32px; min-height: 32px; }
+    .lang-toggle { padding: 6px 8px; min-height: 32px; }
+    .btn-icon { padding: 6px; }
+}
+
+/* --- WIDGETS ROW (Soat va Ob-havo) — Eski statik stillar olib tashlandi.
+   Yangi animatsiyali widget'lar fayl oxiridagi "WIDGETS ANIMATED" bo'limida. */
 .widgets-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-    margin-top: 10px;
-}
-
-.widget-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 18px 24px;
-    box-shadow: var(--shadow-sm);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    transition: transform var(--transition-speed) ease, border-color var(--transition-speed) ease;
-}
-
-.widget-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--accent-color);
-}
-
-.widget-icon {
-    font-size: 24px;
-    background-color: var(--tag-bg);
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.widget-info {
-    display: flex;
-    flex-direction: column;
-}
-
-#widget-time {
-    font-family: monospace;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.2;
-}
-
-.widget-date {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-#weather-temp {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.2;
-}
-
-.weather-desc {
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-.weather-location {
-    font-size: 10px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    gap: 16px;
+    margin: 20px 0 24px 0;
 }
 
 /* --- ADMIN TASK LIST ITEMS --- */
@@ -2161,18 +2119,319 @@ a {
 }
 
 /* ============================================================
-   Eski tugma stilini kuchaytirish — mobilda ham yaxshi tap-target
+   Eski tugma stilini kuchaytirish — endi yuqoridagi mobil
+   media query ichiga ko'chirilgan. Bu blok bo'sh qoldirilgan
+   (oldingi versiya bilan moslik uchun saqlanadi).
    ============================================================ */
+
+
+
+/* ============================================================
+   WIDGETS ANIMATED — Soat va Ob-havo (mobil + veb bir xil)
+   ============================================================ */
+
+/* Asosiy kartochka — gradient fon, glass effekti, hover animatsiya */
+.widget-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+    isolation: isolate;
+    min-height: 92px;
+}
+
+/* Gradient overlay (fonida sekin harakatlanadigan nur) */
+.widget-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 80% at 0% 0%, rgba(212,163,115,0.10), transparent 60%),
+                radial-gradient(100% 80% at 100% 100%, rgba(212,163,115,0.07), transparent 55%);
+    opacity: 1;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+}
+[data-theme="dark"] .widget-card::before {
+    background: radial-gradient(120% 80% at 0% 0%, rgba(0,255,136,0.10), transparent 60%),
+                radial-gradient(100% 80% at 100% 100%, rgba(0,210,255,0.08), transparent 55%);
+}
+.widget-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-color);
+}
+.widget-card:hover::before { opacity: 1.3; }
+
+/* Pulsing shimmer line at the top */
+.widget-pulse {
+    position: absolute;
+    top: 0;
+    left: -30%;
+    width: 30%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+    animation: widget-shimmer 6s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes widget-shimmer {
+    0% { left: -30%; opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { left: 130%; opacity: 0; }
+}
+
+/* Widget icon — yumaloq fon */
+.widget-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--tag-bg), var(--card-bg));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: inset 0 0 0 1px var(--border-color);
+}
+
+.widget-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+/* ---- SOAT (analog SVG + raqamli) ---- */
+.clock-svg svg {
+    width: 56px;
+    height: 56px;
+    color: var(--text-secondary);
+}
+.clock-ring {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 0;
+    animation: clock-ring-spin 60s linear infinite;
+    transform-origin: 32px 32px;
+}
+@keyframes clock-ring-spin {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -100; }
+}
+
+/* Soat strelkalari — JS orqali burchak set qiladi, lekin
+   smooth transition CSS bilan boriladi */
+.clock-hand-h, .clock-hand-m { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: 32px 32px; }
+.clock-hand-s { transition: transform 0.2s cubic-bezier(0.5, 0, 0, 1); transform-origin: 32px 32px; }
+
+/* Raqamli vaqt */
+.clock-time {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.15;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    font-variant-numeric: tabular-nums;
+}
+.clock-digits {
+    display: inline-block;
+    min-width: 1.1em;
+    text-align: center;
+    transform-style: preserve-3d;
+}
+.clock-digits.flip {
+    animation: clock-digit-flip 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes clock-digit-flip {
+    0% { transform: translateY(-6px); opacity: 0; }
+    60% { transform: translateY(2px); opacity: 1; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+.clock-colon {
+    color: var(--accent-color);
+    margin: 0 1px;
+    animation: clock-colon-pulse 1s ease-in-out infinite;
+}
+@keyframes clock-colon-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.25; transform: scale(0.9); }
+}
+
+.widget-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* ---- OB-HAVO ---- */
+.weather-icon-wrap {
+    position: relative;
+    font-size: 32px;
+    overflow: visible;
+}
+.weather-icon-emoji {
+    display: inline-block;
+    line-height: 1;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12));
+    transform-origin: center;
+    /* Holatga qarab animatsiya yuqorida data-weather atributi orqali tanlanadi */
+}
+
+/* Sparkle yulduzchalar (tunda yorishadi) */
+.weather-sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 8px var(--accent-color);
+}
+.weather-sparkle.s1 { top: 6px; left: -2px; animation: sparkle 3.2s ease-in-out infinite; }
+.weather-sparkle.s2 { bottom: 4px; right: -4px; animation: sparkle 3.2s ease-in-out 1.1s infinite; }
+.weather-sparkle.s3 { top: 20px; right: -8px; animation: sparkle 3.2s ease-in-out 2.0s infinite; }
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0.3); }
+    50% { opacity: 0.85; transform: scale(1); }
+}
+
+#weather-temp {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+}
+
+.weather-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.weather-location {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+    margin-top: 1px;
+}
+
+/* ---- Ob-havo holati bo'yicha animatsiyalar ---- */
+/* Quyoshli */
+.weather-card[data-weather="sunny"] .weather-icon-emoji {
+    animation: sun-rotate 18s linear infinite;
+}
+.weather-card[data-weather="sunny"] .widget-icon {
+    background: linear-gradient(135deg, #fff5d0, #ffe6a0);
+    box-shadow: inset 0 0 0 1px rgba(255,206,0,0.4), 0 0 20px rgba(255,206,0,0.15);
+}
+[data-theme="dark"] .weather-card[data-weather="sunny"] .widget-icon {
+    background: linear-gradient(135deg, rgba(255,206,0,0.18), rgba(255,206,0,0.06));
+}
+@keyframes sun-rotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* Qisman bulutli */
+.weather-card[data-weather="partly"] .weather-icon-emoji,
+.weather-card[data-weather="cloudy"] .weather-icon-emoji,
+.weather-card[data-weather="foggy"] .weather-icon-emoji {
+    animation: cloud-drift 5s ease-in-out infinite;
+}
+@keyframes cloud-drift {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    25%      { transform: translateX(3px) translateY(-1px); }
+    75%      { transform: translateX(-3px) translateY(1px); }
+}
+
+/* Yomg'irli */
+.weather-card[data-weather="rainy"] .weather-icon-emoji {
+    animation: rain-bounce 1.2s ease-in-out infinite;
+}
+.weather-card[data-weather="rainy"] .widget-icon {
+    background: linear-gradient(135deg, #d8e6f3, #b8d0e7);
+}
+[data-theme="dark"] .weather-card[data-weather="rainy"] .widget-icon {
+    background: linear-gradient(135deg, rgba(96,165,250,0.18), rgba(96,165,250,0.05));
+}
+@keyframes rain-bounce {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-3px); }
+}
+
+/* Qorli */
+.weather-card[data-weather="snowy"] .weather-icon-emoji {
+    animation: snow-spin 6s linear infinite;
+}
+.weather-card[data-weather="snowy"] .widget-icon {
+    background: linear-gradient(135deg, #f0f6ff, #d8e7ff);
+}
+@keyframes snow-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* Bo'ronli (chaqmoq) */
+.weather-card[data-weather="storm"] .weather-icon-emoji {
+    animation: storm-flash 1.8s ease-in-out infinite;
+}
+.weather-card[data-weather="storm"] .widget-icon {
+    background: linear-gradient(135deg, #bcc4d2, #828ea3);
+}
+@keyframes storm-flash {
+    0%, 90%, 100% { filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12)); }
+    92%, 96%     { filter: drop-shadow(0 0 14px rgba(255,255,150,0.95)) brightness(1.3); }
+}
+
+/* Yuklanmoqda */
+.weather-card[data-weather="loading"] .weather-icon-emoji {
+    animation: weather-pulse 1.6s ease-in-out infinite;
+    opacity: 0.6;
+}
+@keyframes weather-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(0.95); }
+    50%      { opacity: 1; transform: scale(1); }
+}
+
+/* ---- Mobilda widget'lar ---- */
 @media (max-width: 768px) {
-    .btn-primary,
-    .btn-secondary,
-    .btn-icon {
-        min-height: 36px;
+    .widget-card {
+        padding: 14px 16px;
+        border-radius: 16px;
+        gap: 14px;
+        min-height: 84px;
     }
-    .form-input, .form-textarea {
-        font-size: 15px; /* iOS auto-zoom oldini olish: 16px ga yaqin */
-        padding: 11px 13px;
+    .widget-icon { width: 48px; height: 48px; }
+    .clock-svg svg { width: 48px; height: 48px; }
+    .weather-icon-wrap { font-size: 28px; }
+    .clock-time { font-size: 20px; }
+    #weather-temp { font-size: 22px; }
+    .weather-desc { font-size: 12px; }
+    .weather-location { font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* Foydalanuvchi animatsiyalarni o'chirgan bo'lsa */
+    .clock-ring,
+    .widget-pulse,
+    .clock-digits.flip,
+    .clock-colon,
+    .weather-icon-emoji,
+    .weather-sparkle {
+        animation: none !important;
     }
-    /* Sichqonchaga ergashuvchi doira — mobil/touchda ko'rinmasin */
-    #cursor-follower { display: none !important; }
 }

@@ -147,16 +147,43 @@ function initMouseFollower() {
     });
 }
 
-// 4. Ob-havo va Vaqt Vidjeti
+// 4. Ob-havo va Vaqt Vidjeti — animatsiyali zamonaviy soat
 function updateClock() {
     const now = new Date();
-    const timeOptions = { timeZone: 'Asia/Tashkent', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+    // Toshkent vaqti — qismlar
+    const fmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Tashkent', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+    });
+    const parts = fmt.formatToParts(now).reduce((acc, p) => { if (p.type !== 'literal') acc[p.type] = p.value; return acc; }, {});
+    const h = parts.hour || '00';
+    const m = parts.minute || '00';
+    const s = parts.second || '00';
+
+    const hEl = document.querySelector('[data-clock="h"]');
+    const mEl = document.querySelector('[data-clock="m"]');
+    const sEl = document.querySelector('[data-clock="s"]');
+    if (hEl && hEl.textContent !== h) { hEl.textContent = h; hEl.classList.remove('flip'); void hEl.offsetWidth; hEl.classList.add('flip'); }
+    if (mEl && mEl.textContent !== m) { mEl.textContent = m; mEl.classList.remove('flip'); void mEl.offsetWidth; mEl.classList.add('flip'); }
+    if (sEl) sEl.textContent = s;
+
+    // Sana
     const dateOptions = { timeZone: 'Asia/Tashkent', year: 'numeric', month: '2-digit', day: '2-digit' };
-    
-    document.getElementById('widget-time').textContent = now.toLocaleTimeString('uz-UZ', timeOptions);
-    
-    const dStr = now.toLocaleDateString('uz-UZ', dateOptions);
-    document.getElementById('widget-date').textContent = dStr;
+    const dateEl = document.getElementById('widget-date');
+    if (dateEl) dateEl.textContent = now.toLocaleDateString('uz-UZ', dateOptions);
+
+    // Soat strelkalari — analog SVG ichida
+    const hh = parseInt(h, 10) % 12;
+    const mm = parseInt(m, 10);
+    const ss = parseInt(s, 10);
+    const hAngle = (hh + mm / 60) * 30;
+    const mAngle = (mm + ss / 60) * 6;
+    const sAngle = ss * 6;
+    const hHand = document.querySelector('.clock-hand-h');
+    const mHand = document.querySelector('.clock-hand-m');
+    const sHand = document.querySelector('.clock-hand-s');
+    if (hHand) hHand.setAttribute('transform', `rotate(${hAngle} 32 32)`);
+    if (mHand) mHand.setAttribute('transform', `rotate(${mAngle} 32 32)`);
+    if (sHand) sHand.setAttribute('transform', `rotate(${sAngle} 32 32)`);
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -166,29 +193,34 @@ async function fetchWeather() {
         // Buloqboshi koordinatalari: 40.6932 N, 72.4836 E
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=40.6932&longitude=72.4836&current=temperature_2m,weather_code&timezone=Asia%2FTashkent');
         const data = await res.json();
-        
+
         if (data && data.current) {
             const temp = Math.round(data.current.temperature_2m);
             const code = data.current.weather_code;
-            
-            document.getElementById('weather-temp').textContent = `${temp}°C`;
-            
-            let icon = '☁️';
-            let desc = 'Bulutli';
-            if (code === 0) { icon = '☀️'; desc = 'Quyoshli'; }
-            else if (code >= 1 && code <= 3) { icon = '⛅'; desc = 'Qisman bulutli'; }
-            else if (code >= 45 && code <= 48) { icon = '🌫️'; desc = 'Tumanli'; }
-            else if (code >= 51 && code <= 65) { icon = '🌧️'; desc = 'Yomg\'ir'; }
-            else if (code >= 71 && code <= 77) { icon = '❄️'; desc = 'Qorli'; }
-            else if (code >= 80 && code <= 82) { icon = '🌦️'; desc = 'Jala yomg\'ir'; }
-            else if (code >= 95 && code <= 99) { icon = '⛈️'; desc = 'Momaqaldiroq'; }
-            
+
+            document.getElementById('weather-temp').textContent = `${temp}°`;
+
+            // Ob-havo holatlari — emoji va animatsiya uchun kategoriya
+            let icon = '☁️', desc = 'Bulutli', kind = 'cloudy';
+            if (code === 0) { icon = '☀️'; desc = 'Quyoshli'; kind = 'sunny'; }
+            else if (code >= 1 && code <= 3) { icon = '⛅'; desc = 'Qisman bulutli'; kind = 'partly'; }
+            else if (code >= 45 && code <= 48) { icon = '🌫️'; desc = 'Tumanli'; kind = 'foggy'; }
+            else if (code >= 51 && code <= 65) { icon = '🌧️'; desc = "Yomg'ir"; kind = 'rainy'; }
+            else if (code >= 71 && code <= 77) { icon = '❄️'; desc = 'Qorli'; kind = 'snowy'; }
+            else if (code >= 80 && code <= 82) { icon = '🌦️'; desc = "Jala yomg'ir"; kind = 'rainy'; }
+            else if (code >= 95 && code <= 99) { icon = '⛈️'; desc = 'Momaqaldiroq'; kind = 'storm'; }
+
             document.getElementById('weather-icon').textContent = icon;
             document.getElementById('weather-desc').textContent = desc;
+            const card = document.getElementById('weather-card');
+            if (card) card.setAttribute('data-weather', kind);
         }
     } catch (e) {
         console.error('Ob-havoni yuklashda xatolik:', e);
-        document.getElementById('weather-desc').textContent = 'Kutish rejimi';
+        const desc = document.getElementById('weather-desc');
+        if (desc) desc.textContent = 'Kutish rejimi';
+        const card = document.getElementById('weather-card');
+        if (card) card.setAttribute('data-weather', 'offline');
     }
 }
 fetchWeather();
