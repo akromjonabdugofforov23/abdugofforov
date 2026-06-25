@@ -1,6 +1,8 @@
 // ===== Abdugofforov PWA Service Worker =====
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
-const CACHE = 'abdu-cache-v1';
+// CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
+// bilan qorishib qolmasligi uchun
+const CACHE = 'abdu-cache-v2';
 const SHELL = [
     '/',
     '/index.html',
