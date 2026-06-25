@@ -2198,26 +2198,28 @@ function initCarousel() {
         const dot = document.createElement('button');
         dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
         dot.setAttribute('aria-label', 'Slide ' + (i + 1));
-        dot.addEventListener('click', () => goTo(i));
+        dot.addEventListener('click', () => { goTo(i); resetAuto(); });
         dotsContainer.appendChild(dot);
     }
 
     function goTo(idx) {
         current = ((idx % total) + total) % total;
-        track.style.transform = `translateX(-${current * 100}%)`;
-        dotsContainer.querySelectorAll('.carousel-dot').forEach((d, i) => {
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        dotsContainer.querySelectorAll('.carousel-dot').forEach(function(d, i) {
             d.classList.toggle('active', i === current);
         });
     }
 
+    // Slide-left: always advance forward (right to left)
     function next() { goTo(current + 1); }
     function prev() { goTo(current - 1); }
 
-    if (prevBtn) prevBtn.addEventListener('click', () => { prev(); resetAuto(); });
-    if (nextBtn) nextBtn.addEventListener('click', () => { next(); resetAuto(); });
+    if (prevBtn) prevBtn.addEventListener('click', function() { prev(); resetAuto(); });
+    if (nextBtn) nextBtn.addEventListener('click', function() { next(); resetAuto(); });
 
+    // Auto-play: 15 seconds interval
     function startAuto() {
-        autoSlideInterval = setInterval(next, 4000);
+        autoSlideInterval = setInterval(next, 15000);
     }
     function stopAuto() {
         clearInterval(autoSlideInterval);
@@ -2231,7 +2233,7 @@ function initCarousel() {
     startAuto();
 
     // Pause carousel when tab is hidden to prevent slide jumps on return
-    document.addEventListener('visibilitychange', () => {
+    document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
             stopAuto();
         } else {
@@ -2239,13 +2241,9 @@ function initCarousel() {
         }
     });
 
-    // Touch/swipe support
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    // Add onerror fallback for carousel images
-    slides.forEach(slide => {
-        const img = slide.querySelector('img');
+    // Image onerror fallback: hide broken image (shows dark bg)
+    slides.forEach(function(slide) {
+        var img = slide.querySelector('img');
         if (img) {
             img.onerror = function() {
                 this.style.display = 'none';
@@ -2253,10 +2251,35 @@ function initCarousel() {
         }
     });
 
-    track.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-    track.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        const diff = touchStartX - touchEndX;
+    // Touch/swipe support via pointer events
+    var pointerStartX = 0;
+    var pointerDown = false;
+
+    track.addEventListener('pointerdown', function(e) {
+        pointerStartX = e.clientX;
+        pointerDown = true;
+        track.setPointerCapture(e.pointerId);
+    });
+
+    track.addEventListener('pointerup', function(e) {
+        if (!pointerDown) return;
+        pointerDown = false;
+        var diff = pointerStartX - e.clientX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) { next(); } else { prev(); }
+            resetAuto();
+        }
+    });
+
+    track.addEventListener('pointercancel', function() {
+        pointerDown = false;
+    });
+
+    // Also support touch events for older mobile browsers
+    var touchStartX = 0;
+    track.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    track.addEventListener('touchend', function(e) {
+        var diff = touchStartX - e.changedTouches[0].screenX;
         if (Math.abs(diff) > 50) {
             if (diff > 0) next(); else prev();
             resetAuto();
