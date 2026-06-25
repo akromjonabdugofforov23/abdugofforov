@@ -112,48 +112,103 @@
                     <span data-i18n="nav.write" class="nav-text">Yozish</span>
                 </button>
 
-                <!-- Kirish tugmasi (mehmonlar uchun — admin panelga) -->
-                <a class="btn-primary" id="login-btn" href="/kay" aria-label="Admin panelga kirish" title="Kirish">
+                <!-- Kirish tugmasi (mehmonlar/o'quvchilar uchun — ro'yxatdan o'tish/kirish modali) -->
+                <button class="btn-primary" id="login-btn" type="button" aria-label="Kirish yoki ro'yxatdan o'tish" title="Kirish">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
                     <span data-i18n="nav.login" class="nav-text">Kirish</span>
-                </a>
+                </button>
+
+                <!-- Foydalanuvchi menyusi (login bo'lganda ko'rinadi) -->
+                <div class="user-menu" id="user-menu" style="display:none;">
+                    <button class="user-chip" id="user-chip" type="button" title="Profil">
+                        <span class="user-avatar" id="user-avatar">A</span>
+                        <span class="user-name" id="user-name-label">Foydalanuvchi</span>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <div class="user-dropdown-head">
+                            <strong id="user-dd-name">Foydalanuvchi</strong>
+                            <small id="user-dd-username">@user</small>
+                        </div>
+                        <button class="user-dd-item" id="user-results-btn" type="button">📊 Mening natijalarim</button>
+                        <button class="user-dd-item" id="user-logout-btn" type="button">⎋ Chiqish</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
  
-    <!-- Hero Section — particles + typewriter -->
+    <!-- Hero Section — particles + subtitle + tagline -->
     <header class="hero animate-fade-in" id="hero">
         <canvas class="particles-canvas" id="particles-canvas" aria-hidden="true"></canvas>
         <div class="container hero-inner">
             <div class="hero-content">
-                <p class="hero-subtitle" id="hero-sub" data-i18n="hero.subtitle">Shaxsiy blog & Hikoyalar</p>
-                <h1 class="hero-title" id="hero-main-title">
-                    <span class="hero-title-text" data-i18n="hero.title">Vaqt Sarguzashtlari</span><span class="hero-cursor">|</span>
-                </h1>
-                <p class="hero-tagline">Dasturchi <span class="dot">·</span> Yozuvchi <span class="dot">·</span> Tilshunos</p>
-                <button class="hero-cta" id="hero-cta-btn" type="button">
-                    <span>Yozuvlarni ko'rish</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </button>
+                <p class="hero-subtitle" id="hero-sub" data-i18n="hero.subtitle">Shaxsiy blog & rivojlanish uchun</p>
+                <p class="hero-tagline">Medik <span class="dot">·</span> Dasturchi <span class="dot">·</span> Futbolchi</p>
             </div>
-
-            <!-- Yangi soat dizayni — yonida logo yo'q, faqat raqamli vaqt va sana -->
-            <aside class="hero-clock" id="hero-clock" aria-label="Hozirgi vaqt">
-                <div class="hero-clock-time" id="widget-time">
-                    <span class="clock-digits" data-clock="h">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="s">00</span>
-                </div>
-                <div class="hero-clock-date" id="widget-date">--.--.----</div>
-                <div class="hero-clock-divider"></div>
-                <div class="hero-clock-weather" id="weather-card" data-weather="loading">
-                    <span class="weather-icon-emoji" id="weather-icon">☁️</span>
-                    <div class="hero-clock-weather-info">
-                        <span class="hero-clock-temp" id="weather-temp">--°</span>
-                        <span class="hero-clock-desc" id="weather-desc">Yuklanmoqda...</span>
-                    </div>
-                </div>
-            </aside>
         </div>
     </header>
+
+    <!-- Germany Top-10 Carousel -->
+    <section class="germany-carousel" id="germany-carousel">
+        <div class="carousel-track" id="carousel-track">
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1534313314376-a72289b6181e?w=800&q=80" alt="Neuschwanstein Castle" loading="lazy">
+                <span class="carousel-geo-badge">📍 Neuschwanstein Castle, Bavaria</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&q=80" alt="Brandenburg Gate" loading="lazy">
+                <span class="carousel-geo-badge">📍 Brandenburg Gate, Berlin</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1567922045116-2a00fae2ed03?w=800&q=80" alt="Cologne Cathedral" loading="lazy">
+                <span class="carousel-geo-badge">📍 Cologne Cathedral, Koln</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800&q=80" alt="The Black Forest" loading="lazy">
+                <span class="carousel-geo-badge">📍 The Black Forest, Baden-Wurttemberg</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1515091943-9d5c0ad475af?w=800&q=80" alt="Miniatur Wunderland" loading="lazy">
+                <span class="carousel-geo-badge">📍 Miniatur Wunderland, Hamburg</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1589459072535-550f4fae08d4?w=800&q=80" alt="Zugspitze Peak" loading="lazy">
+                <span class="carousel-geo-badge">📍 Zugspitze Peak, Alp tog'lari</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1590099033615-be195f8d575c?w=800&q=80" alt="Eltz Castle" loading="lazy">
+                <span class="carousel-geo-badge">📍 Eltz Castle, Rhineland-Palatinate</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800&q=80" alt="Rakotzbrucke" loading="lazy">
+                <span class="carousel-geo-badge">📍 Rakotzbrucke, Saxony</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1577462281852-1e0351378560?w=800&q=80" alt="Rothenburg ob der Tauber" loading="lazy">
+                <span class="carousel-geo-badge">📍 Rothenburg ob der Tauber, Bavaria</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1588982385209-5765e411caa2?w=800&q=80" alt="Heidelberg Castle" loading="lazy">
+                <span class="carousel-geo-badge">📍 Heidelberg Castle, Heidelberg</span>
+            </div>
+        </div>
+        <button class="carousel-btn carousel-btn-prev" id="carousel-prev" aria-label="Oldingi">&#10094;</button>
+        <button class="carousel-btn carousel-btn-next" id="carousel-next" aria-label="Keyingi">&#10095;</button>
+        <div class="carousel-dots" id="carousel-dots"></div>
+    </section>
+
+    <!-- Functional Row: Search + Small Clock -->
+    <div class="container functional-row" id="functional-row">
+        <div class="functional-search">
+            <input type="text" class="search-input" id="search-input" placeholder="🔍 Kundalikdan qidirish..." data-i18n-placeholder="search.placeholder">
+        </div>
+        <div class="functional-clock" id="functional-clock" aria-label="Hozirgi vaqt">
+            <span class="fc-time">
+                <span class="clock-digits" data-clock="h">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="s">00</span>
+            </span>
+            <span class="fc-date" id="widget-date">--.--.----</span>
+        </div>
+    </div>
  
     <!-- Yashirin Portfolio Sahifasi -->
     <div class="container portfolio-container animate-fade-in" id="portfolio-view" style="display: none; padding: 60px 0;">
@@ -193,19 +248,20 @@
         <div id="flashcards-content"></div>
     </div>
 
+    <!-- Turnir Sahifasi -->
+    <div class="container animate-fade-in" id="tournament-view" style="display:none; padding: 40px 0;">
+        <div id="tournament-content"></div>
+    </div>
+
     <main class="container animate-fade-in" id="main-content">
 
-        <!-- Qidiruv va Filtrlar -->
+        <!-- Asosiy bo'limlar -->
         <div class="toolbar">
-            <div class="search-box">
-                <input type="text" class="search-input" id="search-input" placeholder="Kundalikdan qidirish..." data-i18n-placeholder="search.placeholder">
-            </div>
-            <div class="filter-tags" id="filter-tags">
-                <button class="filter-tag flashcard-tag" id="flashcards-tag-btn" data-filter="__flashcards"><span data-i18n="filter.flashcards">🃏 Kartochka</span></button>
-                <button class="filter-tag deutsch-tag" id="deutsch-tag-btn" data-filter="__deutsch">🇩🇪 Deutsch</button>
-                <button class="filter-tag active" data-filter="all" data-i18n="filter.all">Barchasi</button>
-                <button class="filter-tag" data-filter="rejalar"><span data-i18n="filter.plans">🎯 Rejalar</span></button>
-                <button class="filter-tag" data-filter="musiqa"><span data-i18n="filter.music">🎵 Musiqa</span></button>
+            <div class="filter-tags filter-tags-centered" id="filter-tags">
+                <button class="filter-tag deutsch-tag" id="deutsch-tag-btn" data-filter="__deutsch">🇩🇪 Nemis testlar</button>
+                <button class="filter-tag flashcard-tag" id="flashcards-tag-btn" data-filter="__flashcards">🃏 Kartochka</button>
+                <button class="filter-tag tournament-tag" id="tournament-tag-btn" data-filter="__tournament">🏆 Turnir</button>
+                <button class="filter-tag" data-filter="all">📖 Kundalik Blog</button>
             </div>
         </div>
 
@@ -225,6 +281,7 @@
 
     <!-- Footer -->
     <footer class="footer">
+        <canvas class="particles-canvas footer-particles-canvas" id="footer-particles-canvas" aria-hidden="true"></canvas>
         <div class="container">
             <p><span data-i18n="footer.rights">&copy; 2026 Abdugofforov. Barcha huquqlar himoyalangan.</span></p>
             <div class="footer-socials">
@@ -352,6 +409,55 @@
         </div>
     </div>
 
+    <!-- ===== O'QUVCHI LOGIN / RO'YXATDAN O'TISH MODALI ===== -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-container" style="max-width: 440px;">
+            <button class="modal-close" id="close-auth-modal" aria-label="Yopish">&times;</button>
+            <div class="modal-body">
+                <div style="text-align:center; margin-bottom:22px;">
+                    <div style="font-size:40px; margin-bottom:10px;">🎓</div>
+                    <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:6px;">Xush kelibsiz</h2>
+                    <p style="color:var(--text-secondary); font-size:13px;">Ro'yxatdan o'ting — test natijalaringiz va turnir reytingingiz har qanday qurilmada saqlanadi</p>
+                </div>
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="auth-tab-login" type="button">Kirish</button>
+                    <button class="auth-tab" id="auth-tab-register" type="button">Ro'yxatdan o'tish</button>
+                </div>
+                <form class="auth-form" id="auth-form">
+                    <div class="form-group auth-name-group" id="auth-name-group" style="display:none;">
+                        <label for="auth-name">Ismingiz</label>
+                        <input type="text" id="auth-name" class="form-input" placeholder="Masalan: Ism" autocomplete="name" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-username">Username</label>
+                        <input type="text" id="auth-username" class="form-input" placeholder="masalan: foydalanuvchi1" autocomplete="username" maxlength="20">
+                        <small class="auth-hint" id="auth-username-hint" style="display:none;">3-20 ta belgi: faqat a-z, 0-9, _</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-password">Parol</label>
+                        <input type="password" id="auth-password" class="form-input" placeholder="••••••" autocomplete="current-password" minlength="6">
+                    </div>
+                    <div class="auth-error" id="auth-error"></div>
+                    <button type="submit" class="btn-primary" id="auth-submit" style="width:100%; justify-content:center; padding:13px;">Kirish</button>
+                </form>
+                <p style="text-align:center; margin-top:18px; font-size:12px; color:var(--text-muted);">
+                    Admin (sayt egasi)? <a href="/kay" style="color:var(--color-purple-light); font-weight:600;">Admin panel →</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MENING NATIJALARIM MODALI ===== -->
+    <div class="modal-overlay" id="myresults-modal">
+        <div class="modal-container" style="max-width: 560px;">
+            <button class="modal-close" id="close-myresults-modal" aria-label="Yopish">&times;</button>
+            <div class="modal-body">
+                <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:16px;">📊 Mening natijalarim</h2>
+                <div id="myresults-content"><p style="color:var(--text-secondary);">Yuklanmoqda...</p></div>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== RASM LIGHTBOX (kattalashtirish) ===== -->
     <div class="lightbox" id="lightbox">
         <button class="lightbox-close" id="lightbox-close" aria-label="Yopish">&times;</button>
@@ -374,6 +480,7 @@
     <!-- JavaScript Mantiqi -->
     <script src="storage.js"></script>
     <script src="i18n.js"></script>
+    <script src="auth.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

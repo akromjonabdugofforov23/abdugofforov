@@ -10,7 +10,7 @@ const defaultPosts = [];
 // posts endi IndexedDB (Store) orqali yuklanadi — bootstrap() ichida hydrate qilinadi.
 let posts = defaultPosts;
 let currentTab = 'home'; 
-let filterType = 'all'; 
+let filterType = 'none'; 
 let searchQuery = '';
 let editingPostId = null;
 let isAdmin = sessionStorage.getItem('kay_admin') === 'true';
@@ -163,43 +163,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-async function fetchWeather() {
-    try {
-        // Buloqboshi koordinatalari: 40.6932 N, 72.4836 E
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=40.6932&longitude=72.4836&current=temperature_2m,weather_code&timezone=Asia%2FTashkent');
-        const data = await res.json();
-
-        if (data && data.current) {
-            const temp = Math.round(data.current.temperature_2m);
-            const code = data.current.weather_code;
-
-            document.getElementById('weather-temp').textContent = `${temp}°`;
-
-            // Ob-havo holatlari — emoji va animatsiya uchun kategoriya
-            let icon = '☁️', desc = 'Bulutli', kind = 'cloudy';
-            if (code === 0) { icon = '☀️'; desc = 'Quyoshli'; kind = 'sunny'; }
-            else if (code >= 1 && code <= 3) { icon = '⛅'; desc = 'Qisman bulutli'; kind = 'partly'; }
-            else if (code >= 45 && code <= 48) { icon = '🌫️'; desc = 'Tumanli'; kind = 'foggy'; }
-            else if (code >= 51 && code <= 65) { icon = '🌧️'; desc = "Yomg'ir"; kind = 'rainy'; }
-            else if (code >= 71 && code <= 77) { icon = '❄️'; desc = 'Qorli'; kind = 'snowy'; }
-            else if (code >= 80 && code <= 82) { icon = '🌦️'; desc = "Jala yomg'ir"; kind = 'rainy'; }
-            else if (code >= 95 && code <= 99) { icon = '⛈️'; desc = 'Momaqaldiroq'; kind = 'storm'; }
-
-            document.getElementById('weather-icon').textContent = icon;
-            document.getElementById('weather-desc').textContent = desc;
-            const card = document.getElementById('weather-card');
-            if (card) card.setAttribute('data-weather', kind);
-        }
-    } catch (e) {
-        console.error('Ob-havoni yuklashda xatolik:', e);
-        const desc = document.getElementById('weather-desc');
-        if (desc) desc.textContent = 'Kutish rejimi';
-        const card = document.getElementById('weather-card');
-        if (card) card.setAttribute('data-weather', 'offline');
-    }
-}
-fetchWeather();
-setInterval(fetchWeather, 30 * 60 * 1000); 
+// (Ob-havo widgeti olib tashlandi — endi faqat soat/vaqt ko'rsatiladi)
 
 // 5. Mavzuni boshqarish (Kunduzgi / Tungi rejim)
 // Default: tungi (dark) — qora futuristic. Foydalanuvchi tanlovi saqlanadi.
@@ -298,18 +262,20 @@ async function syncPostsToServer() {
 }
 
 // 7. Hero matnini dinamik o'zgartirish
+// MUHIM: hero-main-title (h1) ichida typewriter span va cursor bor.
+// textContent bilan to'liq almashtirsak ular o'chadi. Faqat subtitle'ni
+// yangilaymiz; sarlavhani typewriter boshqaradi.
 function updateHeroContent() {
     const heroSection = document.querySelector('.hero');
-    heroSection.classList.remove('animate-fade-in');
-    void heroSection.offsetWidth; 
-    heroSection.classList.add('animate-fade-in');
-
-    if (currentTab === 'home') {
-        heroSub.textContent = i18n.t('hero.subtitle');
-        heroMainTitle.textContent = i18n.t('hero.title');
-    } else if (currentTab === 'projects') {
-        heroSub.textContent = i18n.t('hero.subtitle.projects');
-        heroMainTitle.textContent = i18n.t('hero.title.projects');
+    if (heroSection) {
+        heroSection.classList.remove('animate-fade-in');
+        void heroSection.offsetWidth;
+        heroSection.classList.add('animate-fade-in');
+    }
+    if (heroSub) {
+        heroSub.textContent = (currentTab === 'projects')
+            ? i18n.t('hero.subtitle.projects')
+            : i18n.t('hero.subtitle');
     }
 }
 
@@ -324,6 +290,9 @@ function renderPosts() {
         blogGrid.classList.add('animate-fade-in');
 
         const filtered = posts.filter(post => {
+            // Default holat: hech narsa ko'rsatmaslik
+            if (filterType === 'none') return false;
+
             // Tab navigatsiyasi
             if (currentTab === 'projects' && post.type !== 'project') return false;
 
@@ -465,12 +434,17 @@ function renderPosts() {
     }, 400); // <-- setTimeout shu yerda yopildi
 } // <-- renderPosts funksiyasi shu yerda yopildi
 
-// Ko'rinishlarni almashtirish yordamchilari (asosiy <-> deutsch <-> kartochka)
+// Ko'rinishlarni almashtirish yordamchilari
+// (asosiy <-> deutsch <-> kartochka <-> turnir)
+function hideAuxViews() {
+    ['deutsch-view', 'flashcards-view', 'tournament-view'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+}
+
 function showMainView() {
-    const deutschView = document.getElementById('deutsch-view');
-    if (deutschView) deutschView.style.display = 'none';
-    const flashView = document.getElementById('flashcards-view');
-    if (flashView) flashView.style.display = 'none';
+    hideAuxViews();
     const hero = document.querySelector('.hero');
     if (hero) hero.style.display = '';
     if (mainContent) mainContent.style.display = '';
@@ -480,8 +454,7 @@ function openDeutschView() {
     if (mainContent) mainContent.style.display = 'none';
     const hero = document.querySelector('.hero');
     if (hero) hero.style.display = 'none';
-    const flashView = document.getElementById('flashcards-view');
-    if (flashView) flashView.style.display = 'none';
+    hideAuxViews();
     const deutschView = document.getElementById('deutsch-view');
     if (deutschView) deutschView.style.display = 'block';
     renderDeutschHome();
@@ -492,11 +465,21 @@ function openFlashcardsView() {
     if (mainContent) mainContent.style.display = 'none';
     const hero = document.querySelector('.hero');
     if (hero) hero.style.display = 'none';
-    const deutschView = document.getElementById('deutsch-view');
-    if (deutschView) deutschView.style.display = 'none';
+    hideAuxViews();
     const flashView = document.getElementById('flashcards-view');
     if (flashView) flashView.style.display = 'block';
     renderFlashcardsHome();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openTournamentView() {
+    if (mainContent) mainContent.style.display = 'none';
+    const hero = document.querySelector('.hero');
+    if (hero) hero.style.display = 'none';
+    hideAuxViews();
+    const tView = document.getElementById('tournament-view');
+    if (tView) tView.style.display = 'block';
+    renderTournamentHome();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -522,11 +505,10 @@ mainNav.addEventListener('click', (e) => {
     if (currentTab === 'projects') {
         filterType = 'project';
     } else {
-        filterType = 'all';
+        filterType = 'none';
     }
 
     filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
-    filterTags.querySelector('[data-filter="all"]').classList.add('active');
 
     updateHeroContent();
     renderPosts();
@@ -609,6 +591,12 @@ filterTags.addEventListener('click', (e) => {
         return;
     }
 
+    // Turnir tugmasi — turnir sahifasini ochadi
+    if (btn.id === 'tournament-tag-btn') {
+        if (typeof openTournamentView === 'function') openTournamentView();
+        return;
+    }
+
     showMainView();
 
     filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
@@ -620,6 +608,17 @@ filterTags.addEventListener('click', (e) => {
 
 searchInput.addEventListener('input', (e) => {
     searchQuery = e.target.value;
+    // If user is searching, enable 'all' filter implicitly
+    if (searchQuery && filterType === 'none') {
+        filterType = 'all';
+    }
+    // If search cleared and no category button is active, revert to 'none'
+    if (!searchQuery) {
+        const activeBtn = filterTags.querySelector('.filter-tag.active');
+        if (!activeBtn) {
+            filterType = 'none';
+        }
+    }
     renderPosts();
 });
 
@@ -702,20 +701,19 @@ function openPostDetail(postId) {
             <div class="comments-list" id="modal-comments-list">
                 ${renderComments(post.comments)}
             </div>
-            
+            ${(window.Auth && Auth.isLoggedIn()) ? `
             <form class="comment-form" id="modal-comment-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="comment-author-input">Ismingiz</label>
-                        <input type="text" id="comment-author-input" class="form-input" placeholder="Ismingizni kiriting..." required>
-                    </div>
-                </div>
+                <input type="hidden" id="comment-author-input" value="${escapeHTML(Auth.user.name || Auth.user.username)}">
                 <div class="form-group">
-                    <label for="comment-text-input">Izoh matni</label>
+                    <label for="comment-text-input">Izoh — <span style="color:var(--color-purple-light);">${escapeHTML(Auth.user.name || Auth.user.username)}</span> nomidan</label>
                     <textarea id="comment-text-input" class="form-textarea" placeholder="Fikringizni yozib qoldiring..." required></textarea>
                 </div>
                 <button type="submit" class="btn-primary" style="align-self: flex-end;">Izoh qoldirish</button>
-            </form>
+            </form>` : `
+            <div style="text-align:center; padding:20px; border:1px dashed var(--glass-border); border-radius:12px; margin-top:16px;">
+                <p style="color:var(--text-secondary); margin-bottom:12px; font-size:14px;">Izoh qoldirish uchun tizimga kiring</p>
+                <button class="btn-primary" type="button" onclick="openAuthModal('login')" style="margin:0 auto;">Kirish / Ro'yxatdan o'tish</button>
+            </div>`}
         </div>
     `;
 
@@ -775,7 +773,7 @@ function openPostDetail(postId) {
     if (shareBtn) shareBtn.addEventListener('click', () => sharePost(post));
 
     const commentForm = document.getElementById('modal-comment-form');
-    commentForm.addEventListener('submit', (e) => {
+    if (commentForm) commentForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const authorInput = document.getElementById('comment-author-input');
         const textInput = document.getElementById('comment-text-input');
@@ -793,8 +791,7 @@ function openPostDetail(postId) {
         document.getElementById('modal-comments-list').innerHTML = renderComments(post.comments);
         document.querySelector('.comments-title').textContent = `Izohlar (${post.comments.length})`;
         
-        authorInput.value = '';
-        textInput.value = '';
+        if (textInput) textInput.value = '';
         renderPosts();
     });
 
@@ -1750,8 +1747,6 @@ function initLanguage() {
     document.addEventListener('langchange', () => {
         updateHeroContent();
         renderPosts();
-        // Hero title typewriter qayta yuradi (yangi tilda)
-        if (typeof runTypewriter === 'function') runTypewriter();
         const deutschView = document.getElementById('deutsch-view');
         const flashView = document.getElementById('flashcards-view');
         if (deutschView && deutschView.style.display !== 'none') renderDeutschHome();
@@ -2037,13 +2032,22 @@ function renderFlashcardDone() {
 
 // ===== HERO PARTICLES (Canvas API) =====
 // Mayda nuqtalar suzib yuradi, sichqonchaga react qiladi, yaqinlashganda chiziq tortadi
-function initParticles() {
-    const canvas = document.getElementById('particles-canvas');
-    if (!canvas) return;
+function createParticleCanvas(canvasId, options) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return null;
     const ctx = canvas.getContext('2d');
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) return; // Foydalanuvchi animatsiyalarni o'chirgan
+    if (reduced) return null;
+
+    const count = options.count || (isMobile ? 40 : 90);
+    const linkDist = options.linkDist || (isMobile ? 80 : 120);
+    const speed = options.speed || 0.4;
+    const maxSpeed = options.maxSpeed || 1;
+    const particleRadius = options.particleRadius || { min: 0.6, range: 1.6 };
+    const baseAlpha = options.baseAlpha || { min: 0.45, range: 0.35 };
+    const linkAlpha = options.linkAlpha || 0.25;
+    const enableMouse = options.enableMouse !== false;
 
     let particles = [];
     let mouse = { x: -9999, y: -9999, active: false };
@@ -2061,7 +2065,6 @@ function initParticles() {
     }
 
     function spawn() {
-        const count = isMobile ? 40 : 90;
         particles = [];
         const w = canvas.clientWidth;
         const h = canvas.clientHeight;
@@ -2070,11 +2073,11 @@ function initParticles() {
             particles.push({
                 x: Math.random() * w,
                 y: Math.random() * h,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4,
-                r: Math.random() * 1.6 + 0.6,
+                vx: (Math.random() - 0.5) * speed,
+                vy: (Math.random() - 0.5) * speed,
+                r: Math.random() * particleRadius.range + particleRadius.min,
                 color: useBlue ? '59, 130, 246' : '139, 92, 246',
-                a: 0.45 + Math.random() * 0.35,
+                a: baseAlpha.min + Math.random() * baseAlpha.range,
             });
         }
     }
@@ -2083,10 +2086,8 @@ function initParticles() {
         const w = canvas.clientWidth, h = canvas.clientHeight;
         ctx.clearRect(0, 0, w, h);
 
-        // Particle harakati
         for (const p of particles) {
-            // Sichqonchaga itarish
-            if (mouse.active) {
+            if (enableMouse && mouse.active) {
                 const dx = p.x - mouse.x, dy = p.y - mouse.y;
                 const d2 = dx * dx + dy * dy;
                 if (d2 < 120 * 120) {
@@ -2096,10 +2097,8 @@ function initParticles() {
                 }
             }
             p.x += p.vx; p.y += p.vy;
-            // Tezlikni cheklash (juda tez bo'lib ketmasin)
-            p.vx = Math.max(-1, Math.min(1, p.vx * 0.99));
-            p.vy = Math.max(-1, Math.min(1, p.vy * 0.99));
-            // Chetlardan qaytishi
+            p.vx = Math.max(-maxSpeed, Math.min(maxSpeed, p.vx * 0.99));
+            p.vy = Math.max(-maxSpeed, Math.min(maxSpeed, p.vy * 0.99));
             if (p.x < 0) { p.x = 0; p.vx *= -1; }
             else if (p.x > w) { p.x = w; p.vx *= -1; }
             if (p.y < 0) { p.y = 0; p.vy *= -1; }
@@ -2111,15 +2110,13 @@ function initParticles() {
             ctx.fill();
         }
 
-        // Yaqin particlelarni chiziq bilan ulash
-        const LINK = isMobile ? 80 : 120;
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
                 const a = particles[i], b = particles[j];
                 const dx = a.x - b.x, dy = a.y - b.y;
                 const d2 = dx * dx + dy * dy;
-                if (d2 < LINK * LINK) {
-                    const alpha = (1 - Math.sqrt(d2) / LINK) * 0.25;
+                if (d2 < linkDist * linkDist) {
+                    const alpha = (1 - Math.sqrt(d2) / linkDist) * linkAlpha;
                     ctx.strokeStyle = `rgba(167, 139, 250, ${alpha})`;
                     ctx.lineWidth = 0.7;
                     ctx.beginPath();
@@ -2146,11 +2143,125 @@ function initParticles() {
     spawn();
     step();
     window.addEventListener('resize', () => { size(); spawn(); }, { passive: true });
-    canvas.parentElement.addEventListener('mousemove', onMove);
-    canvas.parentElement.addEventListener('mouseleave', onLeave);
-    canvas.parentElement.addEventListener('touchmove', onMove, { passive: true });
+
+    if (enableMouse) {
+        canvas.parentElement.addEventListener('mousemove', onMove);
+        canvas.parentElement.addEventListener('mouseleave', onLeave);
+        canvas.parentElement.addEventListener('touchmove', onMove, { passive: true });
+    }
 
     return () => { if (raf) cancelAnimationFrame(raf); };
+}
+
+function initParticles() {
+    return createParticleCanvas('particles-canvas', {
+        count: window.matchMedia('(max-width: 768px)').matches ? 40 : 90,
+        linkDist: window.matchMedia('(max-width: 768px)').matches ? 80 : 120,
+        speed: 0.4,
+        maxSpeed: 1,
+        particleRadius: { min: 0.6, range: 1.6 },
+        baseAlpha: { min: 0.45, range: 0.35 },
+        linkAlpha: 0.25,
+        enableMouse: true
+    });
+}
+
+// ===== FOOTER PARTICLES (Canvas API) =====
+function initFooterParticles() {
+    return createParticleCanvas('footer-particles-canvas', {
+        count: window.matchMedia('(max-width: 768px)').matches ? 20 : 50,
+        linkDist: window.matchMedia('(max-width: 768px)').matches ? 80 : 110,
+        speed: 0.3,
+        maxSpeed: 0.8,
+        particleRadius: { min: 0.5, range: 1.4 },
+        baseAlpha: { min: 0.35, range: 0.3 },
+        linkAlpha: 0.2,
+        enableMouse: false
+    });
+}
+
+// ===== GERMANY CAROUSEL =====
+function initCarousel() {
+    const track = document.getElementById('carousel-track');
+    const dotsContainer = document.getElementById('carousel-dots');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    if (!track || !dotsContainer) return;
+
+    const slides = track.querySelectorAll('.carousel-slide');
+    const total = slides.length;
+    let current = 0;
+    let autoSlideInterval = null;
+
+    // Dots yaratish
+    for (let i = 0; i < total; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+    }
+
+    function goTo(idx) {
+        current = ((idx % total) + total) % total;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        dotsContainer.querySelectorAll('.carousel-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === current);
+        });
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => { prev(); resetAuto(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { next(); resetAuto(); });
+
+    function startAuto() {
+        autoSlideInterval = setInterval(next, 4000);
+    }
+    function stopAuto() {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = null;
+    }
+    function resetAuto() {
+        stopAuto();
+        startAuto();
+    }
+
+    startAuto();
+
+    // Pause carousel when tab is hidden to prevent slide jumps on return
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            stopAuto();
+        } else {
+            startAuto();
+        }
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    // Add onerror fallback for carousel images
+    slides.forEach(slide => {
+        const img = slide.querySelector('img');
+        if (img) {
+            img.onerror = function() {
+                this.style.display = 'none';
+            };
+        }
+    });
+
+    track.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    track.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) next(); else prev();
+            resetAuto();
+        }
+    }, { passive: true });
 }
 
 // ===== HERO TYPEWRITER =====
@@ -2316,12 +2427,20 @@ async function bootstrap() {
     registerServiceWorker();
     openPostFromUrl();
 
-    // Yangi: hero particles + typewriter + CTA tugmasi + 3D tilt + Floating +
+    // Yangi: hero particles + footer particles + CTA tugmasi + 3D tilt + Floating +
     initParticles();
-    runTypewriter();
+    initFooterParticles();
+    initCarousel();
     initHeroCta();
     init3DTilt();
     initFloatingAddBtn();
+
+    // O'quvchi auth — token bo'lsa tiklaymiz, UI'ni yangilaymiz
+    initAuthUI();
+    if (window.Auth) {
+        await Auth.restore();
+        updateAuthUI();
+    }
 }
 
 bootstrap();
@@ -2979,8 +3098,14 @@ function renderTestResult() {
               : pct >= 60 ? "Yaxshi! Bir oz mashq qilsangiz mukammal boʻladi."
               : "Qoʻrqmang! Qayta oʻrganib, yana sinab koʻring.";
 
-    // Natijani tarixga saqlaymiz
+    // Natijani tarixga saqlaymiz (lokal)
     saveTestResult(currentLevel, score, total);
+
+    // Login bo'lgan o'quvchi natijasini serverga ham yuboramiz (admin ko'radi)
+    if (window.Auth && Auth.isLoggedIn()) {
+        Auth.submitResult({ testId: currentLevel, testTitle: levelName, score: score, total: total })
+            .then(r => { if (r && r.ok) showToast('📊 Natija saqlandi', 'success'); });
+    }
 
     document.getElementById('deutsch-content').innerHTML = `
         <div style="max-width:480px; margin:0 auto; text-align:center;">
@@ -3010,3 +3135,420 @@ function renderTestResult() {
 
 // Nav Deutsch havolasi endi pastdagi filtrlar yonidagi tugma orqali ishlaydi
 // (yuqoridagi filterTags ishlovchisiga qarang)
+
+
+
+// ============================================================
+// TURNIR — 30 savol (nemis testlari + kartochkalardan aralash)
+// Mehmon ism bilan qatnashadi; ro'yxatdan o'tgan bo'lsa avatar bilan.
+// ============================================================
+let tState = null;
+
+function _tShuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+// Savollar to'plamini ikkala manbadan yig'adi
+function buildTournamentQuestions(count) {
+    const pool = [];
+
+    // 1) Nemis testlaridan (allaqachon ko'p tanlovli)
+    try {
+        Object.values(deutschTests).forEach(test => {
+            (test.parts || []).forEach(part => {
+                (part.sections || []).forEach(sec => {
+                    (sec.questions || []).forEach(q => {
+                        if (q.options && q.options.length >= 2 && typeof q.answer === 'number') {
+                            pool.push({ q: q.q, image: q.image || null, options: q.options.slice(), answer: q.answer });
+                        }
+                    });
+                });
+            });
+        });
+    } catch (e) {}
+
+    // 2) Kartochkalardan (front -> to'g'ri back + 3 ta chalg'ituvchi)
+    try {
+        Object.values(flashcardDecks).forEach(deck => {
+            if (!Array.isArray(deck) || deck.length < 4) return;
+            const backs = deck.map(c => c.back);
+            deck.forEach(card => {
+                const distractors = _tShuffle(backs.filter(b => b !== card.back)).slice(0, 3);
+                if (distractors.length < 3) return;
+                const opts = _tShuffle([card.back, ...distractors]);
+                pool.push({
+                    q: card.front + " — tarjimasi/ma'nosi?",
+                    options: opts,
+                    answer: opts.indexOf(card.back),
+                });
+            });
+        });
+    } catch (e) {}
+
+    return _tShuffle(pool).slice(0, count);
+}
+
+function renderTournamentHome() {
+    const view = document.getElementById('tournament-content');
+    if (!view) return;
+
+    const loggedIn = window.Auth && Auth.isLoggedIn();
+    const name = loggedIn ? (Auth.user.name || Auth.user.username) : '';
+    const initial = (name || 'M').charAt(0).toUpperCase();
+
+    const playerBlock = loggedIn
+        ? `<div class="t-player">
+               <span class="t-avatar">${escapeHTML(initial)}</span>
+               <div><strong>${escapeHTML(name)}</strong><br><small style="color:var(--text-muted);">@${escapeHTML(Auth.user.username)}</small></div>
+           </div>
+           <button class="btn-primary t-start-btn" onclick="startTournamentGame()" style="margin-top:16px;">🏆 Turnirni boshlash</button>`
+        : `<div class="form-group" style="max-width:320px;margin:0 auto 14px;">
+               <label for="t-name-input">Ismingiz (mehmon sifatida)</label>
+               <input type="text" id="t-name-input" class="form-input" placeholder="Masalan: Ism" maxlength="40">
+           </div>
+           <button class="btn-primary t-start-btn" onclick="startTournamentGame()">🏆 Turnirni boshlash</button>
+           <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">Ro'yxatdan o'tsangiz — ism va avataringiz bilan, qayta yozmasdan qatnashasiz.
+               <a href="#" onclick="openAuthModal('register');return false;" style="color:var(--color-purple-light);">Ro'yxatdan o'tish</a></p>`;
+
+    view.innerHTML = `
+        <div class="t-hero">
+            <div style="font-size:50px;margin-bottom:8px;">🏆</div>
+            <h2 style="font-family:'Playfair Display',serif;font-size:30px;margin-bottom:8px;">Turnir</h2>
+            <p style="color:var(--text-secondary);font-size:15px;margin-bottom:6px;">30 ta savol — nemis testlari va kartochkalaridan aralash</p>
+            <p style="color:var(--text-muted);font-size:13px;">Eng yaxshi natijangiz reytingga yoziladi</p>
+        </div>
+        <div class="t-card">
+            ${playerBlock}
+        </div>
+        <div id="t-leaderboard" class="t-card" style="margin-top:18px;">
+            <h3 style="font-size:17px;margin-bottom:12px;">📊 Reyting</h3>
+            <p style="color:var(--text-muted);font-size:13px;">Yuklanmoqda...</p>
+        </div>
+    `;
+    loadLeaderboard();
+}
+
+async function loadLeaderboard() {
+    const box = document.getElementById('t-leaderboard');
+    if (!box) return;
+    try {
+        const res = await fetch('/tournament');
+        const data = await res.json().catch(() => ({}));
+        const lb = (data && data.leaderboard) || [];
+        if (!lb.length) {
+            box.innerHTML = '<h3 style="font-size:17px;margin-bottom:12px;">📊 Reyting</h3><p style="color:var(--text-muted);font-size:13px;">Hali hech kim qatnashmagan. Birinchi bo\'ling!</p>';
+            return;
+        }
+        const rows = lb.map((e, i) => {
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1) + '.';
+            const init = (e.name || '?').charAt(0).toUpperCase();
+            const reg = e.registered ? `<span class="t-badge-reg" title="Ro'yxatdan o'tgan">✓</span>` : '';
+            return `<div class="t-lb-row">
+                <span class="t-lb-rank">${medal}</span>
+                <span class="t-avatar t-avatar-sm">${escapeHTML(init)}</span>
+                <span class="t-lb-name">${escapeHTML(e.name)} ${reg}</span>
+                <span class="t-lb-score">${e.score}/${e.total}</span>
+                <span class="t-lb-pct">${e.pct}%</span>
+            </div>`;
+        }).join('');
+        box.innerHTML = '<h3 style="font-size:17px;margin-bottom:12px;">📊 Reyting (eng yaxshi natijalar)</h3>' + rows;
+    } catch (e) {
+        box.innerHTML = '<h3 style="font-size:17px;margin-bottom:12px;">📊 Reyting</h3><p style="color:#f87171;font-size:13px;">Reytingni yuklab bo\'lmadi</p>';
+    }
+}
+
+function startTournamentGame() {
+    const loggedIn = window.Auth && Auth.isLoggedIn();
+    let name;
+    if (loggedIn) {
+        name = Auth.user.name || Auth.user.username;
+    } else {
+        const input = document.getElementById('t-name-input');
+        name = (input && input.value.trim()) || '';
+        if (!name) {
+            if (input) { input.focus(); input.style.borderColor = '#f87171'; }
+            return;
+        }
+    }
+
+    const questions = buildTournamentQuestions(30);
+    if (!questions.length) {
+        showToast('Savollar topilmadi', 'warn');
+        return;
+    }
+    tState = { questions, idx: 0, score: 0, name, answered: false };
+    renderTournamentQ();
+}
+
+function renderTournamentQ() {
+    const view = document.getElementById('tournament-content');
+    if (!view || !tState) return;
+    const q = tState.questions[tState.idx];
+    if (!q) { renderTournamentResult(); return; }
+
+    const total = tState.questions.length;
+    const num = tState.idx + 1;
+    const pct = Math.round((tState.idx / total) * 100);
+
+    const optionsHTML = q.options.map((opt, i) =>
+        `<button class="t-opt" id="t-opt-${i}" onclick="tournamentAnswer(${i})">
+            <span class="t-opt-letter">${['A', 'B', 'C', 'D', 'E'][i] || (i + 1)}</span>
+            <span>${escapeHTML(opt)}</span>
+        </button>`
+    ).join('');
+
+    view.innerHTML = `
+        <div style="max-width:640px;margin:0 auto;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="font-size:13px;color:var(--text-secondary);">🏆 Turnir</span>
+                <span style="font-size:13px;color:var(--text-secondary);">${num} / ${total} &nbsp;·&nbsp; ✅ ${tState.score}</span>
+            </div>
+            <div style="height:5px;background:var(--glass-border);border-radius:3px;margin-bottom:20px;">
+                <div style="height:5px;background:var(--grad-primary);border-radius:3px;width:${pct}%;transition:width 0.3s;"></div>
+            </div>
+            <div class="t-card" style="margin-bottom:16px;">
+                <p style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--color-purple-light);margin-bottom:10px;">Savol ${num}</p>
+                <h3 style="font-size:19px;line-height:1.5;margin:0;">${escapeHTML(q.q)}</h3>
+            </div>
+            <div id="t-options" style="display:flex;flex-direction:column;gap:10px;">
+                ${optionsHTML}
+            </div>
+            <div id="t-next-wrap" style="display:none;text-align:right;margin-top:16px;">
+                <button class="btn-primary" onclick="tournamentNext()">${num >= total ? "Natija 🏁" : 'Keyingi →'}</button>
+            </div>
+        </div>
+    `;
+    tState.answered = false;
+}
+
+function tournamentAnswer(selected) {
+    if (!tState || tState.answered) return;
+    tState.answered = true;
+    const q = tState.questions[tState.idx];
+    const correct = selected === q.answer;
+    if (correct) tState.score++;
+
+    q.options.forEach((_, i) => {
+        const btn = document.getElementById('t-opt-' + i);
+        if (!btn) return;
+        btn.style.cursor = 'default';
+        btn.classList.add('t-opt-disabled');
+        if (i === q.answer) btn.classList.add('t-opt-correct');
+        else if (i === selected) btn.classList.add('t-opt-wrong');
+    });
+
+    const nextWrap = document.getElementById('t-next-wrap');
+    if (nextWrap) nextWrap.style.display = 'block';
+}
+
+function tournamentNext() {
+    if (!tState) return;
+    tState.idx++;
+    if (tState.idx >= tState.questions.length) renderTournamentResult();
+    else renderTournamentQ();
+}
+
+async function renderTournamentResult() {
+    const view = document.getElementById('tournament-content');
+    if (!view || !tState) return;
+    const total = tState.questions.length;
+    const score = tState.score;
+    const pct = Math.round((score / total) * 100);
+    const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : '📚';
+
+    view.innerHTML = `
+        <div style="max-width:480px;margin:0 auto;text-align:center;">
+            <div style="font-size:64px;margin-bottom:12px;">${emoji}</div>
+            <h2 style="font-family:'Playfair Display',serif;font-size:28px;margin-bottom:6px;">Turnir yakunlandi!</h2>
+            <p style="color:var(--text-secondary);margin-bottom:24px;">${escapeHTML(tState.name)}</p>
+            <div class="t-card" style="padding:30px;margin-bottom:20px;">
+                <div style="font-size:50px;font-weight:700;color:var(--color-purple-light);font-family:'Playfair Display',serif;">${score}/${total}</div>
+                <div style="font-size:15px;color:var(--text-secondary);margin-top:4px;">${pct}% to'g'ri</div>
+                <div id="t-rank-info" style="margin-top:14px;font-size:14px;color:var(--text-muted);">Reytingga yozilmoqda...</div>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <button class="btn-primary" onclick="startTournamentGame()">🔄 Qayta</button>
+                <button class="btn-secondary" onclick="renderTournamentHome()">📊 Reyting</button>
+            </div>
+        </div>
+    `;
+
+    // Natijani serverga yuborish (mehmon ham, login ham)
+    try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (window.Auth && Auth.token) headers['x-user-token'] = Auth.token;
+        const res = await fetch('/tournament', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ name: tState.name, score, total }),
+        });
+        const data = await res.json().catch(() => ({}));
+        const info = document.getElementById('t-rank-info');
+        if (info) {
+            if (data.ok && data.rank) {
+                info.innerHTML = `🏅 Reytingdagi o'rningiz: <b style="color:var(--color-purple-light);">${data.rank}</b> / ${data.totalPlayers}`;
+            } else {
+                info.textContent = 'Natija saqlandi';
+            }
+        }
+    } catch (e) {
+        const info = document.getElementById('t-rank-info');
+        if (info) info.textContent = "Natija saqlanmadi (tarmoq xatosi)";
+    }
+}
+
+
+
+// ============================================================
+// O'QUVCHI AUTH UI (login / register / profil)
+// ============================================================
+let _authMode = 'login';
+
+function openAuthModal(mode) {
+    _authMode = mode || 'login';
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    setAuthMode(_authMode);
+    const err = document.getElementById('auth-error');
+    if (err) { err.textContent = ''; err.classList.remove('show'); }
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('auth-username')?.focus(), 100);
+}
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+function setAuthMode(mode) {
+    _authMode = mode;
+    const isReg = mode === 'register';
+    document.getElementById('auth-tab-login')?.classList.toggle('active', !isReg);
+    document.getElementById('auth-tab-register')?.classList.toggle('active', isReg);
+    const nameGroup = document.getElementById('auth-name-group');
+    if (nameGroup) nameGroup.style.display = isReg ? 'flex' : 'none';
+    const hint = document.getElementById('auth-username-hint');
+    if (hint) hint.style.display = isReg ? 'block' : 'none';
+    const submit = document.getElementById('auth-submit');
+    if (submit) submit.textContent = isReg ? "Ro'yxatdan o'tish" : 'Kirish';
+    const pwd = document.getElementById('auth-password');
+    if (pwd) pwd.setAttribute('autocomplete', isReg ? 'new-password' : 'current-password');
+}
+
+function updateAuthUI() {
+    const loginBtn = document.getElementById('login-btn');
+    const userMenu = document.getElementById('user-menu');
+    if (!window.Auth) return;
+    if (Auth.isLoggedIn()) {
+        const u = Auth.user;
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (userMenu) userMenu.style.display = 'inline-flex';
+        const initial = (u.name || u.username || '?').charAt(0).toUpperCase();
+        const av = document.getElementById('user-avatar');
+        if (av) av.textContent = initial;
+        const nameLabel = document.getElementById('user-name-label');
+        if (nameLabel) nameLabel.textContent = u.name || u.username;
+        const ddName = document.getElementById('user-dd-name');
+        if (ddName) ddName.textContent = u.name || u.username;
+        const ddUser = document.getElementById('user-dd-username');
+        if (ddUser) ddUser.textContent = '@' + u.username;
+    } else {
+        if (loginBtn) loginBtn.style.display = '';
+        if (userMenu) userMenu.style.display = 'none';
+    }
+}
+
+function initAuthUI() {
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) loginBtn.addEventListener('click', () => openAuthModal('login'));
+
+    document.getElementById('close-auth-modal')?.addEventListener('click', closeAuthModal);
+    document.getElementById('auth-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'auth-modal') closeAuthModal();
+    });
+    document.getElementById('auth-tab-login')?.addEventListener('click', () => setAuthMode('login'));
+    document.getElementById('auth-tab-register')?.addEventListener('click', () => setAuthMode('register'));
+
+    document.getElementById('auth-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const err = document.getElementById('auth-error');
+        const submit = document.getElementById('auth-submit');
+        const name = document.getElementById('auth-name')?.value.trim() || '';
+        const username = document.getElementById('auth-username')?.value.trim() || '';
+        const password = document.getElementById('auth-password')?.value || '';
+        if (err) { err.textContent = ''; err.classList.remove('show'); }
+        if (submit) { submit.disabled = true; submit.textContent = 'Iltimos kuting...'; }
+
+        let data;
+        if (_authMode === 'register') data = await Auth.register(name, username, password);
+        else data = await Auth.login(username, password);
+
+        if (submit) { submit.disabled = false; submit.textContent = _authMode === 'register' ? "Ro'yxatdan o'tish" : 'Kirish'; }
+
+        if (data && data.ok) {
+            closeAuthModal();
+            updateAuthUI();
+            showToast('✅ Xush kelibsiz, ' + (Auth.user.name || Auth.user.username) + '!', 'success');
+        } else if (err) {
+            err.textContent = (data && data.message) || 'Xatolik yuz berdi';
+            err.classList.add('show');
+        }
+    });
+
+    const chip = document.getElementById('user-chip');
+    const dropdown = document.getElementById('user-dropdown');
+    if (chip && dropdown) {
+        chip.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('open'); });
+        document.addEventListener('click', () => dropdown.classList.remove('open'));
+    }
+    document.getElementById('user-logout-btn')?.addEventListener('click', async () => {
+        await Auth.logout();
+        updateAuthUI();
+        showToast('Tizimdan chiqdingiz', 'info');
+    });
+    document.getElementById('user-results-btn')?.addEventListener('click', () => {
+        dropdown?.classList.remove('open');
+        openMyResults();
+    });
+    document.getElementById('close-myresults-modal')?.addEventListener('click', () => {
+        document.getElementById('myresults-modal')?.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    document.getElementById('myresults-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'myresults-modal') {
+            e.currentTarget.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+function openMyResults() {
+    const modal = document.getElementById('myresults-modal');
+    const content = document.getElementById('myresults-content');
+    if (!modal || !content) return;
+    const hist = (window.Auth && Auth.getLocalResults) ? Auth.getLocalResults() : [];
+    if (!hist.length) {
+        content.innerHTML = '<p style="color:var(--text-secondary);">Hali test ishlamadingiz. Nemis testlari yoki Turnirdan boshlang!</p>';
+    } else {
+        const rows = hist.slice(0, 30).map(h => {
+            const d = new Date(h.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+            const color = h.pct >= 80 ? '#34d399' : h.pct >= 60 ? '#fbbf24' : '#f87171';
+            return `<div style="display:flex;align-items:center;gap:10px;font-size:13px;padding:10px 0;border-bottom:1px solid var(--glass-border);">
+                <span style="text-transform:uppercase;font-weight:700;width:60px;color:var(--color-purple-light);">${escapeHTML(String(h.level || ''))}</span>
+                <div style="flex:1;height:6px;background:var(--glass-border);border-radius:3px;overflow:hidden;">
+                    <div style="height:100%;width:${h.pct}%;background:${color};"></div>
+                </div>
+                <span style="width:64px;text-align:right;color:var(--text-secondary);">${h.score}/${h.total}</span>
+                <span style="width:90px;text-align:right;color:var(--text-muted);font-size:11px;">${d}</span>
+            </div>`;
+        }).join('');
+        content.innerHTML = rows;
+    }
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
