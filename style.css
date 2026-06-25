@@ -589,6 +589,7 @@ a {
     position: relative;
     aspect-ratio: 16/9;
     overflow: hidden;
+    background-color: #1a1a2e;
 }
 .carousel-slide img {
     width: 100%;
