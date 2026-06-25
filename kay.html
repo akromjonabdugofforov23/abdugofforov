@@ -606,7 +606,9 @@
 <script src="storage.js"></script>
 <script>
 // ===== KAY ADMIN PANEL =====
-const ADMIN_HASH = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
+// XAVFSIZLIK: PIN endi MIJOZDA tekshirilmaydi. PIN to'g'riligini faqat
+// SERVER (/admin/request-code yoki /check-pin) hal qiladi. Shu sababli
+// PIN hashi bu yerda saqlanmaydi (avval oshkor bo'lgan hash olib tashlandi).
 
 // Postlarni IndexedDB orqali o'qish/yozish (katta rasm/audio sig'imi uchun)
 function getPosts() {
@@ -663,12 +665,6 @@ async function setPosts(arr) {
 })();
 
 // ===== PIN LOGIKASI =====
-async function hashPin(pin) {
-    const data = new TextEncoder().encode(pin);
-    const buf = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-
 const pinInput = document.getElementById('pin-input');
 const pinError = document.getElementById('pin-error');
 const pinAttempts = document.getElementById('pin-attempts');
@@ -685,82 +681,97 @@ async function tryLogin() {
         return;
     }
 
-    const hash = await hashPin(pin);
-    if (hash === ADMIN_HASH) {
-        // PIN to'g'ri — endi 2FA: Telegram ga kod yuboramiz
-        localStorage.removeItem('kay_attempts');
-        localStorage.removeItem('kay_lock');
-        localStorage.removeItem('kay_lockcount');
-        addLog('success', 'PIN to\'g\'ri — Telegram tasdiqlash kerak');
+    const submitBtn = document.getElementById('pin-submit-btn');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Tekshirilmoqda...'; }
 
-        // Tugmani vaqtincha o'chirib qo'yamiz
-        const submitBtn = document.getElementById('pin-submit-btn');
-        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Telegramga yuborilmoqda...'; }
-
-        try {
-            const res = await fetch('/admin/request-code', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ pin })
-            });
-            const data = await res.json().catch(() => ({}));
-
-            if (data.ok && data.sessionId) {
-                // TG kod ekranini ochamiz
-                window.__authSession = { sessionId: data.sessionId, pin };
-                showTgScreen();
-                addLog('info', 'Telegramga kod yuborildi');
-            } else if (data.configured === false || (res.status === 503 && /telegram/i.test(data.message || ''))) {
-                // Telegram sozlanmagan — eski PIN-only rejimga qaytamiz
-                addLog('info', 'Telegram sozlanmagan — PIN bilan kirildi (legacy)');
-                sessionStorage.setItem('kay_admin', 'true');
-                sessionStorage.setItem('kay_admin_pin', pin);
-                showAdminPanel();
-            } else {
-                // Boshqa xato (KV yo'q, PIN noto'g'ri va h.k.)
-                pinError.textContent = data.message || 'Server xatosi';
-                pinError.style.display = 'block';
-                pinInput.value = '';
-            }
-        } catch (e) {
-            // Tarmoq xatosi — eski rejimga fallback
-            addLog('fail', 'Server bilan bog\'lanib bo\'lmadi — legacy rejim');
-            sessionStorage.setItem('kay_admin', 'true');
-            sessionStorage.setItem('kay_admin_pin', pin);
-            showAdminPanel();
-        } finally {
-            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Kirish'; }
-        }
-
-        // Ixtiyoriy: eski notify endpoint (bot xabari)
-        try {
-            fetch('/notify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ event: 'admin_login_attempt', note: 'Admin paneliga kirish urinishi' })
-            }).catch(() => {});
-        } catch (e) {}
-    } else {
+    // Noto'g'ri PIN holatini ishlovchi (urinish/blok hisoblagichi — faqat UX uchun)
+    function registerWrongPin(msg) {
         const attempts = parseInt(localStorage.getItem('kay_attempts') || '0') + 1;
         localStorage.setItem('kay_attempts', attempts);
         addLog('fail', `Noto'g'ri PIN urinish #${attempts}`);
-
         if (attempts >= 3) {
             const lockCount = parseInt(localStorage.getItem('kay_lockcount') || '0') + 1;
             localStorage.setItem('kay_lockcount', lockCount);
             const lockSeconds = Math.min(60 * Math.pow(2, lockCount - 1), 3600);
-            const lockTime = Date.now() + lockSeconds * 1000;
-            localStorage.setItem('kay_lock', lockTime);
+            localStorage.setItem('kay_lock', Date.now() + lockSeconds * 1000);
             localStorage.removeItem('kay_attempts');
             addLog('fail', `Blok faollashtirildi: ${lockSeconds}s`);
             pinError.textContent = `3 marta xato! ${lockSeconds} soniya kuting.`;
         } else {
-            pinError.textContent = `Noto'g'ri PIN (${attempts}/3)`;
+            pinError.textContent = msg || `Noto'g'ri PIN (${attempts}/3)`;
         }
         pinError.style.display = 'block';
         pinInput.value = '';
         pinInput.focus();
     }
+
+    let res, data;
+    try {
+        // PIN ni SERVERGA yuboramiz — to'g'riligini FAQAT server hal qiladi
+        res = await fetch('/admin/request-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin })
+        });
+        data = await res.json().catch(() => ({}));
+    } catch (e) {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Kirish'; }
+        addLog('fail', 'Server bilan bog\'lanib bo\'lmadi');
+        pinError.textContent = 'Server bilan bog\'lanib bo\'lmadi';
+        pinError.style.display = 'block';
+        return;
+    }
+
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Kirish'; }
+
+    // 1) PIN to'g'ri + Telegram kodi yuborildi → 2FA ekrani
+    if (data.ok && data.sessionId) {
+        localStorage.removeItem('kay_attempts');
+        localStorage.removeItem('kay_lock');
+        localStorage.removeItem('kay_lockcount');
+        window.__authSession = { sessionId: data.sessionId, pin };
+        showTgScreen();
+        addLog('success', 'PIN to\'g\'ri — Telegramga kod yuborildi');
+        return;
+    }
+
+    // 2) Telegram sozlanmagan → PIN ni /check-pin orqali SERVERDA tasdiqlaymiz
+    if (data.configured === false || (res.status === 503 && /telegram/i.test(data.message || ''))) {
+        try {
+            const cp = await fetch('/check-pin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin })
+            });
+            const cpData = await cp.json().catch(() => ({}));
+            if (cpData.success) {
+                localStorage.removeItem('kay_attempts');
+                localStorage.removeItem('kay_lock');
+                localStorage.removeItem('kay_lockcount');
+                addLog('info', 'Telegram sozlanmagan — PIN bilan kirildi (legacy)');
+                sessionStorage.setItem('kay_admin', 'true');
+                sessionStorage.setItem('kay_admin_pin', pin);
+                showAdminPanel();
+            } else {
+                registerWrongPin(cpData.message);
+            }
+        } catch (e) {
+            pinError.textContent = 'Server bilan bog\'lanib bo\'lmadi';
+            pinError.style.display = 'block';
+        }
+        return;
+    }
+
+    // 3) PIN noto'g'ri (401) → urinish/blok hisoblagichi (server ham rate-limit qiladi)
+    if (res.status === 401) {
+        registerWrongPin(data.message);
+        return;
+    }
+
+    // 4) Boshqa server xatosi (KV yo'q, 429 — juda ko'p urinish, va h.k.)
+    pinError.textContent = data.message || 'Server xatosi';
+    pinError.style.display = 'block';
+    pinInput.value = '';
 }
 
 document.getElementById('pin-submit-btn').addEventListener('click', tryLogin);
