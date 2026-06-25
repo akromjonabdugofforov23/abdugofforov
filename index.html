@@ -73,30 +73,30 @@
         </div>
     </div>
 
-    <!-- Navigatsiya -->
+    <!-- Navigatsiya — bitta qatorli, logo + nav linklar + asboblar -->
     <nav class="navbar">
-        <div class="container">
+        <div class="container navbar-row">
             <a href="#" class="logo" id="nav-logo">Abdugofforov<span>.</span></a>
-            <!-- Hamburger tugmasi (mobil) -->
-            <button class="hamburger" id="hamburger-btn" aria-label="Menyu">
-                <span></span><span></span><span></span>
-            </button>
-            <div class="nav-right" id="nav-right">
-                <div class="nav-links" id="main-nav">
-                    <a href="#" class="active" data-page="home" id="nav-home-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span data-i18n="nav.home">Bosh sahifa</span>
-                    </a>
-                    <a href="#" data-page="projects" id="nav-portfolio-link" style="display:none;" data-i18n="nav.projects">Loyihalar</a>
-                    <a href="#" id="nav-contact-link" data-i18n="nav.contact">Kontakt</a>
-                </div>
 
-                <!-- Til tanlash (UZ / RU / DE / EN) -->
-                <select id="lang-select" class="lang-select" aria-label="Til / Language">
-                    <option value="uz">🇺🇿 UZ</option>
-                    <option value="ru">🇷🇺 RU</option>
-                    <option value="de">🇩🇪 DE</option>
-                    <option value="en">🇬🇧 EN</option>
-                </select>
+            <!-- Nav linklar logo yonida (mobil va vebda bir xil) -->
+            <div class="nav-links" id="main-nav">
+                <a href="#" class="active" data-page="home" id="nav-home-link" aria-label="Bosh sahifa" title="Bosh sahifa">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span data-i18n="nav.home" class="nav-text">Bosh sahifa</span>
+                </a>
+                <a href="#" data-page="projects" id="nav-portfolio-link" style="display:none;" aria-label="Loyihalar" title="Loyihalar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    <span data-i18n="nav.projects" class="nav-text">Loyihalar</span>
+                </a>
+                <a href="#" id="nav-contact-link" aria-label="Kontakt" title="Kontakt">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    <span data-i18n="nav.contact" class="nav-text">Kontakt</span>
+                </a>
+            </div>
+
+            <div class="nav-right" id="nav-right">
+                <!-- Til tanlash (bayroqlar bilan) — JS orqali to'ldiriladi -->
+                <div id="lang-select" class="lang-dropdown" aria-label="Til / Language"></div>
 
                 <!-- Qorong'u rejim tugmasi -->
                 <button class="btn-icon theme-toggle" id="theme-btn" aria-label="Mavzuni o'zgartirish">
@@ -107,15 +107,13 @@
                 </button>
 
                 <!-- Yangi post tugmasi -->
-                <button class="btn-primary" id="add-post-btn">
+                <button class="btn-primary" id="add-post-btn" aria-label="Yangi post yozish" title="Yozish">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    <span data-i18n="nav.write">Yozish</span>
+                    <span data-i18n="nav.write" class="nav-text">Yozish</span>
                 </button>
             </div>
         </div>
     </nav>
-    <!-- Mobil menyu overlay -->
-    <div class="mobile-overlay" id="mobile-overlay"></div>
  
     <!-- Hero Section -->
     <header class="hero animate-fade-in">
@@ -164,22 +162,46 @@
     </div>
 
     <main class="container animate-fade-in" id="main-content">
-        <!-- Widgets Row (Ob-havo va Vaqt) -->
+        <!-- Widgets Row (Soat va Ob-havo) — animatsiyali zamonaviy dizayn -->
         <div class="widgets-row">
-            <div class="widget-card clock-card">
-                <span class="widget-icon">⏰</span>
-                <div class="widget-info">
-                    <span id="widget-time">00:00:00</span>
-                    <span class="widget-date" id="widget-date">22.06.2026</span>
+            <div class="widget-card clock-card" id="clock-card">
+                <div class="widget-icon clock-svg" aria-hidden="true">
+                    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="clockGrad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="var(--accent-color)"/>
+                                <stop offset="100%" stop-color="var(--accent-hover)"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="32" cy="32" r="28" fill="none" stroke="url(#clockGrad)" stroke-width="3" stroke-linecap="round" pathLength="100" class="clock-ring"/>
+                        <circle cx="32" cy="32" r="3" fill="url(#clockGrad)"/>
+                        <line x1="32" y1="32" x2="32" y2="16" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="clock-hand-h"/>
+                        <line x1="32" y1="32" x2="32" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="clock-hand-m"/>
+                        <line x1="32" y1="32" x2="32" y2="10" stroke="var(--accent-color)" stroke-width="1.5" stroke-linecap="round" class="clock-hand-s"/>
+                    </svg>
                 </div>
+                <div class="widget-info">
+                    <div class="clock-time" id="widget-time" aria-label="Hozirgi vaqt">
+                        <span class="clock-digits" data-clock="h">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="s">00</span>
+                    </div>
+                    <span class="widget-date" id="widget-date">--.--.----</span>
+                </div>
+                <span class="widget-pulse" aria-hidden="true"></span>
             </div>
-            <div class="widget-card weather-card">
-                <span class="widget-icon" id="weather-icon">☁️</span>
-                <div class="widget-info">
-                    <span id="weather-temp">--°C</span>
-                    <span class="weather-desc" id="weather-desc">Yuklanmoqda...</span>
-                    <span class="weather-location">Buloqboshi, UZB</span>
+
+            <div class="widget-card weather-card" id="weather-card" data-weather="loading">
+                <div class="widget-icon weather-icon-wrap" id="weather-icon-wrap" aria-hidden="true">
+                    <span class="weather-icon-emoji" id="weather-icon">☁️</span>
+                    <span class="weather-sparkle s1"></span>
+                    <span class="weather-sparkle s2"></span>
+                    <span class="weather-sparkle s3"></span>
                 </div>
+                <div class="widget-info">
+                    <span id="weather-temp">--°</span>
+                    <span class="weather-desc" id="weather-desc">Yuklanmoqda...</span>
+                    <span class="weather-location">📍 Buloqboshi, UZB</span>
+                </div>
+                <span class="widget-pulse" aria-hidden="true"></span>
             </div>
         </div>
 

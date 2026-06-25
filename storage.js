@@ -139,5 +139,87 @@
         }
     };
 
+    // ============================================================
+    // SERVER SYNC — Cloudflare Pages Function (functions/posts.js)
+    // GET  /posts      -> public, postlar ro'yxatini qaytaradi
+    // PUT  /posts      -> admin (x-admin-pin header bilan)
+    // ============================================================
+    const Sync = {
+        endpoint: '/posts',
+
+        // Server holatini saqlash (UI uchun foydali)
+        lastStatus: { configured: null, online: null, error: null },
+
+        // Serverdan postlarni o'qish
+        async fetchPosts(timeoutMs = 6000) {
+            try {
+                const ctrl = new AbortController();
+                const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+                const res = await fetch(this.endpoint, {
+                    method: 'GET',
+                    signal: ctrl.signal,
+                    headers: { 'Accept': 'application/json' },
+                });
+                clearTimeout(timer);
+
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                this.lastStatus = {
+                    configured: !!data.configured,
+                    online: true,
+                    error: null,
+                };
+                return Array.isArray(data.posts) ? data.posts : [];
+            } catch (e) {
+                this.lastStatus = {
+                    configured: null,
+                    online: false,
+                    error: (e && e.message) || 'fetch_failed',
+                };
+                return null; // null = serverdan o'qib bo'lmadi (mahalliyga fallback qiling)
+            }
+        },
+
+        // Postlarni serverga yuborish (admin uchun)
+        // Muvaffaqiyatda { ok: true } qaytaradi, aks holda { ok: false, ... }
+        async pushPosts(posts, pin) {
+            if (!pin || typeof pin !== 'string') {
+                return { ok: false, reason: 'no_pin', message: 'PIN topilmadi — admin sessiyasi tugagan.' };
+            }
+            try {
+                const res = await fetch(this.endpoint, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-admin-pin': pin,
+                    },
+                    body: JSON.stringify({ posts }),
+                });
+                const data = await res.json().catch(() => ({}));
+
+                if (res.status === 503) {
+                    this.lastStatus.configured = false;
+                    return { ok: false, reason: 'not_configured', message: data.message || 'Server omborini sozlash kerak.' };
+                }
+                if (res.status === 401) {
+                    return { ok: false, reason: 'unauthorized', message: data.message || 'PIN noto\'g\'ri.' };
+                }
+                if (res.status === 413) {
+                    return { ok: false, reason: 'too_large', message: data.message || 'Ma\'lumot juda katta.' };
+                }
+                if (!res.ok) {
+                    return { ok: false, reason: 'server_error', message: data.message || ('HTTP ' + res.status) };
+                }
+                this.lastStatus.configured = true;
+                this.lastStatus.online = true;
+                return { ok: true, count: data.count || 0 };
+            } catch (e) {
+                this.lastStatus.online = false;
+                return { ok: false, reason: 'network', message: (e && e.message) || 'Tarmoq xatosi.' };
+            }
+        },
+    };
+
     window.Store = Store;
+    window.Sync = Sync;
 })();

@@ -205,4 +205,124 @@
 
     // Global API
     window.i18n = { t, getLang, setLang, applyStaticTranslations, supported: SUPPORTED };
+
+    // ============================================================
+    // SVG BAYROQLAR — Aniq, barcha qurilmalarda bir xil ko'rinadi
+    // (emoji bayroqlar Windows va eski brauzerlarda ko'rinmaydi)
+    // ============================================================
+    const FLAGS = {
+        uz: `<svg viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="24" height="16" fill="#1EB53A"/>
+            <rect width="24" height="5.33" fill="#0099B5"/>
+            <rect y="5.33" width="24" height="5.33" fill="#fff"/>
+            <rect y="5.05" width="24" height="0.28" fill="#CE1126"/>
+            <rect y="10.66" width="24" height="0.28" fill="#CE1126"/>
+            <circle cx="4.5" cy="2.7" r="1.25" fill="#fff"/>
+            <circle cx="5.1" cy="2.7" r="1.05" fill="#0099B5"/>
+        </svg>`,
+        ru: `<svg viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="24" height="5.33" fill="#fff"/>
+            <rect y="5.33" width="24" height="5.33" fill="#0039A6"/>
+            <rect y="10.66" width="24" height="5.34" fill="#D52B1E"/>
+        </svg>`,
+        de: `<svg viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="24" height="5.33" fill="#000"/>
+            <rect y="5.33" width="24" height="5.33" fill="#DD0000"/>
+            <rect y="10.66" width="24" height="5.34" fill="#FFCE00"/>
+        </svg>`,
+        en: `<svg viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <clipPath id="gb-clip"><rect width="24" height="16"/></clipPath>
+            <g clip-path="url(#gb-clip)">
+                <rect width="24" height="16" fill="#012169"/>
+                <path d="M0,0 L24,16 M24,0 L0,16" stroke="#fff" stroke-width="3"/>
+                <path d="M0,0 L24,16" stroke="#C8102E" stroke-width="1.5" clip-path="polygon(0 0, 50% 0, 50% 100%, 0 100%)"/>
+                <path d="M24,0 L0,16" stroke="#C8102E" stroke-width="1.5" clip-path="polygon(50% 0, 100% 0, 100% 100%, 50% 100%)"/>
+                <path d="M12,0 V16 M0,8 H24" stroke="#fff" stroke-width="4"/>
+                <path d="M12,0 V16 M0,8 H24" stroke="#C8102E" stroke-width="2"/>
+            </g>
+        </svg>`
+    };
+
+    const LANG_LABELS = {
+        uz: { code: 'UZ', name: "O'zbekcha" },
+        ru: { code: 'RU', name: "Русский" },
+        de: { code: 'DE', name: "Deutsch" },
+        en: { code: 'EN', name: "English" }
+    };
+
+    function flag(lang) {
+        return FLAGS[lang] || '';
+    }
+
+    // Custom til dropdown qurish (mobil va veb uchun bir xil komponent)
+    function buildLangDropdown(container) {
+        if (!container) return;
+        const cur = getLang();
+        const meta = LANG_LABELS[cur] || LANG_LABELS.uz;
+
+        container.innerHTML = `
+            <button class="lang-toggle" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Til tanlash">
+                <span class="lang-flag" data-lang-flag>${flag(cur)}</span>
+                <span class="lang-code" data-lang-code>${meta.code}</span>
+                <svg class="lang-caret" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <ul class="lang-menu" role="listbox">
+                ${SUPPORTED.map(l => {
+                    const m = LANG_LABELS[l] || { code: l.toUpperCase(), name: l };
+                    return `<li role="option" data-value="${l}" ${l === cur ? 'aria-selected="true"' : ''}>
+                        <span class="lang-flag">${flag(l)}</span>
+                        <span class="lang-code">${m.code}</span>
+                        <span class="lang-name">${m.name}</span>
+                    </li>`;
+                }).join('')}
+            </ul>
+        `;
+
+        const toggle = container.querySelector('.lang-toggle');
+        const menu = container.querySelector('.lang-menu');
+
+        function open() {
+            container.classList.add('open');
+            toggle.setAttribute('aria-expanded', 'true');
+            // Outside click handler
+            setTimeout(() => document.addEventListener('click', onDocClick), 0);
+        }
+        function close() {
+            container.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+            document.removeEventListener('click', onDocClick);
+        }
+        function onDocClick(e) {
+            if (!container.contains(e.target)) close();
+        }
+
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            container.classList.contains('open') ? close() : open();
+        });
+
+        menu.addEventListener('click', (e) => {
+            const li = e.target.closest('li[role="option"]');
+            if (!li) return;
+            const val = li.getAttribute('data-value');
+            // UI ni yangilash
+            container.querySelectorAll('li[role="option"]').forEach(x => x.removeAttribute('aria-selected'));
+            li.setAttribute('aria-selected', 'true');
+            const m2 = LANG_LABELS[val] || { code: val.toUpperCase() };
+            const fEl = toggle.querySelector('[data-lang-flag]');
+            const cEl = toggle.querySelector('[data-lang-code]');
+            if (fEl) fEl.innerHTML = flag(val);
+            if (cEl) cEl.textContent = m2.code;
+            close();
+            setLang(val);
+        });
+
+        // Klaviatura: Escape = yopish
+        container.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') close();
+        });
+    }
+
+    window.i18n.flag = flag;
+    window.i18n.buildLangDropdown = buildLangDropdown;
 })();
