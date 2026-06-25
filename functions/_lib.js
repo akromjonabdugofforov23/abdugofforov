@@ -10,21 +10,92 @@ export const JSON_HEADERS = {
   'Cache-Control': 'no-store',
 };
 
-export function corsHeaders(request) {
+// Origin'ni faqat same-origin yoki ALLOWED_ORIGINS ro'yxatidagilarga ruxsat beramiz.
+// Bu wildcard ('*') aks ettirishning oldini oladi.
+export function isAllowedOrigin(request, env) {
   const origin = request.headers.get('Origin') || '';
-  return {
-    'Access-Control-Allow-Origin': origin || '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  if (!origin) return ''; // Origin yo'q (same-origin GET) — CORS shart emas
+  let allowed = [];
+  // So'rovning o'z origini (same-origin) doim ruxsat etiladi
+  try { allowed.push(new URL(request.url).origin); } catch (e) {}
+  // Qo'shimcha ruxsat etilgan originlar (vergul bilan ajratilgan ENV)
+  if (env && env.ALLOWED_ORIGINS) {
+    for (const o of String(env.ALLOWED_ORIGINS).split(',')) {
+      const t = o.trim();
+      if (t) allowed.push(t);
+    }
+  }
+  return allowed.includes(origin) ? origin : '';
+}
+
+export function corsHeaders(request, env) {
+  const allowOrigin = isAllowedOrigin(request, env);
+  const headers = {
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, x-user-token, x-admin-token, x-admin-pin, Authorization',
     'Access-Control-Max-Age': '600',
     'Vary': 'Origin',
   };
+  // Faqat ruxsat etilgan origin uchun ACAO sarlavhasini qo'shamiz.
+  if (allowOrigin) headers['Access-Control-Allow-Origin'] = allowOrigin;
+  return headers;
 }
 
-export function jsonResponse(data, status, request) {
+export function jsonResponse(data, status, request, env) {
   return new Response(JSON.stringify(data), {
     status: status || 200,
-    headers: { ...corsHeaders(request), ...JSON_HEADERS },
+    headers: { ...corsHeaders(request, env), ...JSON_HEADERS },
+  });
+}
+
+// ---- Mijoz IP manzili ----
+export function getClientIp(request) {
+  return request.headers.get('CF-Connecting-IP')
+    || request.headers.get('X-Forwarded-For')
+    || 'unknown';
+}
+
+// ---- IP bo'yicha rate-limiting (KV asosida) ----
+// bucket — endpoint nomi, max — oyna ichidagi maksimal urinishlar, windowSec — oyna (soniya)
+// Qaytaradi: { ok: true } yoki { ok: false, retryAfter }
+export async function rateLimit(env, request, bucket, max, windowSec) {
+  if (!env || !env.POSTS_KV) return { ok: true };
+  const ip = getClientIp(request);
+  const key = `rl:${bucket}:${ip}`;
+  const now = Date.now();
+  let rec = null;
+  try {
+    const raw = await env.POSTS_KV.get(key);
+    rec = raw ? JSON.parse(raw) : null;
+  } catch (e) { rec = null; }
+
+  if (!rec || now > rec.resetAt) {
+    rec = { count: 1, resetAt: now + windowSec * 1000 };
+    await env.POSTS_KV.put(key, JSON.stringify(rec), { expirationTtl: windowSec + 5 }).catch(() => {});
+    return { ok: true };
+  }
+
+  rec.count += 1;
+  const ttl = Math.max(1, Math.ceil((rec.resetAt - now) / 1000));
+  await env.POSTS_KV.put(key, JSON.stringify(rec), { expirationTtl: ttl + 5 }).catch(() => {});
+  if (rec.count > max) {
+    return { ok: false, retryAfter: ttl };
+  }
+  return { ok: true };
+}
+
+export function tooManyRequests(request, retryAfter, env) {
+  return new Response(JSON.stringify({
+    ok: false,
+    success: false,
+    message: "Juda ko'p urinish. Birozdan so'ng qayta urinib ko'ring.",
+  }), {
+    status: 429,
+    headers: {
+      ...corsHeaders(request, env),
+      ...JSON_HEADERS,
+      'Retry-After': String(retryAfter || 60),
+    },
   });
 }
 
@@ -146,8 +217,31 @@ export async function getUsersIndex(env) {
   try { return raw ? JSON.parse(raw) : []; } catch (e) { return []; }
 }
 
+// ---- Admin PIN ----
+// MUHIM: PIN hashi endi ENV o'zgaruvchisidan (ADMIN_PIN_HASH) olinadi.
+// Quyidagi qiymat faqat zaxira (fallback) — eski "0509" PIN'i OSHKOR bo'lgani uchun
+// ishlab chiqarishda ALBATTA Cloudflare'da ADMIN_PIN_HASH ni yangi, kuchli PIN bilan
+// almashtiring (kamida 8+ raqam/belgi). Fallback'ni esa zudlik bilan rotatsiya qiling.
+const ADMIN_PIN_HASH_FALLBACK = "827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089";
+
+export function getAdminPinHash(env) {
+  return (env && env.ADMIN_PIN_HASH) ? String(env.ADMIN_PIN_HASH).toLowerCase() : ADMIN_PIN_HASH_FALLBACK;
+}
+
+export async function sha256Hex(text) {
+  const data = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  return bufToHex(buf);
+}
+
+// PIN ni doimiy vaqtli (timing-safe) solishtirish bilan tekshiradi
+export async function verifyAdminPin(env, pin) {
+  if (typeof pin !== 'string' || !pin || pin.length > 64) return false;
+  const hash = await sha256Hex(pin);
+  return timingSafeEqual(hash, getAdminPinHash(env));
+}
+
 // ---- Admin tekshiruvi (token yoki PIN) ----
-const ADMIN_PIN_HASH = "827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089";
 export async function isAdmin(env, request) {
   const token = request.headers.get('x-admin-token');
   if (token && /^[a-f0-9]{32,128}$/.test(token)) {
@@ -159,11 +253,7 @@ export async function isAdmin(env, request) {
   // Telegram sozlanmagan bo'lsa PIN ham qabul qilinadi
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
     const pin = request.headers.get('x-admin-pin');
-    if (pin && pin.length <= 12) {
-      const data = new TextEncoder().encode(pin);
-      const buf = await crypto.subtle.digest('SHA-256', data);
-      if (timingSafeEqual(bufToHex(buf), ADMIN_PIN_HASH)) return true;
-    }
+    if (pin && await verifyAdminPin(env, pin)) return true;
   }
   return false;
 }

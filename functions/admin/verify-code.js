@@ -4,89 +4,70 @@
 // 1. Sessiyani KV dan oladi
 // 2. Kodni tekshiradi (5 marta noto'g'ri kirsa — sessiya o'chiriladi)
 // 3. To'g'ri bo'lsa — 8 soatga admin token yaratadi va KV ga saqlaydi
-// 4. Tokenni mijozga qaytaradi (frontend uni sessionStorage'ga saqlab,
-//    keyingi PUT /posts so'rovlarida x-admin-token header'da yuboradi)
+// 4. Tokenni mijozga qaytaradi
+
+import {
+  jsonResponse, corsHeaders, randomHex, timingSafeEqual,
+  getClientIp, rateLimit, tooManyRequests
+} from '../_lib.js';
 
 const TOKEN_TTL = 8 * 3600; // 8 soat
 const MAX_ATTEMPTS = 5;
 
-const JSON_HEADERS = {
-  'Content-Type': 'application/json; charset=utf-8',
-  'X-Content-Type-Options': 'nosniff',
-  'Cache-Control': 'no-store',
-};
-
-function corsHeaders(request) {
-  return {
-    'Access-Control-Allow-Origin': request.headers.get('Origin') || '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Vary': 'Origin',
-  };
-}
-
-function jsonResponse(data, status, request) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { ...corsHeaders(request), ...JSON_HEADERS },
-  });
-}
-
-function randomHex(bytes) {
-  const arr = new Uint8Array(bytes);
-  crypto.getRandomValues(arr);
-  return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 export async function onRequestOptions(context) {
-  return new Response(null, { headers: corsHeaders(context.request) });
+  return new Response(null, { headers: corsHeaders(context.request, context.env) });
 }
 
 export async function onRequestPost(context) {
   const { env, request } = context;
 
   if (!env.POSTS_KV) {
-    return jsonResponse({ ok: false, message: "KV ombori (POSTS_KV) bog'lanmagan." }, 503, request);
+    return jsonResponse({ ok: false, message: "KV ombori (POSTS_KV) bog'lanmagan." }, 503, request, env);
   }
+
+  // IP bo'yicha rate-limit: 5 daqiqada 15 ta kod tekshiruvi
+  const rl = await rateLimit(env, request, 'admin-verify-code', 15, 300);
+  if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
 
   // Brute force sekinlashtirish
   await new Promise(r => setTimeout(r, 200));
 
   let body;
   try { body = await request.json(); } catch (e) {
-    return jsonResponse({ ok: false, message: "Noto'g'ri JSON" }, 400, request);
+    return jsonResponse({ ok: false, message: "Noto'g'ri JSON" }, 400, request, env);
   }
 
   const sessionId = String(body.sessionId || '').trim();
   const code = String(body.code || '').trim();
 
   if (!/^[a-f0-9]{16,64}$/.test(sessionId) || !/^\d{6}$/.test(code)) {
-    return jsonResponse({ ok: false, message: "Noto'g'ri kod yoki sessiya" }, 400, request);
+    return jsonResponse({ ok: false, message: "Noto'g'ri kod yoki sessiya" }, 400, request, env);
   }
 
   let raw;
   try {
     raw = await env.POSTS_KV.get(`auth:session:${sessionId}`);
   } catch (e) {
-    return jsonResponse({ ok: false, message: "KV xato" }, 500, request);
+    return jsonResponse({ ok: false, message: "KV xato" }, 500, request, env);
   }
 
   if (!raw) {
-    return jsonResponse({ ok: false, message: "Sessiya topilmadi yoki eskirgan. Qaytadan PIN kiriting." }, 401, request);
+    return jsonResponse({ ok: false, message: "Sessiya topilmadi yoki eskirgan. Qaytadan PIN kiriting." }, 401, request, env);
   }
 
   let session;
   try { session = JSON.parse(raw); } catch (e) {
     await env.POSTS_KV.delete(`auth:session:${sessionId}`).catch(() => {});
-    return jsonResponse({ ok: false, message: "Sessiya buzilgan" }, 500, request);
+    return jsonResponse({ ok: false, message: "Sessiya buzilgan" }, 500, request, env);
   }
 
   if ((session.attempts || 0) >= MAX_ATTEMPTS) {
     await env.POSTS_KV.delete(`auth:session:${sessionId}`).catch(() => {});
-    return jsonResponse({ ok: false, message: "Juda ko'p urinish — qaytadan PIN kiriting" }, 429, request);
+    return jsonResponse({ ok: false, message: "Juda ko'p urinish — qaytadan PIN kiriting" }, 429, request, env);
   }
 
-  if (session.code !== code) {
+  // Doimiy vaqtli solishtirish (timing hujumlaridan himoya)
+  if (!timingSafeEqual(String(session.code || ''), code)) {
     session.attempts = (session.attempts || 0) + 1;
     await env.POSTS_KV.put(`auth:session:${sessionId}`, JSON.stringify(session), {
       expirationTtl: 300,
@@ -96,7 +77,7 @@ export async function onRequestPost(context) {
       ok: false,
       message: "Kod noto'g'ri (" + left + " urinish qoldi)",
       attemptsLeft: left,
-    }, 401, request);
+    }, 401, request, env);
   }
 
   // Muvaffaqiyat — admin token
@@ -108,15 +89,15 @@ export async function onRequestPost(context) {
       ua: session.ua || '',
     }), { expirationTtl: TOKEN_TTL });
   } catch (e) {
-    return jsonResponse({ ok: false, message: "Token saqlashda xato" }, 500, request);
+    return jsonResponse({ ok: false, message: "Token saqlashda xato" }, 500, request, env);
   }
 
   // Sessiyani o'chiramiz (qayta ishlatish mumkin emas)
   await env.POSTS_KV.delete(`auth:session:${sessionId}`).catch(() => {});
 
-  // Muvaffaqiyatli kirish haqida TG ga xabar (silent — xato bo'lsa ham davom etamiz)
+  // Muvaffaqiyatli kirish haqida TG ga xabar (silent)
   if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
-    const ip = request.headers.get('CF-Connecting-IP') || "noma'lum";
+    const ip = getClientIp(request);
     const text =
       "✅ *Admin panelga muvaffaqiyatli kirildi*\n\n" +
       "IP: `" + ip + "`\n" +
@@ -134,5 +115,5 @@ export async function onRequestPost(context) {
     );
   }
 
-  return jsonResponse({ ok: true, token, expiresIn: TOKEN_TTL }, 200, request);
+  return jsonResponse({ ok: true, token, expiresIn: TOKEN_TTL }, 200, request, env);
 }

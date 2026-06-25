@@ -4,18 +4,22 @@
 
 import {
   jsonResponse, corsHeaders, verifyPassword, normUsername,
-  createSession, getUser, publicUser
+  createSession, getUser, publicUser, rateLimit, tooManyRequests
 } from '../_lib.js';
 
 export async function onRequestOptions(context) {
-  return new Response(null, { headers: corsHeaders(context.request) });
+  return new Response(null, { headers: corsHeaders(context.request, context.env) });
 }
 
 export async function onRequestPost(context) {
   const { env, request } = context;
   if (!env.POSTS_KV) {
-    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request);
+    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
+
+  // IP bo'yicha rate-limit: daqiqada 10 ta login urinishi
+  const rl = await rateLimit(env, request, 'auth-login', 10, 60);
+  if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
 
   // Brute-force sekinlashtirish
   await new Promise(r => setTimeout(r, 200));
