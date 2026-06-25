@@ -32,7 +32,7 @@ function corsHeaders(request) {
   return {
     'Access-Control-Allow-Origin': origin || '*',
     'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, x-admin-pin',
+    'Access-Control-Allow-Headers': 'Content-Type, x-admin-pin, x-admin-token',
     'Access-Control-Max-Age': '600',
     'Vary': 'Origin',
   };
@@ -51,11 +51,30 @@ function timingSafeEqual(a, b) {
   return result === 0;
 }
 
-async function isValidPin(request) {
-  const pin = request.headers.get('x-admin-pin');
-  if (!pin || typeof pin !== 'string' || pin.length > 12) return false;
-  const hash = await sha256Hex(pin);
-  return timingSafeEqual(hash, CORRECT_PIN_HASH);
+// Auth: ikki usul qo'llab-quvvatlanadi
+// 1) x-admin-token (yangi — Telegram 2FA dan keyin verify-code.js bergan)
+// 2) x-admin-pin (eski — faqat agar Telegram ENV sozlanmagan bo'lsa)
+async function isAuthorized(request, env) {
+  // 1) Token-based auth (yangi)
+  const token = request.headers.get('x-admin-token');
+  if (token && typeof token === 'string' && /^[a-f0-9]{32,128}$/.test(token)) {
+    try {
+      const tokenData = await env.POSTS_KV.get(`auth:token:${token}`);
+      if (tokenData) return true;
+    } catch (e) { /* KV xato — quyiga o'tamiz */ }
+  }
+
+  // 2) Eski PIN-based — faqat Telegram sozlanmagan bo'lsa qabul qilamiz
+  // (Telegram sozlangach, foydalanuvchi to'liq 2FA orqali o'tishi shart)
+  if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
+    const pin = request.headers.get('x-admin-pin');
+    if (pin && typeof pin === 'string' && pin.length <= 12) {
+      const hash = await sha256Hex(pin);
+      if (timingSafeEqual(hash, CORRECT_PIN_HASH)) return true;
+    }
+  }
+
+  return false;
 }
 
 function jsonResponse(body, status, request) {
@@ -101,9 +120,15 @@ export async function onRequestPut(context) {
   // Brute-force ni biroz sekinlashtirish
   await new Promise(r => setTimeout(r, 150));
 
-  const authorized = await isValidPin(request);
+  const authorized = await isAuthorized(request, env);
   if (!authorized) {
-    return jsonResponse({ ok: false, message: 'Ruxsat berilmadi' }, 401, request);
+    const tgConfigured = !!(env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID);
+    return jsonResponse({
+      ok: false,
+      message: tgConfigured
+        ? "Ruxsat berilmadi. Telegram orqali admin panelga qayta kiring."
+        : "Ruxsat berilmadi"
+    }, 401, request);
   }
 
   let body;

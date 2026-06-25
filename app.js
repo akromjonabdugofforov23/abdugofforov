@@ -278,26 +278,29 @@ let _syncQueued = false;
 
 async function syncPostsToServer() {
     if (!isAdmin || !window.Sync) return;
+    const token = sessionStorage.getItem('kay_admin_token');
     const pin = sessionStorage.getItem('kay_admin_pin');
-    if (!pin) return; // PIN sessiyada yo'q — sinxronlash imkoniyati yo'q
+    if (!token && !pin) return; // sessionstorage'da auth ma'lumoti yo'q
 
     // Bir vaqtning o'zida bir nechta yuborishni oldini olamiz
     if (_syncInFlight) { _syncQueued = true; return; }
     _syncInFlight = true;
 
-    const result = await Sync.pushPosts(posts, pin);
+    const result = await Sync.pushPosts(posts, { token, pin });
     _syncInFlight = false;
 
     if (result.ok) {
-        showToast('✅ Post serverga sinxronlandi — endi hammaga ko\'rinadi', 'success');
+        showToast("✅ Post serverga sinxronlandi — endi hammaga ko'rinadi", 'success');
     } else if (result.reason === 'not_configured') {
-        showToast('⚠️ Server ombori sozlanmagan (POSTS_KV) — post faqat shu qurilmada ko\'rinadi', 'warn');
+        showToast("⚠️ Server ombori sozlanmagan (POSTS_KV) — post faqat shu qurilmada ko'rinadi", 'warn');
     } else if (result.reason === 'unauthorized') {
-        showToast('❌ PIN noto\'g\'ri — qayta kiring', 'error');
+        // Token eskirgan bo'lishi mumkin — admin sessiyasi tugagan
+        sessionStorage.removeItem('kay_admin_token');
+        showToast("❌ Admin sessiyasi tugagan — /kay sahifasiga kirib qayta tasdiqlang", 'error');
     } else if (result.reason === 'too_large') {
-        showToast('⚠️ Ma\'lumot juda katta — rasmlarni kichraytiring', 'warn');
+        showToast("⚠️ Ma'lumot juda katta — rasmlarni kichraytiring", 'warn');
     } else {
-        showToast('⚠️ Sinxronlash bo\'lmadi: ' + (result.message || 'noma\'lum xato'), 'warn');
+        showToast("⚠️ Sinxronlash bo'lmadi: " + (result.message || "noma'lum xato"), 'warn');
     }
 
     // Qator turgan yangi o'zgarishlar bo'lsa, yana yuboramiz
