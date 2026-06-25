@@ -75,28 +75,11 @@
 
     <!-- Navigatsiya -->
     <nav class="navbar">
-        <div class="container">
+        <div class="container navbar-row">
             <a href="#" class="logo" id="nav-logo">Abdugofforov<span>.</span></a>
-            <!-- Hamburger tugmasi (mobil) -->
-            <button class="hamburger" id="hamburger-btn" aria-label="Menyu">
-                <span></span><span></span><span></span>
-            </button>
             <div class="nav-right" id="nav-right">
-                <div class="nav-links" id="main-nav">
-                    <a href="#" class="active" data-page="home" id="nav-home-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px; margin-right:6px;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span data-i18n="nav.home">Bosh sahifa</span>
-                    </a>
-                    <a href="#" data-page="projects" id="nav-portfolio-link" style="display:none;" data-i18n="nav.projects">Loyihalar</a>
-                    <a href="#" id="nav-contact-link" data-i18n="nav.contact">Kontakt</a>
-                </div>
-
-                <!-- Til tanlash (UZ / RU / DE / EN) -->
-                <select id="lang-select" class="lang-select" aria-label="Til / Language">
-                    <option value="uz">🇺🇿 UZ</option>
-                    <option value="ru">🇷🇺 RU</option>
-                    <option value="de">🇩🇪 DE</option>
-                    <option value="en">🇬🇧 EN</option>
-                </select>
+                <!-- Til tanlash (bayroqlar bilan) — JS orqali to'ldiriladi -->
+                <div id="lang-select" class="lang-dropdown" aria-label="Til / Language"></div>
 
                 <!-- Qorong'u rejim tugmasi -->
                 <button class="btn-icon theme-toggle" id="theme-btn" aria-label="Mavzuni o'zgartirish">
@@ -113,9 +96,19 @@
                 </button>
             </div>
         </div>
+
+        <!-- Navigatsiya havolalari — doim tepada (mobil va veb bir xil) -->
+        <div class="container navbar-links-row">
+            <div class="nav-links" id="main-nav">
+                <a href="#" class="active" data-page="home" id="nav-home-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span data-i18n="nav.home">Bosh sahifa</span>
+                </a>
+                <a href="#" data-page="projects" id="nav-portfolio-link" style="display:none;" data-i18n="nav.projects">Loyihalar</a>
+                <a href="#" id="nav-contact-link" data-i18n="nav.contact">Kontakt</a>
+            </div>
+        </div>
     </nav>
-    <!-- Mobil menyu overlay -->
-    <div class="mobile-overlay" id="mobile-overlay"></div>
  
     <!-- Hero Section -->
     <header class="hero animate-fade-in">

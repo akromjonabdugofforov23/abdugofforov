@@ -88,12 +88,11 @@ a {
     animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Navigation Bar */
+/* Navigation Bar — 2 qatorli: tepada logo+asboblar, pastda nav linklar */
 .navbar {
     position: sticky;
     top: 0;
     z-index: 100;
-    padding: 20px 0;
     background-color: var(--navbar-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -101,11 +100,23 @@ a {
     transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
 }
 
-.navbar .container {
+.navbar-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-top: 16px;
+    padding-bottom: 12px;
 }
+
+.navbar-links-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-bottom: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.navbar-links-row::-webkit-scrollbar { display: none; }
 
 .logo {
     font-family: 'Playfair Display', serif;
@@ -122,12 +133,14 @@ a {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
 }
 
 .nav-links {
     display: flex;
     align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
 }
 
 .nav-links a {
@@ -135,33 +148,36 @@ a {
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-left: 30px;
+    letter-spacing: 0.8px;
     color: var(--text-secondary);
     position: relative;
     cursor: pointer;
-    transition: color var(--transition-speed) ease, letter-spacing 0.2s ease;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color var(--transition-speed) ease, background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    white-space: nowrap;
 }
 
-.nav-links a:hover, 
+.nav-links a svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.nav-links a:hover {
+    color: var(--text-primary);
+    background-color: var(--tag-bg);
+}
+
 .nav-links a.active {
     color: var(--text-primary);
-}
-
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--accent-color);
-    transition: width var(--transition-speed) ease;
-}
-
-.nav-links a:hover::after,
-.nav-links a.active::after {
-    width: 100%;
+    background-color: var(--tag-bg);
+    border-color: var(--border-color);
 }
 
 /* Theme Switcher and Add Button */
@@ -762,85 +778,114 @@ a {
     background: var(--text-muted);
 }
 
-/* Mobil qurilmalar uchun moslashuv */
+/* ==========================================================
+   MOBIL MOSLASHUV (≤ 768px) — Professional, tepada doim ko'rinadigan nav
+   ========================================================== */
 @media (max-width: 768px) {
-    .navbar { padding: 15px 0; }
-    .logo { font-size: 22px; }
-
-    /* Hamburger ko'rinadi */
-    .hamburger { display: flex; }
-
-    /* Nav mobil drawer */
-    .nav-right {
-        position: fixed;
-        top: 0; right: -280px;
-        width: 280px; height: 100vh;
-        background: var(--bg-color);
-        border-left: 1px solid var(--border-color);
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 80px 24px 24px;
-        gap: 8px;
-        z-index: 999;
-        transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        box-shadow: -8px 0 32px rgba(0,0,0,0.15);
+    .navbar-row {
+        padding-top: 12px;
+        padding-bottom: 10px;
     }
-    .nav-right.open {
-        right: 0;
+    .navbar-links-row {
+        padding-bottom: 10px;
+        padding-top: 0;
+        gap: 6px;
     }
+    .logo { font-size: 20px; }
+
+    .nav-right { gap: 8px; }
+
+    /* Nav linklarni mobilda gorizontal pill bar shaklida */
     .nav-links {
-        display: flex !important;
-        flex-direction: column;
         width: 100%;
-        gap: 4px;
+        gap: 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding-bottom: 2px;
     }
+    .nav-links::-webkit-scrollbar { display: none; }
     .nav-links a {
-        padding: 12px 16px;
-        border-radius: 10px;
-        font-size: 15px;
-        width: 100%;
-        margin-left: 0;
+        font-size: 12px;
+        letter-spacing: 0.4px;
+        padding: 8px 12px;
+        flex-shrink: 0;
     }
-    .nav-links a:hover, .nav-links a.active {
-        background: var(--card-bg);
+
+    /* Mobil dagi Yozish tugmasini ixchamlash */
+    #add-post-btn {
+        padding: 8px 12px;
     }
-    .mobile-overlay { display: block; }
-
-    /* Hero */
-    .hero-title { font-size: 28px; }
-
-    /* Toolbar */
-    .toolbar { flex-direction: column; align-items: stretch; }
-    .search-box { max-width: 100%; }
-
-    /* Form */
-    .form-row { grid-template-columns: 1fr; }
-
-    /* Footer */
-    .footer .container { flex-direction: column; gap: 15px; text-align: center; }
-    .footer-socials a { margin: 0 10px; }
-
-    /* Modal */
-    .modal-body { padding: 20px; }
-    .modal-post-title { font-size: 24px; }
-    .modal-post-image { height: 200px; }
-
-    /* Yozish tugmasi mobil da kichik */
     #add-post-btn span { display: none; }
 
-    /* Drawer ichidagi elementlar mobilga mos */
-    .nav-right .lang-select,
-    .nav-right .btn-primary {
-        width: 100%;
+    /* Hero — mobilda kompakt */
+    .hero { padding: 30px 0 20px 0; }
+    .hero-title { font-size: 24px; line-height: 1.3; }
+    .hero-subtitle { font-size: 10px; letter-spacing: 2px; }
+
+    /* Widgets row — mobilda 1 ustun */
+    .widgets-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
     }
-    .nav-right .btn-primary {
-        justify-content: center;
+    .widget-card { padding: 14px 16px; }
+
+    /* Toolbar — kompakt */
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        margin-top: 16px;
+        margin-bottom: 14px;
+        gap: 12px;
     }
+    .search-box { max-width: 100%; }
+    .filter-tags {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        scrollbar-width: none;
+        margin: 0 calc(-1 * var(--container-pad));
+        padding: 4px var(--container-pad);
+    }
+    .filter-tags::-webkit-scrollbar { display: none; }
+    .filter-tag { flex-shrink: 0; }
+
+    /* Blog grid — mobilda 1 ustun, kichikroq gap */
+    .blog-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 12px 0 60px 0;
+    }
+    .post-image-wrapper, .post-image { height: 200px; }
+    .post-content { padding: 20px; }
+    .post-title { font-size: 19px; }
+
+    /* Form — mobilda 1 ustun */
+    .form-row { grid-template-columns: 1fr; }
+    .write-form { padding: 24px 20px; }
+    .write-title { font-size: 22px; margin-bottom: 18px; }
+
+    /* Footer — markazlash */
+    .footer .container {
+        flex-direction: column;
+        gap: 14px;
+        text-align: center;
+    }
+    .footer-socials a { margin: 0 10px; }
+
+    /* Modal — to'liq ekran, kattaroq padding */
+    .modal-body { padding: 20px; }
+    .modal-post-title { font-size: 22px; }
+    .modal-post-image { height: 200px; }
+
+    /* Drawer va hamburger eslatma — yo'q qilamiz */
+    .hamburger,
+    .mobile-overlay { display: none !important; }
 }
 
 @media (max-width: 480px) {
-    .hero-title { font-size: 22px; }
-    .widgets-row { grid-template-columns: 1fr !important; }
+    .hero-title { font-size: 21px; }
+    .navbar-row { padding-top: 10px; padding-bottom: 8px; }
+    .logo { font-size: 19px; }
 }
 
 /* --- WIDGETS ROW --- */
@@ -1788,3 +1833,346 @@ a {
 
 /* ===== ULASHISH/ACTIONS BAR — moslashuv ===== */
 .modal-actions-bar { flex-wrap: wrap; }
+
+
+
+/* ============================================================
+   TIL DROPDOWN (Bayroqli, mobil va veb bir xil)
+   ============================================================ */
+.lang-dropdown {
+    position: relative;
+    display: inline-block;
+    font-family: inherit;
+}
+
+.lang-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    line-height: 1;
+    transition: border-color var(--transition-speed) ease, background-color var(--transition-speed) ease;
+    min-height: 36px;
+}
+.lang-toggle:hover { border-color: var(--accent-color); }
+.lang-dropdown.open .lang-toggle {
+    border-color: var(--accent-color);
+    background: var(--tag-bg);
+}
+
+.lang-flag {
+    display: inline-flex;
+    width: 22px;
+    height: 14px;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+}
+.lang-flag svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.lang-code {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.lang-caret {
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+}
+.lang-dropdown.open .lang-caret {
+    transform: rotate(180deg);
+}
+
+.lang-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    list-style: none;
+    padding: 6px;
+    margin: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    min-width: 180px;
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+}
+.lang-dropdown.open .lang-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.lang-menu li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-primary);
+    transition: background-color 0.15s ease;
+}
+.lang-menu li:hover {
+    background: var(--tag-bg);
+}
+.lang-menu li[aria-selected="true"] {
+    background: var(--tag-bg);
+    color: var(--accent-color);
+}
+.lang-menu li .lang-name {
+    margin-left: auto;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+.lang-menu li[aria-selected="true"] .lang-name {
+    color: var(--accent-color);
+}
+
+/* Eski .lang-select uslubi ortiqcha — bekor qilamiz (mavjudligi xalal bermasin) */
+.lang-select { display: none; }
+
+@media (max-width: 768px) {
+    .lang-toggle {
+        padding: 6px 10px;
+        min-height: 34px;
+    }
+    .lang-code { font-size: 11px; }
+    .lang-menu {
+        right: 0;
+        left: auto;
+        min-width: 170px;
+    }
+}
+
+/* ============================================================
+   DEUTSCH TESTLAR — Darajalar va to'plamlar (yangi UX)
+   ============================================================ */
+.deutsch-hero {
+    text-align: center;
+    margin-bottom: 32px;
+    padding: 8px 0;
+}
+.deutsch-hero .deutsch-flag {
+    font-size: 44px;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+.deutsch-hero .deutsch-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+}
+.deutsch-hero .deutsch-sub {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.levels-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.level-block {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: var(--shadow-sm);
+}
+
+.level-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--border-color);
+}
+.level-icon {
+    font-size: 30px;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--tag-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.level-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    margin: 0 0 2px 0;
+    color: var(--text-primary);
+}
+.level-sub {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.test-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.test-card {
+    text-align: left;
+    background: var(--bg-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 18px 18px 16px 18px;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.test-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+.test-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.test-card-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-primary);
+}
+.test-card-badge {
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--tag-bg);
+    color: var(--accent-color);
+    padding: 3px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+.test-card-note {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 36px;
+}
+.test-card-cta {
+    margin-top: 6px;
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 13px;
+}
+
+@media (max-width: 768px) {
+    .level-block { padding: 18px 14px; border-radius: 16px; }
+    .level-head { gap: 12px; margin-bottom: 14px; padding-bottom: 12px; }
+    .level-icon { width: 44px; height: 44px; font-size: 26px; border-radius: 12px; }
+    .level-title { font-size: 17px; }
+    .level-sub { font-size: 12px; }
+    .test-grid { grid-template-columns: 1fr; gap: 10px; }
+    .test-card { padding: 14px; border-radius: 12px; }
+    .test-card-name { font-size: 14px; }
+    .test-card-note { font-size: 12px; min-height: 0; }
+    .deutsch-hero .deutsch-title { font-size: 22px; }
+    .deutsch-hero .deutsch-flag { font-size: 36px; }
+}
+
+/* ============================================================
+   TOAST BILDIRISHNOMASI (Sinxronlash holati va boshqalar)
+   ============================================================ */
+.abdu-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%) translateY(160%);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: var(--shadow-md);
+    max-width: min(420px, calc(100vw - 24px));
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+}
+.abdu-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+.abdu-toast[data-kind="success"] {
+    border-color: rgba(34,197,94,0.4);
+    background: linear-gradient(0deg, rgba(34,197,94,0.06), rgba(34,197,94,0.06)), var(--card-bg);
+}
+.abdu-toast[data-kind="warn"] {
+    border-color: rgba(244,162,97,0.5);
+    background: linear-gradient(0deg, rgba(244,162,97,0.06), rgba(244,162,97,0.06)), var(--card-bg);
+}
+.abdu-toast[data-kind="error"] {
+    border-color: rgba(239,68,68,0.5);
+    background: linear-gradient(0deg, rgba(239,68,68,0.06), rgba(239,68,68,0.06)), var(--card-bg);
+}
+
+@media (max-width: 480px) {
+    .abdu-toast {
+        left: 12px;
+        right: 12px;
+        bottom: 16px;
+        transform: translateY(160%);
+        max-width: none;
+    }
+    .abdu-toast.show {
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   Eski tugma stilini kuchaytirish — mobilda ham yaxshi tap-target
+   ============================================================ */
+@media (max-width: 768px) {
+    .btn-primary,
+    .btn-secondary,
+    .btn-icon {
+        min-height: 36px;
+    }
+    .form-input, .form-textarea {
+        font-size: 15px; /* iOS auto-zoom oldini olish: 16px ga yaqin */
+        padding: 11px 13px;
+    }
+    /* Sichqonchaga ergashuvchi doira — mobil/touchda ko'rinmasin */
+    #cursor-follower { display: none !important; }
+}
