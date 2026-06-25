@@ -280,16 +280,29 @@ function updateHeroContent() {
 }
 
 // 8. Postlarni filtrlash va render qilish
-function renderPosts() {
-    // Skeleton ko'rsatish (tez o'chadi)
-    showSkeletons(3);
-    setTimeout(() => {
+let _renderTimer = null;
+function renderPosts(instant) {
+    // Avvalgi kutilayotgan renderni bekor qilamiz (qidiruvda har bosishda chaqiriladi —
+    // bu skeletonlar ustma-ust tushib miltillashining oldini oladi)
+    if (_renderTimer) { clearTimeout(_renderTimer); _renderTimer = null; }
+
+    const doRender = () => {
+        _renderTimer = null;
         blogGrid.innerHTML = '';
         blogGrid.classList.remove('animate-fade-in');
         void blogGrid.offsetWidth;
         blogGrid.classList.add('animate-fade-in');
 
         const filtered = posts.filter(post => {
+            // QIDIRUV REJIMI: matn kiritilgan bo'lsa, kategoriya/tab cheklovini
+            // e'tiborsiz qoldirib, BARCHA postlar ichidan qidiramiz
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                const fields = [post.title, post.excerpt, post.category, post.content, post.artist, post.author];
+                return fields.some(f => typeof f === 'string' && f.toLowerCase().includes(q));
+            }
+
+            // Qidiruv yo'q — oddiy kategoriya/tab filtri
             // Default holat: hech narsa ko'rsatmaslik
             if (filterType === 'none') return false;
 
@@ -301,23 +314,14 @@ function renderPosts() {
                 if (post.category.toLowerCase().replace(/[^a-z0-9]/g, '') !== filterType.toLowerCase().replace(/[^a-z0-9]/g, '')) return false;
             }
 
-            // Qidiruv
-            if (searchQuery) {
-                const query = searchQuery.toLowerCase();
-                const matchesTitle = post.title.toLowerCase().includes(query);
-                const matchesExcerpt = post.excerpt.toLowerCase().includes(query);
-                const matchesCategory = post.category.toLowerCase().includes(query);
-                return matchesTitle || matchesExcerpt || matchesCategory;
-            }
-
             return true;
         });
 
         if (filtered.length === 0) {
             blogGrid.innerHTML = `
                 <div class="empty-state">
-                    <span class="empty-state-icon">📝</span>
-                    <p class="empty-state-text">Hech qanday maqola yoki ma'lumot topilmadi.</p>
+                    <span class="empty-state-icon">${searchQuery ? '🔍' : '📝'}</span>
+                    <p class="empty-state-text">${searchQuery ? ('"' + escapeHTML(searchQuery) + '" bo\'yicha hech narsa topilmadi.') : "Hech qanday maqola yoki ma'lumot topilmadi."}</p>
                 </div>
             `;
             return;
@@ -431,7 +435,15 @@ function renderPosts() {
             blogGrid.appendChild(card);
             observeReveal(card);
         });
-    }, 400); // <-- setTimeout shu yerda yopildi
+    };
+
+    // Qidiruvda darhol (skeletonsiz) ko'rsatamiz; aks holda yengil skeleton animatsiyasi
+    if (instant) {
+        doRender();
+    } else {
+        showSkeletons(3);
+        _renderTimer = setTimeout(doRender, 400);
+    }
 } // <-- renderPosts funksiyasi shu yerda yopildi
 
 // Ko'rinishlarni almashtirish yordamchilari
@@ -599,6 +611,10 @@ filterTags.addEventListener('click', (e) => {
 
     showMainView();
 
+    // Kategoriya tanlanganda jonli qidiruvni tozalaymiz (chalkashmaslik uchun)
+    searchQuery = '';
+    if (searchInput) searchInput.value = '';
+
     filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
     btn.classList.add('active');
 
@@ -606,20 +622,37 @@ filterTags.addEventListener('click', (e) => {
     renderPosts();
 });
 
+// ===== JONLI QIDIRUV (live search) =====
+// Foydalanuvchi yozishni boshlashi bilan, barcha postlar (kundalik) ichidan
+// sarlavha/qisqacha/kategoriya/matn bo'yicha darhol qidiradi.
+// Eslatma: qidiruv FAQAT public postlar ichidan boradi — admin paneli (kay.html)
+// alohida sahifa, uning kontenti va so'zlari bu yerga umuman kirmaydi.
+let _searchTimer = null;
+
+function showBlogResultsView() {
+    if (typeof hideAuxViews === 'function') hideAuxViews();
+    const hero = document.querySelector('.hero');
+    if (hero) hero.style.display = '';
+    if (mainContent) mainContent.style.display = '';
+}
+
 searchInput.addEventListener('input', (e) => {
-    searchQuery = e.target.value;
-    // If user is searching, enable 'all' filter implicitly
-    if (searchQuery && filterType === 'none') {
-        filterType = 'all';
-    }
-    // If search cleared and no category button is active, revert to 'none'
-    if (!searchQuery) {
-        const activeBtn = filterTags.querySelector('.filter-tag.active');
-        if (!activeBtn) {
-            filterType = 'none';
+    searchQuery = e.target.value.trim();
+    if (_searchTimer) clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(() => {
+        if (searchQuery) {
+            // Qidiruv rejimi: barcha postlar ichidan jonli qidiramiz
+            currentTab = 'home';
+            filterType = 'all';
+            showBlogResultsView();
+            renderPosts(true); // darhol (skeletonsiz)
+        } else {
+            // Qidiruv tozalandi — kategoriya tanlanmagan bo'lsa, dastlabki holatga qaytamiz
+            const activeBtn = filterTags.querySelector('.filter-tag.active');
+            if (!activeBtn) filterType = 'none';
+            renderPosts(true);
         }
-    }
-    renderPosts();
+    }, 120);
 });
 
 // Like bosish
