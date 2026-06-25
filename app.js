@@ -10,7 +10,7 @@ const defaultPosts = [];
 // posts endi IndexedDB (Store) orqali yuklanadi — bootstrap() ichida hydrate qilinadi.
 let posts = defaultPosts;
 let currentTab = 'home'; 
-let filterType = 'all'; 
+let filterType = 'none'; 
 let searchQuery = '';
 let editingPostId = null;
 let isAdmin = sessionStorage.getItem('kay_admin') === 'true';
@@ -290,6 +290,9 @@ function renderPosts() {
         blogGrid.classList.add('animate-fade-in');
 
         const filtered = posts.filter(post => {
+            // Default holat: hech narsa ko'rsatmaslik
+            if (filterType === 'none') return false;
+
             // Tab navigatsiyasi
             if (currentTab === 'projects' && post.type !== 'project') return false;
 
@@ -502,11 +505,10 @@ mainNav.addEventListener('click', (e) => {
     if (currentTab === 'projects') {
         filterType = 'project';
     } else {
-        filterType = 'all';
+        filterType = 'none';
     }
 
     filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
-    filterTags.querySelector('[data-filter="all"]').classList.add('active');
 
     updateHeroContent();
     renderPosts();
@@ -606,6 +608,10 @@ filterTags.addEventListener('click', (e) => {
 
 searchInput.addEventListener('input', (e) => {
     searchQuery = e.target.value;
+    // If user is searching, enable 'all' filter implicitly
+    if (searchQuery && filterType === 'none') {
+        filterType = 'all';
+    }
     renderPosts();
 });
 
@@ -1734,8 +1740,6 @@ function initLanguage() {
     document.addEventListener('langchange', () => {
         updateHeroContent();
         renderPosts();
-        // Hero title typewriter qayta yuradi (yangi tilda)
-        if (typeof runTypewriter === 'function') runTypewriter();
         const deutschView = document.getElementById('deutsch-view');
         const flashView = document.getElementById('flashcards-view');
         if (deutschView && deutschView.style.display !== 'none') renderDeutschHome();
@@ -2137,6 +2141,151 @@ function initParticles() {
     return () => { if (raf) cancelAnimationFrame(raf); };
 }
 
+// ===== FOOTER PARTICLES (Canvas API) =====
+function initFooterParticles() {
+    const canvas = document.getElementById('footer-particles-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+
+    let particles = [];
+    let raf = null;
+
+    function size() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+    }
+
+    function spawn() {
+        const count = isMobile ? 20 : 50;
+        particles = [];
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        for (let i = 0; i < count; i++) {
+            const useBlue = Math.random() > 0.5;
+            particles.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                r: Math.random() * 1.4 + 0.5,
+                color: useBlue ? '59, 130, 246' : '139, 92, 246',
+                a: 0.35 + Math.random() * 0.3,
+            });
+        }
+    }
+
+    function step() {
+        const w = canvas.clientWidth, h = canvas.clientHeight;
+        ctx.clearRect(0, 0, w, h);
+        for (const p of particles) {
+            p.x += p.vx; p.y += p.vy;
+            p.vx = Math.max(-0.8, Math.min(0.8, p.vx * 0.99));
+            p.vy = Math.max(-0.8, Math.min(0.8, p.vy * 0.99));
+            if (p.x < 0) { p.x = 0; p.vx *= -1; }
+            else if (p.x > w) { p.x = w; p.vx *= -1; }
+            if (p.y < 0) { p.y = 0; p.vy *= -1; }
+            else if (p.y > h) { p.y = h; p.vy *= -1; }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${p.color}, ${p.a})`;
+            ctx.fill();
+        }
+        // Yaqin zarrachalar orasida chiziq
+        const linkDist = isMobile ? 80 : 110;
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const d = Math.sqrt(dx * dx + dy * dy);
+                if (d < linkDist) {
+                    const alpha = (1 - d / linkDist) * 0.2;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(139, 92, 246, ${alpha})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
+        }
+        raf = requestAnimationFrame(step);
+    }
+
+    size();
+    spawn();
+    step();
+    window.addEventListener('resize', () => { size(); spawn(); }, { passive: true });
+}
+
+// ===== GERMANY CAROUSEL =====
+function initCarousel() {
+    const track = document.getElementById('carousel-track');
+    const dotsContainer = document.getElementById('carousel-dots');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    if (!track || !dotsContainer) return;
+
+    const slides = track.querySelectorAll('.carousel-slide');
+    const total = slides.length;
+    let current = 0;
+    let autoSlideInterval = null;
+
+    // Dots yaratish
+    for (let i = 0; i < total; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+    }
+
+    function goTo(idx) {
+        current = ((idx % total) + total) % total;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        dotsContainer.querySelectorAll('.carousel-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === current);
+        });
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => { prev(); resetAuto(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { next(); resetAuto(); });
+
+    function startAuto() {
+        autoSlideInterval = setInterval(next, 4000);
+    }
+    function resetAuto() {
+        clearInterval(autoSlideInterval);
+        startAuto();
+    }
+
+    startAuto();
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    track.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    track.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) next(); else prev();
+            resetAuto();
+        }
+    }, { passive: true });
+}
+
 // ===== HERO TYPEWRITER =====
 // hero-title-text'ning matnini harfma-harf qayta yozadi (langchange'da yangilanadi)
 let _typewriterTimer = null;
@@ -2300,9 +2449,10 @@ async function bootstrap() {
     registerServiceWorker();
     openPostFromUrl();
 
-    // Yangi: hero particles + typewriter + CTA tugmasi + 3D tilt + Floating +
+    // Yangi: hero particles + footer particles + CTA tugmasi + 3D tilt + Floating +
     initParticles();
-    runTypewriter();
+    initFooterParticles();
+    initCarousel();
     initHeroCta();
     init3DTilt();
     initFloatingAddBtn();
@@ -3081,7 +3231,7 @@ function renderTournamentHome() {
            <button class="btn-primary t-start-btn" onclick="startTournamentGame()" style="margin-top:16px;">🏆 Turnirni boshlash</button>`
         : `<div class="form-group" style="max-width:320px;margin:0 auto 14px;">
                <label for="t-name-input">Ismingiz (mehmon sifatida)</label>
-               <input type="text" id="t-name-input" class="form-input" placeholder="Masalan: Akrom" maxlength="40">
+               <input type="text" id="t-name-input" class="form-input" placeholder="Masalan: Ism" maxlength="40">
            </div>
            <button class="btn-primary t-start-btn" onclick="startTournamentGame()">🏆 Turnirni boshlash</button>
            <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">Ro'yxatdan o'tsangiz — ism va avataringiz bilan, qayta yozmasdan qatnashasiz.

@@ -137,27 +137,78 @@
         </div>
     </nav>
  
-    <!-- Hero Section — particles + typewriter -->
+    <!-- Hero Section — particles + subtitle + tagline -->
     <header class="hero animate-fade-in" id="hero">
         <canvas class="particles-canvas" id="particles-canvas" aria-hidden="true"></canvas>
         <div class="container hero-inner">
             <div class="hero-content">
-                <p class="hero-subtitle" id="hero-sub" data-i18n="hero.subtitle">Shaxsiy blog & Hikoyalar</p>
-                <h1 class="hero-title" id="hero-main-title">
-                    <span class="hero-title-text" data-i18n="hero.title">Vaqt</span><span class="hero-cursor">|</span>
-                </h1>
+                <p class="hero-subtitle" id="hero-sub" data-i18n="hero.subtitle">Shaxsiy blog & rivojlanish uchun</p>
                 <p class="hero-tagline">Medik <span class="dot">·</span> Dasturchi <span class="dot">·</span> Futbolchi</p>
             </div>
-
-            <!-- Soat — faqat vaqt va sana (ob-havo olib tashlandi) -->
-            <aside class="hero-clock" id="hero-clock" aria-label="Hozirgi vaqt">
-                <div class="hero-clock-time" id="widget-time">
-                    <span class="clock-digits" data-clock="h">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="s">00</span>
-                </div>
-                <div class="hero-clock-date" id="widget-date">--.--.----</div>
-            </aside>
         </div>
     </header>
+
+    <!-- Germany Top-10 Carousel -->
+    <section class="germany-carousel" id="germany-carousel">
+        <div class="carousel-track" id="carousel-track">
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1534313314376-a72289b6181e?w=800&q=80" alt="Neuschwanstein Castle" loading="lazy">
+                <span class="carousel-geo-badge">📍 Neuschwanstein Castle, Bavaria</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&q=80" alt="Brandenburg Gate" loading="lazy">
+                <span class="carousel-geo-badge">📍 Brandenburg Gate, Berlin</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1567922045116-2a00fae2ed03?w=800&q=80" alt="Cologne Cathedral" loading="lazy">
+                <span class="carousel-geo-badge">📍 Cologne Cathedral, Koln</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=800&q=80" alt="The Black Forest" loading="lazy">
+                <span class="carousel-geo-badge">📍 The Black Forest, Baden-Wurttemberg</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1515091943-9d5c0ad475af?w=800&q=80" alt="Miniatur Wunderland" loading="lazy">
+                <span class="carousel-geo-badge">📍 Miniatur Wunderland, Hamburg</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1589459072535-550f4fae08d4?w=800&q=80" alt="Zugspitze Peak" loading="lazy">
+                <span class="carousel-geo-badge">📍 Zugspitze Peak, Alp tog'lari</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1590099033615-be195f8d575c?w=800&q=80" alt="Eltz Castle" loading="lazy">
+                <span class="carousel-geo-badge">📍 Eltz Castle, Rhineland-Palatinate</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800&q=80" alt="Rakotzbrucke" loading="lazy">
+                <span class="carousel-geo-badge">📍 Rakotzbrucke, Saxony</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1577462281852-1e0351378560?w=800&q=80" alt="Rothenburg ob der Tauber" loading="lazy">
+                <span class="carousel-geo-badge">📍 Rothenburg ob der Tauber, Bavaria</span>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1588982385209-5765e411caa2?w=800&q=80" alt="Heidelberg Castle" loading="lazy">
+                <span class="carousel-geo-badge">📍 Heidelberg Castle, Heidelberg</span>
+            </div>
+        </div>
+        <button class="carousel-btn carousel-btn-prev" id="carousel-prev" aria-label="Oldingi">&#10094;</button>
+        <button class="carousel-btn carousel-btn-next" id="carousel-next" aria-label="Keyingi">&#10095;</button>
+        <div class="carousel-dots" id="carousel-dots"></div>
+    </section>
+
+    <!-- Functional Row: Search + Small Clock -->
+    <div class="container functional-row" id="functional-row">
+        <div class="functional-search">
+            <input type="text" class="search-input" id="search-input" placeholder="🔍 Kundalikdan qidirish..." data-i18n-placeholder="search.placeholder">
+        </div>
+        <div class="functional-clock" id="functional-clock" aria-label="Hozirgi vaqt">
+            <span class="fc-time">
+                <span class="clock-digits" data-clock="h">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="s">00</span>
+            </span>
+            <span class="fc-date" id="widget-date">--.--.----</span>
+        </div>
+    </div>
  
     <!-- Yashirin Portfolio Sahifasi -->
     <div class="container portfolio-container animate-fade-in" id="portfolio-view" style="display: none; padding: 60px 0;">
@@ -206,14 +257,11 @@
 
         <!-- Asosiy bo'limlar -->
         <div class="toolbar">
-            <div class="search-box">
-                <input type="text" class="search-input" id="search-input" placeholder="Blogdan qidirish..." data-i18n-placeholder="search.placeholder">
-            </div>
-            <div class="filter-tags" id="filter-tags">
+            <div class="filter-tags filter-tags-centered" id="filter-tags">
                 <button class="filter-tag deutsch-tag" id="deutsch-tag-btn" data-filter="__deutsch">🇩🇪 Nemis testlar</button>
                 <button class="filter-tag flashcard-tag" id="flashcards-tag-btn" data-filter="__flashcards">🃏 Kartochka</button>
                 <button class="filter-tag tournament-tag" id="tournament-tag-btn" data-filter="__tournament">🏆 Turnir</button>
-                <button class="filter-tag active" data-filter="all">📖 Kundalik Blog</button>
+                <button class="filter-tag" data-filter="all">📖 Kundalik Blog</button>
             </div>
         </div>
 
@@ -233,6 +281,7 @@
 
     <!-- Footer -->
     <footer class="footer">
+        <canvas class="particles-canvas footer-particles-canvas" id="footer-particles-canvas" aria-hidden="true"></canvas>
         <div class="container">
             <p><span data-i18n="footer.rights">&copy; 2026 Abdugofforov. Barcha huquqlar himoyalangan.</span></p>
             <div class="footer-socials">
@@ -377,11 +426,11 @@
                 <form class="auth-form" id="auth-form">
                     <div class="form-group auth-name-group" id="auth-name-group" style="display:none;">
                         <label for="auth-name">Ismingiz</label>
-                        <input type="text" id="auth-name" class="form-input" placeholder="Masalan: Akrom" autocomplete="name" maxlength="50">
+                        <input type="text" id="auth-name" class="form-input" placeholder="Masalan: Ism" autocomplete="name" maxlength="50">
                     </div>
                     <div class="form-group">
                         <label for="auth-username">Username</label>
-                        <input type="text" id="auth-username" class="form-input" placeholder="masalan: akrom23" autocomplete="username" maxlength="20">
+                        <input type="text" id="auth-username" class="form-input" placeholder="masalan: foydalanuvchi1" autocomplete="username" maxlength="20">
                         <small class="auth-hint" id="auth-username-hint" style="display:none;">3-20 ta belgi: faqat a-z, 0-9, _</small>
                     </div>
                     <div class="form-group">
