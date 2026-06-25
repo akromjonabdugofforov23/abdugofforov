@@ -941,6 +941,13 @@ checkLock();
 // ===== ADMIN PANEL =====
 function showAdminPanel() {
     document.getElementById('pin-screen').style.display = 'none';
+    // Telegram 2FA ekranini ham yopamiz (aks holda dashboard ustida qolib ketadi)
+    const tg = document.getElementById('tg-screen');
+    if (tg) tg.style.display = 'none';
+    if (typeof tgCountdownTimer !== 'undefined' && tgCountdownTimer) {
+        clearInterval(tgCountdownTimer);
+        tgCountdownTimer = null;
+    }
     document.getElementById('admin-screen').classList.add('show');
 
     const hour = new Date().getHours();
