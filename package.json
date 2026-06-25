@@ -2,10 +2,17 @@
   "name": "kay-kundaligi",
   "version": "1.0.0",
   "description": "Kay Kundaligi - Zamonaviy Shaxsiy Blog & Hikoyalar",
+  "type": "module",
   "scripts": {
-    "start": "npx http-server -p 3000"
+    "build": "node build.mjs",
+    "start": "npx http-server dist -p 3000"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "clean-css": "^5.3.3",
+    "html-minifier-terser": "^7.2.0",
+    "terser": "^5.31.0"
+  }
 }
