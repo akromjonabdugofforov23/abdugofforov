@@ -1,21 +1,10 @@
 // Abdugofforov Blog & Portfolio - JavaScript Engine
 
 // 1. Dastlabki Ma'lumotlar (Boshlang'ich Postlar)
-const defaultPosts = [
-    {
-        id: 1,
-        title: "Bugun boshladim",
-        category: "Kun",
-        type: "kun",
-        excerpt: "Har bir uzoq safar bitta qadamdan boshlanadi.",
-        content: "Har bir uzoq safar bitta qadamdan boshlanadi.\n\nBugun abdugofforov.uz ni yangidan boshladim. Oddiy, toza, faqat o'zim uchun. Nemischa o'rganish, hamshiralik, IT — barchasi shu yerda bir joyda bo'ladi.",
-        image: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000",
-        date: "2026-06-24",
-        likes: 0,
-        liked: false,
-        comments: []
-    }
-];
+// Boshlang'ich postlar yo'q — sayt toza boshlanadi.
+// Postlar faqat admin panelidan (PIN + Telegram) yoziladi va serverda
+// (Cloudflare KV) saqlanadi. Mehmonlar faqat o'qiydi.
+const defaultPosts = [];
 
 // State (Holat) - Abdugofforov rebrending kalitlari bilan boshlash
 // posts endi IndexedDB (Store) orqali yuklanadi — bootstrap() ichida hydrate qilinadi.
@@ -170,21 +159,6 @@ function updateClock() {
     const dateOptions = { timeZone: 'Asia/Tashkent', year: 'numeric', month: '2-digit', day: '2-digit' };
     const dateEl = document.getElementById('widget-date');
     if (dateEl) dateEl.textContent = now.toLocaleDateString('uz-UZ', dateOptions);
-
-    // Soat strelkalari — analog SVG endi hero'da yo'q.
-    // Optional chaining bilan xavfsiz qoldiramiz (agar boshqa joyda ishlatilsa).
-    const hh = parseInt(h, 10) % 12;
-    const mm = parseInt(m, 10);
-    const ss = parseInt(s, 10);
-    const hAngle = (hh + mm / 60) * 30;
-    const mAngle = (mm + ss / 60) * 6;
-    const sAngle = ss * 6;
-    const hHand = document.querySelector('.clock-hand-h');
-    const mHand = document.querySelector('.clock-hand-m');
-    const sHand = document.querySelector('.clock-hand-s');
-    if (hHand) hHand.setAttribute('transform', `rotate(${hAngle} 32 32)`);
-    if (mHand) mHand.setAttribute('transform', `rotate(${mAngle} 32 32)`);
-    if (sHand) sHand.setAttribute('transform', `rotate(${sAngle} 32 32)`);
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -227,18 +201,30 @@ async function fetchWeather() {
 fetchWeather();
 setInterval(fetchWeather, 30 * 60 * 1000); 
 
-// 5. Mavzuni boshqarish (Dark/Light Mode)
+// 5. Mavzuni boshqarish (Kunduzgi / Tungi rejim)
+// Default: tungi (dark) — qora futuristic. Foydalanuvchi tanlovi saqlanadi.
 function initTheme() {
-    const savedTheme = localStorage.getItem('kay_theme') || 'light';
+    const savedTheme = localStorage.getItem('kay_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeButton(savedTheme);
 }
 
-themeBtn.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('kay_theme', newTheme);
-});
+function updateThemeButton(theme) {
+    if (!themeBtn) return;
+    themeBtn.setAttribute('aria-label', theme === 'dark' ? 'Kunduzgi rejimga o\'tish' : 'Tungi rejimga o\'tish');
+}
+
+if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('kay_theme', newTheme);
+        updateThemeButton(newTheme);
+        // Particles fonini yangi rejimga moslash (rang yorqinligi)
+        if (typeof refreshParticlesTheme === 'function') refreshParticlesTheme();
+    });
+}
 
 // 6. Ma'lumotlarni saqlash (IndexedDB orqali — katta sig'im) + serverga sinxronlash
 function savePosts() {
@@ -2314,6 +2300,14 @@ async function bootstrap() {
         console.error('Xotira yuklashda xato, standart postlar ishlatiladi:', e);
         const ls = JSON.parse(localStorage.getItem('abdu_posts') || 'null');
         posts = (ls && ls.length) ? ls : defaultPosts;
+    }
+
+    // Admin holatini tiklash — sahifa yangilanganda ham admin tugmalari
+    // (Yozish, Floating +) faqat admin uchun ko'rinishi uchun
+    if (isAdmin) {
+        document.body.classList.add('admin-mode');
+        const navPortfolioLink = document.getElementById('nav-portfolio-link');
+        if (navPortfolioLink) navPortfolioLink.style.display = 'inline-flex';
     }
 
     renderPosts();

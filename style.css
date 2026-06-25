@@ -1,10 +1,10 @@
 /* Abdugofforov Blog - Premium Design System */
 
 /* ============================================================
-   ABDUGOFFOROV — DARK FUTURISTIC PALETTE
-   Purple + Blue + Silver on deep navy/black
+   ABDUGOFFOROV — TUNGI REJIM (default) — Purple + Blue + Silver
+   on deep navy/black
    ============================================================ */
-:root, [data-theme="dark"], [data-theme="light"] {
+:root, [data-theme="dark"] {
     /* Brand palette (asosiy ranglar) */
     --color-bg-primary:     #0A0A1A;
     --color-bg-secondary:   #0F0F2E;
@@ -51,6 +51,43 @@
 
     --transition-speed: 0.3s;
     --container-pad: clamp(14px, 3vw, 28px);
+}
+
+/* ============================================================
+   KUNDUZGI REJIM — Yorug' kumush fon + yonib turuvchi binafsha/ko'k
+   aksentlar. Glow effektlar saqlanadi ("yonib turuvchi" ko'rinish).
+   ============================================================ */
+[data-theme="light"] {
+    --color-bg-primary:     #EEF1FA;   /* kumush-oq, biroz binafsha tusli */
+    --color-bg-secondary:   #E2E8F5;
+
+    --bg-color: var(--color-bg-primary);
+    --card-bg: rgba(255, 255, 255, 0.72);
+    --text-primary: #0F0F2E;           /* to'q navy */
+    --text-secondary: #3E4A63;
+    --text-muted: #6B7794;
+    --accent-color: #7C3AED;           /* to'qroq binafsha (yorug' fonda kontrast) */
+    --accent-hover: #6D28D9;
+    --border-color: rgba(124, 58, 237, 0.22);
+
+    /* Yorug' fonda yumshoq, lekin yonib turuvchi soyalar */
+    --shadow-sm: 0 4px 20px rgba(124, 58, 237, 0.10);
+    --shadow-md: 0 10px 30px rgba(59, 130, 246, 0.16);
+    --shadow-lg: 0 20px 50px rgba(124, 58, 237, 0.18);
+    --glow-purple: 0 0 22px rgba(139, 92, 246, 0.40);
+    --glow-blue:   0 0 22px rgba(59, 130, 246, 0.35);
+
+    /* Glass — oqroq, lekin shaffof */
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-bg-strong: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(124, 58, 237, 0.18);
+    --glass-border-hover: rgba(124, 58, 237, 0.45);
+
+    --navbar-bg: rgba(238, 241, 250, 0.72);
+    --modal-bg: rgba(248, 250, 253, 0.97);
+    --tag-bg: rgba(124, 58, 237, 0.08);
+
+    --grad-text: linear-gradient(135deg, #7C3AED 0%, #2563EB 100%);
 }
 
 /* Base Settings */
@@ -461,7 +498,7 @@ a {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.3; }
 }
-.hero-clock-digits.flip { animation: heroDigitFlip 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.hero-clock-time .clock-digits.flip { animation: heroDigitFlip 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 @keyframes heroDigitFlip {
     0%   { transform: translateY(-6px); opacity: 0; }
     100% { transform: translateY(0);     opacity: 1; }
@@ -1215,13 +1252,6 @@ a {
     .hero-title { font-size: 22px; line-height: 1.3; }
     .hero-subtitle { font-size: 10px; letter-spacing: 2px; }
 
-    /* Widgets row — mobilda 1 ustun, butun kenglikda */
-    .widgets-row {
-        grid-template-columns: 1fr;
-        gap: 12px;
-        margin: 14px 0 18px 0;
-    }
-
     /* Toolbar — kompakt */
     .toolbar {
         flex-direction: column;
@@ -1300,14 +1330,7 @@ a {
     .btn-icon { padding: 6px; }
 }
 
-/* --- WIDGETS ROW (Soat va Ob-havo) — Eski statik stillar olib tashlandi.
-   Yangi animatsiyali widget'lar fayl oxiridagi "WIDGETS ANIMATED" bo'limida. */
-.widgets-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-    margin: 20px 0 24px 0;
-}
+/* --- WIDGETS ROW olib tashlandi — soat/ob-havo endi hero ichida (hero-clock) --- */
 
 /* --- ADMIN TASK LIST ITEMS --- */
 .admin-task-item {
@@ -1489,11 +1512,6 @@ a {
 
 [data-theme="dark"] .btn-primary:hover {
     box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
-}
-
-[data-theme="dark"] .widgets-row .widget-card:hover {
-    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
-    border-color: #00ff88 !important;
 }
 
 [data-theme="dark"] .filter-tag.active {
@@ -1842,7 +1860,6 @@ a {
     .hero { padding: 36px 0 24px 0; }
     .filter-tags { gap: 8px; }
     .filter-tag { padding: 6px 13px; font-size: 11px; }
-    .widget-card { padding: 14px 18px; }
     .modal-container { width: 95%; max-height: 90vh; }
     .write-form { padding: 24px; }
     .write-title { font-size: 22px; }
@@ -2514,317 +2531,6 @@ a {
 
 
 
-/* ============================================================
-   WIDGETS ANIMATED — Soat va Ob-havo (mobil + veb bir xil)
-   ============================================================ */
-
-/* Asosiy kartochka — gradient fon, glass effekti, hover animatsiya */
-.widget-card {
-    position: relative;
-    overflow: hidden;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 18px;
-    padding: 18px 20px;
-    box-shadow: var(--shadow-sm);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
-    isolation: isolate;
-    min-height: 92px;
-}
-
-/* Gradient overlay (fonida sekin harakatlanadigan nur) */
-.widget-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(120% 80% at 0% 0%, rgba(212,163,115,0.10), transparent 60%),
-                radial-gradient(100% 80% at 100% 100%, rgba(212,163,115,0.07), transparent 55%);
-    opacity: 1;
-    z-index: -1;
-    transition: opacity 0.4s ease;
-}
-[data-theme="dark"] .widget-card::before {
-    background: radial-gradient(120% 80% at 0% 0%, rgba(0,255,136,0.10), transparent 60%),
-                radial-gradient(100% 80% at 100% 100%, rgba(0,210,255,0.08), transparent 55%);
-}
-.widget-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--accent-color);
-}
-.widget-card:hover::before { opacity: 1.3; }
-
-/* Pulsing shimmer line at the top */
-.widget-pulse {
-    position: absolute;
-    top: 0;
-    left: -30%;
-    width: 30%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-    animation: widget-shimmer 6s ease-in-out infinite;
-    pointer-events: none;
-}
-@keyframes widget-shimmer {
-    0% { left: -30%; opacity: 0; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { left: 130%; opacity: 0; }
-}
-
-/* Widget icon — yumaloq fon */
-.widget-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--tag-bg), var(--card-bg));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    position: relative;
-    box-shadow: inset 0 0 0 1px var(--border-color);
-}
-
-.widget-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-}
-
-/* ---- SOAT (analog SVG + raqamli) ---- */
-.clock-svg svg {
-    width: 56px;
-    height: 56px;
-    color: var(--text-secondary);
-}
-.clock-ring {
-    stroke-dasharray: 100;
-    stroke-dashoffset: 0;
-    animation: clock-ring-spin 60s linear infinite;
-    transform-origin: 32px 32px;
-}
-@keyframes clock-ring-spin {
-    from { stroke-dashoffset: 0; }
-    to   { stroke-dashoffset: -100; }
-}
-
-/* Soat strelkalari — JS orqali burchak set qiladi, lekin
-   smooth transition CSS bilan boriladi */
-.clock-hand-h, .clock-hand-m { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: 32px 32px; }
-.clock-hand-s { transition: transform 0.2s cubic-bezier(0.5, 0, 0, 1); transform-origin: 32px 32px; }
-
-/* Raqamli vaqt */
-.clock-time {
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.15;
-    letter-spacing: 0.5px;
-    display: inline-flex;
-    align-items: center;
-    gap: 1px;
-    font-variant-numeric: tabular-nums;
-}
-.clock-digits {
-    display: inline-block;
-    min-width: 1.1em;
-    text-align: center;
-    transform-style: preserve-3d;
-}
-.clock-digits.flip {
-    animation: clock-digit-flip 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-@keyframes clock-digit-flip {
-    0% { transform: translateY(-6px); opacity: 0; }
-    60% { transform: translateY(2px); opacity: 1; }
-    100% { transform: translateY(0); opacity: 1; }
-}
-.clock-colon {
-    color: var(--accent-color);
-    margin: 0 1px;
-    animation: clock-colon-pulse 1s ease-in-out infinite;
-}
-@keyframes clock-colon-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.25; transform: scale(0.9); }
-}
-
-.widget-date {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 500;
-    letter-spacing: 0.3px;
-}
-
-/* ---- OB-HAVO ---- */
-.weather-icon-wrap {
-    position: relative;
-    font-size: 32px;
-    overflow: visible;
-}
-.weather-icon-emoji {
-    display: inline-block;
-    line-height: 1;
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12));
-    transform-origin: center;
-    /* Holatga qarab animatsiya yuqorida data-weather atributi orqali tanlanadi */
-}
-
-/* Sparkle yulduzchalar (tunda yorishadi) */
-.weather-sparkle {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    opacity: 0;
-    pointer-events: none;
-    box-shadow: 0 0 8px var(--accent-color);
-}
-.weather-sparkle.s1 { top: 6px; left: -2px; animation: sparkle 3.2s ease-in-out infinite; }
-.weather-sparkle.s2 { bottom: 4px; right: -4px; animation: sparkle 3.2s ease-in-out 1.1s infinite; }
-.weather-sparkle.s3 { top: 20px; right: -8px; animation: sparkle 3.2s ease-in-out 2.0s infinite; }
-@keyframes sparkle {
-    0%, 100% { opacity: 0; transform: scale(0.3); }
-    50% { opacity: 0.85; transform: scale(1); }
-}
-
-#weather-temp {
-    font-family: 'Playfair Display', serif;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.15;
-    letter-spacing: -0.5px;
-}
-
-.weather-desc {
-    font-size: 13px;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-.weather-location {
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.3px;
-    margin-top: 1px;
-}
-
-/* ---- Ob-havo holati bo'yicha animatsiyalar ---- */
-/* Quyoshli */
-.weather-card[data-weather="sunny"] .weather-icon-emoji {
-    animation: sun-rotate 18s linear infinite;
-}
-.weather-card[data-weather="sunny"] .widget-icon {
-    background: linear-gradient(135deg, #fff5d0, #ffe6a0);
-    box-shadow: inset 0 0 0 1px rgba(255,206,0,0.4), 0 0 20px rgba(255,206,0,0.15);
-}
-[data-theme="dark"] .weather-card[data-weather="sunny"] .widget-icon {
-    background: linear-gradient(135deg, rgba(255,206,0,0.18), rgba(255,206,0,0.06));
-}
-@keyframes sun-rotate {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-}
-
-/* Qisman bulutli */
-.weather-card[data-weather="partly"] .weather-icon-emoji,
-.weather-card[data-weather="cloudy"] .weather-icon-emoji,
-.weather-card[data-weather="foggy"] .weather-icon-emoji {
-    animation: cloud-drift 5s ease-in-out infinite;
-}
-@keyframes cloud-drift {
-    0%, 100% { transform: translateX(0) translateY(0); }
-    25%      { transform: translateX(3px) translateY(-1px); }
-    75%      { transform: translateX(-3px) translateY(1px); }
-}
-
-/* Yomg'irli */
-.weather-card[data-weather="rainy"] .weather-icon-emoji {
-    animation: rain-bounce 1.2s ease-in-out infinite;
-}
-.weather-card[data-weather="rainy"] .widget-icon {
-    background: linear-gradient(135deg, #d8e6f3, #b8d0e7);
-}
-[data-theme="dark"] .weather-card[data-weather="rainy"] .widget-icon {
-    background: linear-gradient(135deg, rgba(96,165,250,0.18), rgba(96,165,250,0.05));
-}
-@keyframes rain-bounce {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-3px); }
-}
-
-/* Qorli */
-.weather-card[data-weather="snowy"] .weather-icon-emoji {
-    animation: snow-spin 6s linear infinite;
-}
-.weather-card[data-weather="snowy"] .widget-icon {
-    background: linear-gradient(135deg, #f0f6ff, #d8e7ff);
-}
-@keyframes snow-spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-}
-
-/* Bo'ronli (chaqmoq) */
-.weather-card[data-weather="storm"] .weather-icon-emoji {
-    animation: storm-flash 1.8s ease-in-out infinite;
-}
-.weather-card[data-weather="storm"] .widget-icon {
-    background: linear-gradient(135deg, #bcc4d2, #828ea3);
-}
-@keyframes storm-flash {
-    0%, 90%, 100% { filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12)); }
-    92%, 96%     { filter: drop-shadow(0 0 14px rgba(255,255,150,0.95)) brightness(1.3); }
-}
-
-/* Yuklanmoqda */
-.weather-card[data-weather="loading"] .weather-icon-emoji {
-    animation: weather-pulse 1.6s ease-in-out infinite;
-    opacity: 0.6;
-}
-@keyframes weather-pulse {
-    0%, 100% { opacity: 0.5; transform: scale(0.95); }
-    50%      { opacity: 1; transform: scale(1); }
-}
-
-/* ---- Mobilda widget'lar ---- */
-@media (max-width: 768px) {
-    .widget-card {
-        padding: 14px 16px;
-        border-radius: 16px;
-        gap: 14px;
-        min-height: 84px;
-    }
-    .widget-icon { width: 48px; height: 48px; }
-    .clock-svg svg { width: 48px; height: 48px; }
-    .weather-icon-wrap { font-size: 28px; }
-    .clock-time { font-size: 20px; }
-    #weather-temp { font-size: 22px; }
-    .weather-desc { font-size: 12px; }
-    .weather-location { font-size: 10px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    /* Foydalanuvchi animatsiyalarni o'chirgan bo'lsa */
-    .clock-ring,
-    .widget-pulse,
-    .clock-digits.flip,
-    .clock-colon,
-    .weather-icon-emoji,
-    .weather-sparkle {
-        animation: none !important;
-    }
-}
-
-
 
 /* ============================================================
    FLOATING ACTION BUTTON (FAB) — "+" mobilda
@@ -2876,9 +2582,9 @@ a {
 }
 .fab:active { transform: scale(0.96); }
 
-/* Mobilda yoki touch qurilmalarda ko'rinadi */
+/* Mobilda yoki touch qurilmalarda ko'rinadi — LEKIN faqat admin uchun */
 @media (max-width: 768px), (pointer: coarse) {
-    .fab { display: flex; }
+    body.admin-mode .fab { display: flex; }
 }
 
 /* Foydalanuvchi animatsiyalarni o'chirgan bo'lsa */
@@ -2903,4 +2609,31 @@ a {
 }
 @media (prefers-reduced-motion: reduce) {
     .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+
+
+/* ============================================================
+   BLOG ADMIN-ONLY — faqat admin yoza/tahrir/o'chira oladi
+   "Yozish" tugmasi va Floating + tugma faqat admin (body.admin-mode)
+   uchun ko'rinadi. Mehmonlar (oddiy o'quvchilar) ularni ko'rmaydi.
+   ============================================================ */
+#add-post-btn {
+    display: none; /* default — mehmonlarga ko'rinmaydi */
+}
+body.admin-mode #add-post-btn {
+    display: inline-flex; /* admin uchun ko'rinadi */
+}
+
+/* Kirish tugmasi — mehmonlarga ko'rinadi, admin bo'lganda yashirin */
+#login-btn {
+    display: inline-flex;
+}
+body.admin-mode #login-btn {
+    display: none;
+}
+/* FAB allaqachon body.admin-mode bilan cheklangan (yuqorida) — qo'shimcha
+   kafolat: admin bo'lmasa hech qachon ko'rinmasin */
+body:not(.admin-mode) .fab {
+    display: none !important;
 }

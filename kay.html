@@ -587,15 +587,51 @@ function getPosts() {
     if (window.Store && Store.ready) return Store.get('abdu_posts') || [];
     return JSON.parse(localStorage.getItem('abdu_posts') || '[]');
 }
-function setPosts(arr) {
+
+// Postlarni saqlash — HAM lokal (IndexedDB), HAM server (Cloudflare KV).
+// KV ga yozilmasa, o'zgarish faqat shu brauzerda qoladi va mehmonlar
+// eski holatni ko'rishda davom etadi. Shuning uchun KV sinxronlash shart.
+async function setPosts(arr) {
     if (window.Store && Store.ready) Store.set('abdu_posts', arr);
     else localStorage.setItem('abdu_posts', JSON.stringify(arr));
+
+    // Serverga (KV) yuborish — admin token yoki PIN bilan
+    if (window.Sync) {
+        const token = sessionStorage.getItem('kay_admin_token');
+        const pin = sessionStorage.getItem('kay_admin_pin');
+        try {
+            const res = await Sync.pushPosts(arr, { token, pin });
+            if (res && res.ok) {
+                addLog('success', 'Postlar serverga sinxronlandi (hammaga ko\'rinadi)');
+            } else if (res && res.reason === 'not_configured') {
+                addLog('fail', 'Server ombori (KV) sozlanmagan — faqat shu qurilmada');
+            } else if (res && res.reason === 'unauthorized') {
+                addLog('fail', 'Sessiya tugagan — qayta kiring (server yangilanmadi)');
+            } else {
+                addLog('fail', 'Serverga yuborilmadi: ' + ((res && res.message) || 'xato'));
+            }
+        } catch (e) {
+            addLog('fail', 'Serverga ulanib bo\'lmadi');
+        }
+    }
 }
 
-// Sahifa yuklanishida xotirani hydrate qilib, keyin admin holatini tekshiramiz
+// Sahifa yuklanishida: avval server (KV) dan eng so'nggi postlarni olamiz,
+// keyin admin holatini tekshiramiz. Shunda admin panelda KV bilan bir xil
+// ro'yxat ko'rinadi va o'chirish/tahrir KV ga to'g'ri yoziladi.
 (async function initKay() {
     if (window.Store) {
         try { await Store.init(['abdu_posts']); } catch (e) { console.warn('Store init:', e); }
+    }
+    // Serverdan (KV) postlarni yuklab, lokalga keshlaymiz
+    if (window.Sync) {
+        try {
+            const serverPosts = await Sync.fetchPosts();
+            if (serverPosts && Array.isArray(serverPosts)) {
+                if (window.Store && Store.ready) Store.set('abdu_posts', serverPosts);
+                else localStorage.setItem('abdu_posts', JSON.stringify(serverPosts));
+            }
+        } catch (e) { console.warn('KV fetch:', e); }
     }
     if (sessionStorage.getItem('kay_admin') === 'true') showAdminPanel();
 })();
@@ -1118,12 +1154,29 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
     alert('Sozlamalar saqlandi ✅');
 });
 
-document.getElementById('reset-all-btn').addEventListener('click', () => {
+document.getElementById('reset-all-btn').addEventListener('click', async () => {
     if (!confirm('BARCHA ma\'lumotlar o\'chadi! Ishonchingiz komilmi?')) return;
     if (!confirm('Bu amalni qaytarib bo\'lmaydi. Davom etasizmi?')) return;
     if (window.Store) Store.remove('abdu_posts');
     ['abdu_posts','abdu_tasks','abdu_portfolio','abdu_portfolio_tokens','kay_logs'].forEach(k => localStorage.removeItem(k));
-    alert('Tozalandi');
+    // Serverni (KV) ham tozalaymiz — aks holda mehmonlar eski postlarni
+    // ko'rishda davom etadi
+    if (window.Sync) {
+        const token = sessionStorage.getItem('kay_admin_token');
+        const pin = sessionStorage.getItem('kay_admin_pin');
+        try {
+            const res = await Sync.pushPosts([], { token, pin });
+            if (res && res.ok) {
+                alert('Tozalandi (server ham yangilandi — postlar hammadan o\'chdi)');
+            } else {
+                alert('Lokal tozalandi, lekin serverga yetib bormadi: ' + ((res && res.message) || 'xato') + '\nQayta kirib urinib ko\'ring.');
+            }
+        } catch (e) {
+            alert('Lokal tozalandi, lekin serverga ulanib bo\'lmadi.');
+        }
+    } else {
+        alert('Tozalandi');
+    }
     loadStats(); loadPosts(); loadTasks();
 });
 </script>
