@@ -227,18 +227,22 @@ async function fetchWeather() {
 fetchWeather();
 setInterval(fetchWeather, 30 * 60 * 1000); 
 
-// 5. Mavzuni boshqarish (Dark/Light Mode)
+// 5. Mavzuni boshqarish — sayt doim qora (dark) futuristic mavzuda
 function initTheme() {
-    const savedTheme = localStorage.getItem('kay_theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
+    // Yangi dizaynda faqat qora mavzu bor; doim 'dark' o'rnatamiz
+    document.documentElement.setAttribute('data-theme', 'dark');
 }
 
-themeBtn.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('kay_theme', newTheme);
-});
+// Theme tugmasi olib tashlandi (sayt doim qora). Agar HTML'da hali mavjud
+// bo'lsa, null-safe tarzda boshqaramiz — crash bo'lmasin.
+if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('kay_theme', newTheme);
+    });
+}
 
 // 6. Ma'lumotlarni saqlash (IndexedDB orqali — katta sig'im) + serverga sinxronlash
 function savePosts() {
@@ -312,19 +316,22 @@ async function syncPostsToServer() {
 }
 
 // 7. Hero matnini dinamik o'zgartirish
+// MUHIM: hero-main-title (h1) ichida typewriter span va cursor bor.
+// textContent bilan to'liq almashtirsak, ular o'chadi. Shuning uchun bu yerda
+// faqat subtitle (hero-sub) ni yangilaymiz; sarlavhani typewriter boshqaradi.
 function updateHeroContent() {
     const heroSection = document.querySelector('.hero');
-    heroSection.classList.remove('animate-fade-in');
-    void heroSection.offsetWidth; 
-    heroSection.classList.add('animate-fade-in');
-
-    if (currentTab === 'home') {
-        heroSub.textContent = i18n.t('hero.subtitle');
-        heroMainTitle.textContent = i18n.t('hero.title');
-    } else if (currentTab === 'projects') {
-        heroSub.textContent = i18n.t('hero.subtitle.projects');
-        heroMainTitle.textContent = i18n.t('hero.title.projects');
+    if (heroSection) {
+        heroSection.classList.remove('animate-fade-in');
+        void heroSection.offsetWidth;
+        heroSection.classList.add('animate-fade-in');
     }
+    if (heroSub) {
+        heroSub.textContent = (currentTab === 'projects')
+            ? i18n.t('hero.subtitle.projects')
+            : i18n.t('hero.subtitle');
+    }
+    // Sarlavha (hero-title-text) typewriter orqali boshqariladi — bu yerda tegmaymiz.
 }
 
 // 8. Postlarni filtrlash va render qilish
@@ -2168,19 +2175,20 @@ function initParticles() {
 }
 
 // ===== HERO TYPEWRITER =====
-// hero-title-text'ning matnini harfma-harf qayta yozadi (langchange'da yangilanadi)
+// hero-title-text'ning matnini harfma-harf qayta yozadi (langchange'da yangilanadi).
+// Qisqa sarlavha (hero.titleShort) ishlatiladi — uzun jumla emas.
 let _typewriterTimer = null;
 function runTypewriter() {
     const el = document.querySelector('.hero-title-text');
     if (!el) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const full = (window.i18n && i18n.t) ? i18n.t('hero.title') : (el.getAttribute('data-final') || el.textContent || '');
+    const full = (window.i18n && i18n.t) ? i18n.t('hero.titleShort') : (el.getAttribute('data-final') || el.textContent || 'Vaqt Sarguzashtlari');
     el.setAttribute('data-final', full);
     if (reduced) { el.textContent = full; return; }
     if (_typewriterTimer) { clearInterval(_typewriterTimer); _typewriterTimer = null; }
     el.textContent = '';
     let i = 0;
-    const speed = 55;
+    const speed = 80;
     _typewriterTimer = setInterval(() => {
         if (i >= full.length) {
             clearInterval(_typewriterTimer);
