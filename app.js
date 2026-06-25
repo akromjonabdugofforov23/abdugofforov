@@ -330,7 +330,7 @@ function renderPosts() {
             if (post.type === 'music') {
                 card.innerHTML = `
                     <div class="post-image-wrapper">
-                        <div class="post-image" style="background-image: url('${post.image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600'}');"></div>
+                        <div class="post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600')}');"></div>
                     </div>
                     <div class="post-content">
                         <span class="post-meta">🎵 ${escapeHTML(post.category)}</span>
@@ -363,7 +363,7 @@ function renderPosts() {
             } else if (post.type === 'image') {
                 card.innerHTML = `
                     <div class="post-image-wrapper image-gallery-card">
-                        <div class="post-image zoomable-bg" data-zoom-src="${safeImageUrl(post.image)}" style="background-image: url('${post.image}');"></div>
+                        <div class="post-image zoomable-bg" data-zoom-src="${escapeHTML(safeImageUrl(post.image))}" style="background-image: url('${cssUrl(post.image)}');"></div>
                     </div>
                     <div class="post-content">
                         <span class="post-meta">🖼️ ${escapeHTML(post.category)}</span>
@@ -388,7 +388,7 @@ function renderPosts() {
             } else {
                 card.innerHTML = `
                     <div class="post-image-wrapper">
-                        <div class="post-image" style="background-image: url('${post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600'}');"></div>
+                        <div class="post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600')}');"></div>
                     </div>
                     <div class="post-content">
                         <span class="post-meta">📝 ${escapeHTML(post.category)}</span>
@@ -689,8 +689,8 @@ function openPostDetail(postId) {
                    </div>
                </div>`
             : post.type === 'image' 
-                ? `<div style="margin-bottom: 30px;"><img src="${post.image}" class="zoomable" style="width: 100%; border-radius: 12px; cursor: zoom-in;"></div>`
-                : `<div class="modal-post-image zoomable-bg" data-zoom-src="${safeImageUrl(post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000')}" style="background-image: url('${post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000'}'); cursor: zoom-in;"></div>`
+                ? `<div style="margin-bottom: 30px;"><img src="${escapeHTML(safeImageUrl(post.image))}" class="zoomable" style="width: 100%; border-radius: 12px; cursor: zoom-in;"></div>`
+                : `<div class="modal-post-image zoomable-bg" data-zoom-src="${escapeHTML(safeImageUrl(post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000'))}" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000')}'); cursor: zoom-in;"></div>`
         }
 
         <div class="modal-post-text">${post.type === 'music' ? escapeHTML(post.content || post.excerpt) : escapeHTML(post.content)}</div>
@@ -1446,6 +1446,15 @@ function safeUrl(url) {
 function safeImageUrl(url) {
     if (!url) return '#';
     return (/^https?:\/\//i.test(url) || /^data:image\//i.test(url)) ? url : '#';
+}
+
+// CSS `url(...)` va HTML atribut kontekstida xavfsiz rasm manzili.
+// safeImageUrl bilan tekshiradi, so'ng kontekstdan "chiqib ketadigan" belgilarni
+// (' " ( ) < > \) percent-encode qiladi — XSS/CSS-injection oldini oladi.
+function cssUrl(url, fallback) {
+    let u = safeImageUrl(url);
+    if (!u || u === '#') u = fallback || '';
+    return String(u).replace(/['"()<>\\]/g, c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0'));
 }
 
 // ===== RASM LIGHTBOX (bosilganda kattalashtirish) =====
