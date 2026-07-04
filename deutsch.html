@@ -80,7 +80,7 @@
 
             <!-- Nav linklar logo yonida (mobil va vebda bir xil) -->
             <div class="nav-links" id="main-nav">
-                <a href="#" data-page="home" class="active" id="nav-home-link" aria-label="Bosh sahifa" title="Bosh sahifa">
+                <a href="#" data-page="home" id="nav-home-link" aria-label="Bosh sahifa" title="Bosh sahifa">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                     <span data-i18n="nav.home" class="nav-text">Bosh sahifa</span>
                 </a>
@@ -148,59 +148,7 @@
         </div>
     </header>
 
-    <!-- Germany Carousel -->
-    <section class="germany-carousel" id="germany-carousel">
-        <div class="carousel-track" id="carousel-track">
-            <div class="carousel-slide">
-                <img src="images/neuschwanstein.webp" alt="Neuschwanstein Castle" loading="lazy">
-                <div class="carousel-overlay"></div>
-                <div class="carousel-caption">📍 Neuschwanstein · "Ertak qala" · Bavaria</div>
-            </div>
-            <div class="carousel-slide">
-                <img src="images/rheintal.jpg" alt="Rheintal" loading="lazy">
-                <div class="carousel-overlay"></div>
-                <div class="carousel-caption">📍 Rheintal · "Uzum dalalar va qalalar" · Rhineland</div>
-            </div>
-            <div class="carousel-slide">
-                <img src="images/munich-marienplatz.jpg" alt="München" loading="lazy">
-                <div class="carousel-overlay"></div>
-                <div class="carousel-caption">📍 München · "Bayerische Gemütlichkeit" · Bayern</div>
-            </div>
-            <div class="carousel-slide">
-                <img src="images/koelner-dom.jpg" alt="Kölner Dom" loading="lazy">
-                <div class="carousel-overlay"></div>
-                <div class="carousel-caption">📍 Kölner Dom · "800 yillik mojiza" · Köln</div>
-            </div>
-            <div class="carousel-slide">
-                <img src="images/rothenburg.jpg" alt="Rothenburg ob der Tauber" loading="lazy">
-                <div class="carousel-overlay"></div>
-                <div class="carousel-caption">📍 Rothenburg · "Vaqt toxtaghan joy" · Franken</div>
-            </div>
-            <div class="carousel-slide">
-                <img src="images/hamburg.jpg" alt="Hamburg Hafen" loading="lazy">
-                <div class="carousel-overlay"></div>
-                <div class="carousel-caption">📍 Hamburg · "Shimol darvozasi" · Norddeutschland</div>
-            </div>
-            <div class="carousel-slide">
-                <img src="images/zugspitze.jpg" alt="Zugspitze" loading="lazy">
-                <div class="carousel-overlay"></div>
-                <div class="carousel-caption">📍 Zugspitze · "Germaniyaning choqqisi" · Alpen</div>
-            </div>
-            <div class="carousel-slide">
-                <img src="images/heidelberg.webp" alt="Heidelberg" loading="lazy">
-                <div class="carousel-overlay"></div>
-                <div class="carousel-caption">📍 Heidelberg · "Romantikaning poytaxti" · Baden</div>
-            </div>
-            <div class="carousel-slide">
-                <img src="images/schwarzwald.webp" alt="Schwarzwald" loading="lazy">
-                <div class="carousel-overlay"></div>
-                <div class="carousel-caption">📍 Schwarzwald · "Sirli yollar" · Baden-Württemberg</div>
-            </div>
-        </div>
-        <button class="carousel-btn carousel-btn-prev" id="carousel-prev" aria-label="Oldingi">&#10094;</button>
-        <button class="carousel-btn carousel-btn-next" id="carousel-next" aria-label="Keyingi">&#10095;</button>
-        <div class="carousel-dots" id="carousel-dots"></div>
-    </section>
+    
 
     <!-- Functional Row: Search + Small Clock -->
     <div class="container functional-row" id="functional-row">
@@ -215,59 +163,15 @@
         </div>
     </div>
  
-    <!-- Yashirin Portfolio Sahifasi -->
-    <div class="container portfolio-container animate-fade-in" id="portfolio-view" style="display: none; padding: 60px 0;">
-        <div class="portfolio-header" style="text-align: center; margin-bottom: 40px;">
-            <div class="portfolio-avatar-placeholder" style="width: 100px; height: 100px; border-radius: 50%; background: var(--accent-color); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; margin: 0 auto 20px auto; font-family: 'Playfair Display', serif;">A</div>
-            <h1 class="portfolio-name" id="port-display-name" style="font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 10px;">Abdugofforov</h1>
-            <p class="portfolio-title" id="port-display-title" style="font-size: 18px; color: var(--accent-color); font-weight: 600; margin-bottom: 15px;">Dasturchi</p>
-            <p class="portfolio-bio" id="port-display-bio" style="max-width: 600px; margin: 0 auto; color: var(--text-secondary); line-height: 1.8;">Men haqimda qisqacha bio...</p>
-        </div>
-        <div class="portfolio-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
-            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
-                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">🛠️ Texnologiyalar & Ko'nikmalar</h3>
-                <ul id="port-display-skills" style="list-style: none; display: flex; flex-wrap: wrap; gap: 10px; padding: 0;">
-                    <!-- Ko'nikmalar bu yerga yoziladi -->
-                </ul>
-            </div>
-            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
-                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">💼 Ish Tajribasi</h3>
-                <div id="port-display-experience" style="color: var(--text-secondary); line-height: 1.7;">
-                    <!-- Tajriba bu yerga yoziladi -->
-                </div>
-            </div>
-        </div>
-        <div style="text-align: center;">
-            <button class="btn-secondary" id="close-portfolio-btn">Bosh sahifaga qaytish</button>
-        </div>
+    <!-- Asosiy Kontent -->
+    <!-- Deutsch Test Sahifasi -->
+    <div class="container animate-fade-in" id="deutsch-view" style="display:none; padding: 40px 0;">
+        <div id="deutsch-content"></div>
     </div>
 
-    <!-- Asosiy Kontent -->
-    <main class="container animate-fade-in" id="main-content">
+    
 
-        <!-- Asosiy bo'limlar -->
-        <div class="toolbar">
-            <div class="filter-tags filter-tags-centered" id="filter-tags">
-                <button class="filter-tag deutsch-tag" id="deutsch-tag-btn" data-filter="__deutsch">🇩🇪 Nemis testlar</button>
-                <button class="filter-tag flashcard-tag" id="flashcards-tag-btn" data-filter="__flashcards">🃏 Kartochka</button>
-                <button class="filter-tag tournament-tag" id="tournament-tag-btn" data-filter="__tournament">🏆 Turnir</button>
-                <button class="filter-tag" data-filter="all">📖 Kundalik Blog</button>
-            </div>
-        </div>
-
-        <!-- Postlar Panjarasi -->
-        <section class="blog-grid" id="blog-grid">
-            <!-- Dinamik postlar JavaScript orqali joylanadi -->
-        </section>
-    </main>
-
-    <!-- Floating "+" tugma (faqat mobilda ko'rinadi) -->
-    <button type="button" class="fab" id="fab-add" aria-label="Yangi yozuv">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-    </button>
+    
 
     <!-- Footer -->
     <footer class="footer">
@@ -473,11 +377,8 @@
     <script src="js/clock.js"></script>
     <script src="js/mouse-follower.js"></script>
     <script src="js/auth-ui.js"></script>
-    <script src="js/particles.js"></script>
-    <script src="js/animations.js"></script>
-    <script src="js/music-player.js"></script>
-    <script src="js/navigation.js"></script>
-    <script src="js/posts.js"></script>
+    <script src="js/deutsch-data.js"></script>
+    <script src="js/deutsch.js"></script>
     <script src="js/bootstrap.js"></script>
 </body>
 </html>

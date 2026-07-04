@@ -19,13 +19,20 @@ import { fileURLToPath } from 'url';
 import { minify as terserMinify } from 'terser';
 import CleanCSS from 'clean-css';
 import { minify as htmlMinify } from 'html-minifier-terser';
+import { execSync } from 'child_process';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(ROOT, 'dist');
 
-const JS_FILES = ['app.js', 'auth.js', 'i18n.js', 'storage.js', 'sw.js'];
+const JS_FILES = ['auth.js', 'i18n.js', 'storage.js', 'sw.js'];
+const JS_MODULES = [
+    'js/state.js', 'js/utils.js', 'js/theme.js', 'js/clock.js', 'js/mouse-follower.js', 
+    'js/posts.js', 'js/navigation.js', 'js/admin.js', 'js/music-player.js', 
+    'js/deutsch-data.js', 'js/deutsch.js', 'js/flashcards.js', 'js/tournament.js', 
+    'js/particles.js', 'js/animations.js', 'js/auth-ui.js', 'js/bootstrap.js'
+];
 const CSS_FILES = ['style.css'];
-const HTML_FILES = ['index.html', 'kay.html'];
+const HTML_FILES = ['index.html', 'kay.html', 'deutsch.html', 'flashcards.html', 'tournament.html'];
 // Statik fayllar (o'zgartirilmasdan ko'chiriladi)
 const COPY_FILES = [
   '_headers', 'robots.txt', 'sitemap.xml', 'manifest.webmanifest',
@@ -90,11 +97,22 @@ function report(rows) {
 }
 
 async function main() {
+  try {
+    console.log('Dead Code Analyzer ishga tushirilmoqda...');
+    execSync('node scripts/dead-code-analyzer.mjs --fix', { stdio: 'inherit' });
+  } catch(e) {
+    console.warn('Dead Code Analyzer xatolik berdi yoki node o\\'rnatilmagan. Davom etilmoqda...');
+  }
+
   await fs.rm(OUT, { recursive: true, force: true });
   await fs.mkdir(OUT, { recursive: true });
+  await fs.mkdir(path.join(OUT, 'js'), { recursive: true });
 
   console.log('JS minify (terser):');
   report(await Promise.all(JS_FILES.map(buildJs)));
+  
+  console.log('JS Modules minify:');
+  report(await Promise.all(JS_MODULES.map(buildJs)));
 
   console.log('CSS minify (clean-css):');
   report(await Promise.all(CSS_FILES.map(buildCss)));
