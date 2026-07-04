@@ -23,7 +23,7 @@ import { minify as htmlMinify } from 'html-minifier-terser';
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(ROOT, 'dist');
 
-const JS_FILES = ['app.js', 'auth.js', 'i18n.js', 'storage.js', 'sw.js'];
+const JS_FILES = ['data-flashcards.js', 'data-tests.js', 'app.js', 'auth.js', 'i18n.js', 'storage.js', 'sw.js'];
 const CSS_FILES = ['style.css'];
 const HTML_FILES = ['index.html', 'kay.html'];
 // Statik fayllar (o'zgartirilmasdan ko'chiriladi)
@@ -39,7 +39,7 @@ const COPY_DIRS = ['images'];
 const TERSER_OPTS = {
   compress: { drop_console: false, passes: 2 },
   mangle: { toplevel: false },
-  format: { comments: false },
+  format: { comments: false }, module: true,
 };
 
 async function copyFile(name) {
