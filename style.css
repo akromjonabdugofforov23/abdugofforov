@@ -1005,6 +1005,7 @@ a {
     overflow: hidden;
     height: 220px;
     width: 100%;
+    position: relative;
 }
 
 .post-content {

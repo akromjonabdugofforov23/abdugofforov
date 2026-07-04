@@ -310,69 +310,68 @@
     <div class="modal-overlay" id="add-post-modal">
         <div class="modal-container">
             <button class="modal-close" id="close-add-modal" aria-label="Yopish">&times;</button>
-            <form class="write-form" id="new-post-form">
+            <form class="write-form" id="new-post-form" novalidate>
                 <h2 class="write-title">Yangi sahifa yaratish</h2>
                 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="post-title-input">Sarlavha</label>
-                        <input type="text" id="post-title-input" class="form-input" placeholder="Masalan: Toshkent qahratoni..." required>
-                    </div>
-                    <div class="form-group">
-                        <label for="post-category-input">Bekat / Yo'nalish</label>
-                        <input type="text" id="post-category-input" class="form-input" placeholder="Masalan: 1-Bekat • Yangi Qadamlar" required>
-                    </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-title-input">Sarlavha</label>
+                    <input type="text" id="post-title-input" class="form-input" placeholder="Masalan: Toshkent qahratoni...">
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="post-type-input">Turi</label>
-                        <select id="post-type-input" class="form-input" style="height: 46px;">
-                            <option value="memory">Xotira (Blog post)</option>
-                            <option value="project">Loyiha (Portfolio item)</option>
-                            <option value="ideas">G'oyalar</option>
-                            <option value="events">Voqealar</option>
-                            <option value="music">Musiqa (Audio)</option>
-                            <option value="image">Tasodifiy Rasm</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="post-image-file">Rasm (telefondan yuklash)</label>
-                        <input type="file" id="post-image-file" class="form-input file-input" accept="image/*">
-                        <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefoningizdan rasm tanlang yoki quyiga havola kiriting</small>
-                        <input type="url" id="post-image-input" class="form-input" placeholder="(ixtiyoriy) Rasm havolasi / URL" style="margin-top:8px;">
-                        <div id="post-image-preview" class="upload-preview" style="display:none;"></div>
-                    </div>
+                <!-- Yashirin maydonlar — eski kod ishlashi uchun default qiymatlar -->
+                <input type="hidden" id="post-category-input" value="">
+                <input type="hidden" id="post-type-input" value="memory">
+                <input type="hidden" id="post-tags-input" value="">
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-image-file">Rasm (xotiradan yuklash)</label>
+                    <input type="file" id="post-image-file" class="form-input file-input" accept="image/*">
+                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefoningizdan rasm tanlang yoki quyiga havola kiriting</small>
+                    <input type="url" id="post-image-input" class="form-input" placeholder="(ixtiyoriy) Rasm havolasi / URL" style="margin-top:8px;">
+                    <div id="post-image-preview" class="upload-preview" style="display:none;"></div>
                 </div>
 
-                <!-- Musiqa — faqat Musiqa turi tanlanganda ko'rinadi (havola orqali) -->
-                <div class="form-group" id="post-music-group" style="display:none; margin-bottom: 20px;">
-                    <div class="form-row" style="margin-bottom:14px;">
+                <!-- Musiqa — lokal fayl yuklash yoki havola -->
+                <div class="form-group" id="post-music-group" style="margin-bottom: 20px;">
+                    <label for="post-music-file">🎵 Musiqa (xotiradan yuklash)</label>
+                    <input type="file" id="post-music-file" class="form-input file-input" accept="audio/*">
+                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefon yoki kompyuter xotirasidan audio fayl tanlang</small>
+                    <div class="form-row" style="margin-top:12px; margin-bottom:8px;">
                         <div class="form-group">
                             <label for="post-artist-input" data-i18n="form.artist">Ijrochi</label>
                             <input type="text" id="post-artist-input" class="form-input" placeholder="Masalan: Yulduz Usmonova">
                         </div>
                         <div class="form-group">
                             <label for="post-link-input" data-i18n="form.musicLink">Havola (YouTube / Telegram)</label>
-                            <input type="url" id="post-link-input" class="form-input" placeholder="https://youtu.be/...">
+                            <input type="url" id="post-link-input" class="form-input" placeholder="(ixtiyoriy) https://youtu.be/...">
                         </div>
                     </div>
-                    <small style="color:var(--text-muted); font-size:11px;" data-i18n="form.musicHint">YouTube havolasi kompyuterda saytni tark etmasdan pleyerda ijro etiladi. Telefonda havola yangi oynada ochiladi.</small>
+                    <div id="post-music-preview" style="display:none; margin-top:8px; padding:10px; background:var(--glass-bg); border-radius:8px; border:1px solid var(--glass-border);">
+                        <span style="color:var(--text-secondary); font-size:13px;">🎵 <span id="post-music-filename"></span></span>
+                        <button type="button" id="post-music-remove" style="float:right; background:none; border:none; color:#ff4d4d; cursor:pointer; font-size:16px;">✕</button>
+                    </div>
+                    <small style="color:var(--text-muted); font-size:11px; margin-top:6px;" data-i18n="form.musicHint">Lokal audio yuklang yoki YouTube/Telegram havolasini kiriting.</small>
+                </div>
+
+                <!-- Video — lokal fayl yuklash -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-video-file">🎬 Video (xotiradan yuklash)</label>
+                    <input type="file" id="post-video-file" class="form-input file-input" accept="video/*">
+                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefon yoki kompyuter xotirasidan video fayl tanlang</small>
+                    <div id="post-video-preview" style="display:none; margin-top:8px;">
+                        <video id="post-video-player" controls style="width:100%; max-height:200px; border-radius:8px;"></video>
+                        <button type="button" id="post-video-remove" style="margin-top:6px; background:none; border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; cursor:pointer; font-size:12px; padding:4px 12px; border-radius:6px;">✕ Videoni olib tashlash</button>
+                    </div>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="post-excerpt-input">Qisqacha ta'rif (Excerpt)</label>
-                    <input type="text" id="post-excerpt-input" class="form-input" placeholder="Post ro'yxatida ko'rinadigan qisqa matn..." required>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="post-tags-input">Teglar (vergul bilan ajrating)</label>
-                    <input type="text" id="post-tags-input" class="form-input" placeholder="masalan: deutsch, kundalik, sayohat">
+                    <input type="text" id="post-excerpt-input" class="form-input" placeholder="Post ro'yxatida ko'rinadigan qisqa matn...">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="post-content-input">To'liq matn</label>
-                    <textarea id="post-content-input" class="form-textarea" placeholder="Bu yerga hikoyangizni yoki loyiha tafsilotlarini yozing..." required></textarea>
+                    <textarea id="post-content-input" class="form-textarea" placeholder="Bu yerga hikoyangizni yoki loyiha tafsilotlarini yozing..."></textarea>
                 </div>
 
                 <div class="btn-group">

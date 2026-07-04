@@ -389,6 +389,36 @@ function renderPosts(instant) {
                         </div>
                     </div>
                 `;
+            } else if (post.type === 'video') {
+                card.innerHTML = `
+                    <div class="post-image-wrapper">
+                        ${post.videoData 
+                            ? `<video class="post-video-thumb" style="width:100%; height:100%; object-fit:cover; border-radius:12px 12px 0 0;" muted preload="metadata" src="${post.videoData}"></video>`
+                            : `<div class="post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=600')}');"></div>`
+                        }
+                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.6); border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; pointer-events:none;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <span class="post-meta">🎬 ${escapeHTML(post.category)}</span>
+                        <h2 class="post-title">${escapeHTML(post.title)}</h2>
+                        <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
+                        <div class="post-footer">
+                            <span class="post-date">${formatDate(post.date)} · ⏱ ${readingTime(post)}</span>
+                            <div class="post-stats">
+                                <div class="post-stat like-btn" data-id="${post.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                    <span>${post.likes}</span>
+                                </div>
+                                <div class="post-stat">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                    <span>${post.comments.length}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             } else {
                 card.innerHTML = `
                     <div class="post-image-wrapper">
@@ -713,14 +743,22 @@ function openPostDetail(postId) {
         ${post.type === 'music' 
             ? `<div style="margin-bottom: 30px;">
                    <img src="${post.image}" class="zoomable" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; cursor: zoom-in;">
+                   ${post.musicData ? `<audio controls style="width:100%; margin-bottom:12px;" src="${post.musicData}"></audio>` : ''}
                    <div class="music-actions" style="justify-content:flex-start;">
                        ${post.artist ? `<span class="music-artist">🎤 ${escapeHTML(post.artist)}</span>` : ''}
                        <div class="music-btn-row">
-                           ${post.link ? `<button class="btn-primary btn-sm" id="detail-play-${post.id}">${i18n.t('music.listen')}</button>` : ''}
+                           ${(post.musicData || post.link) ? `<button class="btn-primary btn-sm" id="detail-play-${post.id}">${i18n.t('music.listen')}</button>` : ''}
                            ${post.link ? `<a class="btn-secondary btn-sm" href="${safeUrl(post.link)}" target="_blank" rel="noopener noreferrer">${i18n.t('music.open')}</a>` : ''}
                        </div>
                    </div>
                </div>`
+            : post.type === 'video'
+                ? `<div style="margin-bottom: 30px;">
+                       ${post.videoData 
+                           ? `<video controls style="width:100%; max-height:500px; border-radius:12px;" src="${post.videoData}"></video>`
+                           : `<div class="modal-post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1000')}');"></div>`
+                       }
+                   </div>`
             : post.type === 'image' 
                 ? `<div style="margin-bottom: 30px;"><img src="${escapeHTML(safeImageUrl(post.image))}" class="zoomable" style="width: 100%; border-radius: 12px; cursor: zoom-in;"></div>`
                 : `<div class="modal-post-image zoomable-bg" data-zoom-src="${escapeHTML(safeImageUrl(post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000'))}" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000')}'); cursor: zoom-in;"></div>`
@@ -759,23 +797,43 @@ function openPostDetail(postId) {
             addPostModal.querySelector('.write-title').textContent = "Maqolani tahrirlash";
             
             document.getElementById('post-title-input').value = post.title;
-            document.getElementById('post-category-input').value = post.category;
-            document.getElementById('post-type-input').value = post.type;
-            document.getElementById('post-excerpt-input').value = post.excerpt;
-            document.getElementById('post-content-input').value = post.content;
+            document.getElementById('post-category-input').value = post.category || '';
+            document.getElementById('post-type-input').value = post.type || 'memory';
+            document.getElementById('post-excerpt-input').value = post.excerpt || '';
+            document.getElementById('post-content-input').value = post.content || '';
             const tagsInput = document.getElementById('post-tags-input');
             if (tagsInput) tagsInput.value = (post.tags || []).join(', ');
 
-            // Mavjud rasmni saqlab qolish (yangi fayl tanlanmasa o'zgarmaydi)
+            // Mavjud rasmni saqlab qolish
             pendingImageData = post.image || null;
             if (postImageUrlInput) postImageUrlInput.value = (post.image && post.image.startsWith('http')) ? post.image : '';
             if (postImageFileInput) postImageFileInput.value = '';
             showImagePreview(post.image || null);
 
-            // Musiqa maydonlari (ijrochi + havola)
+            // Musiqa maydonlari (ijrochi + havola + lokal fayl)
             if (postArtistInput) postArtistInput.value = post.artist || '';
             if (postLinkInput) postLinkInput.value = post.link || '';
-            toggleMusicGroup();
+            pendingMusicData = post.musicData || null;
+            pendingMusicName = post.musicName || null;
+            if (post.musicData && post.musicName && postMusicPreview && postMusicFilename) {
+                postMusicFilename.textContent = post.musicName;
+                postMusicPreview.style.display = 'block';
+            } else if (postMusicPreview) {
+                postMusicPreview.style.display = 'none';
+            }
+            if (postMusicFileInput) postMusicFileInput.value = '';
+
+            // Video maydonlari
+            pendingVideoData = post.videoData || null;
+            pendingVideoName = post.videoName || null;
+            if (post.videoData && postVideoPlayer && postVideoPreview) {
+                postVideoPlayer.src = post.videoData;
+                postVideoPreview.style.display = 'block';
+            } else if (postVideoPreview) {
+                postVideoPreview.style.display = 'none';
+                if (postVideoPlayer) postVideoPlayer.src = '';
+            }
+            if (postVideoFileInput) postVideoFileInput.value = '';
             
             closePostDetailModal();
             addPostModal.classList.add('active');
@@ -889,8 +947,14 @@ addPostBtn.addEventListener('click', () => {
     addPostModal.querySelector('.write-title').textContent = "Yangi sahifa yaratish";
     newPostForm.reset();
     pendingImageData = null;
+    pendingMusicData = null;
+    pendingMusicName = null;
+    pendingVideoData = null;
+    pendingVideoName = null;
     showImagePreview(null);
-    toggleMusicGroup();
+    if (postMusicPreview) postMusicPreview.style.display = 'none';
+    if (postVideoPreview) postVideoPreview.style.display = 'none';
+    if (postVideoPlayer) postVideoPlayer.src = '';
     addPostModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 });
@@ -900,7 +964,14 @@ function closeAddPostModal() {
     document.body.style.overflow = '';
     newPostForm.reset();
     pendingImageData = null;
+    pendingMusicData = null;
+    pendingMusicName = null;
+    pendingVideoData = null;
+    pendingVideoName = null;
     showImagePreview(null);
+    if (postMusicPreview) postMusicPreview.style.display = 'none';
+    if (postVideoPreview) postVideoPreview.style.display = 'none';
+    if (postVideoPlayer) postVideoPlayer.src = '';
 }
 
 closeAddModal.addEventListener('click', closeAddPostModal);
@@ -909,8 +980,12 @@ addPostModal.addEventListener('click', (e) => {
     if (e.target === addPostModal) closeAddPostModal();
 });
 
-// ===== FAYL YUKLASH: rasm (telefondan) + musiqa (havola orqali) =====
+// ===== FAYL YUKLASH: rasm + musiqa (lokal) + video (lokal) =====
 let pendingImageData = null; // data URL yoki tashqi havola
+let pendingMusicData = null; // data URL (lokal audio fayl)
+let pendingMusicName = null; // fayl nomi
+let pendingVideoData = null; // data URL (lokal video fayl)
+let pendingVideoName = null; // fayl nomi
 
 const postImageFileInput = document.getElementById('post-image-file');
 const postImageUrlInput = document.getElementById('post-image-input');
@@ -919,6 +994,14 @@ const postMusicGroup = document.getElementById('post-music-group');
 const postArtistInput = document.getElementById('post-artist-input');
 const postLinkInput = document.getElementById('post-link-input');
 const postTypeInput = document.getElementById('post-type-input');
+const postMusicFileInput = document.getElementById('post-music-file');
+const postMusicPreview = document.getElementById('post-music-preview');
+const postMusicFilename = document.getElementById('post-music-filename');
+const postMusicRemove = document.getElementById('post-music-remove');
+const postVideoFileInput = document.getElementById('post-video-file');
+const postVideoPreview = document.getElementById('post-video-preview');
+const postVideoPlayer = document.getElementById('post-video-player');
+const postVideoRemove = document.getElementById('post-video-remove');
 
 // Rasmni canvas orqali kichraytirib JPEG data URL ga aylantirish (xotira tejaladi)
 function compressImage(file, maxSize = 1920, quality = 0.9) {
@@ -971,8 +1054,7 @@ function showImagePreview(src) {
 }
 
 function toggleMusicGroup() {
-    if (!postMusicGroup || !postTypeInput) return;
-    postMusicGroup.style.display = postTypeInput.value === 'music' ? 'block' : 'none';
+    // Musiqa bo'limi endi doim ko'rinadi, alohida type tanlash kerak emas
 }
 
 // Rasm fayl tanlanganda — kichraytirib saqlaymiz
@@ -1001,43 +1083,93 @@ postImageUrlInput?.addEventListener('input', (e) => {
     }
 });
 
-postTypeInput?.addEventListener('change', toggleMusicGroup);
+// Musiqa fayl yuklash
+postMusicFileInput?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+        const dataUrl = await readFileAsDataURL(file);
+        pendingMusicData = dataUrl;
+        pendingMusicName = file.name;
+        if (postMusicFilename) postMusicFilename.textContent = file.name;
+        if (postMusicPreview) postMusicPreview.style.display = 'block';
+    } catch (err) {
+        alert("Audio faylni o'qishda xatolik yuz berdi.");
+    }
+});
+
+// Musiqa faylni olib tashlash
+postMusicRemove?.addEventListener('click', () => {
+    pendingMusicData = null;
+    pendingMusicName = null;
+    if (postMusicFileInput) postMusicFileInput.value = '';
+    if (postMusicPreview) postMusicPreview.style.display = 'none';
+});
+
+// Video fayl yuklash
+postVideoFileInput?.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+        const dataUrl = await readFileAsDataURL(file);
+        pendingVideoData = dataUrl;
+        pendingVideoName = file.name;
+        if (postVideoPlayer) {
+            postVideoPlayer.src = dataUrl;
+            postVideoPreview.style.display = 'block';
+        }
+    } catch (err) {
+        alert("Video faylni o'qishda xatolik yuz berdi.");
+    }
+});
+
+// Video faylni olib tashlash
+postVideoRemove?.addEventListener('click', () => {
+    pendingVideoData = null;
+    pendingVideoName = null;
+    if (postVideoFileInput) postVideoFileInput.value = '';
+    if (postVideoPlayer) postVideoPlayer.src = '';
+    if (postVideoPreview) postVideoPreview.style.display = 'none';
+});
 
 newPostForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const title = document.getElementById('post-title-input').value.trim();
     const category = document.getElementById('post-category-input').value.trim();
-    const type = document.getElementById('post-type-input').value;
     const excerpt = document.getElementById('post-excerpt-input').value.trim();
     const content = document.getElementById('post-content-input').value.trim();
     const tagsRaw = document.getElementById('post-tags-input') ? document.getElementById('post-tags-input').value : '';
     const tags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean).slice(0, 8);
+
+    // Post turini avtomatik aniqlash: musiqa > video > rasm > xotira
+    let type = 'memory';
+    const artist = postArtistInput ? postArtistInput.value.trim() : '';
+    const link = postLinkInput ? postLinkInput.value.trim() : '';
+    if (pendingMusicData || link) {
+        type = 'music';
+    } else if (pendingVideoData) {
+        type = 'video';
+    }
+    // Yashirin type inputni ham yangilash
+    if (postTypeInput) postTypeInput.value = type;
 
     // Rasm: yuklangan fayl / havola, bo'lmasa standart rasm
     let image = pendingImageData;
     if (!image) {
         if (type === 'music') {
             image = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600';
-        } else if (type === 'project') {
-            image = 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=600';
+        } else if (type === 'video') {
+            image = 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=600';
         } else {
             image = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600';
         }
     }
 
-    // Musiqa uchun havola shart (YouTube/Telegram/...)
-    const artist = postArtistInput ? postArtistInput.value.trim() : '';
-    const link = postLinkInput ? postLinkInput.value.trim() : '';
-    if (type === 'music') {
-        if (!link) {
-            alert("Musiqa posti uchun YouTube yoki Telegram havolasini kiriting.");
-            return;
-        }
-        if (!/^https?:\/\//i.test(link)) {
-            alert("Havola http:// yoki https:// bilan boshlanishi kerak.");
-            return;
-        }
+    // Musiqa uchun lokal fayl yoki havola (biri bo'lsa yetarli)
+    if (type === 'music' && link && !/^https?:\/\//i.test(link)) {
+        alert("Havola http:// yoki https:// bilan boshlanishi kerak.");
+        return;
     }
 
     if (editingPostId) {
@@ -1053,7 +1185,11 @@ newPostForm.addEventListener('submit', (e) => {
                 content,
                 tags,
                 artist: type === 'music' ? artist : (posts[postIndex].artist || null),
-                link: type === 'music' ? link : (posts[postIndex].link || null)
+                link: type === 'music' ? link : (posts[postIndex].link || null),
+                musicData: type === 'music' ? (pendingMusicData || posts[postIndex].musicData || null) : null,
+                musicName: type === 'music' ? (pendingMusicName || posts[postIndex].musicName || null) : null,
+                videoData: type === 'video' ? (pendingVideoData || posts[postIndex].videoData || null) : null,
+                videoName: type === 'video' ? (pendingVideoName || posts[postIndex].videoName || null) : null
             };
         }
         editingPostId = null;
@@ -1069,6 +1205,10 @@ newPostForm.addEventListener('submit', (e) => {
             tags,
             artist: type === 'music' ? artist : null,
             link: type === 'music' ? link : null,
+            musicData: type === 'music' ? pendingMusicData : null,
+            musicName: type === 'music' ? pendingMusicName : null,
+            videoData: type === 'video' ? pendingVideoData : null,
+            videoName: type === 'video' ? pendingVideoName : null,
             date: new Date().toISOString().split('T')[0],
             likes: 0,
             liked: false,
@@ -1555,6 +1695,18 @@ function getYouTubeId(url) {
 }
 
 function playMusic(post) {
+    // Lokal audio fayl (data URL)
+    if (post && post.musicData) {
+        const player = document.getElementById('mini-player');
+        const frame = document.getElementById('mini-player-frame');
+        if (!player || !frame) return;
+        document.getElementById('mini-player-title').textContent = post.title || 'Musiqa';
+        document.getElementById('mini-player-artist').textContent = post.artist || '';
+        frame.innerHTML = `<audio controls autoplay style="width:100%; height:100%;" src="${post.musicData}"></audio>`;
+        player.classList.add('active');
+        return;
+    }
+
     const link = post && post.link;
     if (!link) return;
     const ytId = getYouTubeId(link);
