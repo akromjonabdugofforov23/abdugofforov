@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Glass Prototype</title>
+    <style>
+        :root[data-theme="dark"] {
+            --bg-1: #0a0a0a;
+            --bg-2: #1a1a2e;
+            --glow-1: #4f46e5;
+            --glow-2: #e11d48;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-sub: #9ca3af;
+        }
+
+        :root[data-theme="light"] {
+            --bg-1: #f3f4f6;
+            --bg-2: #e5e7eb;
+            --glow-1: #60a5fa;
+            --glow-2: #fb7185;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 1);
+            --text-main: #111827;
+            --text-sub: #4b5563;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background-color: var(--bg-1);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            transition: background-color 0.5s ease;
+        }
+
+        /* Abstract Glowing Orbs Background */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: orbFloat 20s infinite alternate;
+            z-index: 0;
+        }
+        .orb-1 { width: 400px; height: 400px; background: var(--glow-1); top: 10%; left: 20%; }
+        .orb-2 { width: 500px; height: 500px; background: var(--glow-2); bottom: 10%; right: 10%; animation-delay: -5s; }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, -100px) scale(1.2); }
+        }
+
+        /* 3D Scene Wrapper */
+        .scene {
+            perspective: 1000px;
+            z-index: 10;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Interactive 3D Container */
+        .glass-stack {
+            position: relative;
+            transform-style: preserve-3d;
+            /* Driven by JS variables */
+            transform: rotateX(calc(var(--mouse-y, 0) * 15deg)) rotateY(calc(var(--mouse-x, 0) * 15deg));
+            transition: transform 0.1s ease-out;
+            width: 320px;
+            height: 480px;
+        }
+
+        /* Glass Cards in the Stack */
+        .glass-card {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.2);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transform-style: preserve-3d;
+        }
+
+        /* Layering effects for 3D depth */
+        .layer-base { transform: translateZ(0px); }
+        
+        .layer-content {
+            transform: translateZ(40px);
+            text-align: center;
+        }
+
+        .layer-content h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .layer-content p {
+            font-size: 15px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        .layer-floating-btn {
+            transform: translateZ(80px);
+            background: linear-gradient(135deg, var(--glow-1), var(--glow-2));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .layer-floating-btn:hover {
+            transform: translateZ(90px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        /* Glare effect on card */
+        .glare {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 24px;
+            background: linear-gradient(105deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 40%);
+            transform: translateZ(1px);
+            pointer-events: none;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-main);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()">Kun / Tun</button>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="scene">
+        <div class="glass-stack" id="stack">
+            <!-- Glare Layer -->
+            <div class="glare"></div>
+            
+            <!-- Main Base Card -->
+            <div class="glass-card layer-base">
+                <div style="display: flex; justify-content: center; margin-top: 20px; transform: translateZ(20px);">
+                    <!-- Floating Icon -->
+                    <div style="width: 80px; height: 80px; border-radius: 20px; background: var(--glass-border); display: flex; align-items: center; justify-content: center; font-size: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                        🚀
+                    </div>
+                </div>
+
+                <div class="layer-content">
+                    <h1>Yangi 3D Shisha</h1>
+                    <p>Ushbu kartochka markaziy qismda turadi. Sichqonchani ekranda harakatlantiring. Hech qanday qotishlarsiz ishlaydi.</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="layer-floating-btn">Boshlash</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Qotmaydigan 3D harakat (Sichqoncha bilan)
+        const scene = document.querySelector('.scene');
+        const stack = document.getElementById('stack');
+
+        window.addEventListener('mousemove', (e) => {
+            requestAnimationFrame(() => {
+                // Ekranning markazidan sichqonchagacha bo'lgan masofani hisoblash (-1 dan 1 gacha)
+                const x = (e.clientX / window.innerWidth) * 2 - 1;
+                const y = (e.clientY / window.innerHeight) * 2 - 1;
+                
+                // O'zgaruvchilarni CSS ga yuborish
+                stack.style.setProperty('--mouse-x', x);
+                stack.style.setProperty('--mouse-y', -y);
+            });
+        });
+
+        // Telefonlar uchun Gyroscope (qimirlatganda ishlashi uchun)
+        window.addEventListener('deviceorientation', (e) => {
+            requestAnimationFrame(() => {
+                const x = Math.min(Math.max(e.gamma / 45, -1), 1); // Left/Right
+                const y = Math.min(Math.max((e.beta - 45) / 45, -1), 1); // Up/Down
+                stack.style.setProperty('--mouse-x', x);
+                stack.style.setProperty('--mouse-y', -y);
+            });
+        });
+
+        // Mavzuni o'zgartirish
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.setAttribute('data-theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+            }
+        }
+    </script>
+</body>
+</html>

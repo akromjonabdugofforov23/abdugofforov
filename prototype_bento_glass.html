@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass Bento Box - Prototype</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+        
+        body {
+            margin: 0; padding: 0; min-height: 100vh;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 250px);
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .bento-box {
+            position: relative;
+            border-radius: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            transition: transform 0.3s, background 0.3s;
+            cursor: pointer;
+        }
+
+        .bento-box:hover {
+            transform: scale(1.03);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Abstract gradients inside the boxes */
+        .gradient-mesh {
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle at center, var(--c1) 0%, transparent 50%),
+                        radial-gradient(circle at top right, var(--c2) 0%, transparent 50%);
+            opacity: 0.4;
+            filter: blur(40px);
+            z-index: 0;
+            transition: transform 0.5s ease;
+        }
+
+        .bento-box:hover .gradient-mesh {
+            transform: scale(1.2) rotate(10deg);
+            opacity: 0.6;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .content h2 {
+            margin: 0 0 5px 0;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .content p {
+            margin: 0;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Box Sizes */
+        .box-1 { grid-column: span 2; --c1: #ec4899; --c2: #8b5cf6; }
+        .box-2 { grid-column: span 1; --c1: #3b82f6; --c2: #14b8a6; display: flex; justify-content: center; align-items: center; }
+        .box-3 { grid-column: span 1; --c1: #f59e0b; --c2: #ef4444; }
+        .box-4 { grid-column: span 2; --c1: #10b981; --c2: #0ea5e9; }
+
+        .icon-huge {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="bento-grid">
+        <div class="bento-box box-1">
+            <div class="gradient-mesh"></div>
+            <div class="content">
+                <h2>Abdugofforov.</h2>
+                <p>Medical Student & Developer</p>
+            </div>
+        </div>
+        
+        <div class="bento-box box-2">
+            <div class="gradient-mesh"></div>
+            <div class="content" style="text-align: center;">
+                <span class="icon-huge">⚡</span>
+                <h2>Performance</h2>
+            </div>
+        </div>
+
+        <div class="bento-box box-3">
+            <div class="gradient-mesh"></div>
+            <div class="content">
+                <h2>Deutsch</h2>
+                <p>C1 Level Preparation</p>
+            </div>
+        </div>
+
+        <div class="bento-box box-4">
+            <div class="gradient-mesh"></div>
+            <div class="content">
+                <h2>Modern Stack</h2>
+                <p>Building with extreme precision and aesthetics.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

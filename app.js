@@ -3601,3 +3601,90 @@ window.initAuthUI = initAuthUI;
 window.openMyResults = openMyResults;
 window.flashcardDecks = flashcardDecks;
 window.deutschTests = deutschTests;
+// ===== EPIC VANTA.JS BACKGROUND =====
+let vantaEffect = null;
+let vantaHue = 200; // Boshlang'ich rang (moviy)
+
+function initVantaBg() {
+    if (typeof VANTA === 'undefined') return;
+    
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    if (vantaEffect) {
+        vantaEffect.destroy();
+    }
+    
+    // Light rejimda oq fon, Dark rejimda qora fon
+    const bgColor = isDark ? 0x000000 : 0xffffff;
+    
+    vantaEffect = VANTA.WAVES({
+        el: "#vanta-bg",
+        mouseControls: false, // Sichqonchaga hamohang harakat O'CHIRILGAN
+        touchControls: false,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x0ea5e9, // Boshlang'ich
+        backgroundColor: bgColor,
+        shininess: isDark ? 50 : 150,
+        waveHeight: 30.00,
+        waveSpeed: 1.20,
+        zoom: 0.8
+    });
+    
+    // Tinimsiz rang o'zgartirish (Color shifting)
+    if (!window.vantaInterval) {
+        window.vantaInterval = setInterval(() => {
+            if (!vantaEffect) return;
+            vantaHue = (vantaHue + 1) % 360;
+            
+            // HSL dan RGB Hex ga o'tkazish
+            const h = vantaHue / 360;
+            const s = isDark ? 1.0 : 0.8; // Darkda yorqinroq (neon)
+            const l = isDark ? 0.5 : 0.6; // Lightda ochroq
+            
+            let r, g, b;
+            if (s === 0) {
+                r = g = b = l;
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if(t < 0) t += 1;
+                    if(t > 1) t -= 1;
+                    if(t < 1/6) return p + (q - p) * 6 * t;
+                    if(t < 1/2) return q;
+                    if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1/3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1/3);
+            }
+            
+            const colorHex = (Math.round(r * 255) << 16) | (Math.round(g * 255) << 8) | Math.round(b * 255);
+            vantaEffect.setOptions({ color: colorHex });
+        }, 50); // Har 50ms da rang ozgina o'zgaradi
+    }
+}
+
+// Buni app.js oxiriga qo'shdik. Tema o'zgarganda Vanta fonini ham yangilash kerak
+const oldToggleTheme = window.toggleTheme; // agar mavjud bo'lsa
+function updateThemeButton(newTheme) {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    const isDark = (newTheme === 'dark');
+    btn.innerHTML = isDark
+        ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
+        : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+    
+    // Vanta ni yangilash
+    initVantaBg();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    // Biraz kechiktirib ishga tushiramiz, Vanta script yuklanishi uchun
+    setTimeout(initVantaBg, 500);
+});

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSANE DESIGN - Prototype</title>
+    <!-- Three.js va Vanta.js kutubxonalari orqa fondagi 3D koinot/tarmoq uchun -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800;900&family=Rajdhani:wght@500;700&display=swap');
+        
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Rajdhani', sans-serif;
+            color: #fff;
+        }
+
+        /* 3D WebGL Orqa Fon Konteyneri */
+        #vanta-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+        }
+
+        /* Scanline effekti - Gologramma ko'rinishi berish uchun */
+        .scanlines {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+            background-size: 100% 4px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Markaziy Sahnaning o'zi */
+        .scene {
+            position: relative;
+            z-index: 10;
+            width: 100%; height: 100%;
+            perspective: 2000px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* O'ta kuchli Shisha (Cyber-Glass) */
+        .insane-glass {
+            position: relative;
+            width: 800px;
+            min-height: 500px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(255, 0, 128, 0.05));
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 
+                0 0 50px rgba(0, 255, 255, 0.2),
+                inset 0 0 30px rgba(255, 0, 128, 0.2);
+            transform-style: preserve-3d;
+            /* Kuchliroq aylanish */
+            transform: rotateX(calc(var(--rot-y, 0) * 35deg)) rotateY(calc(var(--rot-x, 0) * 35deg));
+            transition: transform 0.1s linear, box-shadow 0.3s ease, border 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .insane-glass:hover {
+            border-color: rgba(255, 0, 128, 0.8);
+            box-shadow: 
+                0 0 80px rgba(255, 0, 128, 0.5),
+                inset 0 0 50px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Ichki nurlanish qatlami */
+        .insane-glass::before {
+            content: '';
+            position: absolute;
+            top: -100%; left: -100%; width: 300%; height: 300%;
+            background: conic-gradient(transparent, rgba(0, 255, 255, 0.3), transparent 30%);
+            animation: radar 4s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes radar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .content {
+            transform: translateZ(120px); /* Juda oldinda */
+            text-align: center;
+            pointer-events: none;
+            width: 100%;
+        }
+
+        /* Glitch yozuv effekti */
+        .glitch-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            font-weight: 900;
+            color: #fff;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 0 0 20px 0;
+            text-shadow: 0 0 20px rgba(0,255,255,0.8);
+        }
+
+        .glitch-title::before, .glitch-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0.8;
+        }
+
+        .glitch-title::before {
+            left: 4px;
+            text-shadow: -2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch-title::after {
+            left: -4px;
+            text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(77px, 9999px, 86px, 0); transform: skew(0.5deg); }
+            5% { clip: rect(10px, 9999px, 12px, 0); transform: skew(0.5deg); }
+            10% { clip: rect(69px, 9999px, 18px, 0); transform: skew(0.5deg); }
+            15% { clip: rect(32px, 9999px, 82px, 0); transform: skew(0.5deg); }
+            20% { clip: rect(51px, 9999px, 29px, 0); transform: skew(0.5deg); }
+            100% { clip: rect(51px, 9999px, 29px, 0); transform: skew(0.5deg); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(14px, 9999px, 99px, 0); transform: skew(0.5deg); }
+            5% { clip: rect(32px, 9999px, 35px, 0); transform: skew(0.5deg); }
+            10% { clip: rect(87px, 9999px, 80px, 0); transform: skew(0.5deg); }
+            15% { clip: rect(98px, 9999px, 26px, 0); transform: skew(0.5deg); }
+            20% { clip: rect(11px, 9999px, 55px, 0); transform: skew(0.5deg); }
+            100% { clip: rect(11px, 9999px, 55px, 0); transform: skew(0.5deg); }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #00fff9;
+            letter-spacing: 8px;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(0,255,255,0.5);
+        }
+
+        /* Yorqin tugma */
+        .insane-btn {
+            pointer-events: auto;
+            transform: translateZ(150px);
+            background: transparent;
+            border: 2px solid #ff00c1;
+            color: #ff00c1;
+            padding: 15px 50px;
+            font-size: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 0, 193, 0.4), inset 0 0 20px rgba(255, 0, 193, 0.4);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insane-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,0,193,0.8), transparent);
+            transition: all 0.4s;
+        }
+
+        .insane-btn:hover::before {
+            left: 100%;
+        }
+
+        .insane-btn:hover {
+            background: #ff00c1;
+            color: #fff;
+            box-shadow: 0 0 50px #ff00c1, inset 0 0 20px #fff;
+            transform: translateZ(160px) scale(1.1);
+        }
+
+        /* Boshqa tomonda uchuvchi gologramma bloklar */
+        .holo-block {
+            position: absolute;
+            border: 1px solid #00fff9;
+            background: rgba(0, 255, 249, 0.05);
+            box-shadow: 0 0 20px rgba(0, 255, 249, 0.2), inset 0 0 15px rgba(0, 255, 249, 0.2);
+            z-index: 15;
+            backdrop-filter: blur(5px);
+            animation: holoFloat 6s infinite alternate ease-in-out;
+        }
+
+        .hb-1 { width: 100px; height: 100px; top: 15%; left: 10%; transform: translateZ(300px); animation-delay: 0s; border-radius: 10px; }
+        .hb-2 { width: 150px; height: 50px; bottom: 15%; right: 10%; transform: translateZ(200px); border-color: #ff00c1; box-shadow: 0 0 20px rgba(255, 0, 193, 0.2); animation-delay: -3s; }
+        .hb-3 { width: 60px; height: 60px; top: 20%; right: 15%; transform: translateZ(400px); border-radius: 50%; border-color: #fff; animation-delay: -1s; }
+
+        @keyframes holoFloat {
+            0% { margin-top: 0; margin-left: 0; transform: rotate(0deg); }
+            100% { margin-top: -40px; margin-left: 20px; transform: rotate(15deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Kuchli WebGL 3D Orqa Fon -->
+    <div id="vanta-bg"></div>
+    <div class="scanlines"></div>
+
+    <div class="scene">
+        
+        <!-- Uchuvchi gologrammalar -->
+        <div class="holo-block hb-1"></div>
+        <div class="holo-block hb-2"></div>
+        <div class="holo-block hb-3"></div>
+
+        <!-- Asosiy 3D kartochka -->
+        <div class="insane-glass" id="card">
+            <div class="content">
+                <h1 class="glitch-title" data-text="SYSTEM.MD">SYSTEM.MD</h1>
+                <div class="subtitle">MAXIMUM PERFORMANCE</div>
+                <button class="insane-btn">INITIALIZE</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. VANTA.JS NET - O'ta kuchli, sichqonchaga javob beruvchi 3D orqa fon (Tarmoq)
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: true,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0xff00c1, /* Pushti/Qizil neon */
+            backgroundColor: 0x050011, /* O'ta to'q kosmik rang */
+            points: 15.00,
+            maxDistance: 25.00,
+            spacing: 18.00,
+            showDots: true
+        });
+
+        // 2. Qotmaydigan lekin juda kuchli gradusli 3D harakat
+        const card = document.getElementById('card');
+        
+        window.addEventListener('mousemove', (e) => {
+            requestAnimationFrame(() => {
+                const x = (e.clientX / window.innerWidth) * 2 - 1;
+                const y = (e.clientY / window.innerHeight) * 2 - 1;
+                
+                // Gradus juda kuchli (35deg), shuning uchun yongga qiyshayish dahshatli ko'rinadi
+                card.style.setProperty('--rot-x', x);
+                card.style.setProperty('--rot-y', -y);
+            });
+        });
+    </script>
+</body>
+</html>
