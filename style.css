@@ -3002,3 +3002,73 @@ body:not(.admin-mode) .fab {
     .user-name { display: none; }
     .user-chip { padding: 5px; }
 }
+
+/* ===== MOBILE NAVBAR (App-like Bottom Nav + Hamburger) ===== */
+.hamburger-btn { display: none; background: transparent; border: none; color: var(--text-primary); cursor: pointer; padding: 5px; }
+.hamburger-overlay { display: flex; align-items: center; gap: 12px; }
+
+@media (max-width: 768px) {
+    /* Top bar */
+    .navbar-row { justify-content: space-between; }
+    .hamburger-btn { display: block; }
+    
+    /* Hamburger Menu Overlay (yashirin) */
+    .hamburger-overlay {
+        display: none;
+        position: fixed;
+        top: 60px;
+        right: 20px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 20px;
+        flex-direction: column;
+        gap: 15px;
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        animation: slideDown 0.3s ease;
+    }
+    .hamburger-overlay.active { display: flex; }
+    
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Bottom Navigation Bar */
+    .nav-links {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--glass-bg);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid var(--glass-border);
+        border-radius: 30px;
+        padding: 10px 20px;
+        display: flex;
+        gap: 20px;
+        box-shadow: var(--shadow-lg);
+        z-index: 999;
+        /* Yozuvlarni yashirish */
+    }
+    .nav-links a {
+        flex-direction: column;
+        padding: 10px;
+        border-radius: 50%;
+        background: transparent;
+    }
+    .nav-links a.active {
+        background: var(--accent-color);
+        color: #fff;
+    }
+    .nav-links .nav-text {
+        display: none; /* Faqat ikonka qoladi */
+    }
+    
+    /* Uy (Home) tugmasini pastki paneldan yashirish (chunki logo orqali kiriladi) */
+    #nav-home-link { display: none !important; }
+}
