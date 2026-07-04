@@ -1087,8 +1087,8 @@ function loadPosts() {
             <div class="glz-row">
                 <img src="${p.image||''}" onerror="this.style.display='none'">
                 <div class="info">
-                    <div class="t">${p.title}</div>
-                    <div class="m">${p.category} · ${p.date} · ❤️ ${p.likes||0}</div>
+                    <div class="t">${_esc(p.title)}</div>
+                    <div class="m">${_esc(p.category)} · ${p.date} · ❤️ ${p.likes||0}</div>
                 </div>
                 <div class="acts">
                     <button class="icon-btn" onclick="editPost(${p.id})" title="Tahrirlash">✏️</button>
@@ -1106,7 +1106,7 @@ function loadPosts() {
             ? all.slice(0, 4).map(p => `
                 <div class="glz-mini-row">
                     <img src="${p.image||''}" onerror="this.style.display='none'">
-                    <div><strong>${p.title}</strong><small>${p.category} · ❤️ ${p.likes||0}</small></div>
+                    <div><strong>${_esc(p.title)}</strong><small>${_esc(p.category)} · ❤️ ${p.likes||0}</small></div>
                 </div>`).join('')
             : '<div class="glz-empty">Hali post yo\'q</div>';
     }
@@ -1150,7 +1150,7 @@ function loadTasks() {
     list.innerHTML = tasks.map(t => `
         <div class="glz-row">
             <span style="font-size:18px;">${icons[t.status]||'⚪'}</span>
-            <span class="info" style="font-size:14px;">${t.title}</span>
+            <span class="info" style="font-size:14px;">${_esc(t.title)}</span>
             <div class="acts"><button class="icon-btn danger" onclick="deleteTask(${t.id})">✕</button></div>
         </div>
     `).join('');
