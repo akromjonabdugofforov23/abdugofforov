@@ -2650,11 +2650,11 @@ async function bootstrap() {
     openPostFromUrl();
 
     // Yangi: hero particles + footer particles + CTA tugmasi + 3D tilt + Floating +
-    initParticles();
-    initFooterParticles();
+    // initParticles(); // Performance optimization
+    // initFooterParticles(); // Performance optimization
     initCarousel();
     initHeroCta();
-    init3DTilt();
+    // init3DTilt(); // Performance optimization
     initFloatingAddBtn();
 
     // O'quvchi auth — token bo'lsa tiklaymiz, UI'ni yangilaymiz
