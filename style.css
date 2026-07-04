@@ -2778,7 +2778,7 @@ a {
     justify-content: center;
     z-index: 90;
     box-shadow: 0 8px 32px rgba(139, 92, 246, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s;
     animation: fabPulse 2.6s ease-in-out infinite;
     isolation: isolate;
 }

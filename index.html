@@ -80,7 +80,7 @@
 
             <!-- Nav linklar logo yonida (mobil va vebda bir xil) -->
             <div class="nav-links" id="main-nav">
-                <a href="#" data-page="home" class="active" id="nav-home-link" aria-label="Bosh sahifa" title="Bosh sahifa">
+                <a href="#" class="active" data-page="home" id="nav-home-link" aria-label="Bosh sahifa" title="Bosh sahifa">
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                     <span data-i18n="nav.home" class="nav-text">Bosh sahifa</span>
                 </a>
@@ -243,6 +243,21 @@
     </div>
 
     <!-- Asosiy Kontent -->
+    <!-- Deutsch Test Sahifasi -->
+    <div class="container animate-fade-in" id="deutsch-view" style="display:none; padding: 40px 0;">
+        <div id="deutsch-content"></div>
+    </div>
+
+    <!-- Kartochkalar (Flashcards) Sahifasi -->
+    <div class="container animate-fade-in" id="flashcards-view" style="display:none; padding: 40px 0;">
+        <div id="flashcards-content"></div>
+    </div>
+
+    <!-- Turnir Sahifasi -->
+    <div class="container animate-fade-in" id="tournament-view" style="display:none; padding: 40px 0;">
+        <div id="tournament-content"></div>
+    </div>
+
     <main class="container animate-fade-in" id="main-content">
 
         <!-- Asosiy bo'limlar -->
@@ -464,7 +479,7 @@
     </div>
 
     <!-- JavaScript Mantiqi -->
-        <script src="storage.js"></script>
+    <script src="storage.js"></script>
     <script src="i18n.js"></script>
     <script src="auth.js"></script>
     <script src="app.js"></script>
