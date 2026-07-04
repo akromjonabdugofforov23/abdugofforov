@@ -586,8 +586,8 @@ const hamburgerBtn = document.getElementById('hamburger-btn');
 const navRight = document.getElementById('nav-right');
 const mobileOverlay = document.getElementById('mobile-overlay');
 
-
-
+function openMobileMenu() { /* deprecated */ }
+function closeMobileMenu() { /* deprecated */ }
 
 if (hamburgerBtn && navRight && mobileOverlay) {
     hamburgerBtn.addEventListener('click', () => {
@@ -1053,7 +1053,9 @@ function showImagePreview(src) {
     }
 }
 
-
+function toggleMusicGroup() {
+    // Musiqa bo'limi endi doim ko'rinadi, alohida type tanlash kerak emas
+}
 
 // Rasm fayl tanlanganda — kichraytirib saqlaymiz
 postImageFileInput?.addEventListener('change', async (e) => {
@@ -2487,7 +2489,13 @@ function initCarousel() {
 // ===== HERO TYPEWRITER =====
 // hero-title-text'ning matnini harfma-harf qayta yozadi (langchange'da yangilanadi)
 let _typewriterTimer = null;
-
+function runTypewriter() {
+    const el = document.querySelector('.hero-title-text');
+    if (!el) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const full = (window.i18n && i18n.t) ? i18n.t('hero.title') : (el.getAttribute('data-final') || el.textContent || '');
+    el.setAttribute('data-final', full);
+    if (reduced) { el.textContent = full; return; }
     if (_typewriterTimer) { clearInterval(_typewriterTimer); _typewriterTimer = null; }
     el.textContent = '';
     let i = 0;
@@ -2504,7 +2512,12 @@ let _typewriterTimer = null;
 }
 
 // CTA tugmasi — blog grid'iga skroll
-);
+function initHeroCta() {
+    const btn = document.getElementById('hero-cta-btn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        const grid = document.getElementById('blog-grid');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 }
 
@@ -3761,4 +3774,3 @@ function openMyResults() {
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
-
