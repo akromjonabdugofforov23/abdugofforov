@@ -558,7 +558,6 @@ mainNav.addEventListener('click', (e) => {
     updateHeroContent();
     renderPosts();
 });
-
 // Kontakt modali
 const contactModal = document.getElementById('contact-modal');
 function openContactModal() {
@@ -580,7 +579,70 @@ navLogo.addEventListener('click', (e) => {
     if (homeLink) homeLink.click();
 });
 
-// Toolbar filtrlari
+// ===== DESKTOP DOCK NAVIGATION =====
+const desktopDock = document.getElementById('desktop-dock');
+if (desktopDock) {
+    desktopDock.addEventListener('click', (e) => {
+        e.preventDefault();
+        const link = e.target.closest('a');
+        if (!link) return;
+
+        // Maxsus tugmalar
+        if (link.id === 'dock-contact') {
+            openContactModal();
+            return;
+        }
+        if (link.id === 'dock-theme') {
+            const themeBtn = document.getElementById('theme-btn');
+            if (themeBtn) themeBtn.click();
+            return;
+        }
+        if (link.id === 'dock-deutsch') {
+            openDeutschView();
+            syncActiveNavState('deutsch');
+            return;
+        }
+        
+        // Blog tugmasi (Asosiy sahifaga o'tadi)
+        let page = link.getAttribute('data-page');
+        if (page === 'blog') page = 'home'; // Blog aslida home
+
+        showMainView();
+
+        // Active state sinxronlash (dock va main-nav)
+        syncActiveNavState(page);
+        
+        currentTab = page;
+        filterType = (page === 'projects') ? 'project' : 'none';
+
+        filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+
+        updateHeroContent();
+        renderPosts();
+    });
+}
+
+function syncActiveNavState(page) {
+    // Top nav-links
+    if (mainNav) {
+        mainNav.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+        const topLink = mainNav.querySelector(`[data-page="${page}"]`);
+        if (topLink) topLink.classList.add('active');
+    }
+    // Bottom dock
+    if (desktopDock) {
+        desktopDock.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+        const dockLink = desktopDock.querySelector(`[data-page="${page}"]`);
+        if (dockLink) dockLink.classList.add('active');
+        else if (page === 'deutsch') {
+            const dLink = desktopDock.querySelector('#dock-deutsch');
+            if (dLink) dLink.classList.add('active');
+        } else if (page === 'home' || page === 'blog') {
+            const homeLink = desktopDock.querySelector('#dock-home') || desktopDock.querySelector('#dock-blog');
+            if (homeLink) homeLink.classList.add('active');
+        }
+    }
+}
 
 // ===== HAMBURGER MENYU (eski mobil drawer) — endi nav linklar doim tepada
 // turadi, drawer kerak emas. DOM elementlari yo'q bo'lsa, xavfsiz tarzda

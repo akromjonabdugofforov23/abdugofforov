@@ -3003,51 +3003,115 @@ body:not(.admin-mode) .fab {
     .user-chip { padding: 5px; }
 }
 
-/* ===== UNIVERSAL DOCK NAVBAR (Desktop + Mobile) ===== */
+/* ===== UNIVERSAL DOCK NAVBAR & RESPONSIVE RULES ===== */
 .hamburger-btn { display: none; background: transparent; border: none; color: var(--text-primary); cursor: pointer; padding: 5px; }
 .hamburger-overlay { display: flex; align-items: center; gap: 12px; }
 .navbar-row { justify-content: space-between; }
 
-/* Bottom Navigation Bar (Mac OS Dock Style) */
+/* Desktop Top Navigation (Original) */
 .nav-links {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active {
+    color: var(--accent-color);
+}
+#nav-home-link { display: flex !important; }
+
+/* Bottom Navigation Bar (Mac OS Dock Style - Dark Glassmorphism) */
+.desktop-dock {
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--glass-bg);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid var(--glass-border);
-    border-radius: 30px;
-    padding: 10px 20px;
+    background: rgba(15, 23, 42, 0.65); /* Dark blue/gray glass */
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2); /* Highlight top edge */
+    border-radius: 24px;
+    padding: 10px 16px;
     display: flex;
-    gap: 20px;
-    box-shadow: var(--shadow-lg);
+    gap: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
     z-index: 999;
 }
-.nav-links a {
+
+.desktop-dock .dock-item {
+    display: flex;
     flex-direction: column;
-    padding: 10px;
-    border-radius: 50%;
-    background: transparent;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    position: relative;
+    text-decoration: none;
 }
-.nav-links a:hover {
-    transform: translateY(-8px) scale(1.1);
-}
-.nav-links a.active {
-    background: var(--accent-color);
+
+.desktop-dock .dock-item:hover {
     color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-8px) scale(1.15);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    z-index: 10;
 }
-.nav-links .nav-text {
-    display: none; /* Faqat ikonka ko'rinadi */
+
+.desktop-dock .dock-item.active {
+    color: #fff;
+    background: rgba(56, 189, 248, 0.2); /* Soft accent bg */
+    border: 1px solid rgba(56, 189, 248, 0.3);
 }
-/* Show home link on desktop */
-#nav-home-link { display: inline-block !important; }
+
+.desktop-dock .dock-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    box-shadow: 0 0 8px var(--accent-color);
+}
+
+.desktop-dock .dock-label {
+    position: absolute;
+    top: -36px;
+    background: rgba(15, 23, 42, 0.9);
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.desktop-dock .dock-item:hover .dock-label {
+    opacity: 1;
+    transform: translateY(0);
+}
 
 @media (max-width: 768px) {
     .hamburger-btn { display: block; }
-    /* Hide desktop dock on mobile */
+    
+    /* Hide top nav on mobile, but keep dock visible! */
     .nav-links { display: none; }
     
     /* Hamburger Menu Overlay (Mobil uchun) */
@@ -3075,8 +3139,24 @@ body:not(.admin-mode) .fab {
         to { opacity: 1; transform: translateY(0); }
     }
     
-    .nav-links a:hover {
+    /* Adjust dock for mobile */
+    .desktop-dock {
+        width: 90%;
+        justify-content: space-around;
+        padding: 8px;
+        gap: 0;
+        bottom: 10px;
+        border-radius: 20px;
+    }
+    .desktop-dock .dock-item {
+        width: 44px;
+        height: 44px;
+    }
+    .desktop-dock .dock-item:hover {
         transform: none; /* Mobilda hover kerak emas */
+        box-shadow: none;
+    }
+    .desktop-dock .dock-item:hover .dock-label {
+        display: none;
     }
 }
-

@@ -30,13 +30,45 @@
 
     <!-- PWA (ilova sifatida o'rnatish) -->
     <link rel="manifest" href="/manifest.webmanifest">
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO Meta ===== -->
+    <title>Abdugofforov | Shaxsiy blog, xotiralar va nemis tili testlari</title>
+    <meta name="description" content="Abdugofforov — shaxsiy blog: kundalik xotiralar, g'oyalar, loyihalar, musiqa hamda nemis tili (A1, A2, B1) testlari va so'z kartochkalari. O'zbek, rus, nemis va ingliz tillarida.">
+    <meta name="keywords" content="Abdugofforov, blog, kundalik, nemis tili, Deutsch, A1, A2, B1, test, kartochka, xotiralar, portfolio">
+    <meta name="author" content="Abdugofforov">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#8B5CF6">
+    <link rel="canonical" href="https://abdugofforov.uz/">
+
+    <!-- Open Graph (ijtimoiy tarmoqlar) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Abdugofforov">
+    <meta property="og:title" content="Abdugofforov | Shaxsiy blog va nemis tili testlari">
+    <meta property="og:description" content="Kundalik xotiralar, g'oyalar, musiqa va nemis tili (A1, A2, B1) testlari hamda so'z kartochkalari.">
+    <meta property="og:locale" content="uz_UZ">
+    <meta property="og:url" content="https://abdugofforov.uz/">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Abdugofforov | Shaxsiy blog va nemis tili testlari">
+    <meta name="twitter:description" content="Kundalik xotiralar, g'oyalar, musiqa va nemis tili testlari hamda so'z kartochkalari.">
+    <meta name="twitter:image" content="https://abdugofforov.uz/og-image.svg">
+    <meta property="og:image" content="https://abdugofforov.uz/og-image.svg">
+
+    <!-- PWA (ilova sifatida o'rnatish) -->
+    <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.svg">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Abdugofforov">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -100,53 +132,78 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </button>
                 <div class="hamburger-overlay" id="hamburger-menu">
-                <!-- Til tanlash (bayroqlar bilan) — JS orqali to'ldiriladi -->
-                <div id="lang-select" class="lang-dropdown" aria-label="Til / Language"></div>
+                    <!-- Til tanlash (bayroqlar bilan) — JS orqali to'ldiriladi -->
+                    <div id="lang-select" class="lang-dropdown" aria-label="Til / Language"></div>
 
-                <!-- Qorong'u rejim tugmasi -->
-                <button class="btn-icon theme-toggle" id="theme-btn" aria-label="Mavzuni o'zgartirish">
-                    <!-- Moon Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                    <!-- Sun Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                </button>
-
-                <!-- Yangi post tugmasi (faqat admin — body.admin-mode) -->
-                <button class="btn-primary" id="add-post-btn" aria-label="Yangi post yozish" title="Yozish">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    <span data-i18n="nav.write" class="nav-text">Yozish</span>
-                </button>
-
-                <!-- Kirish tugmasi (mehmonlar/o'quvchilar uchun — ro'yxatdan o'tish/kirish modali) -->
-                <button class="btn-primary" id="login-btn" type="button" aria-label="Kirish yoki ro'yxatdan o'tish" title="Kirish">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
-                    <span data-i18n="nav.login" class="nav-text">Kirish</span>
-                </button>
-
-                <!-- Foydalanuvchi menyusi (login bo'lganda ko'rinadi) -->
-                <div class="user-menu" id="user-menu" style="display:none;">
-                    <button class="user-chip" id="user-chip" type="button" title="Profil">
-                        <span class="user-avatar" id="user-avatar">A</span>
-                        <span class="user-name" id="user-name-label">Foydalanuvchi</span>
+                    <!-- Qorong'u rejim tugmasi -->
+                    <button class="btn-icon theme-toggle" id="theme-btn" aria-label="Mavzuni o'zgartirish">
+                        <!-- Moon Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        <!-- Sun Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                     </button>
-                    <div class="user-dropdown" id="user-dropdown">
-                        <div class="user-dropdown-head">
-                            <strong id="user-dd-name">Foydalanuvchi</strong>
-                            <small id="user-dd-username">@user</small>
+
+                    <!-- Yangi post tugmasi (faqat admin — body.admin-mode) -->
+                    <button class="btn-primary" id="add-post-btn" aria-label="Yangi post yozish" title="Yozish">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span data-i18n="nav.write" class="nav-text">Yozish</span>
+                    </button>
+
+                    <!-- Kirish tugmasi -->
+                    <button class="btn-primary" id="login-btn" type="button" aria-label="Kirish yoki ro'yxatdan o'tish" title="Kirish">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                        <span data-i18n="nav.login" class="nav-text">Kirish</span>
+                    </button>
+
+                    <!-- Foydalanuvchi menyusi -->
+                    <div class="user-menu" id="user-menu" style="display:none;">
+                        <button class="user-chip" id="user-chip" type="button" title="Profil">
+                            <span class="user-avatar" id="user-avatar">A</span>
+                            <span class="user-name" id="user-name-label">Foydalanuvchi</span>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <div class="user-dropdown-head">
+                                <strong id="user-dd-name">Foydalanuvchi</strong>
+                                <small id="user-dd-username">@user</small>
+                            </div>
+                            <button class="user-dd-item" id="user-results-btn" type="button">📊 Mening natijalarim</button>
+                            <button class="user-dd-item" id="user-logout-btn" type="button">⎋ Chiqish</button>
                         </div>
-                        <button class="user-dd-item" id="user-results-btn" type="button">📊 Mening natijalarim</button>
-                        <button class="user-dd-item" id="user-logout-btn" type="button">⎋ Chiqish</button>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
- 
-    <!-- Hero Section — particles + subtitle + tagline -->
-    <header class="hero animate-fade-in" id="hero">
-        
-        <div class="container hero-inner">
-            <div class="hero-content">
+
+    <!-- Desktop Bottom Dock (Glassmorphism) -->
+    <nav class="desktop-dock" id="desktop-dock">
+        <a href="#" class="active" data-page="home" id="dock-home" aria-label="Bosh sahifa">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span class="nav-text">Home</span>
+        </a>
+        <a href="#" data-page="projects" id="dock-projects" aria-label="Loyihalar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span class="nav-text">Loyihalar</span>
+        </a>
+        <a href="#" data-page="blog" id="dock-blog" aria-label="Blog">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+            <span class="nav-text">Blog</span>
+        </a>
+        <a href="#" data-page="deutsch" id="dock-deutsch" aria-label="Nemis tili">
+            <span style="font-size: 15px;">🇩🇪</span>
+            <span class="nav-text">Deutsch</span>
+        </a>
+        <a href="#" id="dock-contact" aria-label="Kontakt">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span class="nav-text">Kontakt</span>
+        </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" id="hero-section">
+        <div class="container hero-container">
+            <div class="hero-text">
+                <h1 class="hero-title" id="hero-main-title">Abdugofforov<span>.</span></h1>
                 <p class="hero-subtitle" id="hero-sub" data-i18n="hero.subtitle">Shaxsiy blog & rivojlanish uchun</p>
                 <p class="hero-tagline">Medik <span class="dot">·</span> Dasturchi <span class="dot">·</span> Futbolchi</p>
             </div>
@@ -486,9 +543,9 @@
     <!-- JavaScript Mantiqi -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
-    <script src="storage.js"></script>
-    <script src="i18n.js"></script>
-    <script src="auth.js"></script>
-    <script type="module" src="app.js"></script>
+    <script src="storage.js?v=2"></script>
+    <script src="i18n.js?v=2"></script>
+    <script src="auth.js?v=2"></script>
+    <script type="module" src="app.js?v=2"></script>
 </body>
 </html>
