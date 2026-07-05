@@ -3042,10 +3042,13 @@ body:not(.admin-mode) .fab {
 .nav-links .nav-text {
     display: none; /* Faqat ikonka ko'rinadi */
 }
-#nav-home-link { display: none !important; }
+/* Show home link on desktop */
+#nav-home-link { display: inline-block !important; }
 
 @media (max-width: 768px) {
     .hamburger-btn { display: block; }
+    /* Hide desktop dock on mobile */
+    .nav-links { display: none; }
     
     /* Hamburger Menu Overlay (Mobil uchun) */
     .hamburger-overlay {
