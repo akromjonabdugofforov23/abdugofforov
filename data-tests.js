@@ -1,3 +1,12 @@
+// Rasmli savollar uchun ishonchli, o'rnatilgan (data URI) emoji-rasm
+function emojiImage(emoji, bg) {
+    const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240'>"
+        + "<rect width='100%' height='100%' fill='" + (bg || '#f3efe0') + "'/>"
+        + "<text x='50%' y='53%' font-size='130' text-anchor='middle' dominant-baseline='central'>" + emoji + "</text>"
+        + "</svg>";
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
 export const deutschTests = {
 
     // ===== A1 — TO'PLAM 1 (Eshitish + matn aralash) =====
