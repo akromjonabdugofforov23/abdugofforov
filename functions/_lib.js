@@ -219,20 +219,7 @@ export async function getUsersIndex(env) {
 
 // ---- Admin PIN ----
 // MUHIM: PIN hashi ENV o'zgaruvchisidan (ADMIN_PIN_HASH) olinadi.
-// Quyidagi zaxira (fallback) qiymat — env o'rnatilmaganida ishlatiladi
-// (hozircha "0509" PIN'iga mos hash). U ko'zga tashlanmasligi uchun base64
-// ko'rinishida, bo'laklarga ajratib saqlangan. ESLATMA: bu chinakam himoya
-// emas (obfuskatsiya), asosiy himoya — ADMIN_PIN_HASH env + Telegram 2FA.
-const _pf = [
-  'ODI3ZDU0NDlkMWYxOTEyNzUwNTE0ODFl',
-  'NzVjNGNlMTBlOTMwYTY0YjU1ODVhNTQ2',
-  'MzYzYzM0MGQ2MzM0NzA4OQ==',
-].join('');
-const ADMIN_PIN_HASH_FALLBACK = atob(_pf);
-
-export function getAdminPinHash(env) {
-  return (env && env.ADMIN_PIN_HASH) ? String(env.ADMIN_PIN_HASH).toLowerCase() : ADMIN_PIN_HASH_FALLBACK;
-}
+// Format: saltHex:hashHex (PBKDF2-SHA256 yordamida himoyalangan)
 
 export async function sha256Hex(text) {
   const data = new TextEncoder().encode(text);
@@ -240,11 +227,17 @@ export async function sha256Hex(text) {
   return bufToHex(buf);
 }
 
-// PIN ni doimiy vaqtli (timing-safe) solishtirish bilan tekshiradi
 export async function verifyAdminPin(env, pin) {
   if (typeof pin !== 'string' || !pin || pin.length > 64) return false;
-  const hash = await sha256Hex(pin);
-  return timingSafeEqual(hash, getAdminPinHash(env));
+  
+  const envHash = env && env.ADMIN_PIN_HASH ? String(env.ADMIN_PIN_HASH) : '';
+  if (!envHash || !envHash.includes(':')) {
+    // Agar to'g'ri sozlangan ENV bo'lmasa, darhol qaytarish (xavfsiz fallback emas)
+    return false;
+  }
+  
+  const [saltHex, expectedHashHex] = envHash.split(':');
+  return verifyPassword(pin, saltHex, expectedHashHex);
 }
 
 // ---- Admin tekshiruvi (token yoki PIN) ----
@@ -258,6 +251,7 @@ export async function isAdmin(env, request) {
   }
   // Telegram sozlanmagan bo'lsa PIN ham qabul qilinadi
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
+    console.warn("⚠️ SECURITY WARNING: Telegram 2FA is NOT configured. Falling back to PIN-only authentication. This is a security risk.");
     const pin = request.headers.get('x-admin-pin');
     if (pin && await verifyAdminPin(env, pin)) return true;
   }

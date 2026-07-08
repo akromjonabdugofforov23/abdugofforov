@@ -22,10 +22,10 @@ let isAdmin = sessionStorage.getItem('kay_admin') === 'true';
 let tasks = JSON.parse(localStorage.getItem('abdu_tasks')) || [];
 let portfolioInfo = JSON.parse(localStorage.getItem('abdu_portfolio')) || {
     name: "Abdugofforov",
-    title: "Senior UI/UX Designer & Software Engineer",
-    bio: "Men ijodiy va sodda veb interfeyslar, yuqori darajadagi foydalanuvchanlik (UX) hamda interaktiv sahifalar yaratishga ishtiyoqmandman. Ushbu portfolio shaxsiy ishlarim ro'yxatini jamlaydi.",
-    skills: "HTML5, CSS3, JavaScript (ES6+), React, TailwindCSS, Figma, UI/UX Design, Git, Webpack",
-    experience: "Freelance Web Developer (2024 - Hozirgacha); UI/UX Engineer at IT Park (2025)"
+    title: "",
+    bio: "",
+    skills: "",
+    experience: ""
 };
 let portfolioTokens = JSON.parse(localStorage.getItem('abdu_portfolio_tokens')) || [];
 
@@ -151,17 +151,22 @@ function updateClock() {
     const m = parts.minute || '00';
     const s = parts.second || '00';
 
-    const hEl = document.querySelector('[data-clock="h"]');
-    const mEl = document.querySelector('[data-clock="m"]');
-    const sEl = document.querySelector('[data-clock="s"]');
-    if (hEl && hEl.textContent !== h) { hEl.textContent = h; hEl.classList.remove('flip'); void hEl.offsetWidth; hEl.classList.add('flip'); }
-    if (mEl && mEl.textContent !== m) { mEl.textContent = m; mEl.classList.remove('flip'); void mEl.offsetWidth; mEl.classList.add('flip'); }
-    if (sEl) sEl.textContent = s;
+    document.querySelectorAll('[data-clock="h"]').forEach(el => {
+        if (el.textContent !== h) { el.textContent = h; el.classList.remove('flip'); void el.offsetWidth; el.classList.add('flip'); }
+    });
+    document.querySelectorAll('[data-clock="m"]').forEach(el => {
+        if (el.textContent !== m) { el.textContent = m; el.classList.remove('flip'); void el.offsetWidth; el.classList.add('flip'); }
+    });
+    document.querySelectorAll('[data-clock="s"]').forEach(el => {
+        el.textContent = s;
+    });
 
     // Sana
     const dateOptions = { timeZone: 'Asia/Tashkent', year: 'numeric', month: '2-digit', day: '2-digit' };
-    const dateEl = document.getElementById('widget-date');
-    if (dateEl) dateEl.textContent = now.toLocaleDateString('uz-UZ', dateOptions);
+    const dateStr = now.toLocaleDateString('uz-UZ', dateOptions);
+    document.querySelectorAll('#widget-date, .fc-date').forEach(el => {
+        el.textContent = dateStr;
+    });
 }
 setInterval(updateClock, 1000);
 updateClock();

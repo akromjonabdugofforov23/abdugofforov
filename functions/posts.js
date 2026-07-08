@@ -28,6 +28,7 @@ async function isAuthorized(request, env) {
 
   // Eski PIN-based — faqat Telegram sozlanmagan bo'lsa qabul qilamiz
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
+    console.warn("⚠️ SECURITY WARNING: Telegram 2FA is NOT configured. Falling back to PIN-only authentication in posts.js. This is a security risk.");
     const pin = request.headers.get('x-admin-pin');
     if (pin && await verifyAdminPin(env, pin)) return true;
   }
