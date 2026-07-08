@@ -534,35 +534,36 @@ function openTournamentView() {
 }
 
 // 9. SPA Routing Navigation
-mainNav.addEventListener('click', (e) => {
-    e.preventDefault();
-    const link = e.target.closest('a');
-    if (!link) return;
+if (mainNav) {
+    mainNav.addEventListener('click', (e) => {
+        e.preventDefault();
+        const link = e.target.closest('a');
+        if (!link) return;
 
-    // Kontakt havolasi — modal ochiladi, navigatsiya emas
-    if (link.id === 'nav-contact-link') {
-        openContactModal();
-        return;
-    }
+        if (link.id === 'nav-contact-link') {
+            openContactModal();
+            return;
+        }
 
-    showMainView();
+        showMainView();
 
-    mainNav.querySelectorAll('a').forEach(a => a.classList.remove('active'));
-    link.classList.add('active');
-    
-    currentTab = link.getAttribute('data-page');
+        mainNav.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+        
+        currentTab = link.getAttribute('data-page');
 
-    if (currentTab === 'projects') {
-        filterType = 'project';
-    } else {
-        filterType = 'none';
-    }
+        if (currentTab === 'projects') {
+            filterType = 'project';
+        } else {
+            filterType = 'none';
+        }
 
-    filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+        filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
 
-    updateHeroContent();
-    renderPosts();
-});
+        updateHeroContent();
+        renderPosts();
+    });
+}
 // Kontakt modali
 const contactModal = document.getElementById('contact-modal');
 function openContactModal() {
@@ -578,11 +579,13 @@ contactModal?.addEventListener('click', (e) => {
     if (e.target === contactModal) closeContactModal();
 });
 
-navLogo.addEventListener('click', (e) => {
-    e.preventDefault();
-    const homeLink = mainNav.querySelector('[data-page="home"]');
-    if (homeLink) homeLink.click();
-});
+if (navLogo && mainNav) {
+    navLogo.addEventListener('click', (e) => {
+        e.preventDefault();
+        const homeLink = mainNav.querySelector('[data-page="home"]');
+        if (homeLink) homeLink.click();
+    });
+}
 
 // ===== DESKTOP DOCK NAVIGATION =====
 const desktopDock = document.getElementById('desktop-dock');

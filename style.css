@@ -1,27 +1,27 @@
 /* Abdugofforov Blog - Premium Design System */
 
 /* ============================================================
-   ABDUGOFFOROV — TUNGI REJIM (default) — Purple + Blue + Silver
-   on deep navy/black
+   ABDUGOFFOROV — CYBER MEDICAL (Dark Mode)
+   Deep dark blue/cyan background with neon cyan medical glow
    ============================================================ */
 :root, [data-theme="dark"] {
-    --color-bg-primary:     #000000;
-    --color-bg-secondary:   #0f0f13;
-    --bg-color: #000000;
-    --card-bg: rgba(17, 24, 39, 0.4);
-    --text-primary: #f9fafb;
-    --text-secondary: #cbd5e1;
-    --text-muted: #64748b;
-    --accent-color: #8b5cf6;
-    --accent-hover: #a78bfa;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.6);
-    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.8);
-    --glass-bg: rgba(17, 24, 39, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-highlight: rgba(255, 255, 255, 0.05);
-    --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 2px 0 rgba(255, 255, 255, 0.05);
+    --color-bg-primary:     #040a0f;
+    --color-bg-secondary:   #09121a;
+    --bg-color: #040a0f;
+    --card-bg: rgba(9, 18, 26, 0.6);
+    --text-primary: #e0f2fe;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --accent-color: #00f0ff;
+    --accent-hover: #4df6ff;
+    --border-color: rgba(0, 240, 255, 0.15);
+    --shadow-sm: 0 4px 20px rgba(0, 240, 255, 0.05);
+    --shadow-md: 0 10px 40px rgba(0, 240, 255, 0.1);
+    --shadow-lg: 0 20px 60px rgba(0, 240, 255, 0.15);
+    --glass-bg: rgba(6, 15, 22, 0.5);
+    --glass-border: rgba(0, 240, 255, 0.15);
+    --glass-highlight: rgba(0, 240, 255, 0.08);
+    --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 2px 0 rgba(0, 240, 255, 0.1);
 }
 
 /* ============================================================
@@ -544,6 +544,11 @@ a {
     height: 100%;
     object-fit: cover;
     display: block;
+    /* Rasmlarni tiniqlashtirish uchun CSS optimizatsiya */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transform: translateZ(0);
+    filter: contrast(1.08) saturate(1.1) brightness(1.02);
 }
 .carousel-overlay {
     position: absolute;
