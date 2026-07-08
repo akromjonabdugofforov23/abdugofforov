@@ -3558,6 +3558,7 @@ let vantaEffect = null;
 let vantaHue = 200; // Boshlang'ich rang (moviy)
 
 function initVantaBg() {
+    return; // O'chirilgan
     if (typeof VANTA === 'undefined') return;
     
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';

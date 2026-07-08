@@ -76,24 +76,7 @@ body {
     min-height: 100vh;
 }
 
-/* Gradient mesh fon — sayt tepasida sekin harakatlanadigan binafsha/ko'k dog'lar */
-body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    background:
-        radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.18), transparent 45%),
-        radial-gradient(circle at 85% 25%, rgba(59, 130, 246, 0.16), transparent 50%),
-        radial-gradient(circle at 50% 90%, rgba(167, 139, 250, 0.12), transparent 55%),
-        var(--color-bg-primary);
-    animation: meshShift 20s ease-in-out infinite alternate;
-    pointer-events: none;
-}
-@keyframes meshShift {
-    0%   { transform: translate3d(0, 0, 0) scale(1); }
-    100% { transform: translate3d(-2%, 1%, 0) scale(1.08); }
-}
+/* Gradient mesh fon (olib tashlandi) */
 
 /* Particles canvas — hero ortida joylashadi */
 .particles-canvas {
@@ -248,25 +231,28 @@ a {
 
 /* Theme Switcher (icon tugma) — glass style */
 .btn-icon {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    color: var(--color-silver-bright);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
     cursor: pointer;
     font-size: 18px;
-    padding: 7px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s, border-color 0.25s, transform 0.2s;
+    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .btn-icon:hover {
-    background: var(--glass-bg-strong);
-    border-color: var(--glass-border-hover);
-    color: var(--color-purple-light);
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
+.btn-icon:active { transform: scale(0.95) translateY(0); }
 
 .theme-toggle .sun-icon { display: none; }
 [data-theme="dark"] .theme-toggle .sun-icon { display: block; }
@@ -274,36 +260,38 @@ a {
 
 /* Yozish tugmasi — gradient + glow */
 .btn-primary {
-    background: var(--grad-primary);
-    color: #fff;
+    background: var(--accent-color);
+    color: #ffffff; /* Oq yozuv yorqin fonga ancha yaxshi tushadi */
     border: none;
-    padding: 9px 18px;
-    border-radius: 999px;
-    font-size: 13px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 18px rgba(139, 92, 246, 0.35);
-    transition: transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) inset, 0 8px 20px rgba(45, 212, 191, 0.25);
+    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .btn-primary::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.4) 50%, transparent 75%);
+    background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.5) 50%, transparent 75%);
     transform: translateX(-100%);
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 26px rgba(139, 92, 246, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset, 0 12px 28px rgba(45, 212, 191, 0.4);
+    filter: brightness(1.05);
 }
 .btn-primary:hover::before { transform: translateX(100%); }
-.btn-primary:active { transform: translateY(0); }
+.btn-primary:active { transform: scale(0.97) translateY(0); }
 
 /* ============================================================
    HERO SECTION — particles canvas + typewriter + soat (logo'siz)
@@ -818,34 +806,37 @@ a {
 }
 
 .filter-tag {
-    background: var(--glass-bg);
-    border: 1px solid rgba(139, 92, 246, 0.25);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    padding: 8px 18px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    color: var(--color-silver);
+    color: var(--text-secondary);
     letter-spacing: 0.3px;
-    transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s, border-color 0.25s, transform 0.2s, box-shadow 0.25s;
+    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     white-space: nowrap;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .filter-tag:hover {
-    color: var(--color-silver-bright);
-    border-color: rgba(167, 139, 250, 0.55);
-    background: var(--glass-bg-strong);
-    transform: translateY(-1px);
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .filter-tag.active {
-    background: var(--grad-primary);
+    background: var(--accent-color);
     border-color: transparent;
-    color: #fff;
-    box-shadow: 0 6px 24px rgba(139, 92, 246, 0.45), 0 0 0 1px rgba(255,255,255,0.06) inset;
+    color: #ffffff;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) inset, 0 8px 20px rgba(45, 212, 191, 0.25);
+    font-weight: 600;
 }
 
 /* Deutsch — alohida aksent (gradient border ko'rinishida) */
@@ -1287,21 +1278,29 @@ a {
 }
 
 .btn-secondary {
-    background: none;
-    border: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-size: 13px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: all var(--transition-speed) ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .btn-secondary:hover {
-    background-color: var(--tag-bg);
-    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
+.btn-secondary:active { transform: scale(0.97) translateY(0); }
 
 /* Empty State */
 .empty-state {
