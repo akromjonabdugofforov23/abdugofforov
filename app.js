@@ -690,9 +690,22 @@ function showSkeletons(count = 3) {
     `).join('');
 }
 
-filterTags.addEventListener('click', (e) => {
+document.querySelector('.toolbar').addEventListener('click', (e) => {
     const btn = e.target.closest('.filter-tag');
     if (!btn) return;
+
+    const subMenu = document.getElementById('deutsch-sub-menu');
+
+    if (btn.id === 'main-deutsch-btn') {
+        if(subMenu) subMenu.style.display = subMenu.style.display === 'none' ? 'flex' : 'none';
+        document.querySelectorAll('.toolbar .filter-tag').forEach(tag => tag.classList.remove('active'));
+        btn.classList.add('active');
+        return;
+    }
+
+    if (btn.id === 'blog-tag-btn') {
+        if(subMenu) subMenu.style.display = 'none';
+    }
 
     // Deutsch tugmasi — filtr emas, test sahifasini ochadi
     if (btn.id === 'deutsch-tag-btn') {
@@ -718,11 +731,13 @@ filterTags.addEventListener('click', (e) => {
     searchQuery = '';
     if (searchInput) searchInput.value = '';
 
-    filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+    document.querySelectorAll('.toolbar .filter-tag').forEach(tag => tag.classList.remove('active'));
     btn.classList.add('active');
 
-    filterType = btn.getAttribute('data-filter');
-    renderPosts();
+    if (btn.hasAttribute('data-filter')) {
+        filterType = btn.getAttribute('data-filter');
+        renderPosts();
+    }
 });
 
 // ===== JONLI QIDIRUV (live search) =====
