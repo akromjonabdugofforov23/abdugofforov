@@ -29,9 +29,9 @@
    aksentlar. Glow effektlar saqlanadi ("yonib turuvchi" ko'rinish).
    ============================================================ */
 [data-theme="light"] {
-    --color-bg-primary:     #6b0f0f;
-    --color-bg-secondary:   #f8fafc;
-    --bg-color: #ffffff;
+    --color-bg-primary:     #f8fafc;
+    --color-bg-secondary:   #ffffff;
+    --bg-color: #f8fafc;
     --card-bg: rgba(255, 255, 255, 0.4);
     --text-primary: #0f172a;
     --text-secondary: #334155;
