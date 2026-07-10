@@ -77,7 +77,7 @@
     <!-- Navigatsiya — bitta qatorli, logo + nav linklar + asboblar -->
     <nav class="navbar">
         <div class="container navbar-row">
-            <a href="/" class="logo" id="nav-logo">Abdugofforov<span>.</span></a>
+            <a href="#" class="logo" id="nav-logo" onclick="document.getElementById('dock-home').click(); return false;">Abdugofforov<span>.</span></a>
 
 
 
@@ -307,60 +307,76 @@
 
     <!-- Yangi Post Qo'shish Modali (Add Post Modal) -->
     <div class="modal-overlay" id="add-post-modal">
-        <div class="modal-container compose-modal">
-            <button type="button" class="modal-close" id="close-add-modal" aria-label="Yopish">&times;</button>
+        <div class="modal-container">
+            <button class="modal-close" id="close-add-modal" aria-label="Yopish">&times;</button>
             <form class="write-form" id="new-post-form" novalidate>
-                <div class="compose-header">
-                    <div class="compose-user-info">
-                        <strong>Tezkor Yozish</strong>
-                    </div>
-                    <button type="submit" class="btn-primary btn-sm" id="quick-post-btn" style="padding: 6px 16px;">Joylash</button>
-                </div>
+                <h2 class="write-title">Yangi sahifa yaratish</h2>
                 
-                <div class="compose-body">
-                    <input type="text" id="post-title-input" class="compose-title" placeholder="Sarlavha (ixtiyoriy)...">
-                    <textarea id="post-content-input" class="compose-textarea" placeholder="Nimalarni baham ko'rmoqchisiz?"></textarea>
-                    
-                    <div id="compose-previews" class="compose-previews">
-                        <div id="post-image-preview" class="upload-preview" style="display:none;"></div>
-                        <div id="post-music-preview" style="display:none;" class="media-preview-box">
-                            <span class="preview-icon">🎵</span> <span id="post-music-filename"></span>
-                            <button type="button" id="post-music-remove" class="preview-remove">✕</button>
-                        </div>
-                        <div id="post-video-preview" style="display:none;" class="media-preview-box">
-                            <video id="post-video-player" controls style="width:100%; max-height:200px; border-radius:8px;"></video>
-                            <button type="button" id="post-video-remove" class="preview-remove">✕</button>
-                        </div>
-                    </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-title-input">Sarlavha</label>
+                    <input type="text" id="post-title-input" class="form-input" placeholder="Masalan: Toshkent qahratoni...">
                 </div>
 
-                <div class="compose-footer">
-                    <div class="compose-actions">
-                        <label class="compose-action-btn" title="Rasm qo'shish">
-                            <span>📷 Rasm</span>
-                            <input type="file" id="post-image-file" accept="image/*" style="display:none;">
-                        </label>
-                        <label class="compose-action-btn" title="Musiqa qo'shish">
-                            <span>🎵 Musiqa</span>
-                            <input type="file" id="post-music-file" accept="audio/*" style="display:none;">
-                        </label>
-                        <label class="compose-action-btn" title="Video qo'shish">
-                            <span>🎬 Video</span>
-                            <input type="file" id="post-video-file" accept="video/*" style="display:none;">
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Hidden inputs to prevent app.js from breaking -->
+                <!-- Yashirin maydonlar — eski kod ishlashi uchun default qiymatlar -->
                 <input type="hidden" id="post-category-input" value="">
                 <input type="hidden" id="post-type-input" value="memory">
                 <input type="hidden" id="post-tags-input" value="">
-                <input type="hidden" id="post-excerpt-input" value="">
-                <input type="hidden" id="post-image-input" value="">
-                <input type="hidden" id="post-artist-input" value="">
-                <input type="hidden" id="post-link-input" value="">
-                <button type="button" id="cancel-add-btn" style="display:none;"></button>
-                <div id="post-music-group" style="display:none;"></div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-image-file">Rasm (xotiradan yuklash)</label>
+                    <input type="file" id="post-image-file" class="form-input file-input" accept="image/*">
+                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefoningizdan rasm tanlang yoki quyiga havola kiriting</small>
+                    <input type="url" id="post-image-input" class="form-input" placeholder="(ixtiyoriy) Rasm havolasi / URL" style="margin-top:8px;">
+                    <div id="post-image-preview" class="upload-preview" style="display:none;"></div>
+                </div>
+
+                <!-- Musiqa — lokal fayl yuklash yoki havola -->
+                <div class="form-group" id="post-music-group" style="margin-bottom: 20px;">
+                    <label for="post-music-file">🎵 Musiqa (xotiradan yuklash)</label>
+                    <input type="file" id="post-music-file" class="form-input file-input" accept="audio/*">
+                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefon yoki kompyuter xotirasidan audio fayl tanlang</small>
+                    <div class="form-row" style="margin-top:12px; margin-bottom:8px;">
+                        <div class="form-group">
+                            <label for="post-artist-input" data-i18n="form.artist">Ijrochi</label>
+                            <input type="text" id="post-artist-input" class="form-input" placeholder="Masalan: Yulduz Usmonova">
+                        </div>
+                        <div class="form-group">
+                            <label for="post-link-input" data-i18n="form.musicLink">Havola (YouTube / Telegram)</label>
+                            <input type="url" id="post-link-input" class="form-input" placeholder="(ixtiyoriy) https://youtu.be/...">
+                        </div>
+                    </div>
+                    <div id="post-music-preview" style="display:none; margin-top:8px; padding:10px; background:var(--glass-bg); border-radius:8px; border:1px solid var(--glass-border);">
+                        <span style="color:var(--text-secondary); font-size:13px;">🎵 <span id="post-music-filename"></span></span>
+                        <button type="button" id="post-music-remove" style="float:right; background:none; border:none; color:#ff4d4d; cursor:pointer; font-size:16px;">✕</button>
+                    </div>
+                    <small style="color:var(--text-muted); font-size:11px; margin-top:6px;" data-i18n="form.musicHint">Lokal audio yuklang yoki YouTube/Telegram havolasini kiriting.</small>
+                </div>
+
+                <!-- Video — lokal fayl yuklash -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-video-file">🎬 Video (xotiradan yuklash)</label>
+                    <input type="file" id="post-video-file" class="form-input file-input" accept="video/*">
+                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefon yoki kompyuter xotirasidan video fayl tanlang</small>
+                    <div id="post-video-preview" style="display:none; margin-top:8px;">
+                        <video id="post-video-player" controls style="width:100%; max-height:200px; border-radius:8px;"></video>
+                        <button type="button" id="post-video-remove" style="margin-top:6px; background:none; border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; cursor:pointer; font-size:12px; padding:4px 12px; border-radius:6px;">✕ Videoni olib tashlash</button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-excerpt-input">Qisqacha ta'rif (Excerpt)</label>
+                    <input type="text" id="post-excerpt-input" class="form-input" placeholder="Post ro'yxatida ko'rinadigan qisqa matn...">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-content-input">To'liq matn</label>
+                    <textarea id="post-content-input" class="form-textarea" placeholder="Bu yerga hikoyangizni yoki loyiha tafsilotlarini yozing..."></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" id="cancel-add-btn">Bekor qilish</button>
+                    <button type="submit" class="btn-primary">Saqlash</button>
+                </div>
             </form>
         </div>
     </div>
