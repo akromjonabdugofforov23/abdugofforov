@@ -1502,9 +1502,6 @@ a {
     .modal-post-title { font-size: 22px; }
     .modal-post-image { height: 200px; }
 
-    /* Eski drawer/hamburger — yashirin */
-    .hamburger,
-    .mobile-overlay { display: none !important; }
 
     /* iOS auto-zoom oldini olish */
     .form-input, .form-textarea {
@@ -1616,6 +1613,8 @@ a {
 /* --- MOUSE FOLLOWER EFFECT --- */
 #cursor-follower {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 10px;
     height: 10px;
     background-color: var(--accent-color);
@@ -1719,61 +1718,6 @@ a {
     box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
 }
 
-
-
-/* ===== HAMBURGER MENYU ===== */
-.hamburger {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    gap: 5px;
-    width: 36px;
-    height: 36px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    z-index: 1001;
-    order: 3;
-}
-.hamburger span {
-    display: block;
-    width: 22px;
-    height: 2px;
-    background: var(--text-primary);
-    border-radius: 2px;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    transform-origin: center;
-}
-.hamburger.active span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-}
-.hamburger.active span:nth-child(2) {
-    opacity: 0;
-    transform: scaleX(0);
-}
-.hamburger.active span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
-}
-
-/* Mobil overlay */
-.mobile-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 998;
-    backdrop-filter: blur(2px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.mobile-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* ===== SKELETON LOADER ===== */
 @keyframes shimmer {
     0% { background-position: -400px 0; }
     100% { background-position: 400px 0; }
@@ -3279,3 +3223,4 @@ body:not(.admin-mode) .fab {
     justify-content: center;
     cursor: pointer;
 }
+

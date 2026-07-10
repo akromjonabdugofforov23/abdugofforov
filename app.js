@@ -114,12 +114,18 @@ function initMouseFollower() {
 
     // Lerp yordamida silliq harakatlantirish
     function animateFollower() {
+        // Mobil qurilmalarda kursor kerak emas
+        const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+        if (isMobile) {
+            follower.style.display = 'none';
+            return;
+        }
+
         const lerpFactor = 0.12;
         followerX += (mouseX - followerX) * lerpFactor;
         followerY += (mouseY - followerY) * lerpFactor;
 
-        follower.style.left = `${followerX}px`;
-        follower.style.top = `${followerY}px`;
+        follower.style.transform = `translate3d(${followerX}px, ${followerY}px, 0) translate(-50%, -50%)`;
 
         requestAnimationFrame(animateFollower);
     }
@@ -652,26 +658,6 @@ function syncActiveNavState(page) {
     }
 }
 
-// ===== HAMBURGER MENYU (eski mobil drawer) — endi nav linklar doim tepada
-// turadi, drawer kerak emas. DOM elementlari yo'q bo'lsa, xavfsiz tarzda
-// hech narsa qilmaymiz.
-const hamburgerBtn = document.getElementById('hamburger-btn');
-const navRight = document.getElementById('nav-right');
-const mobileOverlay = document.getElementById('mobile-overlay');
-
-function openMobileMenu() { /* deprecated */ }
-function closeMobileMenu() { /* deprecated */ }
-
-if (hamburgerBtn && navRight && mobileOverlay) {
-    hamburgerBtn.addEventListener('click', () => {
-        navRight.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
-    });
-    mobileOverlay.addEventListener('click', closeMobileMenu);
-    // Nav link bosilganda menyu yopilsin
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
-    });
-}
 
 // ===== SKELETON LOADER =====
 function showSkeletons(count = 3) {
@@ -2300,6 +2286,10 @@ function createParticleCanvas(canvasId, options) {
     }
 
     function step() {
+        if (!isVisible) {
+            raf = requestAnimationFrame(step);
+            return;
+        }
         const w = canvas.clientWidth, h = canvas.clientHeight;
         ctx.clearRect(0, 0, w, h);
 
@@ -2327,19 +2317,22 @@ function createParticleCanvas(canvasId, options) {
             ctx.fill();
         }
 
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const a = particles[i], b = particles[j];
-                const dx = a.x - b.x, dy = a.y - b.y;
-                const d2 = dx * dx + dy * dy;
-                if (d2 < linkDist * linkDist) {
-                    const alpha = (1 - Math.sqrt(d2) / linkDist) * linkAlpha;
-                    ctx.strokeStyle = `rgba(167, 139, 250, ${alpha})`;
-                    ctx.lineWidth = 0.7;
-                    ctx.beginPath();
-                    ctx.moveTo(a.x, a.y);
-                    ctx.lineTo(b.x, b.y);
-                    ctx.stroke();
+        // Fikr: Mobil qurilmalarda chiziqlarni (lines) chizmaslik orqali ishlash tezligini keskin oshiramiz
+        if (!isMobile) {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const a = particles[i], b = particles[j];
+                    const dx = a.x - b.x, dy = a.y - b.y;
+                    const d2 = dx * dx + dy * dy;
+                    if (d2 < linkDist * linkDist) {
+                        const alpha = (1 - Math.sqrt(d2) / linkDist) * linkAlpha;
+                        ctx.strokeStyle = `rgba(167, 139, 250, ${alpha})`;
+                        ctx.lineWidth = 0.7;
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
                 }
             }
         }
@@ -2358,13 +2351,21 @@ function createParticleCanvas(canvasId, options) {
 
     size();
     spawn();
+
+    let isVisible = true;
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            isVisible = entries[0].isIntersecting;
+        });
+        observer.observe(canvas);
+    }
+
     step();
     window.addEventListener('resize', () => { size(); spawn(); }, { passive: true });
 
-    if (enableMouse) {
+    if (enableMouse && !isMobile) {
         canvas.parentElement.addEventListener('mousemove', onMove);
         canvas.parentElement.addEventListener('mouseleave', onLeave);
-        canvas.parentElement.addEventListener('touchmove', onMove, { passive: true });
     }
 
     return () => { if (raf) cancelAnimationFrame(raf); };
@@ -3570,84 +3571,6 @@ window.openMyResults = openMyResults;
 window.flashcardDecks = flashcardDecks;
 window.deutschTests = deutschTests;
 
-
-// ===== EPIC VANTA.JS BACKGROUND =====
-let vantaEffect = null;
-let vantaHue = 200; // Boshlang'ich rang (moviy)
-
-function initVantaBg() {
-    return; // O'chirilgan
-    if (typeof VANTA === 'undefined') return;
-    
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    
-    if (vantaEffect) {
-        vantaEffect.destroy();
-    }
-    
-    // Light rejimda oq fon, Dark rejimda qora fon
-    const bgColor = isDark ? 0x000000 : 0xffffff;
-    
-    vantaEffect = VANTA.WAVES({
-        el: "#vanta-bg",
-        mouseControls: false, // Sichqonchaga hamohang harakat O'CHIRILGAN
-        touchControls: false,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x0ea5e9, // Boshlang'ich
-        backgroundColor: bgColor,
-        shininess: isDark ? 50 : 150,
-        waveHeight: 30.00,
-        waveSpeed: 1.20,
-        zoom: 0.8
-    });
-    
-    // Tinimsiz rang o'zgartirish (Color shifting)
-    if (!window.vantaInterval) {
-        window.vantaInterval = setInterval(() => {
-            if (!vantaEffect) return;
-            vantaHue = (vantaHue + 1) % 360;
-            
-            // HSL dan RGB Hex ga o'tkazish
-            const h = vantaHue / 360;
-            const s = isDark ? 1.0 : 0.8; // Darkda yorqinroq (neon)
-            const l = isDark ? 0.5 : 0.6; // Lightda ochroq
-            
-            let r, g, b;
-            if (s === 0) {
-                r = g = b = l;
-            } else {
-                const hue2rgb = (p, q, t) => {
-                    if(t < 0) t += 1;
-                    if(t > 1) t -= 1;
-                    if(t < 1/6) return p + (q - p) * 6 * t;
-                    if(t < 1/2) return q;
-                    if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                    return p;
-                };
-                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                const p = 2 * l - q;
-                r = hue2rgb(p, q, h + 1/3);
-                g = hue2rgb(p, q, h);
-                b = hue2rgb(p, q, h - 1/3);
-            }
-            
-            const colorHex = (Math.round(r * 255) << 16) | (Math.round(g * 255) << 8) | Math.round(b * 255);
-            vantaEffect.setOptions({ color: colorHex });
-        }, 50); // Har 50ms da rang ozgina o'zgaradi
-    }
-}
-
-// Buni app.js oxiriga qo'shdik. Tema o'zgarganda Vanta fonini ham yangilash kerak
-window.refreshParticlesTheme = initVantaBg;
-
-window.addEventListener('DOMContentLoaded', () => {
-    // Biraz kechiktirib ishga tushiramiz, Vanta script yuklanishi uchun
-    setTimeout(initVantaBg, 500);
-});
 
 // ===== HAMBURGER MENU =====
 window.addEventListener('DOMContentLoaded', () => {
