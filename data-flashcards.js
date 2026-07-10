@@ -1,4 +1,4 @@
-export const flashcardDecks = {
+const flashcardDecks = {
     // Nemis → O'zbek so'zlar
     de_uz: [
         { front: "das Haus", back: "uy" },
