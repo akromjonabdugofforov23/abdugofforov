@@ -703,7 +703,7 @@ document.querySelector('.toolbar').addEventListener('click', (e) => {
         return;
     }
 
-    if (btn.id === 'blog-tag-btn') {
+    if (btn.id === 'blog-tag-btn' || btn.id === 'places-tag-btn') {
         if(subMenu) subMenu.style.display = 'none';
     }
 
