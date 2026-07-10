@@ -2121,7 +2121,7 @@ function escapeAttr(s) { return String(s || '').replace(/['"\\<>&]/g, ''); }
 function readingTime(post) {
     const text = ((post.content || '') + ' ' + (post.excerpt || '')).trim();
     const words = text ? text.split(/\s+/).length : 0;
-    return Math.max(1, Math.round(words / 180)) + ' daqiqa';
+    return Math.max(1, Math.round(words / 180)) + ' daqiqalik o\'qish';
 }
 
 function renderTags(post) {
