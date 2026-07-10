@@ -3176,3 +3176,106 @@ body:not(.admin-mode) .fab {
         display: none;
     }
 }
+/* ===== QUICK COMPOSE UI ===== */
+.compose-modal {
+    padding: 0;
+    max-width: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--bg-color);
+}
+.compose-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--card-bg);
+}
+.compose-user-info strong {
+    font-size: 16px;
+    font-weight: 600;
+}
+.compose-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.compose-title {
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-color);
+    width: 100%;
+}
+.compose-title::placeholder {
+    color: var(--text-muted);
+}
+.compose-textarea {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    resize: none;
+    min-height: 120px;
+    background: transparent;
+    color: var(--text-color);
+    width: 100%;
+    font-family: inherit;
+}
+.compose-textarea::placeholder {
+    color: var(--text-muted);
+}
+.compose-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-color);
+    background: var(--card-bg);
+}
+.compose-actions {
+    display: flex;
+    gap: 16px;
+}
+.compose-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: rgba(139, 92, 246, 0.1);
+    transition: background 0.2s;
+}
+.compose-action-btn:hover {
+    background: rgba(139, 92, 246, 0.2);
+}
+.compose-previews {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.media-preview-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+.preview-remove {
+    background: rgba(255, 77, 77, 0.1);
+    color: #ff4d4d;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
