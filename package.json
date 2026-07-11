@@ -1,0 +1,14 @@
+{
+  "name": "advanced-website",
+  "version": "1.0.0",
+  "description": "Secure and fast website with AI-ready backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5"
+  }
+}

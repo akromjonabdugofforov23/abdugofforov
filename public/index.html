@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate 3D Geometric AA Logo</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #111522 0%, #030305 100%);
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        canvas {
+            display: block;
+        }
+        .instruction {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            text-align: center;
+            color: #00f0ff;
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            pointer-events: none;
+            z-index: 10;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+            animation: blink 2s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div class="instruction">Interaktiv 3D Gologramma - Sichqonchani harakatlantiring</div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        let mouse = {
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+            radius: 120,
+            active: false
+        }
+
+        let targetRotX = 0;
+        let targetRotY = 0;
+        let currentRotX = 0;
+        let currentRotY = 0;
+
+        window.addEventListener('mousemove', function(event){
+            mouse.x = event.x;
+            mouse.y = event.y;
+            mouse.active = true;
+            
+            // Map mouse to rotation
+            targetRotY = ((event.x / window.innerWidth) - 0.5) * Math.PI * 1.2; 
+            targetRotX = ((event.y / window.innerHeight) - 0.5) * Math.PI * 1.2; 
+        });
+
+        window.addEventListener('mouseout', function(){
+            mouse.active = false;
+        });
+        
+        window.addEventListener('touchmove', function(event){
+            mouse.x = event.touches[0].clientX;
+            mouse.y = event.touches[0].clientY;
+            mouse.active = true;
+            targetRotY = ((mouse.x / window.innerWidth) - 0.5) * Math.PI * 1.2;
+            targetRotX = ((mouse.y / window.innerHeight) - 0.5) * Math.PI * 1.2;
+        });
+
+        // 1. Draw the highly creative geometric "AA" path to read pixels
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        
+        // Scale appropriately for screen size
+        let scale = Math.min(canvas.width / 250, canvas.height / 250) * 1.1;
+        ctx.scale(scale, scale);
+        
+        // Skew to make it look fast and modern (Italic tech look)
+        ctx.transform(1, 0, -0.25, 1, 0, 0);
+
+        ctx.lineWidth = 16;
+        ctx.lineCap = 'butt';
+        ctx.lineJoin = 'miter';
+        ctx.miterLimit = 2;
+        ctx.strokeStyle = 'white';
+
+        // The Intersecting "AA" Monogram
+        // Creates an impossible geometric shape perfectly overlapping
+        const p = new Path2D('M 20 100 L 60 0 L 100 100 M 60 100 L 100 0 L 140 100 M 40 50 L 120 50');
+        
+        ctx.translate(-80, -50); // Center the 160x100 bounding box
+        ctx.stroke(p);
+        ctx.restore();
+
+        const textCoordinates = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        
+        // Clear the canvas so we can draw particles instead
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        class Particle {
+            constructor(x, y){
+                this.targetX = x - canvas.width / 2;
+                this.targetY = y - canvas.height / 2;
+                // Add depth to make it a 3D volume
+                this.targetZ = (Math.random() - 0.5) * 60; 
+                
+                this.baseX = this.targetX + (Math.random() - 0.5) * 800; // start scattered
+                this.baseY = this.targetY + (Math.random() - 0.5) * 800;
+                this.baseZ = this.targetZ + (Math.random() - 0.5) * 800;
+
+                this.size = Math.random() * 2 + 1;
+                
+                // Tech color palette
+                let hue = Math.random() * 60 + 260; // Purple to Pink
+                if (Math.random() > 0.8) hue = 190; // Cyan highlights
+                this.color = `hsl(${hue}, 100%, 65%)`; 
+                
+                this.projX = 0;
+                this.projY = 0;
+                this.projZ = 0;
+                this.projScale = 1;
+            }
+            update() {
+                // Spring physics to return to target shape
+                let dx = this.targetX - this.baseX;
+                let dy = this.targetY - this.baseY;
+                let dz = this.targetZ - this.baseZ;
+                
+                this.baseX += dx * 0.08;
+                this.baseY += dy * 0.08;
+                this.baseZ += dz * 0.08;
+
+                // Apply 3D Rotation
+                let x1 = this.baseX * Math.cos(currentRotY) - this.baseZ * Math.sin(currentRotY);
+                let z1 = this.baseZ * Math.cos(currentRotY) + this.baseX * Math.sin(currentRotY);
+                
+                let y2 = this.baseY * Math.cos(currentRotX) - z1 * Math.sin(currentRotX);
+                let z2 = z1 * Math.cos(currentRotX) + this.baseY * Math.sin(currentRotX);
+
+                let perspective = 1000;
+                this.projScale = perspective / (perspective + z2);
+
+                this.projX = canvas.width / 2 + x1 * this.projScale;
+                this.projY = canvas.height / 2 + y2 * this.projScale;
+                this.projZ = z2;
+
+                // Mouse interaction in 2D projected space
+                if (mouse.active) {
+                    let mx = mouse.x - this.projX;
+                    let my = mouse.y - this.projY;
+                    let dist = Math.sqrt(mx*mx + my*my);
+                    if (dist < mouse.radius) {
+                        let force = (mouse.radius - dist) / mouse.radius;
+                        this.baseX -= (mx / dist) * force * 15;
+                        this.baseY -= (my / dist) * force * 15;
+                        this.baseZ -= force * 15;
+                    }
+                }
+            }
+            draw() {
+                if (this.projScale < 0) return;
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = Math.min(1, Math.max(0, this.projScale * 1.5 - 0.5)); 
+                ctx.beginPath();
+                ctx.arc(this.projX, this.projY, this.size * this.projScale, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init(){
+            particlesArray = [];
+            let step = window.innerWidth < 768 ? 5 : 4; 
+            for(let y = 0, y2 = textCoordinates.height; y < y2; y += step){
+                for(let x = 0, x2 = textCoordinates.width; x < x2; x += step){
+                    if(textCoordinates.data[(y * 4 * textCoordinates.width) + (x * 4) + 3] > 128){
+                        particlesArray.push(new Particle(x, y));
+                    }
+                }
+            }
+        }
+        
+        init();
+
+        function sortParticles() {
+            particlesArray.sort((a, b) => b.projZ - a.projZ);
+        }
+
+        function animate(){
+            // Smooth rotation easing
+            currentRotX += (targetRotX - currentRotX) * 0.05;
+            currentRotY += (targetRotY - currentRotY) * 0.05;
+            
+            // Auto-rotate when mouse is out
+            if(!mouse.active) {
+                targetRotY = Math.sin(Date.now() * 0.001) * 0.6;
+                targetRotX = Math.cos(Date.now() * 0.0013) * 0.3;
+            }
+
+            // Trailing effect for motion blur
+            ctx.globalAlpha = 0.25;
+            ctx.fillStyle = '#030305';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.globalAlpha = 1.0;
+
+            for(let i = 0; i < particlesArray.length; i++){
+                particlesArray[i].update();
+            }
+            
+            sortParticles();
+
+            // Draw connecting mesh lines
+            ctx.lineWidth = 0.5;
+            for (let a = 0; a < particlesArray.length; a++){
+                let connects = 0;
+                for (let b = a + 1; b < particlesArray.length && connects < 3; b++){
+                    let dx = particlesArray[a].projX - particlesArray[b].projX;
+                    let dy = particlesArray[a].projY - particlesArray[b].projY;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 25 * particlesArray[a].projScale){
+                        let opacity = 1 - (distance / (25 * particlesArray[a].projScale));
+                        ctx.strokeStyle = particlesArray[a].color.replace('hsl', 'hsla').replace(')', `, ${opacity * 0.3 * particlesArray[a].projScale})`);
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].projX, particlesArray[a].projY);
+                        ctx.lineTo(particlesArray[b].projX, particlesArray[b].projY);
+                        ctx.stroke();
+                        connects++;
+                    }
+                }
+                particlesArray[a].draw();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+        
+        window.addEventListener('resize', function(){
+            location.reload(); 
+        });
+    </script>
+</body>
+</html>
