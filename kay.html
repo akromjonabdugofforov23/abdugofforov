@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
@@ -1127,7 +1127,7 @@ function loadPosts() {
                 <img src="${p.image||''}" onerror="this.style.display='none'">
                 <div class="info">
                     <div class="t">${_esc(p.title)}</div>
-                    <div class="m">${_esc(p.category)} · ${p.date} · ❤️ ${p.likes||0}</div>
+                    <div class="m">${_esc(p.category)} - ${p.date} - ❤️ ${p.likes||0}</div>
                 </div>
                 <div class="acts">
                     <button class="icon-btn" onclick="editPost(${p.id})" title="Tahrirlash">✏️</button>
@@ -1145,7 +1145,7 @@ function loadPosts() {
             ? all.slice(0, 4).map(p => `
                 <div class="glz-mini-row">
                     <img src="${p.image||''}" onerror="this.style.display='none'">
-                    <div><strong>${_esc(p.title)}</strong><small>${_esc(p.category)} · ❤️ ${p.likes||0}</small></div>
+                    <div><strong>${_esc(p.title)}</strong><small>${_esc(p.category)} - ❤️ ${p.likes||0}</small></div>
                 </div>`).join('')
             : '<div class="glz-empty">Hali post yo\'q</div>';
     }
@@ -1317,3 +1317,4 @@ document.getElementById('reset-all-btn').addEventListener('click', async () => {
 </script>
 </body>
 </html>
+

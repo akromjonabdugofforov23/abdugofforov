@@ -1,4 +1,4 @@
-
+﻿
 
 
 // Abdugofforov Blog & Portfolio - JavaScript Engine
@@ -364,7 +364,7 @@ function renderPosts(instant) {
                         </div>
 
                         <div class="post-footer" style="margin-top: 15px;">
-                            <span class="post-date">${formatDate(post.date)} · ⏱ ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)} - ⏱ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -389,7 +389,7 @@ function renderPosts(instant) {
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)} · ⏱ ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)} - ⏱ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -419,7 +419,7 @@ function renderPosts(instant) {
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)} · ⏱ ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)} - ⏱ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -443,7 +443,7 @@ function renderPosts(instant) {
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)} · ⏱ ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)} - ⏱ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -2045,7 +2045,7 @@ function renderTestHistory() {
             <div style="flex:1;height:6px;background:var(--border-color);border-radius:3px;overflow:hidden;">
                 <div style="height:100%;width:${h.pct}%;background:${color};"></div>
             </div>
-            <span style="width:70px;text-align:right;color:var(--text-secondary);">${h.score}/${h.total} · ${h.pct}%</span>
+            <span style="width:70px;text-align:right;color:var(--text-secondary);">${h.score}/${h.total} - ${h.pct}%</span>
             <span style="width:56px;text-align:right;color:var(--text-muted);font-size:11px;">${d}</span>
         </div>`;
     }).join('');
@@ -2104,7 +2104,7 @@ function renderFlashcardDone() {
         <div style="max-width:480px;margin:0 auto;text-align:center;">
             <div style="font-size:60px;margin-bottom:14px;">🎉</div>
             <h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:8px;">To'plam yakunlandi!</h2>
-            <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;·&nbsp; 🔥 Streak: <b>${getFcStreak()} kun</b></p>
+            <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;-&nbsp; 🔥 Streak: <b>${getFcStreak()} kun</b></p>
             <div style="display:flex;gap:12px;justify-content:center;">
                 <button class="btn-primary" onclick="startFlashcards('${fcDeckKey}')">🔄 Qayta</button>
                 <button class="btn-secondary" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
@@ -2400,4 +2400,28 @@ async function bootstrap() {
 
 bootstrap();
 
+
+
+
+// Typing Animation
+const phrases = ['Medik', 'Dasturchi', 'Futbolchi'];
+let currentPhraseIndex = 0;
+let isDeleting = false;
+let currentText = '';
+function typeEffect() {
+    const el = document.getElementById('typed-text');
+    if(!el) return;
+    const fullText = phrases[currentPhraseIndex];
+    if (isDeleting) { currentText = fullText.substring(0, currentText.length - 1); }
+    else { currentText = fullText.substring(0, currentText.length + 1); }
+    el.textContent = currentText;
+    let typeSpeed = isDeleting ? 50 : 150;
+    if (!isDeleting && currentText === fullText) { typeSpeed = 1500; isDeleting = true; }
+    else if (isDeleting && currentText === '') { isDeleting = false; currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length; typeSpeed = 500; }
+    setTimeout(typeEffect, typeSpeed);
+}
+document.addEventListener('DOMContentLoaded', typeEffect);
+
+
+setTimeout(typeEffect, 500);
 

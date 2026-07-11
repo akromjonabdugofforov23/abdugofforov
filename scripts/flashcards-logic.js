@@ -62,7 +62,7 @@ function renderFlashcard() {
         <div style="max-width:560px; margin:0 auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:10px;">
                 <button class="btn-secondary btn-sm" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
-                <span style="color:var(--text-muted); font-size:13px;">🔥 ${getFcStreak()} &nbsp;·&nbsp; ${fcIndex + 1} / ${deck.length}</span>
+                <span style="color:var(--text-muted); font-size:13px;">🔥 ${getFcStreak()} &nbsp;-&nbsp; ${fcIndex + 1} / ${deck.length}</span>
                 <button class="btn-secondary btn-sm" onclick="shuffleFlashcards()">${i18n.t('fc.shuffle')}</button>
             </div>
             <div class="flashcard" id="flashcard">
@@ -349,7 +349,7 @@ function renderTestHistory() {
             <div style="flex:1;height:6px;background:var(--border-color);border-radius:3px;overflow:hidden;">
                 <div style="height:100%;width:${h.pct}%;background:${color};"></div>
             </div>
-            <span style="width:70px;text-align:right;color:var(--text-secondary);">${h.score}/${h.total} · ${h.pct}%</span>
+            <span style="width:70px;text-align:right;color:var(--text-secondary);">${h.score}/${h.total} - ${h.pct}%</span>
             <span style="width:56px;text-align:right;color:var(--text-muted);font-size:11px;">${d}</span>
         </div>`;
     }).join('');
@@ -408,7 +408,7 @@ function renderFlashcardDone() {
         <div style="max-width:480px;margin:0 auto;text-align:center;">
             <div style="font-size:60px;margin-bottom:14px;">🎉</div>
             <h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:8px;">To'plam yakunlandi!</h2>
-            <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;·&nbsp; 🔥 Streak: <b>${getFcStreak()} kun</b></p>
+            <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;-&nbsp; 🔥 Streak: <b>${getFcStreak()} kun</b></p>
             <div style="display:flex;gap:12px;justify-content:center;">
                 <button class="btn-primary" onclick="startFlashcards('${fcDeckKey}')">🔄 Qayta</button>
                 <button class="btn-secondary" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
@@ -868,6 +868,7 @@ async function bootstrap() {
 }
 
 bootstrap();
+
 
 
 

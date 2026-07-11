@@ -1,4 +1,4 @@
-// ===== DEUTSCH TESTLAR =====
+﻿// ===== DEUTSCH TESTLAR =====
 // Rasmli savollar uchun ishonchli, o'rnatilgan (data URI) emoji-rasm — tashqi havola talab qilmaydi
 function emojiImage(emoji, bg) {
     const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240'>"
@@ -521,7 +521,7 @@ function renderTournamentQ() {
         <div style="max-width:640px;margin:0 auto;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                 <span style="font-size:13px;color:var(--text-secondary);">🏆 Turnir</span>
-                <span style="font-size:13px;color:var(--text-secondary);">${num} / ${total} &nbsp;·&nbsp; ✅ ${tState.score}</span>
+                <span style="font-size:13px;color:var(--text-secondary);">${num} / ${total} &nbsp;-&nbsp; ✅ ${tState.score}</span>
             </div>
             <div style="height:5px;background:var(--glass-border);border-radius:3px;margin-bottom:20px;">
                 <div style="height:5px;background:var(--grad-primary);border-radius:3px;width:${pct}%;transition:width 0.3s;"></div>
@@ -901,3 +901,4 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+

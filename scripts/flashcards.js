@@ -1,4 +1,4 @@
-// ===== KARTOCHKALAR HOLATI VA KO'RINISHI =====
+﻿// ===== KARTOCHKALAR HOLATI VA KO'RINISHI =====
 let fcDeckKey = null;
 let fcOrder = [];
 let fcIndex = 0;
@@ -62,7 +62,7 @@ function renderFlashcard() {
         <div style="max-width:560px; margin:0 auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:10px;">
                 <button class="btn-secondary btn-sm" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
-                <span style="color:var(--text-muted); font-size:13px;">🔥 ${getFcStreak()} &nbsp;·&nbsp; ${fcIndex + 1} / ${deck.length}</span>
+                <span style="color:var(--text-muted); font-size:13px;">🔥 ${getFcStreak()} &nbsp;-&nbsp; ${fcIndex + 1} / ${deck.length}</span>
                 <button class="btn-secondary btn-sm" onclick="shuffleFlashcards()">${i18n.t('fc.shuffle')}</button>
             </div>
             <div class="flashcard" id="flashcard">
@@ -118,4 +118,5 @@ function shuffleFlashcards() {
     fcIndex = 0;
     renderFlashcard();
 }
+
 
