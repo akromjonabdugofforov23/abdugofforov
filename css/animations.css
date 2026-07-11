@@ -1,0 +1,334 @@
+/* ============================================================
+   AUTH UI — login/register modal, foydalanuvchi menyusi
+   ============================================================ */
+.auth-tabs {
+    display: flex; gap: 6px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 4px; margin-bottom: 20px;
+}
+.auth-tab {
+    flex: 1; padding: 10px; border: none; background: transparent;
+    color: var(--text-secondary); font-size: 14px; font-weight: 600;
+    border-radius: 9px; cursor: pointer; transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s;
+}
+.auth-tab.active {
+    background: var(--grad-primary); color: #fff;
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+}
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.auth-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.auth-error {
+    display: none; color: #fca5a5; font-size: 13px; padding: 8px 12px;
+    background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px;
+}
+.auth-error.show { display: block; }
+
+.user-menu { position: relative; display: inline-flex; }
+.user-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 12px 5px 5px; background: var(--glass-bg);
+    border: 1px solid var(--glass-border); border-radius: 999px;
+    cursor: pointer; color: var(--text-primary); transition: border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s;
+}
+.user-chip:hover { border-color: var(--glass-border-hover); background: var(--glass-bg-strong); }
+.user-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--grad-primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; flex-shrink: 0;
+}
+.user-name {
+    font-size: 13px; font-weight: 600; max-width: 120px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.user-dropdown {
+    position: absolute; top: calc(100% + 8px); right: 0; min-width: 200px;
+    background: var(--modal-bg); border: 1px solid var(--glass-border);
+    border-radius: 14px; box-shadow: var(--shadow-lg); padding: 8px;
+    opacity: 0; visibility: hidden; transform: translateY(-6px);
+    transition: opacity 0.2s, transform 0.2s, visibility 0.2s; z-index: 150;
+    backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+.user-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.user-dropdown-head {
+    padding: 10px 12px; border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 6px; display: flex; flex-direction: column; gap: 2px;
+}
+.user-dropdown-head strong { font-size: 14px; color: var(--text-primary); }
+.user-dropdown-head small { font-size: 12px; color: var(--color-purple-light); }
+.user-dd-item {
+    width: 100%; text-align: left; padding: 10px 12px; border: none;
+    background: transparent; color: var(--text-secondary); font-size: 14px;
+    border-radius: 9px; cursor: pointer; transition: background 0.2s, color 0.2s;
+}
+.user-dd-item:hover { background: var(--glass-bg); color: var(--text-primary); }
+@media (max-width: 768px) {
+    .user-name { display: none; }
+    .user-chip { padding: 5px; }
+}
+
+/* ===== UNIVERSAL DOCK NAVBAR & RESPONSIVE RULES ===== */
+.hamburger-btn { display: none; background: transparent; border: none; color: var(--text-primary); cursor: pointer; padding: 5px; }
+.hamburger-overlay { display: flex; align-items: center; gap: 12px; }
+.navbar-row { justify-content: space-between; }
+
+/* Desktop Top Navigation (Original) */
+.nav-links {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active {
+    color: var(--accent-color);
+}
+#nav-home-link { display: flex !important; }
+
+/* Bottom Navigation Bar (Mac OS Dock Style - Dark Glassmorphism) */
+.desktop-dock {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.65); /* Dark blue/gray glass */
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2); /* Highlight top edge */
+    border-radius: 24px;
+    padding: 10px 16px;
+    display: flex;
+    gap: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+    z-index: 999;
+}
+
+.desktop-dock .dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    position: relative;
+    text-decoration: none;
+}
+
+.desktop-dock .dock-item:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-8px) scale(1.15);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+.desktop-dock .dock-item.active {
+    color: #fff;
+    background: rgba(56, 189, 248, 0.2); /* Soft accent bg */
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.desktop-dock .dock-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    box-shadow: 0 0 8px var(--accent-color);
+}
+
+.desktop-dock .dock-label {
+    position: absolute;
+    top: -36px;
+    background: rgba(15, 23, 42, 0.9);
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.desktop-dock .dock-item:hover .dock-label {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .hamburger-btn { display: block; }
+    
+    /* Hide top nav on mobile, but keep dock visible! */
+    .nav-links { display: none; }
+    
+    /* Hamburger Menu Overlay (Mobil uchun) */
+    .hamburger-overlay {
+        display: none;
+        position: fixed;
+        top: 60px;
+        right: 20px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 20px;
+        flex-direction: column;
+        gap: 15px;
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        animation: slideDown 0.3s ease;
+    }
+    .hamburger-overlay.active { display: flex; }
+    
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Adjust dock for mobile */
+    .desktop-dock {
+        width: 90%;
+        justify-content: space-around;
+        padding: 8px;
+        gap: 0;
+        bottom: 10px;
+        border-radius: 20px;
+    }
+    .desktop-dock .dock-item {
+        width: 44px;
+        height: 44px;
+    }
+    .desktop-dock .dock-item:hover {
+        transform: none; /* Mobilda hover kerak emas */
+        box-shadow: none;
+    }
+    .desktop-dock .dock-item:hover .dock-label {
+        display: none;
+    }
+}
+/* ===== QUICK COMPOSE UI ===== */
+.compose-modal {
+    padding: 0;
+    max-width: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--bg-color);
+}
+.compose-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--card-bg);
+}
+.compose-user-info strong {
+    font-size: 16px;
+    font-weight: 600;
+}
+.compose-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.compose-title {
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-color);
+    width: 100%;
+}
+.compose-title::placeholder {
+    color: var(--text-muted);
+}
+.compose-textarea {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    resize: none;
+    min-height: 120px;
+    background: transparent;
+    color: var(--text-color);
+    width: 100%;
+    font-family: inherit;
+}
+.compose-textarea::placeholder {
+    color: var(--text-muted);
+}
+.compose-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-color);
+    background: var(--card-bg);
+}
+.compose-actions {
+    display: flex;
+    gap: 16px;
+}
+.compose-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: rgba(139, 92, 246, 0.1);
+    transition: background 0.2s;
+}
+.compose-action-btn:hover {
+    background: rgba(139, 92, 246, 0.2);
+}
+.compose-previews {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.media-preview-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+.preview-remove {
+    background: rgba(255, 77, 77, 0.1);
+    color: #ff4d4d;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+

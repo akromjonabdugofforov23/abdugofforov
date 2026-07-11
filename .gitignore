@@ -7,3 +7,7 @@ yarn-error.log
 
 # OS generated files
 Thumbs.db
+
+# Other
+dist/
+*.log

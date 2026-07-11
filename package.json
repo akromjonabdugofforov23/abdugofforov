@@ -1,14 +1,24 @@
 {
-  "name": "advanced-website",
+  "name": "kay-kundaligi",
   "version": "1.0.0",
-  "description": "Secure and fast website with AI-ready backend",
+  "description": "Kay Kundaligi - Zamonaviy Shaxsiy Blog & Hikoyalar, Secure Backend",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "node build.mjs",
+    "serve-dist": "npx http-server dist -p 3000"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
     "helmet": "^7.1.0",
     "express-rate-limit": "^7.1.5"
+  },
+  "devDependencies": {
+    "clean-css": "^5.3.3",
+    "html-minifier-terser": "^7.2.0",
+    "terser": "^5.31.0"
   }
 }

@@ -1,0 +1,54 @@
+{
+  "name": "Abdugofforov — Shaxsiy blog",
+  "short_name": "Abdugofforov",
+  "description": "Kundalik xotiralar, g'oyalar, musiqa, nemis tili testlari va so'z kartochkalari.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0A0A1A",
+  "theme_color": "#8B5CF6",
+  "lang": "uz",
+  "dir": "ltr",
+  "categories": ["education", "lifestyle", "books"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Yangi yozuv",
+      "short_name": "Yozish",
+      "description": "Yangi blog yozuvini boshlash",
+      "url": "/?new=1",
+      "icons": [
+        { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+      ]
+    },
+    {
+      "name": "Deutsch testlar",
+      "short_name": "Deutsch",
+      "description": "Nemis tili A1/A2/B1 testlari",
+      "url": "/?view=deutsch",
+      "icons": [
+        { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+      ]
+    }
+  ]
+}

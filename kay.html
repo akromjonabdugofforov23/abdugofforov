@@ -1,0 +1,1320 @@
+﻿<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kay — Boshqaruv Paneli</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
+    <style>
+        /* ===== KAY ADMIN — "GLAZZED" DASHBOARD ===== */
+        :root {
+            --bg-color: #0c1e30;
+            --card-bg: rgba(255, 255, 255, 0.055);
+            --border-color: rgba(255, 255, 255, 0.10);
+            --text-primary: #eaf1f8;
+            --text-secondary: #a7bace;
+            --text-muted: #7e93a8;
+            --accent-color: #2dd4bf;
+            --accent-hover: #14b8a6;
+            --tag-bg: rgba(255, 255, 255, 0.07);
+            --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
+            --glz-sidebar: 260px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 12% 12%, rgba(56, 132, 173, 0.40), transparent 42%),
+                radial-gradient(circle at 88% 85%, rgba(196, 120, 74, 0.30), transparent 48%),
+                radial-gradient(circle at 60% 50%, rgba(38, 110, 120, 0.30), transparent 55%),
+                linear-gradient(135deg, #0a2034 0%, #103847 45%, #185356 100%);
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ---------- PIN EKRANI ---------- */
+        .pin-screen {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: calc(100% - 40px);
+            max-width: 380px;
+            background: var(--card-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            padding: 44px 32px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+        .pin-logo { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; margin-bottom: 6px; }
+        .pin-logo span { color: var(--accent-color); }
+        .pin-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 30px; }
+        .pin-avatar {
+            width: 76px; height: 76px; border-radius: 50%;
+            margin: 0 auto 18px; display: grid; place-items: center;
+            font-size: 32px; font-weight: 700; color: #04222a;
+            background: linear-gradient(135deg, #2dd4bf, #38bdf8);
+            box-shadow: 0 0 30px rgba(45, 212, 191, 0.4);
+        }
+        .pin-input-wrap { margin-bottom: 12px; }
+        .pin-input-wrap input {
+            width: 100%; text-align: center; font-size: 20px; letter-spacing: 2px;
+            padding: 16px; border-radius: 14px; font-weight: 600;
+        }
+        .pin-error { color: #fda4af; font-size: 12px; margin-bottom: 12px; min-height: 18px; display: none; }
+        .pin-btn { width: 100%; justify-content: center; padding: 14px; font-size: 15px; }
+        .pin-attempts { margin-top: 16px; font-size: 11px; color: var(--text-secondary); }
+        .pin-back { display: inline-block; margin-top: 20px; font-size: 13px; color: var(--text-secondary); text-decoration: none; }
+        .pin-back:hover { color: var(--accent-color); }
+
+        /* ---------- DASHBOARD LAYOUT (Grid) ---------- */
+        .glz {
+            display: none;
+            min-height: 100vh;
+        }
+        .glz.show { display: grid; grid-template-columns: var(--glz-sidebar) 1fr; }
+
+        /* ---------- SIDEBAR ---------- */
+        .glz-sidebar {
+            background: rgba(8, 22, 38, 0.72);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-color);
+            padding: 26px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .glz-profile { text-align: center; }
+        .glz-avatar {
+            width: 84px; height: 84px; border-radius: 50%;
+            margin: 0 auto 12px; display: grid; place-items: center;
+            font-size: 34px; font-weight: 700; color: #04222a;
+            background: linear-gradient(135deg, #2dd4bf, #38bdf8);
+            box-shadow: 0 0 26px rgba(45, 212, 191, 0.35);
+        }
+        .glz-profile .name { font-size: 16px; font-weight: 600; }
+        .glz-profile .role { font-size: 12px; color: var(--accent-color); text-transform: uppercase; letter-spacing: 1px; }
+
+        .glz-side-stats {
+            display: flex; justify-content: space-around;
+            padding: 14px 0; border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .glz-side-stats div { text-align: center; }
+        .glz-side-stats .v { font-size: 18px; font-weight: 700; }
+        .glz-side-stats .l { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .glz-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .glz-nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px; border: none; background: transparent;
+            color: var(--text-secondary); font-size: 14px; font-weight: 500;
+            border-radius: 10px; cursor: pointer; text-align: left; width: 100%;
+            border-left: 3px solid transparent;
+            transition: background 0.2s, color 0.2s;
+        }
+        .glz-nav-item .ico { font-size: 16px; width: 22px; text-align: center; }
+        .glz-nav-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); }
+        .glz-nav-item.active {
+            background: linear-gradient(90deg, rgba(45, 212, 191, 0.18), transparent);
+            color: #fff; border-left-color: var(--accent-color);
+        }
+        .glz-side-actions { display: flex; flex-direction: column; gap: 8px; }
+        .glz-side-actions a, .glz-side-actions button { width: 100%; justify-content: center; text-decoration: none; }
+
+        /* ---------- MAIN ---------- */
+        .glz-main { min-width: 0; display: flex; flex-direction: column; }
+        .glz-topbar {
+            display: flex; align-items: center; gap: 16px;
+            padding: 16px 28px;
+            background: rgba(8, 22, 38, 0.45);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; top: 0; z-index: 20;
+        }
+        .glz-menu-toggle {
+            display: none; background: transparent; border: none; color: var(--text-primary);
+            font-size: 22px; cursor: pointer;
+        }
+        .glz-search { position: relative; flex: 1; max-width: 340px; }
+        .glz-search input {
+            width: 100%; padding: 9px 14px 9px 38px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border-color);
+            color: var(--text-primary); font-size: 13px; outline: none;
+        }
+        .glz-search input::placeholder { color: var(--text-muted); }
+        .glz-search::before { content: "🔍"; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 13px; opacity: 0.6; }
+        .glz-brand { margin-left: auto; display: flex; align-items: center; gap: 8px; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 18px; }
+        .glz-brand span { color: var(--accent-color); }
+        .glz-live { display: inline-flex; align-items: center; gap: 5px; font-family: 'Inter'; font-size: 11px; color: #34d399; text-transform: uppercase; }
+        .glz-live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #34d399; box-shadow: 0 0 8px #34d399; }
+
+        .glz-content { padding: 28px; }
+        .glz-page-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
+        .glz-page-head h1 { font-size: 22px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .glz-breadcrumb { font-size: 12px; color: var(--text-muted); }
+        .glz-date-pill {
+            display: inline-flex; align-items: center; gap: 8px; font-size: 13px;
+            padding: 8px 16px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border-color);
+        }
+
+        /* ---------- GLASS CARD ---------- */
+        .glz-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+        .glz-card-title {
+            font-size: 14px; font-weight: 600; margin-bottom: 18px;
+            padding-bottom: 14px; border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        /* ---------- DASHBOARD RESUME ---------- */
+        .glz-resume h2 { font-family: 'Playfair Display', serif; font-size: 30px; margin-bottom: 6px; }
+        .glz-resume p { color: var(--text-secondary); font-size: 14px; margin-bottom: 26px; max-width: 520px; }
+
+        .glz-stats-row {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 26px;
+        }
+        .glz-stat {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 18px; padding: 22px; display: flex; flex-direction: column;
+            align-items: center; gap: 12px; backdrop-filter: blur(14px);
+        }
+        .num-circle {
+            width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center;
+            font-size: 26px; font-weight: 700; color: #fff;
+            border: 3px solid var(--ring-c, var(--accent-color));
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.04), transparent);
+            box-shadow: 0 0 22px -6px var(--ring-c, var(--accent-color));
+        }
+        .glz-stat-lbl { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; }
+
+        .glz-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        /* mini list (dashboard recent) */
+        .glz-mini-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .glz-mini-row:last-child { border-bottom: none; }
+        .glz-mini-row img { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: var(--tag-bg); }
+        .glz-mini-row strong { display: block; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .glz-mini-row small { font-size: 11px; color: var(--text-muted); }
+        .glz-empty { text-align: center; color: var(--text-muted); padding: 30px; font-size: 13px; }
+
+        .glz-status-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; padding: 9px 0; }
+        .glz-ok { color: #34d399; font-weight: 500; }
+        .glz-warn { color: #fbbf24; font-weight: 500; }
+
+        /* ---------- TABS (sidebar drives these) ---------- */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: glzFade 0.4s ease; }
+        @keyframes glzFade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* list/forms reuse */
+        .glz-list { display: flex; flex-direction: column; gap: 12px; }
+        .glz-row {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 14px; padding: 16px; display: flex; align-items: center; gap: 16px;
+            backdrop-filter: blur(12px);
+        }
+        .glz-row img { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: var(--tag-bg); }
+        .glz-row .info { flex: 1; min-width: 0; }
+        .glz-row .info .t { font-weight: 600; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .glz-row .info .m { font-size: 12px; color: var(--text-secondary); }
+        .glz-row .acts { display: flex; gap: 8px; flex-shrink: 0; }
+
+        .icon-btn {
+            width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.04); color: var(--text-primary); cursor: pointer;
+            display: grid; place-items: center; font-size: 14px; transition: all 0.2s;
+        }
+        .icon-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .icon-btn.danger { color: #f87171; border-color: rgba(248, 113, 113, 0.3); }
+        .icon-btn.danger:hover { background: rgba(248, 113, 113, 0.15); }
+
+        /* buttons restyle (glass/accent) */
+        #admin-screen .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), #38bdf8);
+            border: none; color: #04222a; font-weight: 600;
+        }
+        #admin-screen .btn-primary:hover { box-shadow: 0 0 18px rgba(45, 212, 191, 0.45); color: #04222a; }
+        #admin-screen .btn-secondary {
+            background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border-color); color: var(--text-primary);
+        }
+        #admin-screen .btn-secondary:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+
+        .security-log { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; backdrop-filter: blur(12px); }
+        .log-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: space-between; }
+        .log-item { padding: 12px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; font-size: 13px; }
+        .log-item:last-child { border-bottom: none; }
+        .log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .log-dot.ok { background: #34d399; }
+        .log-dot.fail { background: #f87171; }
+        .log-time { color: var(--text-muted); font-size: 11px; margin-left: auto; }
+
+        .settings-section { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 16px; backdrop-filter: blur(12px); }
+        .settings-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+
+        .glz-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; backdrop-filter: blur(2px); }
+        .glz-overlay.show { display: block; }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 980px) {
+            .glz-stats-row { grid-template-columns: repeat(2, 1fr); }
+            .glz-grid-2 { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .glz.show { grid-template-columns: 1fr; }
+            .glz-sidebar {
+                position: fixed; top: 0; left: 0; z-index: 50;
+                width: 270px; transform: translateX(-100%);
+                transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .glz-sidebar.open { transform: translateX(0); }
+            .glz-menu-toggle { display: block; }
+            .glz-content { padding: 18px; }
+        }
+        @media (max-width: 480px) {
+            .glz-stats-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .num-circle { width: 78px; height: 78px; font-size: 22px; }
+            .glz-topbar { padding: 14px 16px; }
+            .glz-brand { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== PIN EKRANI ===== -->
+    <div class="pin-screen" id="pin-screen">
+        <div class="pin-avatar">A</div>
+        <div class="pin-logo">Kay<span>.</span></div>
+        <div class="pin-subtitle">Boshqaruv paneli — faqat siz uchun</div>
+
+        <div class="pin-input-wrap">
+            <input type="password" id="pin-input" class="form-input"
+                   placeholder="Maxfi so'z" maxlength="64" autocomplete="off">
+        </div>
+        <div class="pin-error" id="pin-error"></div>
+        <button class="btn-primary pin-btn" id="pin-submit-btn">Kirish</button>
+        <div class="pin-attempts" id="pin-attempts"></div>
+        <a href="/" class="pin-back">← Asosiy sahifaga qaytish</a>
+    </div>
+
+    <!-- ===== TELEGRAM TASDIQLASH EKRANI (2FA) ===== -->
+    <div class="pin-screen" id="tg-screen" style="display:none;">
+        <div class="pin-avatar" style="background: linear-gradient(135deg, #0088cc, #229ED9); font-size: 36px;">✈️</div>
+        <div class="pin-logo">Telegram<span>.</span></div>
+        <div class="pin-subtitle">
+            Telegramingizga 6 xonali kod yubordik.
+        </div>
+
+        <div class="pin-input-wrap">
+            <input type="text" id="tg-code-input" class="form-input"
+                   placeholder="••••••" maxlength="6" autocomplete="one-time-code" inputmode="numeric"
+                   pattern="\d{6}">
+        </div>
+        <div class="pin-error" id="tg-error"></div>
+        <button class="btn-primary pin-btn" id="tg-submit-btn">Tasdiqlash</button>
+        <div class="pin-attempts" id="tg-attempts"></div>
+        <div style="margin-top: 16px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+            <button class="btn-secondary" id="tg-resend-btn" type="button" style="font-size:12px;">🔄 Qayta yuborish</button>
+            <button class="btn-secondary" id="tg-cancel-btn" type="button" style="font-size:12px;">← Ortga</button>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN DASHBOARD ===== -->
+    <div class="glz" id="admin-screen">
+
+        <!-- SIDEBAR -->
+        <aside class="glz-sidebar" id="glz-sidebar">
+            <div class="glz-profile">
+                <div class="glz-avatar">A</div>
+                <div class="name">Akromjon Abdugofforov</div>
+                <div class="role">Admin</div>
+            </div>
+
+            <div class="glz-side-stats">
+                <div><div class="v" id="side-posts">0</div><div class="l">Post</div></div>
+                <div><div class="v" id="side-likes">0</div><div class="l">Like</div></div>
+                <div><div class="v" id="side-tasks">0</div><div class="l">Reja</div></div>
+            </div>
+
+            <nav class="glz-nav">
+                <button class="glz-nav-item admin-tab active" data-tab="dashboard" data-title="Boshqaruv paneli"><span class="ico">🏠</span> Dashboard</button>
+                <button class="glz-nav-item admin-tab" data-tab="posts" data-title="Postlar"><span class="ico">📝</span> Postlar</button>
+                <button class="glz-nav-item admin-tab" data-tab="students" data-title="O'quvchilar va natijalar"><span class="ico">👥</span> O'quvchilar</button>
+                <button class="glz-nav-item admin-tab" data-tab="tasks" data-title="Rejalar"><span class="ico">📋</span> Rejalar</button>
+                <button class="glz-nav-item admin-tab" data-tab="portfolio" data-title="Portfolio"><span class="ico">💼</span> Portfolio</button>
+                <button class="glz-nav-item admin-tab" data-tab="security" data-title="Xavfsizlik"><span class="ico">🔐</span> Xavfsizlik</button>
+                <button class="glz-nav-item admin-tab" data-tab="settings" data-title="Sozlamalar"><span class="ico">⚙️</span> Sozlamalar</button>
+            </nav>
+
+            <div class="glz-side-actions">
+                <a href="/" class="btn-secondary">🌐 Saytga o'tish</a>
+                <button class="btn-secondary" id="logout-btn">⎋ Chiqish</button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <div class="glz-main">
+            <header class="glz-topbar">
+                <button class="glz-menu-toggle" id="glz-menu-toggle" aria-label="Menyu">☰</button>
+                <div class="glz-search">
+                    <input type="text" id="admin-search" placeholder="Postlardan qidirish...">
+                </div>
+                <div class="glz-brand">Kay<span>.</span> <span class="glz-live">Live</span></div>
+            </header>
+
+            <div class="glz-content">
+                <div class="glz-page-head">
+                    <div>
+                        <h1 id="glz-page-title">Boshqaruv paneli</h1>
+                        <div class="glz-breadcrumb" id="admin-greeting">Xush kelibsiz, Akromjon</div>
+                    </div>
+                    <div class="glz-date-pill">📅 <span id="glz-date">—</span></div>
+                </div>
+
+                <!-- DASHBOARD TAB -->
+                <div class="tab-content active" id="tab-dashboard">
+                    <div class="glz-resume">
+                        <h2>Kun xulosasi</h2>
+                        <p>Saytingiz faolligi va asosiy ko'rsatkichlar. Quyidagi bo'limlardan postlar, rejalar va sozlamalarni boshqaring.</p>
+                    </div>
+
+                    <div class="glz-stats-row">
+                        <div class="glz-stat">
+                            <div class="num-circle" style="--ring-c:#60a5fa"><span id="stat-posts">0</span></div>
+                            <div class="glz-stat-lbl">Jami postlar</div>
+                        </div>
+                        <div class="glz-stat">
+                            <div class="num-circle" style="--ring-c:#34d399"><span id="stat-likes">0</span></div>
+                            <div class="glz-stat-lbl">Jami likelar</div>
+                        </div>
+                        <div class="glz-stat">
+                            <div class="num-circle" style="--ring-c:#fbbf24"><span id="stat-tasks">0</span></div>
+                            <div class="glz-stat-lbl">Faol rejalar</div>
+                        </div>
+                        <div class="glz-stat">
+                            <div class="num-circle" style="--ring-c:#f472b6"><span id="stat-days">0</span></div>
+                            <div class="glz-stat-lbl">Kun yozildi</div>
+                        </div>
+                    </div>
+
+                    <div class="glz-grid-2">
+                        <div class="glz-card">
+                            <div class="glz-card-title">📰 So'nggi postlar</div>
+                            <div id="dash-recent"><div class="glz-empty">Yuklanmoqda...</div></div>
+                        </div>
+                        <div class="glz-card">
+                            <div class="glz-card-title">🛡️ Tizim holati</div>
+                            <div class="glz-status-row"><span>🔒 HTTPS</span><span class="glz-ok">Faol</span></div>
+                            <div class="glz-status-row"><span>🛡️ PIN himoya</span><span class="glz-ok">Faol</span></div>
+                            <div class="glz-status-row"><span>🤖 robots.txt</span><span class="glz-ok">Faol</span></div>
+                            <div class="glz-status-row"><span>⏱️ Brute-force himoya</span><span class="glz-ok">Faol</span></div>
+                            <div class="glz-status-row"><span>☁️ Cloudflare WAF</span><span class="glz-warn">Tekshiring</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POSTLAR TAB -->
+                <div class="tab-content" id="tab-posts">
+                    <div id="admin-posts-list" class="glz-list"></div>
+                </div>
+
+                <!-- O'QUVCHILAR VA NATIJALAR TAB -->
+                <div class="tab-content" id="tab-students">
+                    <div class="glz-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+                        <div class="glz-card" style="margin:0;">
+                            <div class="glz-card-title">👥 Ro'yxatdan o'tganlar</div>
+                            <div id="students-count" style="font-size:32px;font-weight:700;color:#2dd4bf;">0</div>
+                            <div style="font-size:12px;color:#9aa;">jami o'quvchi</div>
+                        </div>
+                        <div class="glz-card" style="margin:0;">
+                            <div class="glz-card-title">📊 Test natijalari</div>
+                            <div id="results-count" style="font-size:32px;font-weight:700;color:#2dd4bf;">0</div>
+                            <div style="font-size:12px;color:#9aa;">jami ishlangan test</div>
+                        </div>
+                    </div>
+                    <div class="glz-card" style="margin-bottom:18px;">
+                        <div class="glz-card-title">👥 Foydalanuvchilar</div>
+                        <div id="students-list" style="overflow-x:auto;"><p style="color:#9aa;font-size:13px;">Yuklanmoqda...</p></div>
+                    </div>
+                    <div class="glz-card">
+                        <div class="glz-card-title">📊 Test natijalari jadvali</div>
+                        <p style="font-size:12px;color:#9aa;margin-bottom:12px;">Kim, qaysi test, nechta to'g'ri/xato, qachon</p>
+                        <div id="results-table" style="overflow-x:auto;"><p style="color:#9aa;font-size:13px;">Yuklanmoqda...</p></div>
+                    </div>
+                </div>
+
+                <!-- REJALAR TAB -->
+                <div class="tab-content" id="tab-tasks">
+                    <div class="glz-grid-2" style="margin-bottom:18px;">
+                        <form id="admin-task-form" class="glz-card" style="margin:0;">
+                            <div class="glz-card-title">➕ Yangi Reja</div>
+                            <input type="hidden" id="task-edit-id">
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label>Vazifa nomi</label>
+                                <input type="text" id="task-title-input" class="form-input" placeholder="Masalan: B1 imtihoni" required>
+                            </div>
+                            <div class="form-group" style="margin-bottom:16px;">
+                                <label>Holati</label>
+                                <select id="task-status-input" class="form-input">
+                                    <option value="todo">Bajariladigan</option>
+                                    <option value="progress">Bajarilayotgan</option>
+                                    <option value="done">Bajarilgan</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Saqlash</button>
+                        </form>
+
+                        <div class="glz-card" style="margin:0;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                            <div class="glz-card-title" style="width:100%;">📊 Bajarilish foizi</div>
+                            <div style="position:relative;width:130px;height:130px;">
+                                <svg width="130" height="130" viewBox="0 0 120 120">
+                                    <circle cx="60" cy="60" r="50" stroke="rgba(255,255,255,0.1)" stroke-width="9" fill="transparent"/>
+                                    <circle cx="60" cy="60" r="50" id="progress-ring-circle" stroke="var(--accent-color)" stroke-width="9" fill="transparent" stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset 0.5s ease;"/>
+                                </svg>
+                                <span id="chart-percentage-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:700;">0%</span>
+                            </div>
+                            <div style="display:flex;gap:16px;font-size:12px;margin-top:16px;">
+                                <div>🔴 <span id="count-todo">0</span></div>
+                                <div>🟡 <span id="count-progress">0</span></div>
+                                <div>🟢 <span id="count-done">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="admin-task-list" class="glz-list"></div>
+                </div>
+
+                <!-- PORTFOLIO TAB -->
+                <div class="tab-content" id="tab-portfolio">
+                    <div class="settings-section">
+                        <div class="settings-title">Portfolio Ma'lumotlari</div>
+                        <form id="admin-port-settings-form">
+                            <div class="form-row" style="margin-bottom:15px;">
+                                <div class="form-group">
+                                    <label>F.I.SH</label>
+                                    <input type="text" id="port-name-input" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Kasb / Mutaxassislik</label>
+                                    <input type="text" id="port-title-input" class="form-input" required>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:15px;">
+                                <label>Bio</label>
+                                <textarea id="port-bio-input" class="form-textarea" required></textarea>
+                            </div>
+                            <div class="form-row" style="margin-bottom:15px;">
+                                <div class="form-group">
+                                    <label>Ko'nikmalar (vergul bilan)</label>
+                                    <input type="text" id="port-skills-input" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tajriba</label>
+                                    <input type="text" id="port-experience-input" class="form-input" placeholder="Kompaniya (Yil); ...">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary">Saqlash</button>
+                        </form>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="settings-title">Bir martalik kirish havolasi</div>
+                        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:15px;">Portfolio sahifasini boshqalarga ko'rsatish uchun vaqtinchalik havola.</p>
+                        <button class="btn-primary" id="generate-token-btn">Havola yaratish</button>
+                        <div id="generated-link-box" style="margin-top:15px;background:var(--tag-bg);padding:15px;border-radius:8px;display:none;">
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <input type="text" id="generated-link-input" class="form-input" style="font-size:13px;" readonly>
+                                <button class="btn-primary" id="copy-link-btn" style="flex-shrink:0;padding:10px 15px;">Nusxa</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- XAVFSIZLIK TAB -->
+                <div class="tab-content" id="tab-security">
+                    <div class="security-log">
+                        <div class="log-header">
+                            <span>🔐 Kirish loglari</span>
+                            <button class="btn-secondary" id="clear-log-btn" style="font-size:12px;padding:6px 12px;">Tozalash</button>
+                        </div>
+                        <div id="security-log-list">
+                            <div class="log-item" style="color:var(--text-secondary);justify-content:center;">Hali log yo'q</div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section" style="margin-top:16px;">
+                        <div class="settings-title">Xavfsizlik holati</div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div class="glz-status-row"><span>🔒 HTTPS</span><span class="glz-ok">Faol</span></div>
+                            <div class="glz-status-row"><span>🛡️ PIN himoya</span><span class="glz-ok">Faol</span></div>
+                            <div class="glz-status-row"><span>🤖 robots.txt (noindex)</span><span class="glz-ok">Faol</span></div>
+                            <div class="glz-status-row"><span>⏱️ Brute-force himoya</span><span class="glz-ok">Faol (3 urinish → eskalatsiya)</span></div>
+                            <div class="glz-status-row"><span>☁️ Cloudflare WAF</span><span class="glz-warn">Tekshiring</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SOZLAMALAR TAB -->
+                <div class="tab-content" id="tab-settings">
+                    <div class="settings-section">
+                        <div class="settings-title">Sayt sozlamalari</div>
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label>Sayt nomi</label>
+                            <input type="text" id="setting-site-name" class="form-input" value="Abdugofforov">
+                        </div>
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label>Tavsif (Hero subtitle)</label>
+                            <input type="text" id="setting-site-desc" class="form-input" value="Vaqt sarguzashtlari va unutilmas xotiralar kundaligi.">
+                        </div>
+                        <button class="btn-primary" id="save-settings-btn">Saqlash</button>
+                    </div>
+
+                    <div class="settings-section">
+                        <div class="settings-title" style="color:#f87171;">Xavfli zona</div>
+                        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:15px;">Barcha postlar, rejalar va ma'lumotlarni o'chirish. Bu amalni qaytarib bo'lmaydi.</p>
+                        <button class="btn-secondary" id="reset-all-btn" style="color:#f87171;border-color:rgba(248,113,113,0.3);">Hammasini tozalash</button>
+                    </div>
+                </div>
+
+            </div><!-- /glz-content -->
+        </div><!-- /glz-main -->
+    </div><!-- /admin-screen -->
+
+    <!-- Desktop Bottom Dock (Glassmorphism - Admin) -->
+    <nav class="desktop-dock" id="admin-desktop-dock">
+        <button class="dock-item admin-tab active" data-tab="dashboard" aria-label="Dashboard" title="Dashboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span class="dock-label">Dashboard</span>
+        </button>
+        <button class="dock-item admin-tab" data-tab="posts" aria-label="Postlar" title="Postlar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span class="dock-label">Postlar</span>
+        </button>
+        <button class="dock-item admin-tab" data-tab="tasks" aria-label="Rejalar" title="Rejalar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            <span class="dock-label">Rejalar</span>
+        </button>
+        <button class="dock-item admin-tab" data-tab="portfolio" aria-label="Portfolio" title="Portfolio">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <span class="dock-label">Portfolio</span>
+        </button>
+        <button class="dock-item admin-tab" data-tab="settings" aria-label="Sozlamalar" title="Sozlamalar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            <span class="dock-label">Sozlamalar</span>
+        </button>
+    </nav>
+
+    <div class="glz-overlay" id="glz-overlay"></div>
+
+<script src="storage.js?v=2"></script>
+<script>
+// ===== KAY ADMIN PANEL =====
+// XAVFSIZLIK: PIN endi MIJOZDA tekshirilmaydi. PIN to'g'riligini faqat
+// SERVER (/admin/request-code yoki /check-pin) hal qiladi. Shu sababli
+// PIN hashi bu yerda saqlanmaydi (avval oshkor bo'lgan hash olib tashlandi).
+
+// Postlarni IndexedDB orqali o'qish/yozish (katta rasm/audio sig'imi uchun)
+function getPosts() {
+    if (window.Store && Store.ready) return Store.get('abdu_posts') || [];
+    return JSON.parse(localStorage.getItem('abdu_posts') || '[]');
+}
+
+// Postlarni saqlash — HAM lokal (IndexedDB), HAM server (Cloudflare KV).
+// KV ga yozilmasa, o'zgarish faqat shu brauzerda qoladi va mehmonlar
+// eski holatni ko'rishda davom etadi. Shuning uchun KV sinxronlash shart.
+async function setPosts(arr) {
+    if (window.Store && Store.ready) Store.set('abdu_posts', arr);
+    else localStorage.setItem('abdu_posts', JSON.stringify(arr));
+
+    // Serverga (KV) yuborish — admin token yoki PIN bilan
+    if (window.Sync) {
+        const token = sessionStorage.getItem('kay_admin_token');
+        const pin = sessionStorage.getItem('kay_admin_pin');
+        try {
+            const res = await Sync.pushPosts(arr, { token, pin });
+            if (res && res.ok) {
+                addLog('success', 'Postlar serverga sinxronlandi (hammaga ko\'rinadi)');
+            } else if (res && res.reason === 'not_configured') {
+                addLog('fail', 'Server ombori (KV) sozlanmagan — faqat shu qurilmada');
+            } else if (res && res.reason === 'unauthorized') {
+                addLog('fail', 'Sessiya tugagan — qayta kiring (server yangilanmadi)');
+            } else {
+                addLog('fail', 'Serverga yuborilmadi: ' + ((res && res.message) || 'xato'));
+            }
+        } catch (e) {
+            addLog('fail', 'Serverga ulanib bo\'lmadi');
+        }
+    }
+}
+
+// Sahifa yuklanishida: avval server (KV) dan eng so'nggi postlarni olamiz,
+// keyin admin holatini tekshiramiz. Shunda admin panelda KV bilan bir xil
+// ro'yxat ko'rinadi va o'chirish/tahrir KV ga to'g'ri yoziladi.
+(async function initKay() {
+    if (window.Store) {
+        try { await Store.init(['abdu_posts']); } catch (e) { console.warn('Store init:', e); }
+    }
+    // Serverdan (KV) postlarni yuklab, lokalga keshlaymiz
+    if (window.Sync) {
+        try {
+            const serverPosts = await Sync.fetchPosts();
+            if (serverPosts && Array.isArray(serverPosts)) {
+                if (window.Store && Store.ready) Store.set('abdu_posts', serverPosts);
+                else localStorage.setItem('abdu_posts', JSON.stringify(serverPosts));
+            }
+        } catch (e) { console.warn('KV fetch:', e); }
+    }
+    if (sessionStorage.getItem('kay_admin') === 'true') showAdminPanel();
+})();
+
+// ===== PIN LOGIKASI =====
+const pinInput = document.getElementById('pin-input');
+const pinError = document.getElementById('pin-error');
+const pinAttempts = document.getElementById('pin-attempts');
+
+async function tryLogin() {
+    const pin = pinInput.value.trim();
+    if (!pin) return;
+
+    const lockUntil = parseInt(localStorage.getItem('kay_lock') || '0');
+    if (Date.now() < lockUntil) {
+        const s = Math.ceil((lockUntil - Date.now()) / 1000);
+        pinError.textContent = `${s} soniya kuting...`;
+        pinError.style.display = 'block';
+        return;
+    }
+
+    const submitBtn = document.getElementById('pin-submit-btn');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Tekshirilmoqda...'; }
+
+    // Noto'g'ri PIN holatini ishlovchi (urinish/blok hisoblagichi — faqat UX uchun)
+    function registerWrongPin(msg) {
+        const attempts = parseInt(localStorage.getItem('kay_attempts') || '0') + 1;
+        localStorage.setItem('kay_attempts', attempts);
+        addLog('fail', `Noto'g'ri PIN urinish #${attempts}`);
+        if (attempts >= 3) {
+            const lockCount = parseInt(localStorage.getItem('kay_lockcount') || '0') + 1;
+            localStorage.setItem('kay_lockcount', lockCount);
+            const lockSeconds = Math.min(60 * Math.pow(2, lockCount - 1), 3600);
+            localStorage.setItem('kay_lock', Date.now() + lockSeconds * 1000);
+            localStorage.removeItem('kay_attempts');
+            addLog('fail', `Blok faollashtirildi: ${lockSeconds}s`);
+            pinError.textContent = `3 marta xato! ${lockSeconds} soniya kuting.`;
+        } else {
+            pinError.textContent = msg || `Noto'g'ri PIN (${attempts}/3)`;
+        }
+        pinError.style.display = 'block';
+        pinInput.value = '';
+        pinInput.focus();
+    }
+
+    let res, data;
+    try {
+        // PIN ni SERVERGA yuboramiz — to'g'riligini FAQAT server hal qiladi
+        res = await fetch('/admin/request-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin })
+        });
+        data = await res.json().catch(() => ({}));
+    } catch (e) {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Kirish'; }
+        addLog('fail', 'Server bilan bog\'lanib bo\'lmadi');
+        pinError.textContent = 'Server bilan bog\'lanib bo\'lmadi';
+        pinError.style.display = 'block';
+        return;
+    }
+
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Kirish'; }
+
+    // 1) PIN to'g'ri + Telegram kodi yuborildi → 2FA ekrani
+    if (data.ok && data.sessionId) {
+        localStorage.removeItem('kay_attempts');
+        localStorage.removeItem('kay_lock');
+        localStorage.removeItem('kay_lockcount');
+        window.__authSession = { sessionId: data.sessionId, pin };
+        showTgScreen();
+        addLog('success', 'PIN to\'g\'ri — Telegramga kod yuborildi');
+        return;
+    }
+
+    // 2) Telegram sozlanmagan → PIN ni /check-pin orqali SERVERDA tasdiqlaymiz
+    if (data.configured === false || (res.status === 503 && /telegram/i.test(data.message || ''))) {
+        try {
+            const cp = await fetch('/check-pin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin })
+            });
+            const cpData = await cp.json().catch(() => ({}));
+            if (cpData.success) {
+                localStorage.removeItem('kay_attempts');
+                localStorage.removeItem('kay_lock');
+                localStorage.removeItem('kay_lockcount');
+                addLog('info', 'Telegram sozlanmagan — PIN bilan kirildi (legacy)');
+                sessionStorage.setItem('kay_admin', 'true');
+                sessionStorage.setItem('kay_admin_pin', pin);
+                showAdminPanel();
+            } else {
+                registerWrongPin(cpData.message);
+            }
+        } catch (e) {
+            pinError.textContent = 'Server bilan bog\'lanib bo\'lmadi';
+            pinError.style.display = 'block';
+        }
+        return;
+    }
+
+    // 3) PIN noto'g'ri (401) → urinish/blok hisoblagichi (server ham rate-limit qiladi)
+    if (res.status === 401) {
+        registerWrongPin(data.message);
+        return;
+    }
+
+    // 4) Boshqa server xatosi (KV yo'q, 429 — juda ko'p urinish, va h.k.)
+    pinError.textContent = data.message || 'Server xatosi';
+    pinError.style.display = 'block';
+    pinInput.value = '';
+}
+
+document.getElementById('pin-submit-btn').addEventListener('click', tryLogin);
+pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+// ===== TELEGRAM 2FA EKRANI =====
+function showPinScreen() {
+    document.getElementById('tg-screen').style.display = 'none';
+    document.getElementById('pin-screen').style.display = 'block';
+    pinInput.value = '';
+    pinError.style.display = 'none';
+    pinInput.focus();
+}
+function showTgScreen() {
+    document.getElementById('pin-screen').style.display = 'none';
+    document.getElementById('tg-screen').style.display = 'block';
+    const tgInput = document.getElementById('tg-code-input');
+    const tgErr = document.getElementById('tg-error');
+    tgInput.value = '';
+    tgErr.style.display = 'none';
+    tgInput.focus();
+    startTgCountdown();
+}
+
+let tgCountdownTimer = null;
+function startTgCountdown() {
+    const attemptsEl = document.getElementById('tg-attempts');
+    let secs = 300; // 5 daqiqa
+    if (tgCountdownTimer) clearInterval(tgCountdownTimer);
+    function tick() {
+        if (secs <= 0) {
+            attemptsEl.textContent = '⏱ Kod eskirdi — qaytadan yuboring';
+            clearInterval(tgCountdownTimer);
+            return;
+        }
+        const mm = Math.floor(secs / 60);
+        const ss = (secs % 60).toString().padStart(2, '0');
+        attemptsEl.textContent = `Kod amal qilish muddati: ${mm}:${ss}`;
+        secs--;
+    }
+    tick();
+    tgCountdownTimer = setInterval(tick, 1000);
+}
+
+async function verifyTgCode() {
+    const tgInput = document.getElementById('tg-code-input');
+    const tgErr = document.getElementById('tg-error');
+    const submitBtn = document.getElementById('tg-submit-btn');
+
+    const code = (tgInput.value || '').trim();
+    if (!/^\d{6}$/.test(code)) {
+        tgErr.textContent = "Kod 6 xonali raqam bo'lishi kerak";
+        tgErr.style.display = 'block';
+        return;
+    }
+    if (!window.__authSession || !window.__authSession.sessionId) {
+        tgErr.textContent = 'Sessiya yo\'q — qaytadan PIN kiriting';
+        tgErr.style.display = 'block';
+        setTimeout(showPinScreen, 1500);
+        return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Tekshirilmoqda...';
+
+    try {
+        const res = await fetch('/admin/verify-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                sessionId: window.__authSession.sessionId,
+                code,
+            })
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (data.ok && data.token) {
+            // Muvaffaqiyatli kirish — token saqlaymiz va admin panelga o'tamiz
+            sessionStorage.setItem('kay_admin', 'true');
+            sessionStorage.setItem('kay_admin_token', data.token);
+            sessionStorage.setItem('kay_admin_pin', window.__authSession.pin); // backward compat fallback
+            window.__authSession = null;
+            if (tgCountdownTimer) clearInterval(tgCountdownTimer);
+            addLog('success', 'Telegram tasdiqlandi — admin panel ochildi');
+            showAdminPanel();
+        } else {
+            tgErr.textContent = data.message || "Kod noto'g'ri";
+            tgErr.style.display = 'block';
+            tgInput.value = '';
+            tgInput.focus();
+            addLog('fail', "Telegram kod noto'g'ri");
+            if (res.status === 429 || /eskirgan|topilmadi/i.test(data.message || '')) {
+                // Sessiya tugagan — PIN ekraniga qaytamiz
+                setTimeout(showPinScreen, 1800);
+            }
+        }
+    } catch (e) {
+        tgErr.textContent = "Tarmoq xatosi: " + (e.message || 'bog\'lanib bo\'lmadi');
+        tgErr.style.display = 'block';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Tasdiqlash';
+    }
+}
+
+async function resendTgCode() {
+    if (!window.__authSession || !window.__authSession.pin) {
+        showPinScreen();
+        return;
+    }
+    const btn = document.getElementById('tg-resend-btn');
+    const tgErr = document.getElementById('tg-error');
+    btn.disabled = true;
+    btn.textContent = 'Yuborilmoqda...';
+    try {
+        const res = await fetch('/admin/request-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin: window.__authSession.pin })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (data.ok && data.sessionId) {
+            window.__authSession.sessionId = data.sessionId;
+            tgErr.textContent = "";
+            tgErr.style.display = 'none';
+            startTgCountdown();
+            addLog('info', 'Telegramga yangi kod yuborildi');
+        } else {
+            tgErr.textContent = data.message || "Qayta yuborishda xato";
+            tgErr.style.display = 'block';
+        }
+    } catch (e) {
+        tgErr.textContent = "Tarmoq xatosi";
+        tgErr.style.display = 'block';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '🔄 Qayta yuborish';
+    }
+}
+
+document.getElementById('tg-submit-btn').addEventListener('click', verifyTgCode);
+document.getElementById('tg-code-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') verifyTgCode();
+});
+// Faqat raqam kiritish
+document.getElementById('tg-code-input').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+});
+document.getElementById('tg-resend-btn').addEventListener('click', resendTgCode);
+document.getElementById('tg-cancel-btn').addEventListener('click', () => {
+    if (tgCountdownTimer) clearInterval(tgCountdownTimer);
+    window.__authSession = null;
+    showPinScreen();
+});
+
+function checkLock() {
+    const lockUntil = parseInt(localStorage.getItem('kay_lock') || '0');
+    if (Date.now() < lockUntil) {
+        const s = Math.ceil((lockUntil - Date.now()) / 1000);
+        pinAttempts.textContent = `Bloklangan: ${s}s`;
+        setTimeout(checkLock, 1000);
+    } else {
+        pinAttempts.textContent = '';
+    }
+}
+checkLock();
+
+// ===== ADMIN PANEL =====
+function showAdminPanel() {
+    document.getElementById('pin-screen').style.display = 'none';
+    // Telegram 2FA ekranini ham yopamiz (aks holda dashboard ustida qolib ketadi)
+    const tg = document.getElementById('tg-screen');
+    if (tg) tg.style.display = 'none';
+    if (typeof tgCountdownTimer !== 'undefined' && tgCountdownTimer) {
+        clearInterval(tgCountdownTimer);
+        tgCountdownTimer = null;
+    }
+    document.getElementById('admin-screen').classList.add('show');
+
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Xayrli tong' : hour < 18 ? 'Xayrli kun' : 'Xayrli kech';
+    document.getElementById('admin-greeting').textContent = `${greeting}, Akromjon 👋`;
+
+    const dateEl = document.getElementById('glz-date');
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString('uz-UZ', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    loadStats();
+    loadPosts();
+    loadTasks();
+    loadPortfolioForm();
+    loadSecurityLog();
+}
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+    sessionStorage.removeItem('kay_admin');
+    sessionStorage.removeItem('kay_admin_token');
+    sessionStorage.removeItem('kay_admin_pin');
+    document.getElementById('admin-screen').classList.remove('show');
+    document.getElementById('pin-screen').style.display = 'block';
+    pinInput.value = '';
+    pinError.style.display = 'none';
+});
+
+// ===== O'QUVCHILAR VA NATIJALAR =====
+function _adminHeaders() {
+    const h = {};
+    const token = sessionStorage.getItem('kay_admin_token');
+    const pin = sessionStorage.getItem('kay_admin_pin');
+    if (token) h['x-admin-token'] = token;
+    if (pin) h['x-admin-pin'] = pin;
+    return h;
+}
+function _esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+async function loadStudents() {
+    const usersBox = document.getElementById('students-list');
+    const resultsBox = document.getElementById('results-table');
+    if (!usersBox || !resultsBox) return;
+    try {
+        const res = await fetch('/admin/users', { headers: _adminHeaders() });
+        const data = await res.json().catch(() => ({}));
+        if (data.ok && Array.isArray(data.users)) {
+            document.getElementById('students-count').textContent = data.count || data.users.length;
+            usersBox.innerHTML = data.users.length ? `<table style="width:100%;border-collapse:collapse;font-size:14px;">
+                <thead><tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
+                    <th style="padding:8px 10px;">Ism</th><th style="padding:8px 10px;">Username</th><th style="padding:8px 10px;">Ro'yxatdan o'tgan</th>
+                </tr></thead><tbody>${data.users.map(u => {
+                    const d = u.createdAt ? new Date(u.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+                    return `<tr><td style="padding:8px 10px;font-weight:600;">${_esc(u.name)}</td><td style="padding:8px 10px;color:#9aa;">@${_esc(u.username)}</td><td style="padding:8px 10px;color:#9aa;font-size:12px;">${d}</td></tr>`;
+                }).join('')}</tbody></table>` : '<p style="color:#9aa;font-size:13px;">Hali hech kim ro\'yxatdan o\'tmagan.</p>';
+        } else {
+            usersBox.innerHTML = '<p style="color:#f87171;font-size:13px;">' + _esc(data.message || 'Yuklab bo\'lmadi (admin kerak)') + '</p>';
+        }
+    } catch (e) { usersBox.innerHTML = '<p style="color:#f87171;font-size:13px;">Serverga ulanib bo\'lmadi</p>'; }
+
+    try {
+        const res = await fetch('/results', { headers: _adminHeaders() });
+        const data = await res.json().catch(() => ({}));
+        if (data.ok && Array.isArray(data.results)) {
+            document.getElementById('results-count').textContent = data.count || data.results.length;
+            resultsBox.innerHTML = data.results.length ? `<table style="width:100%;border-collapse:collapse;font-size:14px;min-width:560px;">
+                <thead><tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
+                    <th style="padding:8px 10px;">O'quvchi</th><th style="padding:8px 10px;">Username</th><th style="padding:8px 10px;">Test</th><th style="padding:8px 10px;">To'g'ri</th><th style="padding:8px 10px;">Xato</th><th style="padding:8px 10px;">Foiz</th><th style="padding:8px 10px;">Sana</th>
+                </tr></thead><tbody>${data.results.map(r => {
+                    const d = new Date(r.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+                    const color = r.pct >= 80 ? '#34d399' : r.pct >= 60 ? '#fbbf24' : '#f87171';
+                    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.06);"><td style="padding:8px 10px;font-weight:600;">${_esc(r.name)}</td><td style="padding:8px 10px;color:#9aa;">@${_esc(r.username)}</td><td style="padding:8px 10px;">${_esc(r.testTitle || r.testId)}</td><td style="padding:8px 10px;color:#34d399;font-weight:600;">${r.score}</td><td style="padding:8px 10px;color:#f87171;font-weight:600;">${r.wrong}</td><td style="padding:8px 10px;color:${color};font-weight:700;">${r.pct}%</td><td style="padding:8px 10px;color:#9aa;font-size:12px;white-space:nowrap;">${d}</td></tr>`;
+                }).join('')}</tbody></table>` : '<p style="color:#9aa;font-size:13px;">Hali test ishlanmagan.</p>';
+        } else {
+            resultsBox.innerHTML = '<p style="color:#f87171;font-size:13px;">' + _esc(data.message || 'Yuklab bo\'lmadi') + '</p>';
+        }
+    } catch (e) { resultsBox.innerHTML = '<p style="color:#f87171;font-size:13px;">Serverga ulanib bo\'lmadi</p>'; }
+}
+
+// ===== SIDEBAR NAV / TABLAR =====
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const targetTab = tab.dataset.tab;
+        
+        // Barcha admin-tab lardan active classni olib tashlash
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Sidebar va Dock dagi barcha mos tablarni active qilish
+        document.querySelectorAll(`.admin-tab[data-tab="${targetTab}"]`).forEach(t => t.classList.add('active'));
+        
+        // Contentni ochish
+        const contentEl = document.getElementById('tab-' + targetTab);
+        if (contentEl) contentEl.classList.add('active');
+        
+        if (targetTab === 'students') loadStudents();
+        const titleEl = document.getElementById('glz-page-title');
+        
+        // Agar tabda o'zining title'i bo'lsa uni oladi, bo'lmasa matnini
+        const titleText = tab.dataset.title || tab.querySelector('.dock-label')?.textContent || tab.textContent.replace(/[^\w\s]/g,'').trim();
+        if (titleEl && titleText) titleEl.textContent = titleText;
+        
+        // mobil sidebarni yopish
+        const sidebar = document.getElementById('glz-sidebar');
+        if (sidebar) sidebar.classList.remove('open');
+        const overlay = document.getElementById('glz-overlay');
+        if (overlay) overlay.classList.remove('show');
+    });
+});
+
+// Mobil sidebar toggle
+document.getElementById('glz-menu-toggle').addEventListener('click', () => {
+    document.getElementById('glz-sidebar').classList.toggle('open');
+    document.getElementById('glz-overlay').classList.toggle('show');
+});
+document.getElementById('glz-overlay').addEventListener('click', () => {
+    document.getElementById('glz-sidebar').classList.remove('open');
+    document.getElementById('glz-overlay').classList.remove('show');
+});
+
+// Qidiruv (postlar bo'yicha)
+document.getElementById('admin-search').addEventListener('input', () => loadPosts());
+
+// ===== STATISTIKA =====
+function loadStats() {
+    const posts = getPosts();
+    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
+    const totalLikes = posts.reduce((s, p) => s + (p.likes || 0), 0);
+    const activeTasks = tasks.filter(t => t.status !== 'done').length;
+    const uniqueDays = new Set(posts.map(p => p.date)).size;
+
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('stat-posts', posts.length);
+    set('stat-likes', totalLikes);
+    set('stat-tasks', activeTasks);
+    set('stat-days', uniqueDays);
+    set('side-posts', posts.length);
+    set('side-likes', totalLikes);
+    set('side-tasks', activeTasks);
+}
+
+// ===== POSTLAR =====
+function loadPosts() {
+    let posts = getPosts();
+    const q = (document.getElementById('admin-search')?.value || '').trim().toLowerCase();
+    if (q) posts = posts.filter(p => (p.title || '').toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q));
+
+    const list = document.getElementById('admin-posts-list');
+    if (!posts.length) {
+        list.innerHTML = '<div class="glz-empty">' + (q ? 'Hech narsa topilmadi' : 'Hali post yo\'q') + '</div>';
+    } else {
+        list.innerHTML = posts.map(p => `
+            <div class="glz-row">
+                <img src="${p.image||''}" onerror="this.style.display='none'">
+                <div class="info">
+                    <div class="t">${_esc(p.title)}</div>
+                    <div class="m">${_esc(p.category)} - ${p.date} - ❤️ ${p.likes||0}</div>
+                </div>
+                <div class="acts">
+                    <button class="icon-btn" onclick="editPost(${p.id})" title="Tahrirlash">✏️</button>
+                    <button class="icon-btn danger" onclick="deletePost(${p.id})" title="O'chirish">🗑️</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Dashboard — so'nggi postlar
+    const recent = document.getElementById('dash-recent');
+    if (recent) {
+        const all = getPosts();
+        recent.innerHTML = all.length
+            ? all.slice(0, 4).map(p => `
+                <div class="glz-mini-row">
+                    <img src="${p.image||''}" onerror="this.style.display='none'">
+                    <div><strong>${_esc(p.title)}</strong><small>${_esc(p.category)} - ❤️ ${p.likes||0}</small></div>
+                </div>`).join('')
+            : '<div class="glz-empty">Hali post yo\'q</div>';
+    }
+}
+
+function deletePost(id) {
+    if (!confirm('O\'chirasizmi?')) return;
+    const posts = getPosts();
+    setPosts(posts.filter(p => p.id !== id));
+    loadPosts(); loadStats();
+}
+
+function editPost(id) {
+    sessionStorage.setItem('kay_edit_post', id);
+    window.location.href = '/';
+}
+
+// ===== REJALAR =====
+function loadTasks() {
+    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
+    const list = document.getElementById('admin-task-list');
+
+    const todo = tasks.filter(t => t.status === 'todo').length;
+    const progress = tasks.filter(t => t.status === 'progress').length;
+    const done = tasks.filter(t => t.status === 'done').length;
+    const total = tasks.length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+
+    document.getElementById('count-todo').textContent = todo;
+    document.getElementById('count-progress').textContent = progress;
+    document.getElementById('count-done').textContent = done;
+    document.getElementById('chart-percentage-text').textContent = pct + '%';
+    const circle = document.getElementById('progress-ring-circle');
+    if (circle) circle.style.strokeDashoffset = 314.16 - (314.16 * pct / 100);
+
+    if (!tasks.length) {
+        list.innerHTML = '<div class="glz-empty">Reja yo\'q</div>';
+        return;
+    }
+    const icons = { todo: '🔴', progress: '🟡', done: '🟢' };
+    list.innerHTML = tasks.map(t => `
+        <div class="glz-row">
+            <span style="font-size:18px;">${icons[t.status]||'⚪'}</span>
+            <span class="info" style="font-size:14px;">${_esc(t.title)}</span>
+            <div class="acts"><button class="icon-btn danger" onclick="deleteTask(${t.id})">✕</button></div>
+        </div>
+    `).join('');
+}
+
+document.getElementById('admin-task-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const title = document.getElementById('task-title-input').value.trim();
+    const status = document.getElementById('task-status-input').value;
+    if (!title) return;
+    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
+    tasks.push({ id: Date.now(), title, status });
+    localStorage.setItem('abdu_tasks', JSON.stringify(tasks));
+    document.getElementById('task-title-input').value = '';
+    loadTasks(); loadStats();
+});
+
+function deleteTask(id) {
+    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
+    localStorage.setItem('abdu_tasks', JSON.stringify(tasks.filter(t => t.id !== id)));
+    loadTasks(); loadStats();
+}
+
+// ===== PORTFOLIO =====
+function loadPortfolioForm() {
+    const info = JSON.parse(localStorage.getItem('abdu_portfolio') || '{}');
+    if (info.name) document.getElementById('port-name-input').value = info.name;
+    if (info.title) document.getElementById('port-title-input').value = info.title;
+    if (info.bio) document.getElementById('port-bio-input').value = info.bio;
+    if (info.skills) document.getElementById('port-skills-input').value = info.skills;
+    if (info.experience) document.getElementById('port-experience-input').value = info.experience;
+}
+
+document.getElementById('admin-port-settings-form').addEventListener('submit', e => {
+    e.preventDefault();
+    localStorage.setItem('abdu_portfolio', JSON.stringify({
+        name: document.getElementById('port-name-input').value,
+        title: document.getElementById('port-title-input').value,
+        bio: document.getElementById('port-bio-input').value,
+        skills: document.getElementById('port-skills-input').value,
+        experience: document.getElementById('port-experience-input').value,
+    }));
+    alert('Portfolio saqlandi ✅');
+});
+
+document.getElementById('generate-token-btn').addEventListener('click', () => {
+    const token = Math.random().toString(36).slice(2, 10);
+    const tokens = JSON.parse(localStorage.getItem('abdu_portfolio_tokens') || '[]');
+    tokens.push(token);
+    localStorage.setItem('abdu_portfolio_tokens', JSON.stringify(tokens));
+    const link = `${window.location.origin}/?portfolio=${token}`;
+    document.getElementById('generated-link-input').value = link;
+    document.getElementById('generated-link-box').style.display = 'block';
+});
+
+document.getElementById('copy-link-btn').addEventListener('click', () => {
+    const input = document.getElementById('generated-link-input');
+    navigator.clipboard.writeText(input.value).then(() => {
+        document.getElementById('copy-link-btn').textContent = 'Nusxalandi ✅';
+        setTimeout(() => document.getElementById('copy-link-btn').textContent = 'Nusxa', 2000);
+    });
+});
+
+// ===== XAVFSIZLIK LOG =====
+function addLog(type, message) {
+    const logs = JSON.parse(localStorage.getItem('kay_logs') || '[]');
+    logs.unshift({ type, message, time: new Date().toLocaleString('uz-UZ') });
+    localStorage.setItem('kay_logs', JSON.stringify(logs.slice(0, 50)));
+}
+
+function loadSecurityLog() {
+    const logs = JSON.parse(localStorage.getItem('kay_logs') || '[]');
+    const list = document.getElementById('security-log-list');
+    if (!logs.length) {
+        list.innerHTML = '<div class="log-item" style="color:var(--text-secondary);justify-content:center;">Hali log yo\'q</div>';
+        return;
+    }
+    list.innerHTML = logs.map(l => `
+        <div class="log-item">
+            <div class="log-dot ${l.type === 'success' ? 'ok' : 'fail'}"></div>
+            <span>${l.message}</span>
+            <span class="log-time">${l.time}</span>
+        </div>
+    `).join('');
+}
+
+document.getElementById('clear-log-btn').addEventListener('click', () => {
+    if (!confirm('Loglarni tozalash?')) return;
+    localStorage.removeItem('kay_logs');
+    loadSecurityLog();
+});
+
+// ===== SOZLAMALAR =====
+document.getElementById('save-settings-btn').addEventListener('click', () => {
+    localStorage.setItem('kay_site_name', document.getElementById('setting-site-name').value);
+    localStorage.setItem('kay_site_desc', document.getElementById('setting-site-desc').value);
+    alert('Sozlamalar saqlandi ✅');
+});
+
+document.getElementById('reset-all-btn').addEventListener('click', async () => {
+    if (!confirm('BARCHA ma\'lumotlar o\'chadi! Ishonchingiz komilmi?')) return;
+    if (!confirm('Bu amalni qaytarib bo\'lmaydi. Davom etasizmi?')) return;
+    if (window.Store) Store.remove('abdu_posts');
+    ['abdu_posts','abdu_tasks','abdu_portfolio','abdu_portfolio_tokens','kay_logs'].forEach(k => localStorage.removeItem(k));
+    // Serverni (KV) ham tozalaymiz — aks holda mehmonlar eski postlarni
+    // ko'rishda davom etadi
+    if (window.Sync) {
+        const token = sessionStorage.getItem('kay_admin_token');
+        const pin = sessionStorage.getItem('kay_admin_pin');
+        try {
+            const res = await Sync.pushPosts([], { token, pin });
+            if (res && res.ok) {
+                alert('Tozalandi (server ham yangilandi — postlar hammadan o\'chdi)');
+            } else {
+                alert('Lokal tozalandi, lekin serverga yetib bormadi: ' + ((res && res.message) || 'xato') + '\nQayta kirib urinib ko\'ring.');
+            }
+        } catch (e) {
+            alert('Lokal tozalandi, lekin serverga ulanib bo\'lmadi.');
+        }
+    } else {
+        alert('Tozalandi');
+    }
+    loadStats(); loadPosts(); loadTasks();
+});
+</script>
+</body>
+</html>
+
