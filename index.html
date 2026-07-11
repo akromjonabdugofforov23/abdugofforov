@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
@@ -36,6 +36,12 @@
     <meta name="apple-mobile-web-app-title" content="Abdugofforov">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="style.css?v=3">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -210,47 +216,8 @@
     </div>
  
     <!-- Yashirin Portfolio Sahifasi -->
-    <div class="container portfolio-container animate-fade-in" id="portfolio-view" style="display: none; padding: 60px 0;">
-        <div class="portfolio-header" style="text-align: center; margin-bottom: 40px;">
-            <h1 class="portfolio-name" id="port-display-name" style="font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 10px;">Abdugofforov</h1>
-            <p class="portfolio-title" id="port-display-title" style="font-size: 18px; color: var(--accent-color); font-weight: 600; margin-bottom: 15px;"></p>
-            <p class="portfolio-bio" id="port-display-bio" style="max-width: 600px; margin: 0 auto; color: var(--text-secondary); line-height: 1.8;"></p>
-        </div>
-        <div class="portfolio-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
-            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
-                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">🛠️ Texnologiyalar & Ko'nikmalar</h3>
-                <ul id="port-display-skills" style="list-style: none; display: flex; flex-wrap: wrap; gap: 10px; padding: 0;">
-                    <!-- Ko'nikmalar bu yerga yoziladi -->
-                </ul>
-            </div>
-            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
-                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">💼 Ish Tajribasi</h3>
-                <div id="port-display-experience" style="color: var(--text-secondary); line-height: 1.7;">
-                    <!-- Tajriba bu yerga yoziladi -->
-                </div>
-            </div>
-        </div>
-        <div style="text-align: center;">
-            <button class="btn-secondary" id="close-portfolio-btn">Bosh sahifaga qaytish</button>
-        </div>
-    </div>
-
-    <!-- Asosiy Kontent -->
-    <!-- Deutsch Test Sahifasi -->
-    <div class="container animate-fade-in" id="deutsch-view" style="display:none; padding: 40px 0;">
-        <div id="deutsch-content"></div>
-    </div>
-
-    <!-- Kartochkalar (Flashcards) Sahifasi -->
-    <div class="container animate-fade-in" id="flashcards-view" style="display:none; padding: 40px 0;">
-        <div id="flashcards-content"></div>
-    </div>
-
-    <!-- Turnir Sahifasi -->
-    <div class="container animate-fade-in" id="tournament-view" style="display:none; padding: 40px 0;">
-        <div id="tournament-content"></div>
-    </div>
-
+        <!-- Views will be injected here dynamically -->
+    <div id="dynamic-views-container"></div>
     <main class="container animate-fade-in" id="main-content">
 
         <!-- Asosiy bo'limlar -->
@@ -481,6 +448,14 @@
     <script src="storage.js?v=2" defer></script>
     <script src="i18n.js?v=2" defer></script>
     <script src="auth.js?v=2" defer></script>
-    <script type="module" src="app.js?v=2"></script>
+    <script src="views.js" defer></script>
+    <script src="data-flashcards.js" defer></script>
+    <script src="data-tests.js" defer></script>
+    <script src="app.js?v=2" defer></script>
 </body>
 </html>
+
+
+
+
+
