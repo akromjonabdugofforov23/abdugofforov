@@ -36,11 +36,13 @@
     <meta name="apple-mobile-web-app-title" content="Abdugofforov">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="stylesheet" href="css/style.bundle.css?v=1">
+    <link rel="preload" href="css/style.bundle.css?v=1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/style.bundle.css?v=1"></noscript>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
 
     <!-- ===== Structured Data (SEO) ===== -->
     <script type="application/ld+json">
@@ -150,32 +152,32 @@
                 <div class="carousel-caption">🏰 Neuschwanstein - "Ertak qala" - Bavaria</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/rheintal.jpg" alt="Rheintal" loading="lazy">
+                <img src="images/rheintal.webp" alt="Rheintal" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">🍇 Rheintal - "Uzum dalalar va qalalar" - Rhineland</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/munich-marienplatz.jpg" alt="München" loading="lazy">
+                <img src="images/munich-marienplatz.webp" alt="München" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">🍻 München - "Bayerische Gemütlichkeit" - Bayern</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/koelner-dom.jpg" alt="Kölner Dom" loading="lazy">
+                <img src="images/koelner-dom.webp" alt="Kölner Dom" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">⛪ Kölner Dom - "800 yillik mojiza" - Köln</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/rothenburg.jpg" alt="Rothenburg ob der Tauber" loading="lazy">
+                <img src="images/rothenburg.webp" alt="Rothenburg ob der Tauber" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">🕰️ Rothenburg - "Vaqt toxtaghan joy" - Franken</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/hamburg.jpg" alt="Hamburg Hafen" loading="lazy">
+                <img src="images/hamburg.webp" alt="Hamburg Hafen" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">⚓ Hamburg - "Shimol darvozasi" - Norddeutschland</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/zugspitze.jpg" alt="Zugspitze" loading="lazy">
+                <img src="images/zugspitze.webp" alt="Zugspitze" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">⛰️ Zugspitze - "Germaniyaning choqqisi" - Alpen</div>
             </div>
