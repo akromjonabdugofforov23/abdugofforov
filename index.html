@@ -6,7 +6,7 @@
 
     <!-- ===== SEO Meta ===== -->
     <title>Abdugofforov | Shaxsiy blog, xotiralar va nemis tili testlari</title>
-    <meta name="description" content="Abdugofforov — shaxsiy blog: kundalik xotiralar, g'oyalar, loyihalar, musiqa hamda nemis tili (A1, A2, B1) testlari va so'z kartochkalari. O'zbek, rus, nemis va ingliz tillarida.">
+    <meta name="description" content="Abdugofforov ÔÇö shaxsiy blog: kundalik xotiralar, g'oyalar, loyihalar, musiqa hamda nemis tili (A1, A2, B1) testlari va so'z kartochkalari. O'zbek, rus, nemis va ingliz tillarida.">
     <meta name="keywords" content="Abdugofforov, blog, kundalik, nemis tili, Deutsch, A1, A2, B1, test, kartochka, xotiralar, portfolio">
     <meta name="author" content="Abdugofforov">
     <meta name="robots" content="index, follow">
@@ -36,12 +36,6 @@
     <meta name="apple-mobile-web-app-title" content="Abdugofforov">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/pages.css">
-    <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="style.css?v=3">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,7 +74,7 @@
         </div>
     </div>
 
-    <!-- Navigatsiya — bitta qatorli, logo + nav linklar + asboblar -->
+    <!-- Navigatsiya ÔÇö bitta qatorli, logo + nav linklar + asboblar -->
     <nav class="navbar">
         <div class="container navbar-row">
             <a href="#" class="logo" id="nav-logo" onclick="document.getElementById('dock-home').click(); return false;">Abdugofforov<span>.</span></a>
@@ -92,7 +86,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </button>
                 <div class="hamburger-overlay" id="hamburger-menu">
-                    <!-- Til tanlash (bayroqlar bilan) — JS orqali to'ldiriladi -->
+                    <!-- Til tanlash (bayroqlar bilan) ÔÇö JS orqali to'ldiriladi -->
                     <div id="lang-select" class="lang-dropdown" aria-label="Til / Language"></div>
 
                     <!-- Qorong'u rejim tugmasi -->
@@ -103,7 +97,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                     </button>
 
-                    <!-- Yangi post tugmasi (faqat admin — body.admin-mode) -->
+                    <!-- Yangi post tugmasi (faqat admin ÔÇö body.admin-mode) -->
                     <button class="btn-primary" id="add-post-btn" aria-label="Yangi post yozish" title="Yozish">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         <span data-i18n="nav.write" class="nav-text">Yozish</span>
@@ -126,8 +120,8 @@
                                 <strong id="user-dd-name">Foydalanuvchi</strong>
                                 <small id="user-dd-username">@user</small>
                             </div>
-                            <button class="user-dd-item" id="user-results-btn" type="button">📊 Mening natijalarim</button>
-                            <button class="user-dd-item" id="user-logout-btn" type="button">⎋ Chiqish</button>
+                            <button class="user-dd-item" id="user-results-btn" type="button">­şôè Mening natijalarim</button>
+                            <button class="user-dd-item" id="user-logout-btn" type="button">ÔÄï Chiqish</button>
                         </div>
                     </div>
                 </div>
@@ -143,12 +137,207 @@
             <div class="hero-text">
                 <h1 class="hero-title" id="hero-main-title">Abdugofforov<span>.</span></h1>
                 <p class="hero-subtitle" id="hero-sub" data-i18n="hero.subtitle">Shaxsiy blog & rivojlanish uchun</p>
-                <p class="hero-tagline">Medik <span class="dot">·</span> Dasturchi <span class="dot">·</span> Futbolchi</p>
+                <p class="hero-tagline">Medik <span class="dot">┬À</span> Dasturchi <span class="dot">┬À</span> Futbolchi</p>
             </div>
         </div>
     </header>
 
-    <div id="app-root"></div>
+    <!-- Germany Carousel -->
+    <section class="germany-carousel" id="germany-carousel">
+        <div class="carousel-track" id="carousel-track">
+            <div class="carousel-slide">
+                <img src="images/neuschwanstein.webp" alt="Neuschwanstein Castle" fetchpriority="high">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">­şôı Neuschwanstein ┬À "Ertak qala" ┬À Bavaria</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="images/rheintal.jpg" alt="Rheintal" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">­şôı Rheintal ┬À "Uzum dalalar va qalalar" ┬À Rhineland</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="images/munich-marienplatz.jpg" alt="M├╝nchen" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">­şôı M├╝nchen ┬À "Bayerische Gem├╝tlichkeit" ┬À Bayern</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="images/koelner-dom.jpg" alt="K├Âlner Dom" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">­şôı K├Âlner Dom ┬À "800 yillik mojiza" ┬À K├Âln</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="images/rothenburg.jpg" alt="Rothenburg ob der Tauber" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">­şôı Rothenburg ┬À "Vaqt toxtaghan joy" ┬À Franken</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="images/hamburg.jpg" alt="Hamburg Hafen" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">­şôı Hamburg ┬À "Shimol darvozasi" ┬À Norddeutschland</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="images/zugspitze.jpg" alt="Zugspitze" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">­şôı Zugspitze ┬À "Germaniyaning choqqisi" ┬À Alpen</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="images/heidelberg.webp" alt="Heidelberg" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">­şôı Heidelberg ┬À "Romantikaning poytaxti" ┬À Baden</div>
+            </div>
+            <div class="carousel-slide">
+                <img src="images/schwarzwald.webp" alt="Schwarzwald" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">­şôı Schwarzwald ┬À "Sirli yollar" ┬À Baden-W├╝rttemberg</div>
+            </div>
+        </div>
+        <button class="carousel-btn carousel-btn-prev" id="carousel-prev" aria-label="Oldingi">&#10094;</button>
+        <button class="carousel-btn carousel-btn-next" id="carousel-next" aria-label="Keyingi">&#10095;</button>
+        <div class="carousel-dots" id="carousel-dots"></div>
+    </section>
+
+    <!-- Functional Row: Search + Small Clock -->
+    <div class="container functional-row" id="functional-row">
+        <div class="functional-search">
+            <input type="text" class="search-input" id="search-input" placeholder="­şöı Qidirish..." data-i18n-placeholder="search.placeholder">
+        </div>
+        <div class="functional-clock" id="functional-clock" aria-label="Hozirgi vaqt">
+            <span class="fc-time">
+                <span class="clock-digits" data-clock="h">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="s">00</span>
+            </span>
+            <span class="fc-date" id="widget-date">--.--.----</span>
+        </div>
+    </div>
+ 
+    <!-- Yashirin Portfolio Sahifasi -->
+    <div class="container portfolio-container animate-fade-in" id="portfolio-view" style="display: none; padding: 60px 0;">
+        <div class="portfolio-header" style="text-align: center; margin-bottom: 40px;">
+            <h1 class="portfolio-name" id="port-display-name" style="font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 10px;">Abdugofforov</h1>
+            <p class="portfolio-title" id="port-display-title" style="font-size: 18px; color: var(--accent-color); font-weight: 600; margin-bottom: 15px;"></p>
+            <p class="portfolio-bio" id="port-display-bio" style="max-width: 600px; margin: 0 auto; color: var(--text-secondary); line-height: 1.8;"></p>
+        </div>
+        <div class="portfolio-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">­şøá´©Å Texnologiyalar & Ko'nikmalar</h3>
+                <ul id="port-display-skills" style="list-style: none; display: flex; flex-wrap: wrap; gap: 10px; padding: 0;">
+                    <!-- Ko'nikmalar bu yerga yoziladi -->
+                </ul>
+            </div>
+            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">­şÆ╝ Ish Tajribasi</h3>
+                <div id="port-display-experience" style="color: var(--text-secondary); line-height: 1.7;">
+                    <!-- Tajriba bu yerga yoziladi -->
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="btn-secondary" id="close-portfolio-btn">Bosh sahifaga qaytish</button>
+        </div>
+    </div>
+
+    <!-- Asosiy Kontent -->
+    <!-- Deutsch Test Sahifasi -->
+    <div class="container animate-fade-in" id="deutsch-view" style="display:none; padding: 40px 0;">
+        <div id="deutsch-content"></div>
+    </div>
+
+    <!-- Kartochkalar (Flashcards) Sahifasi -->
+    <div class="container animate-fade-in" id="flashcards-view" style="display:none; padding: 40px 0;">
+        <div id="flashcards-content"></div>
+    </div>
+
+    <!-- Turnir Sahifasi -->
+    <div class="container animate-fade-in" id="tournament-view" style="display:none; padding: 40px 0;">
+        <div id="tournament-content"></div>
+    </div>
+
+    <main class="container animate-fade-in" id="main-content">
+
+        <!-- Asosiy bo'limlar -->
+        <div class="toolbar">
+            <div class="filter-tags filter-tags-centered" id="filter-tags">
+                <button class="filter-tag" data-filter="all" id="blog-tag-btn">­şôû Kundalik Blog</button>
+                <button class="filter-tag" id="main-deutsch-btn">Nemis tili</button>
+                <button class="filter-tag" id="places-tag-btn" data-filter="places">Ô£ê´©Å Borishga arziydigan joylar</button>
+            </div>
+            <!-- Nemis tili sub-menu -->
+            <div class="filter-tags filter-tags-centered" id="deutsch-sub-menu" style="display: none; margin-top: 10px; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 12px;">
+                <button class="filter-tag deutsch-tag" id="deutsch-tag-btn" data-filter="__deutsch">­şç®­şç¬ Testlar</button>
+                <button class="filter-tag flashcard-tag" id="flashcards-tag-btn" data-filter="__flashcards">­şâÅ Kartochka</button>
+                <button class="filter-tag tournament-tag" id="tournament-tag-btn" data-filter="__tournament">­şÅå Turnir</button>
+            </div>
+        </div>
+
+        <!-- Postlar Panjarasi -->
+        <section class="blog-grid" id="blog-grid">
+            <!-- Dinamik postlar JavaScript orqali joylanadi -->
+        </section>
+    </main>
+
+    <!-- Floating "+" tugma (faqat mobilda ko'rinadi) -->
+    <button type="button" class="fab" id="fab-add" aria-label="Yangi yozuv">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+    </button>
+
+    <!-- Footer -->
+    <footer class="footer">
+        
+        <div class="container">
+            <p><span data-i18n="footer.rights">&copy; 2026 Abdugofforov. Barcha huquqlar himoyalangan.</span></p>
+            <div class="footer-socials">
+                <a href="https://t.me/Abdugofforov_kundaligi" target="_blank" rel="noopener noreferrer">Telegram</a>
+                <a href="https://www.youtube.com/@kay_kundaligi" target="_blank" rel="noopener noreferrer">YouTube</a>
+                <a href="mailto:akromjonabdugofforov23@gmail.com">Gmail</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Batafsil Ko'rish Modali (Post Detail Modal) -->
+    <div class="modal-overlay" id="post-detail-modal">
+        <div class="modal-container">
+            <button class="modal-close" id="close-detail-modal" aria-label="Yopish">&times;</button>
+            <div class="modal-body" id="detail-modal-body">
+                <!-- Post kontenti dinamik yuklanadi -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Yangi Post Qo'shish Modali (Add Post Modal) -->
+    <div class="modal-overlay" id="add-post-modal">
+        <div class="modal-container">
+            <button class="modal-close" id="close-add-modal" aria-label="Yopish">&times;</button>
+            <form class="write-form" id="new-post-form" novalidate>
+                <h2 class="write-title">Yangi sahifa yaratish</h2>
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-title-input">Sarlavha</label>
+                    <input type="text" id="post-title-input" class="form-input" placeholder="Masalan: Toshkent qahratoni...">
+                </div>
+
+                <!-- Yashirin maydonlar ÔÇö eski kod ishlashi uchun default qiymatlar -->
+                <input type="hidden" id="post-category-input" value="">
+                <input type="hidden" id="post-type-input" value="memory">
+                <input type="hidden" id="post-tags-input" value="">
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-image-file">Rasm (xotiradan yuklash)</label>
+                    <input type="file" id="post-image-file" class="form-input file-input" accept="image/*">
+                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefoningizdan rasm tanlang yoki quyiga havola kiriting</small>
+                    <input type="url" id="post-image-input" class="form-input" placeholder="(ixtiyoriy) Rasm havolasi / URL" style="margin-top:8px;">
+                    <div id="post-image-preview" class="upload-preview" style="display:none;"></div>
+                </div>
+
+                <!-- Musiqa ÔÇö lokal fayl yuklash yoki havola -->
+                <div class="form-group" id="post-music-group" style="margin-bottom: 20px;">
+                    <label for="post-music-file">­şÄÁ Musiqa (xotiradan yuklash)</label>
+                    <input type="file" id="post-music-file" class="form-input file-input" accept="audio/*">
+                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefon yoki kompyuter xotirasidan audio fayl tanlang</small>
+                    <div class="form-row" style="margin-top:12px; margin-bottom:8px;">
+                        <div class="form-group">
+                            <label for="post-artist-input" data-i18n="form.artist">Ijrochi</label>
                             <input type="text" id="post-artist-input" class="form-input" placeholder="Masalan: Yulduz Usmonova">
                         </div>
                         <div class="form-group">
@@ -157,20 +346,20 @@
                         </div>
                     </div>
                     <div id="post-music-preview" style="display:none; margin-top:8px; padding:10px; background:var(--glass-bg); border-radius:8px; border:1px solid var(--glass-border);">
-                        <span style="color:var(--text-secondary); font-size:13px;">🎵 <span id="post-music-filename"></span></span>
-                        <button type="button" id="post-music-remove" style="float:right; background:none; border:none; color:#ff4d4d; cursor:pointer; font-size:16px;">✕</button>
+                        <span style="color:var(--text-secondary); font-size:13px;">­şÄÁ <span id="post-music-filename"></span></span>
+                        <button type="button" id="post-music-remove" style="float:right; background:none; border:none; color:#ff4d4d; cursor:pointer; font-size:16px;">Ô£ò</button>
                     </div>
                     <small style="color:var(--text-muted); font-size:11px; margin-top:6px;" data-i18n="form.musicHint">Lokal audio yuklang yoki YouTube/Telegram havolasini kiriting.</small>
                 </div>
 
-                <!-- Video — lokal fayl yuklash -->
+                <!-- Video ÔÇö lokal fayl yuklash -->
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="post-video-file">🎬 Video (xotiradan yuklash)</label>
+                    <label for="post-video-file">­şÄ¼ Video (xotiradan yuklash)</label>
                     <input type="file" id="post-video-file" class="form-input file-input" accept="video/*">
                     <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefon yoki kompyuter xotirasidan video fayl tanlang</small>
                     <div id="post-video-preview" style="display:none; margin-top:8px;">
                         <video id="post-video-player" controls style="width:100%; max-height:200px; border-radius:8px;"></video>
-                        <button type="button" id="post-video-remove" style="margin-top:6px; background:none; border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; cursor:pointer; font-size:12px; padding:4px 12px; border-radius:6px;">✕ Videoni olib tashlash</button>
+                        <button type="button" id="post-video-remove" style="margin-top:6px; background:none; border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; cursor:pointer; font-size:12px; padding:4px 12px; border-radius:6px;">Ô£ò Videoni olib tashlash</button>
                     </div>
                 </div>
 
@@ -200,19 +389,19 @@
         <div class="modal-container" style="max-width: 460px;">
             <button class="modal-close" id="close-contact-modal" aria-label="Yopish">&times;</button>
             <div class="modal-body" style="text-align:center;">
-                <div style="font-size:42px; margin-bottom:12px;">✉️</div>
+                <div style="font-size:42px; margin-bottom:12px;">Ô£ë´©Å</div>
                 <h2 style="font-family:'Playfair Display', serif; font-size:26px; margin-bottom:8px;" data-i18n="contact.title">Bog'lanish</h2>
                 <p style="color:var(--text-secondary); margin-bottom:28px;" data-i18n="contact.text">Savol, taklif yoki hamkorlik uchun men bilan bog'laning.</p>
                 <div class="contact-links">
                     <a class="contact-link" href="https://t.me/Abdugofforov_kundaligi" target="_blank" rel="noopener noreferrer">
-                        <span class="contact-icon">📨</span>
+                        <span class="contact-icon">­şô¿</span>
                         <span>
                             <strong>Telegram</strong>
                             <small>@Abdugofforov_kundaligi</small>
                         </span>
                     </a>
                     <a class="contact-link" href="mailto:akromjonabdugofforov23@gmail.com">
-                        <span class="contact-icon">📧</span>
+                        <span class="contact-icon">­şôğ</span>
                         <span>
                             <strong>Email (Gmail)</strong>
                             <small>akromjonabdugofforov23@gmail.com</small>
@@ -229,9 +418,9 @@
             <button class="modal-close" id="close-auth-modal" aria-label="Yopish">&times;</button>
             <div class="modal-body">
                 <div style="text-align:center; margin-bottom:22px;">
-                    <div style="font-size:40px; margin-bottom:10px;">🎓</div>
+                    <div style="font-size:40px; margin-bottom:10px;">­şÄô</div>
                     <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:6px;">Xush kelibsiz</h2>
-                    <p style="color:var(--text-secondary); font-size:13px;">Ro'yxatdan o'ting — test natijalaringiz va turnir reytingingiz har qanday qurilmada saqlanadi</p>
+                    <p style="color:var(--text-secondary); font-size:13px;">Ro'yxatdan o'ting ÔÇö test natijalaringiz va turnir reytingingiz har qanday qurilmada saqlanadi</p>
                 </div>
                 <div class="auth-tabs">
                     <button class="auth-tab active" id="auth-tab-login" type="button">Kirish</button>
@@ -249,7 +438,7 @@
                     </div>
                     <div class="form-group">
                         <label for="auth-password">Parol</label>
-                        <input type="password" id="auth-password" class="form-input" placeholder="••••••" autocomplete="current-password" minlength="6">
+                        <input type="password" id="auth-password" class="form-input" placeholder="ÔÇóÔÇóÔÇóÔÇóÔÇóÔÇó" autocomplete="current-password" minlength="6">
                     </div>
                     <div class="auth-error" id="auth-error"></div>
                     <button type="submit" class="btn-primary" id="auth-submit" style="width:100%; justify-content:center; padding:13px;">Kirish</button>
@@ -263,7 +452,7 @@
         <div class="modal-container" style="max-width: 560px;">
             <button class="modal-close" id="close-myresults-modal" aria-label="Yopish">&times;</button>
             <div class="modal-body">
-                <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:16px;">📊 Mening natijalarim</h2>
+                <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:16px;">­şôè Mening natijalarim</h2>
                 <div id="myresults-content"><p style="color:var(--text-secondary);">Yuklanmoqda...</p></div>
             </div>
         </div>
@@ -278,9 +467,9 @@
     <!-- ===== DOIMIY MUSIQA PLEYERI (faqat kompyuter/noutbook) ===== -->
     <div class="mini-player" id="mini-player" aria-live="polite">
         <div class="mini-player-info">
-            <span class="mini-player-icon">🎵</span>
+            <span class="mini-player-icon">­şÄÁ</span>
             <div class="mini-player-meta">
-                <strong id="mini-player-title">—</strong>
+                <strong id="mini-player-title">ÔÇö</strong>
                 <small id="mini-player-artist"></small>
             </div>
         </div>
@@ -292,7 +481,7 @@
     <script src="storage.js?v=2" defer></script>
     <script src="i18n.js?v=2" defer></script>
     <script src="auth.js?v=2" defer></script>
-    <script src="data-flashcards.js" defer></script>
+        <script src="data-flashcards.js" defer></script>
     <script src="data-tests.js" defer></script>
     <script src="scripts/flashcards.js" defer></script>
     <script src="scripts/tests.js" defer></script>
@@ -300,8 +489,4 @@
     <script src="app.js?v=2" defer></script>
 </body>
 </html>
-
-
-
-
 
