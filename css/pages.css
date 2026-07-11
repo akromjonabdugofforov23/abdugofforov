@@ -157,7 +157,7 @@
         gap: 24px;
         padding: 10px 0 60px 0;
     }
-    .post-image, .post-image-wrapper { height: 200px; }
+    .post-image, .post-image-wrapper { height: auto; }
     .post-content { padding: 22px; }
     .post-title { font-size: 19px; }
     .hero { padding: 36px 0 24px 0; }

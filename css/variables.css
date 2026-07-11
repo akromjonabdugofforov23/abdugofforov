@@ -2,62 +2,67 @@
 
 /* ============================================================
    ABDUGOFFOROV — CYBER MEDICAL (Dark Mode)
-   Deep dark blue/cyan background with neon cyan medical glow
+   Deep space dark background with vibrant neon accents
    ============================================================ */
 :root, [data-theme="dark"] {
-    --color-bg-primary:     #040a0f;
-    --color-bg-secondary:   #09121a;
-    --bg-color: #040a0f;
-    --card-bg: rgba(9, 18, 26, 0.6);
-    --text-primary: #e0f2fe;
+    --color-bg-primary: #0a0a0f;
+    --color-bg-secondary: #12121a;
+    --bg-color: #0a0a0f;
+    --card-bg: rgba(18, 18, 26, 0.65);
+    --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #475569;
-    --accent-color: #a78bfa;
-    --accent-hover: #c084fc;
-    --border-color: rgba(167, 139, 250, 0.15);
-    --shadow-sm: 0 4px 20px rgba(167, 139, 250, 0.05);
-    --shadow-md: 0 10px 40px rgba(167, 139, 250, 0.1);
-    --shadow-lg: 0 20px 60px rgba(167, 139, 250, 0.15);
-    --glass-bg: rgba(6, 15, 22, 0.5);
-    --glass-border: rgba(167, 139, 250, 0.15);
-    --glass-highlight: rgba(167, 139, 250, 0.08);
-    --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 2px 0 rgba(167, 139, 250, 0.1);
+    --accent-color: #6366f1; /* Indigo */
+    --accent-hover: #8b5cf6; /* Violet */
+    --border-color: rgba(99, 102, 241, 0.2);
+    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+    
+    /* Premium Glassmorphism Settings */
+    --glass-bg: rgba(18, 18, 26, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-highlight: rgba(255, 255, 255, 0.02);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --backdrop-blur: blur(12px);
     
     /* New purple/pale blue variables */
-    --color-purple-light: #a78bfa;
-    --grad-primary: linear-gradient(135deg, #a78bfa, #38bdf8);
-    --grad-primary-soft: linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(56, 189, 248, 0.2));
-    --grad-text: linear-gradient(135deg, #c084fc, #7dd3fc);
+    --color-purple-light: #818cf8;
+    --grad-primary: linear-gradient(135deg, #6366f1, #ec4899); /* Indigo to Pink */
+    --grad-primary-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.15));
+    --grad-text: linear-gradient(135deg, #a78bfa, #38bdf8);
 }
 
 /* ============================================================
    KUNDUZGI REJIM — Yorug' kumush fon + yonib turuvchi binafsha/ko'k
-   aksentlar. Glow effektlar saqlanadi ("yonib turuvchi" ko'rinish).
    ============================================================ */
 [data-theme="light"] {
-    --color-bg-primary:     #f8fafc;
-    --color-bg-secondary:   #ffffff;
-    --bg-color: #f8fafc;
-    --card-bg: rgba(255, 255, 255, 0.4);
+    --color-bg-primary: #f1f5f9;
+    --color-bg-secondary: #ffffff;
+    --bg-color: #f1f5f9;
+    --card-bg: rgba(255, 255, 255, 0.7);
     --text-primary: #0f172a;
     --text-secondary: #334155;
     --text-muted: #64748b;
-    --accent-color: #8b5cf6;
-    --accent-hover: #7c3aed;
-    --border-color: rgba(139, 92, 246, 0.3);
-    --shadow-sm: 0 4px 20px rgba(139, 92, 246, 0.1);
-    --shadow-md: 0 10px 40px rgba(139, 92, 246, 0.15);
-    --shadow-lg: 0 20px 60px rgba(139, 92, 246, 0.2);
-    --glass-bg: rgba(255, 255, 255, 0.4);
-    --glass-border: rgba(139, 92, 246, 0.3);
-    --glass-highlight: rgba(255, 255, 255, 1);
-    --glass-shadow: 0 20px 50px rgba(139, 92, 246, 0.15), inset 0 2px 0 rgba(255, 255, 255, 1);
+    --accent-color: #4f46e5;
+    --accent-hover: #6366f1;
+    --border-color: rgba(79, 70, 229, 0.15);
+    --shadow-sm: 0 4px 20px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 10px 40px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 60px rgba(15, 23, 42, 0.12);
+    
+    /* Premium Glassmorphism Settings */
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-highlight: rgba(255, 255, 255, 0.8);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    --backdrop-blur: blur(12px);
     
     /* New purple/pale blue variables */
-    --color-purple-light: #8b5cf6;
-    --grad-primary: linear-gradient(135deg, #8b5cf6, #0284c7);
-    --grad-primary-soft: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(2, 132, 199, 0.1));
-    --grad-text: linear-gradient(135deg, #7c3aed, #0284c7);
+    --color-purple-light: #6366f1;
+    --grad-primary: linear-gradient(135deg, #4f46e5, #0ea5e9);
+    --grad-primary-soft: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(14, 165, 233, 0.1));
+    --grad-text: linear-gradient(135deg, #4f46e5, #0284c7);
 }
 
 /* Base Settings */

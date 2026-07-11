@@ -1,4 +1,4 @@
-﻿
+
 
 
 // Abdugofforov Blog & Portfolio - JavaScript Engine
@@ -300,6 +300,9 @@ function renderPosts(instant) {
     // bu skeletonlar ustma-ust tushib miltillashining oldini oladi)
     if (_renderTimer) { clearTimeout(_renderTimer); _renderTimer = null; }
 
+    const currentHeight = blogGrid.offsetHeight;
+    if (currentHeight > 0) blogGrid.style.minHeight = currentHeight + 'px';
+
     const doRender = () => {
         _renderTimer = null;
         blogGrid.innerHTML = '';
@@ -338,6 +341,7 @@ function renderPosts(instant) {
                     <p class="empty-state-text">${searchQuery ? ('"' + escapeHTML(searchQuery) + '" bo\'yicha hech narsa topilmadi.') : "Hech qanday maqola yoki ma'lumot topilmadi."}</p>
                 </div>
             `;
+            setTimeout(() => { blogGrid.style.minHeight = ''; }, 100);
             return;
         }
 
@@ -479,6 +483,8 @@ function renderPosts(instant) {
             blogGrid.appendChild(card);
             observeReveal(card);
         });
+
+        setTimeout(() => { blogGrid.style.minHeight = ''; }, 100);
     };
 
     // Qidiruvda darhol (skeletonsiz) ko'rsatamiz; aks holda yengil skeleton animatsiyasi
@@ -514,7 +520,6 @@ function openDeutschView() {
     const deutschView = document.getElementById('deutsch-view');
     if (deutschView) deutschView.style.display = 'block';
     renderDeutschHome();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function openFlashcardsView() {
@@ -525,7 +530,6 @@ function openFlashcardsView() {
     const flashView = document.getElementById('flashcards-view');
     if (flashView) flashView.style.display = 'block';
     renderFlashcardsHome();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function openTournamentView() {
@@ -536,7 +540,6 @@ function openTournamentView() {
     const tView = document.getElementById('tournament-view');
     if (tView) tView.style.display = 'block';
     renderTournamentHome();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // 9. SPA Routing Navigation
@@ -2007,7 +2010,6 @@ function filterByTag(tag) {
     document.querySelectorAll('#filter-tags .filter-tag').forEach(t => t.classList.remove('active'));
     document.querySelector('#filter-tags [data-filter="all"]')?.classList.add('active');
     renderPosts();
-    window.scrollTo({ top: 220, behavior: 'smooth' });
 }
 
 // ===== IZOHGA ADMIN JAVOBI =====
