@@ -1,5 +1,5 @@
-﻿window.flashcardDecks = {
-    // Nemis â†’ O'zbek so'zlar
+const flashcardDecks = {
+    // Nemis → O'zbek so'zlar
     de_uz: [
         { front: "das Haus", back: "uy" },
         { front: "der Freund", back: "do'st" },

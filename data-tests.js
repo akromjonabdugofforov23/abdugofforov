@@ -7,7 +7,7 @@ function emojiImage(emoji, bg) {
     return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
 }
 
-window.deutschTests = {
+const deutschTests = {
 
     // ===== A1 â€” TO'PLAM 1 (Eshitish + matn aralash) =====
     a1_t1: {

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    NAVIGATION — Glassmorphism + Gradient logo
    ============================================================ */
 .navbar {
@@ -172,4 +172,4 @@
 }
 .btn-primary:hover::before { transform: translateX(100%); }
 .btn-primary:active { transform: scale(0.97) translateY(0); }
-
+
