@@ -1,0 +1,9 @@
+# Nemis tilini o'rganish platformasi - Abdugofforov
+
+Ushbu veb-sayt orqali siz nemis tilini noldan boshlab (A1-B2 darajalarida) o'rganishingiz, turli xil interaktiv testlar yechishingiz, kitoblar o'qishingiz va so'z boyligingizni oshirishingiz mumkin.
+
+## Foydali havolalar
+- [Bosh sahifa](https://abdugofforov.uz/)
+- [Testlar bo'limi](https://abdugofforov.uz/#tests)
+- [Lug'at](https://abdugofforov.uz/#vocabulary)
+- [Kutubxona](https://abdugofforov.uz/#library)
