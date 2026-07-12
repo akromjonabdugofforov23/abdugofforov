@@ -69,15 +69,24 @@ let editingPostId = null;
 let isAdmin = sessionStorage.getItem('kay_admin') === 'true';
 
 // Rejalar va Portfolio state
-let tasks = JSON.parse(localStorage.getItem('abdu_tasks')) || [];
-let portfolioInfo = JSON.parse(localStorage.getItem('abdu_portfolio')) || {
+function safeJSONParse(key, defaultVal) {
+    try {
+        const val = localStorage.getItem(key);
+        return val ? JSON.parse(val) : defaultVal;
+    } catch (e) {
+        console.error('LocalStorage parsing error for ' + key, e);
+        return defaultVal;
+    }
+}
+let tasks = safeJSONParse('abdu_tasks', []);
+let portfolioInfo = safeJSONParse('abdu_portfolio', {
     name: "Abdugofforov",
     title: "",
     bio: "",
     skills: "",
     experience: ""
-};
-let portfolioTokens = JSON.parse(localStorage.getItem('abdu_portfolio_tokens')) || [];
+});
+let portfolioTokens = safeJSONParse('abdu_portfolio_tokens', []);
 
 // 2. DOM Elementlari
 const blogGrid = document.getElementById('blog-grid');
@@ -769,7 +778,8 @@ function showSkeletons(count = 3) {
     `).join('');
 }
 
-document.querySelector('.toolbar').addEventListener('click', (e) => {
+const toolbarEl = document.querySelector('.toolbar');
+if (toolbarEl) toolbarEl.addEventListener('click', (e) => {
     const btn = e.target.closest('.filter-tag');
     if (!btn) return;
 
