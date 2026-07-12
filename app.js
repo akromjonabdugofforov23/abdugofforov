@@ -2417,9 +2417,9 @@ function typeEffect() {
     if (isDeleting) { currentText = fullText.substring(0, currentText.length - 1); }
     else { currentText = fullText.substring(0, currentText.length + 1); }
     el.textContent = currentText;
-    let typeSpeed = isDeleting ? 50 : 150;
-    if (!isDeleting && currentText === fullText) { typeSpeed = 1500; isDeleting = true; }
-    else if (isDeleting && currentText === '') { isDeleting = false; currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length; typeSpeed = 500; }
+    let typeSpeed = isDeleting ? 100 : 300;
+    if (!isDeleting && currentText === fullText) { typeSpeed = 2500; isDeleting = true; }
+    else if (isDeleting && currentText === '') { isDeleting = false; currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length; typeSpeed = 1000; }
     setTimeout(typeEffect, typeSpeed);
 }
 document.addEventListener('DOMContentLoaded', typeEffect);
