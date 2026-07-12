@@ -668,11 +668,11 @@ contactModal?.addEventListener('click', (e) => {
     if (e.target === contactModal) closeContactModal();
 });
 
-if (navLogo && mainNav) {
+if (navLogo) {
     navLogo.addEventListener('click', (e) => {
         e.preventDefault();
-        const homeLink = mainNav.querySelector('[data-page="home"]');
-        if (homeLink) homeLink.click();
+        const blogTagBtn = document.getElementById('blog-tag-btn');
+        if (blogTagBtn) blogTagBtn.click();
     });
 }
 
@@ -1002,8 +1002,7 @@ function openPostDetail(postId) {
             
             closePostDetailModal();
             pushModalState();
-            addPostpushModalState();
-                Modal.classList.add('active');
+            addPostModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
     }
@@ -1054,8 +1053,7 @@ function openPostDetail(postId) {
     });
 
     pushModalState();
-    postDetailpushModalState();
-                Modal.classList.add('active');
+    postDetailModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 
     // Deep-link (ulashiladigan havola) va dinamik meta
@@ -1422,9 +1420,10 @@ if (adminBtn) {
     adminBtn.addEventListener('click', () => {
         if (pinInput) pinInput.value = '';
         if (pinError) pinError.style.display = 'none';
-        if (pinModal) pushModalState();
-        pinpushModalState();
-                Modal.classList.add('active');
+        if (pinModal) {
+            pushModalState();
+            pinModal.classList.add('active');
+        }
         document.body.style.overflow = 'hidden';
     });
 }
@@ -2591,4 +2590,97 @@ window.addEventListener('popstate', (e) => {
         renderPosts();
     }
 });
+
+
+// --- Missing Button Handlers Added ---
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const hamburgerMenu = document.getElementById('hamburger-menu');
+if (hamburgerBtn && hamburgerMenu) {
+    hamburgerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hamburgerMenu.classList.toggle('active');
+    });
+    document.addEventListener('click', (e) => {
+        if (!hamburgerMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+            hamburgerMenu.classList.remove('active');
+        }
+    });
+}
+
+const loginBtn = document.getElementById('login-btn');
+const authModal = document.getElementById('auth-modal');
+const closeAuthModal = document.getElementById('close-auth-modal');
+
+window.openAuthModal = function(tab) {
+    if (authModal) {
+        if (typeof pushModalState === 'function') pushModalState();
+        authModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+if (loginBtn) {
+    loginBtn.addEventListener('click', () => {
+        openAuthModal('login');
+    });
+}
+
+if (closeAuthModal && authModal) {
+    closeAuthModal.addEventListener('click', () => {
+        authModal.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    authModal.addEventListener('click', (e) => {
+        if (e.target === authModal) {
+            authModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+const userChip = document.getElementById('user-chip');
+const userDropdown = document.getElementById('user-dropdown');
+if (userChip && userDropdown) {
+    userChip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+    });
+    document.addEventListener('click', (e) => {
+        if (!userDropdown.contains(e.target) && !userChip.contains(e.target)) {
+            userDropdown.classList.remove('active');
+        }
+    });
+}
+
+const userResultsBtn = document.getElementById('user-results-btn');
+const myresultsModal = document.getElementById('myresults-modal');
+const closeMyresultsModal = document.getElementById('close-myresults-modal');
+if (userResultsBtn && myresultsModal) {
+    userResultsBtn.addEventListener('click', () => {
+        if (typeof pushModalState === 'function') pushModalState();
+        myresultsModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+}
+
+if (closeMyresultsModal && myresultsModal) {
+    closeMyresultsModal.addEventListener('click', () => {
+        myresultsModal.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+    myresultsModal.addEventListener('click', (e) => {
+        if (e.target === myresultsModal) {
+            myresultsModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+const userLogoutBtn = document.getElementById('user-logout-btn');
+if (userLogoutBtn && window.Auth) {
+    userLogoutBtn.addEventListener('click', async () => {
+        await Auth.logout();
+        location.reload();
+    });
+}
 
