@@ -1,4 +1,4 @@
-// ===== KARTOCHKALAR HOLATI VA KO'RINISHI =====
+﻿// ===== KARTOCHKALAR HOLATI VA KO'RINISHI =====
 let fcDeckKey = null;
 let fcOrder = [];
 let fcIndex = 0;
@@ -16,11 +16,11 @@ function renderFlashcardsHome() {
     ];
     view.innerHTML = `
         <div style="text-align:center; margin-bottom:36px;">
-            <div style="font-size:48px; margin-bottom:12px;">🃏</div>
+            <div style="font-size:48px; margin-bottom:12px;">ğŸƒ</div>
             <h2 style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px;">${i18n.t('fc.title')}</h2>
             <p style="color:var(--text-secondary);">${i18n.t('fc.subtitle')}</p>
             <div style="margin-top:14px; display:inline-flex; gap:10px; align-items:center; background:var(--tag-bg); padding:8px 16px; border-radius:30px; font-size:13px;">
-                🔥 <b>${getFcStreak()}</b> kunlik streak
+                ğŸ”¥ <b>${getFcStreak()}</b> kunlik streak
             </div>
         </div>
         <div class="fc-deck-grid">
@@ -63,7 +63,7 @@ function renderFlashcard() {
         <div style="max-width:560px; margin:0 auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:10px;">
                 <button class="btn-secondary btn-sm" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
-                <span style="color:var(--text-muted); font-size:13px;">🔥 ${getFcStreak()} &nbsp;-&nbsp; ${fcIndex + 1} / ${deck.length}</span>
+                <span style="color:var(--text-muted); font-size:13px;">ğŸ”¥ ${getFcStreak()} &nbsp;-&nbsp; ${fcIndex + 1} / ${deck.length}</span>
                 <button class="btn-secondary btn-sm" onclick="shuffleFlashcards()">${i18n.t('fc.shuffle')}</button>
             </div>
             <div class="flashcard" id="flashcard">
@@ -83,8 +83,8 @@ function renderFlashcard() {
                 <button class="btn-secondary" onclick="nextFlashcard()">${i18n.t('fc.next')}</button>
             </div>
             <div style="display:flex; gap:12px; margin-top:12px;">
-                <button class="btn-secondary" style="flex:1; border-color:rgba(248,113,113,0.4); color:#ef4444;" onclick="fcAnswer(false)">✗ Bilmayman</button>
-                <button class="btn-primary" style="flex:1; background:#22c55e; border-color:#22c55e; color:#fff;" onclick="fcAnswer(true)">✓ Bilaman</button>
+                <button class="btn-secondary" style="flex:1; border-color:rgba(248,113,113,0.4); color:#ef4444;" onclick="fcAnswer(false)">âœ— Bilmayman</button>
+                <button class="btn-primary" style="flex:1; background:#22c55e; border-color:#22c55e; color:#fff;" onclick="fcAnswer(true)">âœ“ Bilaman</button>
             </div>
         </div>
     `;
@@ -203,7 +203,7 @@ function observeReveal(el) {
 }
 
 function initScrollReveal() {
-    // Yangi dizaynda widget'lar hero ichida — eski selector kerak emas.
+    // Yangi dizaynda widget'lar hero ichida â€” eski selector kerak emas.
     // Faqat toolbar va footer container'iga reveal qo'llaymiz.
     document.querySelectorAll('.toolbar, .footer .container')
         .forEach(observeReveal);
@@ -223,6 +223,7 @@ function initFloatingAddBtn() {
             // Backup: modal'ni to'g'ridan-to'g'ri ochish
             const modal = document.getElementById('add-post-modal');
             if (modal) {
+                if(typeof pushModalState !== 'undefined') pushModalState();
                 modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
@@ -258,7 +259,7 @@ function openPostFromUrl() {
         if (post) openPostDetail(post.id);
     }
 
-    // PWA shortcuts:  /?new=1  → "Yangi yozuv" modalini ochish
+    // PWA shortcuts:  /?new=1  â†’ "Yangi yozuv" modalini ochish
     if (params.get('new') === '1') {
         const addBtn = document.getElementById('add-post-btn');
         if (addBtn) {
@@ -266,7 +267,7 @@ function openPostFromUrl() {
         }
     }
 
-    // /?view=deutsch  → Deutsch testlar sahifasiga o'tish
+    // /?view=deutsch  â†’ Deutsch testlar sahifasiga o'tish
     if (params.get('view') === 'deutsch') {
         setTimeout(() => {
             if (typeof openDeutschView === 'function') openDeutschView();
@@ -330,7 +331,7 @@ function replyToComment(commentId) {
     if (list) list.innerHTML = renderComments(post.comments);
 }
 
-// ===== NEMIS TESTLARI — NATIJALAR TARIXI =====
+// ===== NEMIS TESTLARI â€” NATIJALAR TARIXI =====
 function saveTestResult(level, score, total) {
     const hist = JSON.parse(localStorage.getItem('deutsch_history') || '[]');
     hist.unshift({ level, score, total, pct: total ? Math.round(score / total * 100) : 0, date: new Date().toISOString() });
@@ -355,12 +356,12 @@ function renderTestHistory() {
         </div>`;
     }).join('');
     return `<div class="post-card" style="max-width:680px;margin:30px auto 0;padding:22px;">
-        <h3 style="font-size:16px;margin-bottom:12px;">📈 Sizning natijalaringiz</h3>
+        <h3 style="font-size:16px;margin-bottom:12px;">ğŸ“ˆ Sizning natijalaringiz</h3>
         ${rows}
     </div>`;
 }
 
-// ===== FLASHCARD — SPACED REPETITION (Leitner) + STREAK =====
+// ===== FLASHCARD â€” SPACED REPETITION (Leitner) + STREAK =====
 const FC_INTERVALS = [0, 1, 2, 4, 7, 15]; // box raqami -> kunlar
 function fcProgress() { return JSON.parse(localStorage.getItem('fc_progress') || '{}'); }
 function fcSaveProgress(p) { localStorage.setItem('fc_progress', JSON.stringify(p)); }
@@ -407,11 +408,11 @@ function renderFlashcardDone() {
     const total = flashcardDecks[fcDeckKey].length;
     view.innerHTML = `
         <div style="max-width:480px;margin:0 auto;text-align:center;">
-            <div style="font-size:60px;margin-bottom:14px;">🎉</div>
+            <div style="font-size:60px;margin-bottom:14px;">ğŸ‰</div>
             <h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:8px;">To'plam yakunlandi!</h2>
-            <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;-&nbsp; 🔥 Streak: <b>${getFcStreak()} kun</b></p>
+            <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;-&nbsp; ğŸ”¥ Streak: <b>${getFcStreak()} kun</b></p>
             <div style="display:flex;gap:12px;justify-content:center;">
-                <button class="btn-primary" onclick="startFlashcards('${fcDeckKey}')">🔄 Qayta</button>
+                <button class="btn-primary" onclick="startFlashcards('${fcDeckKey}')">ğŸ”„ Qayta</button>
                 <button class="btn-secondary" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
             </div>
         </div>`;
@@ -714,7 +715,7 @@ function runTypewriter() {
     }, speed);
 }
 
-// CTA tugmasi — blog grid'iga skroll
+// CTA tugmasi â€” blog grid'iga skroll
 function initHeroCta() {
     const btn = document.getElementById('hero-cta-btn');
     if (!btn) return;
@@ -786,7 +787,7 @@ async function bootstrap() {
     // 3D kirish animatsiyasi darhol boshlanadi
     initIntroSplash();
 
-    // Til (i18n) — statik tarjimalar va til tanlagich
+    // Til (i18n) â€” statik tarjimalar va til tanlagich
     initLanguage();
 
     // Mavzu va kursorni darhol ishga tushiramiz (ma'lumotga bog'liq emas)
@@ -798,11 +799,11 @@ async function bootstrap() {
     initMiniPlayer();
 
     // Postlarni yuklash strategiyasi:
-    //   1. Avval serverdan (Cloudflare KV) o'qiymiz — bu admin yuborgan
+    //   1. Avval serverdan (Cloudflare KV) o'qiymiz â€” bu admin yuborgan
     //      eng so'nggi versiya; barcha mehmonlar shuni ko'radi.
     //   2. Server javob bermasa yoki bo'sh bo'lsa, mahalliy (IndexedDB) ga
     //      qaytamiz.
-    //   3. Mahalliy ham bo'sh bo'lsa — standart postlar.
+    //   3. Mahalliy ham bo'sh bo'lsa â€” standart postlar.
     let serverPosts = null;
     if (window.Sync) {
         serverPosts = await Sync.fetchPosts();
@@ -838,7 +839,7 @@ async function bootstrap() {
         posts = (ls && ls.length) ? ls : defaultPosts;
     }
 
-    // Admin holatini tiklash — sahifa yangilanganda ham admin tugmalari
+    // Admin holatini tiklash â€” sahifa yangilanganda ham admin tugmalari
     // (Yozish, Floating +) faqat admin uchun ko'rinishi uchun
     if (isAdmin) {
         document.body.classList.add('admin-mode');
@@ -860,7 +861,7 @@ async function bootstrap() {
     // init3DTilt(); // Performance optimization
     initFloatingAddBtn();
 
-    // O'quvchi auth — token bo'lsa tiklaymiz, UI'ni yangilaymiz
+    // O'quvchi auth â€” token bo'lsa tiklaymiz, UI'ni yangilaymiz
     initAuthUI();
     if (window.Auth) {
         await Auth.restore();
@@ -869,6 +870,7 @@ async function bootstrap() {
 }
 
 bootstrap();
+
 
 
 
