@@ -312,64 +312,71 @@
                 <h2 class="write-title">Yangi sahifa yaratish</h2>
                 
                 <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="post-category-input">Kategoriya</label>
+                    <select id="post-category-input" class="form-input" style="padding: 10px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px;">
+                        <option value="Kundalik Blog">📝 Kundalik Blog</option>
+                        <option value="Musiqa">🎵 Musiqa</option>
+                        <option value="Video">🎬 Video</option>
+                        <option value="Borishga arziydigan joylar">✈️ Borishga arziydigan joylar</option>
+                        <option value="Loyiha">💻 Loyiha</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
                     <label for="post-title-input">Sarlavha</label>
                     <input type="text" id="post-title-input" class="form-input" placeholder="Masalan: Toshkent qahratoni...">
                 </div>
 
-                <!-- Yashirin maydonlar ÔÇö eski kod ishlashi uchun default qiymatlar -->
-                <input type="hidden" id="post-category-input" value="">
                 <input type="hidden" id="post-type-input" value="memory">
                 <input type="hidden" id="post-tags-input" value="">
 
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="post-image-file">Rasm (xotiradan yuklash)</label>
-                    <input type="file" id="post-image-file" class="form-input file-input" accept="image/*">
-                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefoningizdan rasm tanlang yoki quyiga havola kiriting</small>
-                    <input type="url" id="post-image-input" class="form-input" placeholder="(ixtiyoriy) Rasm havolasi / URL" style="margin-top:8px;">
-                    <div id="post-image-preview" class="upload-preview" style="display:none;"></div>
+                    <label>Asosiy rasm (Cover)</label>
+                    <div style="display:flex; gap:10px; flex-direction:column;">
+                        <input type="file" id="post-image-file" class="form-input file-input" accept="image/*">
+                        <input type="url" id="post-image-input" class="form-input" placeholder="yoki rasm havolasi (URL)">
+                    </div>
+                    <div id="post-image-preview" class="upload-preview" style="display:none; margin-top:10px;"></div>
                 </div>
 
-                <!-- Musiqa ÔÇö lokal fayl yuklash yoki havola -->
-                <div class="form-group" id="post-music-group" style="margin-bottom: 20px;">
-                    <label for="post-music-file">­şÄÁ Musiqa (xotiradan yuklash)</label>
+                <!-- Musiqa qismi (dastlab yashirin) -->
+                <div class="form-group dynamic-group" id="post-music-group" style="display: none; margin-bottom: 20px; padding: 15px; border: 1px dashed var(--border-color); border-radius: 8px;">
+                    <label for="post-music-file">🎵 Musiqa (Audio)</label>
                     <input type="file" id="post-music-file" class="form-input file-input" accept="audio/*">
-                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefon yoki kompyuter xotirasidan audio fayl tanlang</small>
                     <div class="form-row" style="margin-top:12px; margin-bottom:8px;">
                         <div class="form-group">
-                            <label for="post-artist-input" data-i18n="form.artist">Ijrochi</label>
+                            <label for="post-artist-input">Ijrochi</label>
                             <input type="text" id="post-artist-input" class="form-input" placeholder="Masalan: Yulduz Usmonova">
                         </div>
                         <div class="form-group">
-                            <label for="post-link-input" data-i18n="form.musicLink">Havola (YouTube / Telegram)</label>
-                            <input type="url" id="post-link-input" class="form-input" placeholder="(ixtiyoriy) https://youtu.be/...">
+                            <label for="post-link-input">YouTube/Telegram havola</label>
+                            <input type="url" id="post-link-input" class="form-input" placeholder="https://...">
                         </div>
                     </div>
                     <div id="post-music-preview" style="display:none; margin-top:8px; padding:10px; background:var(--glass-bg); border-radius:8px; border:1px solid var(--glass-border);">
-                        <span style="color:var(--text-secondary); font-size:13px;">­şÄÁ <span id="post-music-filename"></span></span>
-                        <button type="button" id="post-music-remove" style="float:right; background:none; border:none; color:#ff4d4d; cursor:pointer; font-size:16px;">Ô£ò</button>
+                        <span style="color:var(--text-secondary); font-size:13px;">🎵 <span id="post-music-filename"></span></span>
+                        <button type="button" id="post-music-remove" style="float:right; background:none; border:none; color:#ff4d4d; cursor:pointer; font-size:16px;">✖</button>
                     </div>
-                    <small style="color:var(--text-muted); font-size:11px; margin-top:6px;" data-i18n="form.musicHint">Lokal audio yuklang yoki YouTube/Telegram havolasini kiriting.</small>
                 </div>
 
-                <!-- Video ÔÇö lokal fayl yuklash -->
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="post-video-file">­şÄ¼ Video (xotiradan yuklash)</label>
+                <!-- Video qismi (dastlab yashirin) -->
+                <div class="form-group dynamic-group" id="post-video-group" style="display: none; margin-bottom: 20px; padding: 15px; border: 1px dashed var(--border-color); border-radius: 8px;">
+                    <label for="post-video-file">🎬 Video fayl yuklash</label>
                     <input type="file" id="post-video-file" class="form-input file-input" accept="video/*">
-                    <small style="color:var(--text-muted); font-size:11px; margin-top:4px;">Telefon yoki kompyuter xotirasidan video fayl tanlang</small>
                     <div id="post-video-preview" style="display:none; margin-top:8px;">
                         <video id="post-video-player" controls style="width:100%; max-height:200px; border-radius:8px;"></video>
-                        <button type="button" id="post-video-remove" style="margin-top:6px; background:none; border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; cursor:pointer; font-size:12px; padding:4px 12px; border-radius:6px;">Ô£ò Videoni olib tashlash</button>
+                        <button type="button" id="post-video-remove" style="margin-top:6px; background:none; border:1px solid rgba(255,77,77,0.3); color:#ff4d4d; cursor:pointer; font-size:12px; padding:4px 12px; border-radius:6px;">✖ Videoni olib tashlash</button>
                     </div>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="post-excerpt-input">Qisqacha ta'rif (Excerpt)</label>
-                    <input type="text" id="post-excerpt-input" class="form-input" placeholder="Post ro'yxatida ko'rinadigan qisqa matn...">
+                    <label for="post-excerpt-input">Qisqacha ta'rif (ixtiyoriy)</label>
+                    <input type="text" id="post-excerpt-input" class="form-input" placeholder="Kiritilmasa, matndan avtomatik olinadi...">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="post-content-input">To'liq matn</label>
-                    <textarea id="post-content-input" class="form-textarea" placeholder="Bu yerga hikoyangizni yoki loyiha tafsilotlarini yozing..."></textarea>
+                    <label for="post-content-input">To'liq matn (Markdown qabul qilinadi)</label>
+                    <textarea id="post-content-input" class="form-textarea" placeholder="Bu yerga hikoyangizni yozing. Matn orasida rasm/video URL ishlata olasiz..." style="min-height: 200px;"></textarea>
                 </div>
 
                 <div class="btn-group">
@@ -478,9 +485,10 @@
 
     <!-- JavaScript Mantiqi -->
     <script src="storage.js?v=2" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
     <script src="i18n.js?v=2" defer></script>
     <script src="auth.js?v=2" defer></script>
-        <script src="data-flashcards.js" defer></script>
+    <script src="data-flashcards.js" defer></script>
     <script src="data-tests.js" defer></script>
     <script src="scripts/flashcards.js" defer></script>
     <script src="scripts/tests.js" defer></script>

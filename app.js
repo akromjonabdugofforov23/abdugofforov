@@ -1,4 +1,4 @@
-﻿
+
 
 
 // Abdugofforov Blog & Portfolio - JavaScript Engine
@@ -875,7 +875,7 @@ function openPostDetail(postId) {
                 : `<div class="modal-post-image zoomable-bg" data-zoom-src="${escapeHTML(safeImageUrl(post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000'))}" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000')}'); cursor: zoom-in;"></div>`
         }
 
-        <div class="modal-post-text">${post.type === 'music' ? escapeHTML(post.content || post.excerpt) : escapeHTML(post.content)}</div>
+        <div class="modal-post-text markdown-body" style="line-height:1.6;">${post.type === 'music' ? renderMarkdown(post.content || post.excerpt) : renderMarkdown(post.content)}</div>
         ${renderTags(post)}
         
         <div class="comments-section">
@@ -908,7 +908,11 @@ function openPostDetail(postId) {
             addPostModal.querySelector('.write-title').textContent = "Maqolani tahrirlash";
             
             document.getElementById('post-title-input').value = post.title;
-            document.getElementById('post-category-input').value = post.category || '';
+            const catInput = document.getElementById('post-category-input');
+            if (catInput) {
+                catInput.value = post.category || 'Kundalik Blog';
+                catInput.dispatchEvent(new Event('change'));
+            }
             document.getElementById('post-type-input').value = post.type || 'memory';
             document.getElementById('post-excerpt-input').value = post.excerpt || '';
             document.getElementById('post-content-input').value = post.content || '';
@@ -1056,11 +1060,28 @@ postDetailModal.addEventListener('click', (e) => {
     if (e.target === postDetailModal) closePostDetailModal();
 });
 
+// Kategoriya o'zgarganda dinamik formani boshqarish
+const postCategoryInput = document.getElementById('post-category-input');
+const postMusicGroup = document.getElementById('post-music-group');
+const postVideoGroup = document.getElementById('post-video-group');
+
+if (postCategoryInput) {
+    postCategoryInput.addEventListener('change', () => {
+        const val = postCategoryInput.value;
+        if (postMusicGroup) postMusicGroup.style.display = (val === 'Musiqa') ? 'block' : 'none';
+        if (postVideoGroup) postVideoGroup.style.display = (val === 'Video') ? 'block' : 'none';
+    });
+}
+
 // 11. Yangi Post Qo'shish / Tahrirlash Formasi
 addPostBtn.addEventListener('click', () => {
     editingPostId = null;
     addPostModal.querySelector('.write-title').textContent = "Yangi sahifa yaratish";
     newPostForm.reset();
+    if (postCategoryInput) {
+        postCategoryInput.value = 'Kundalik Blog';
+        postCategoryInput.dispatchEvent(new Event('change'));
+    }
     pendingImageData = null;
     pendingMusicData = null;
     pendingMusicName = null;
@@ -1071,8 +1092,7 @@ addPostBtn.addEventListener('click', () => {
     if (postVideoPreview) postVideoPreview.style.display = 'none';
     if (postVideoPlayer) postVideoPlayer.src = '';
     pushModalState();
-            addPostpushModalState();
-                Modal.classList.add('active');
+    addPostModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 });
 
@@ -1254,8 +1274,11 @@ newPostForm.addEventListener('submit', (e) => {
 
     const title = document.getElementById('post-title-input').value.trim();
     const category = document.getElementById('post-category-input').value.trim();
-    const excerpt = document.getElementById('post-excerpt-input').value.trim();
+    let excerpt = document.getElementById('post-excerpt-input').value.trim();
     const content = document.getElementById('post-content-input').value.trim();
+    if (!excerpt && content) {
+        excerpt = content.split('\n')[0].substring(0, 100);
+    }
     const tagsRaw = document.getElementById('post-tags-input') ? document.getElementById('post-tags-input').value : '';
     const tags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean).slice(0, 8);
 
@@ -1719,6 +1742,14 @@ function escapeHTML(str) {
             '"': '&quot;'
         }[tag] || tag)
     );
+}
+
+function renderMarkdown(str) {
+    if (!str) return '';
+    if (window.marked) {
+        return window.marked.parse(str);
+    }
+    return escapeHTML(str);
 }
 
 function formatDate(dateStr) {
