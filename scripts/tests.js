@@ -1,4 +1,4 @@
-﻿// ===== DEUTSCH TESTLAR =====
+// ===== DEUTSCH TESTLAR =====
 // Rasmli savollar uchun ishonchli, o'rnatilgan (data URI) emoji-rasm — tashqi havola talab qilmaydi
 function emojiImage(emoji, bg) {
     const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240'>"
@@ -36,7 +36,11 @@ function renderDeutschHome() {
             tests: [
                 { id: 'a1_t1', name: "1-to'plam", note: "Eshitish + matn" },
                 { id: 'a1_t2', name: "2-to'plam", note: "Matn + rasm" },
-                { id: 'a1_t3', name: "3-to'plam", note: "So'z + grammatika" }
+                { id: 'a1_t3', name: "3-to'plam", note: "So'z + grammatika" },
+                { id: 'a1_t4', name: "4-to'plam", note: "Kundalik hayot" },
+                { id: 'a1_t5', name: "5-to'plam", note: "Manzil va yo'nalish" },
+                { id: 'a1_t6', name: "6-to'plam", note: "Tanishish va suhbat" },
+                { id: 'a1_t7', name: "7-to'plam", note: "Ob-havo va tabiat" }
             ]
         },
         {
@@ -45,7 +49,11 @@ function renderDeutschHome() {
             tests: [
                 { id: 'a2_t1', name: "1-to'plam", note: "Grammatika asoslari" },
                 { id: 'a2_t2', name: "2-to'plam", note: "Predloglar va fe'llar" },
-                { id: 'a2_t3', name: "3-to'plam", note: "Bog'lovchilar va qiyos" }
+                { id: 'a2_t3', name: "3-to'plam", note: "Bog'lovchilar va qiyos" },
+                { id: 'a2_t4', name: "4-to'plam", note: "Sog'liq va tana" },
+                { id: 'a2_t5', name: "5-to'plam", note: "Sayohat va mehmonxona" },
+                { id: 'a2_t6', name: "6-to'plam", note: "Ish va kasb" },
+                { id: 'a2_t7', name: "7-to'plam", note: "Xarid va narxlar" }
             ]
         },
         {
@@ -54,7 +62,21 @@ function renderDeutschHome() {
             tests: [
                 { id: 'b1_t1', name: "1-to'plam", note: "Konjunktiv va Passiv" },
                 { id: 'b1_t2', name: "2-to'plam", note: "Bog'lovchi va nisbiy gap" },
-                { id: 'b1_t3', name: "3-to'plam", note: "Genitiv va iboralar" }
+                { id: 'b1_t3', name: "3-to'plam", note: "Genitiv va iboralar" },
+                { id: 'b1_t4', name: "4-to'plam", note: "Plusquamperfekt va vaqt" },
+                { id: 'b1_t5', name: "5-to'plam", note: "N-deklination, otlar" },
+                { id: 'b1_t6', name: "6-to'plam", note: "Partizip sifatlari" },
+                { id: 'b1_t7', name: "7-to'plam", note: "Media va texnologiya" }
+            ]
+        },
+        {
+            key: 'B2', icon: '🏔️', label: "B2 — Yuqori-o'rta daraja",
+            sub: "Murakkab gaplar, idiomalar, matn",
+            tests: [
+                { id: 'b2_t1', name: "1-to'plam", note: "Konjunktiv I" },
+                { id: 'b2_t2', name: "2-to'plam", note: "Murakkab gaplar" },
+                { id: 'b2_t3', name: "3-to'plam", note: "Akademik so'zlar" },
+                { id: 'b2_t4', name: "4-to'plam", note: "Idiomalar va madaniyat" }
             ]
         }
     ];
@@ -96,7 +118,7 @@ function renderDeutschHome() {
         <div class="deutsch-hero">
             <div class="deutsch-flag">🇩🇪</div>
             <h2 class="deutsch-title">Nemis tili testlari</h2>
-            <p class="deutsch-sub">3 daraja &middot; har birida 3 to'plam &middot; jami 9 ta test</p>
+            <p class="deutsch-sub">4 daraja &middot; jami 25 ta test</p>
         </div>
         <div class="levels-stack">
             ${levelsHTML}
