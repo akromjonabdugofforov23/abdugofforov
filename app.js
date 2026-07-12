@@ -334,6 +334,29 @@ function renderPosts(instant) {
             return true;
         });
 
+        // Butun sayt bo'ylab qidiruv (Testlarni ham qidirish)
+        if (searchQuery && typeof deutschTests !== 'undefined') {
+            const q = searchQuery.toLowerCase();
+            for (let testId in deutschTests) {
+                const t = deutschTests[testId];
+                const fields = [t.title, t.level, 'nemis tili', 'test', 'deutsch'];
+                if (fields.some(f => typeof f === 'string' && f.toLowerCase().includes(q))) {
+                    filtered.push({
+                        id: testId,
+                        type: 'test',
+                        title: t.title,
+                        category: "Nemis tili testi (" + t.level + ")",
+                        excerpt: "Nemis tili bo'yicha maxsus test to'plami. Bilimingizni sinab ko'ring!",
+                        image: '', // Default rasm olinadi
+                        date: new Date().toISOString(),
+                        likes: 0,
+                        comments: [],
+                        isTest: true
+                    });
+                }
+            }
+        }
+
         if (filtered.length === 0) {
             blogGrid.innerHTML = `
                 <div class="empty-state">
@@ -475,6 +498,9 @@ function renderPosts(instant) {
                 } else if (e.target.closest('.music-play-btn')) {
                     e.stopPropagation();
                     playMusic(post);
+                } else if (post.isTest) {
+                    if (typeof openDeutschView === 'function') openDeutschView();
+                    if (typeof startTest === 'function') startTest(post.id);
                 } else {
                     openPostDetail(post.id);
                 }
