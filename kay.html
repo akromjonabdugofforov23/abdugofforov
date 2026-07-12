@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
@@ -1236,11 +1236,17 @@ document.getElementById('admin-port-settings-form').addEventListener('submit', e
 });
 
 document.getElementById('generate-token-btn').addEventListener('click', () => {
-    const token = Math.random().toString(36).slice(2, 10);
-    const tokens = JSON.parse(localStorage.getItem('abdu_portfolio_tokens') || '[]');
-    tokens.push(token);
-    localStorage.setItem('abdu_portfolio_tokens', JSON.stringify(tokens));
-    const link = `${window.location.origin}/?portfolio=${token}`;
+    const pData = localStorage.getItem('abdu_portfolio');
+    if (!pData) {
+        alert("Oldin portfolioni saqlang!");
+        return;
+    }
+    const payload = JSON.stringify({
+        data: JSON.parse(pData),
+        exp: Date.now() + 24 * 60 * 60 * 1000 // 24 soat
+    });
+    const token = btoa(encodeURIComponent(payload));
+    const link = `${window.location.origin}/?p=${token}`;
     document.getElementById('generated-link-input').value = link;
     document.getElementById('generated-link-box').style.display = 'block';
 });

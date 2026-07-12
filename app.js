@@ -195,34 +195,40 @@ function initMouseFollower() {
     });
 }
 
-// 4. Ob-havo va Vaqt Vidjeti â€” animatsiyali zamonaviy soat
+// 4. Ob-havo va Vaqt Vidjeti
 function updateClock() {
-    const now = new Date();
-    // Toshkent vaqti â€” qismlar
-    const fmt = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Asia/Tashkent', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
-    });
-    const parts = fmt.formatToParts(now).reduce((acc, p) => { if (p.type !== 'literal') acc[p.type] = p.value; return acc; }, {});
-    const h = parts.hour || '00';
-    const m = parts.minute || '00';
-    const s = parts.second || '00';
+    try {
+        const now = new Date();
+        let h, m, s, dateStr;
+        try {
+            const tashkentTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tashkent' }));
+            h = String(tashkentTime.getHours()).padStart(2, '0');
+            m = String(tashkentTime.getMinutes()).padStart(2, '0');
+            s = String(tashkentTime.getSeconds()).padStart(2, '0');
+            dateStr = tashkentTime.toLocaleDateString('uz-UZ');
+        } catch (err) {
+            h = String(now.getHours()).padStart(2, '0');
+            m = String(now.getMinutes()).padStart(2, '0');
+            s = String(now.getSeconds()).padStart(2, '0');
+            dateStr = now.toLocaleDateString('uz-UZ');
+        }
 
-    document.querySelectorAll('[data-clock="h"]').forEach(el => {
-        if (el.textContent !== h) { el.textContent = h; el.classList.remove('flip'); void el.offsetWidth; el.classList.add('flip'); }
-    });
-    document.querySelectorAll('[data-clock="m"]').forEach(el => {
-        if (el.textContent !== m) { el.textContent = m; el.classList.remove('flip'); void el.offsetWidth; el.classList.add('flip'); }
-    });
-    document.querySelectorAll('[data-clock="s"]').forEach(el => {
-        el.textContent = s;
-    });
+        document.querySelectorAll('[data-clock="h"]').forEach(el => {
+            if (el.textContent !== h) { el.textContent = h; el.classList.remove('flip'); void el.offsetWidth; el.classList.add('flip'); }
+        });
+        document.querySelectorAll('[data-clock="m"]').forEach(el => {
+            if (el.textContent !== m) { el.textContent = m; el.classList.remove('flip'); void el.offsetWidth; el.classList.add('flip'); }
+        });
+        document.querySelectorAll('[data-clock="s"]').forEach(el => {
+            el.textContent = s;
+        });
 
-    // Sana
-    const dateOptions = { timeZone: 'Asia/Tashkent', year: 'numeric', month: '2-digit', day: '2-digit' };
-    const dateStr = now.toLocaleDateString('uz-UZ', dateOptions);
-    document.querySelectorAll('#widget-date, .fc-date').forEach(el => {
-        el.textContent = dateStr;
-    });
+        document.querySelectorAll('#widget-date, .fc-date').forEach(el => {
+            el.textContent = dateStr;
+        });
+    } catch (e) {
+        console.error("Soatni yangilashda xatolik:", e);
+    }
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -1734,39 +1740,54 @@ function renderPortfolioView() {
 // Tokenni tekshirish
 function checkPortfolioAccess() {
     const urlParams = new URLSearchParams(window.location.search);
+    const pToken = urlParams.get('p');
     const token = urlParams.get('token');
 
-    if (token) {
+    let isValid = false;
+
+    if (pToken) {
+        try {
+            const decoded = JSON.parse(decodeURIComponent(atob(pToken)));
+            if (decoded.exp && Date.now() > decoded.exp) {
+                isValid = false;
+            } else {
+                portfolioInfo = decoded.data;
+                isValid = true;
+            }
+        } catch (e) {
+            isValid = false;
+        }
+    } else if (token) {
         const tokenIndex = portfolioTokens.indexOf(token);
         if (tokenIndex !== -1) {
-            // Bir martalik kirish: token o'chiriladi
             portfolioTokens.splice(tokenIndex, 1);
             localStorage.setItem('abdu_portfolio_tokens', JSON.stringify(portfolioTokens));
+            isValid = true;
+        }
+    }
 
+    if (pToken || token) {
+        if (isValid) {
             renderPortfolioView();
-            
-            // Portfolioni ko'rsatish
             document.querySelector('.hero').style.display = 'none';
             mainContent.style.display = 'none';
             document.querySelector('.footer').style.display = 'none';
             portfolioView.style.display = 'block';
 
-            // Sichqonchani portfolio rejimiga (qizil neon) o'tkazish
             const follower = document.getElementById('cursor-follower');
             if (follower) {
                 follower.classList.add('portfolio-mode');
             }
         } else {
-            // Eskirgan token
             document.querySelector('.hero').style.display = 'none';
             mainContent.style.display = 'none';
             document.querySelector('.footer').style.display = 'none';
             
             portfolioView.innerHTML = `
                 <div class="portfolio-expired animate-fade-in" style="background:#000; min-height:80vh; display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:24px;">
-                    <span style="font-size: 64px; display: block; margin-bottom: 20px;">ğŸ”’</span>
-                    <h2 style="color:#ff4d4d; font-family:'Playfair Display', serif;">Ushbu kirish havolasi eskirgan!</h2>
-                    <p style="color:#626a7f;">Xavfsizlik maqsadida ushbu portfolio havolasi faqat bir martalik foydalanish uchun mo'ljallangan.</p>
+                    <span style="font-size: 64px; display: block; margin-bottom: 20px;">🔒</span>
+                    <h2 style="color:#ff4d4d; font-family:'Playfair Display', serif;">Ushbu kirish havolasi eskirgan yoki noto'g'ri!</h2>
+                    <p style="color:#626a7f;">Xavfsizlik maqsadida ushbu portfolio havolasi faqat cheklangan vaqt yoki bir martalik foydalanish uchun mo'ljallangan.</p>
                     <button class="btn-primary" onclick="window.location.href = window.location.pathname" style="margin-top: 25px; border-color:#00ff88; color:#00ff88; background:transparent;">Bosh sahifaga o'tish</button>
                 </div>
             `;
@@ -2677,10 +2698,12 @@ if (closeMyresultsModal && myresultsModal) {
 }
 
 const userLogoutBtn = document.getElementById('user-logout-btn');
-if (userLogoutBtn && window.Auth) {
+if (userLogoutBtn) {
     userLogoutBtn.addEventListener('click', async () => {
-        await Auth.logout();
-        location.reload();
+        if (window.Auth) {
+            await window.Auth.logout();
+            location.reload();
+        }
     });
 }
 
