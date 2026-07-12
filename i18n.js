@@ -43,7 +43,8 @@
             "deck.uz_de": "🇺🇿→🇩🇪 So'zlar",
             "deck.grammar": "📐 Grammatika",
             "deck.sentences": "💬 Gaplar",
-            "deck.quotes": "🏛️ Faylasuf gaplari"
+            "deck.quotes": "🏛️ Faylasuf gaplari",
+            "deck.ueber_mich": "🙋‍♂️ O'zim haqimda"
         },
         ru: {
             "nav.home": "Главная",
@@ -84,7 +85,8 @@
             "deck.uz_de": "🇺🇿→🇩🇪 Слова",
             "deck.grammar": "📐 Грамматика",
             "deck.sentences": "💬 Предложения",
-            "deck.quotes": "🏛️ Цитаты философов"
+            "deck.quotes": "🏛️ Цитаты философов",
+            "deck.ueber_mich": "🙋‍♂️ Обо мне"
         },
         de: {
             "nav.home": "Startseite",
@@ -125,7 +127,8 @@
             "deck.uz_de": "🇺🇿→🇩🇪 Wörter",
             "deck.grammar": "📐 Grammatik",
             "deck.sentences": "💬 Sätze",
-            "deck.quotes": "🏛️ Philosophen-Zitate"
+            "deck.quotes": "🏛️ Philosophen-Zitate",
+            "deck.ueber_mich": "🙋‍♂️ Über mich"
         },
         en: {
             "nav.home": "Home",
@@ -166,7 +169,8 @@
             "deck.uz_de": "🇺🇿→🇩🇪 Words",
             "deck.grammar": "📐 Grammar",
             "deck.sentences": "💬 Sentences",
-            "deck.quotes": "🏛️ Philosopher quotes"
+            "deck.quotes": "🏛️ Philosopher quotes",
+            "deck.ueber_mich": "🙋‍♂️ About me"
         }
     };
 

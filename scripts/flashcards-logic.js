@@ -1,4 +1,4 @@
-﻿// ===== KARTOCHKALAR HOLATI VA KO'RINISHI =====
+// ===== KARTOCHKALAR HOLATI VA KO'RINISHI =====
 let fcDeckKey = null;
 let fcOrder = [];
 let fcIndex = 0;
@@ -11,7 +11,8 @@ function renderFlashcardsHome() {
         { key: 'uz_de', i: 'deck.uz_de' },
         { key: 'grammar', i: 'deck.grammar' },
         { key: 'sentences', i: 'deck.sentences' },
-        { key: 'quotes', i: 'deck.quotes' }
+        { key: 'quotes', i: 'deck.quotes' },
+        { key: 'ueber_mich', i: 'deck.ueber_mich' }
     ];
     view.innerHTML = `
         <div style="text-align:center; margin-bottom:36px;">
