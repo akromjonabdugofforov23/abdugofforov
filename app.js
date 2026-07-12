@@ -833,7 +833,7 @@ function showBlogResultsView() {
     if (mainContent) mainContent.style.display = '';
 }
 
-searchInput.addEventListener('input', (e) => {
+if (searchInput) searchInput.addEventListener('input', (e) => {
     searchQuery = e.target.value.trim();
     if (_searchTimer) clearTimeout(_searchTimer);
     _searchTimer = setTimeout(() => {
@@ -1109,8 +1109,8 @@ function closePostDetailModal() {
     }
 }
 
-closeDetailModal.addEventListener('click', closePostDetailModal);
-postDetailModal.addEventListener('click', (e) => {
+if (closeDetailModal) closeDetailModal.addEventListener('click', closePostDetailModal);
+if (postDetailModal) postDetailModal.addEventListener('click', (e) => {
     if (e.target === postDetailModal) closePostDetailModal();
 });
 
@@ -1128,7 +1128,7 @@ if (postCategoryInput) {
 }
 
 // 11. Yangi Post Qo'shish / Tahrirlash Formasi
-addPostBtn.addEventListener('click', () => {
+if (addPostBtn) addPostBtn.addEventListener('click', () => {
     editingPostId = null;
     addPostModal.querySelector('.write-title').textContent = "Yangi sahifa yaratish";
     newPostForm.reset();
@@ -1165,9 +1165,9 @@ function closeAddPostModal() {
     if (postVideoPlayer) postVideoPlayer.src = '';
 }
 
-closeAddModal.addEventListener('click', closeAddPostModal);
-cancelAddBtn.addEventListener('click', closeAddPostModal);
-addPostModal.addEventListener('click', (e) => {
+if (closeAddModal) closeAddModal.addEventListener('click', closeAddPostModal);
+if (cancelAddBtn) cancelAddBtn.addEventListener('click', closeAddPostModal);
+if (addPostModal) addPostModal.addEventListener('click', (e) => {
     if (e.target === addPostModal) closeAddPostModal();
 });
 
@@ -1323,7 +1323,7 @@ postVideoRemove?.addEventListener('click', () => {
     if (postVideoPreview) postVideoPreview.style.display = 'none';
 });
 
-newPostForm.addEventListener('submit', (e) => {
+if (newPostForm) newPostForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const title = document.getElementById('post-title-input').value.trim();
@@ -1693,11 +1693,15 @@ if (copyLinkBtn) {
 
 // 14. Portfolio Sahifasini Render Qilish
 function renderPortfolioView() {
-    document.getElementById('port-display-name').textContent = portfolioInfo.name;
-    document.getElementById('port-display-title').textContent = portfolioInfo.title;
-    document.getElementById('port-display-bio').textContent = portfolioInfo.bio;
+    const nameEl = document.getElementById('port-display-name');
+    const titleEl = document.getElementById('port-display-title');
+    const bioEl = document.getElementById('port-display-bio');
+    if (nameEl) nameEl.textContent = portfolioInfo.name;
+    if (titleEl) titleEl.textContent = portfolioInfo.title;
+    if (bioEl) bioEl.textContent = portfolioInfo.bio;
 
     const skillsList = document.getElementById('port-display-skills');
+    if (skillsList) {
     skillsList.innerHTML = '';
     const skillsArr = portfolioInfo.skills.split(',');
     skillsArr.forEach(s => {
@@ -1714,8 +1718,10 @@ function renderPortfolioView() {
             skillsList.appendChild(li);
         }
     });
+    }
 
     const expDiv = document.getElementById('port-display-experience');
+    if (expDiv) {
     expDiv.innerHTML = '';
     const expArr = portfolioInfo.experience.split(';');
     expArr.forEach(exp => {
@@ -1735,6 +1741,7 @@ function renderPortfolioView() {
             expDiv.appendChild(p);
         }
     });
+    }
 }
 
 // Tokenni tekshirish
@@ -1796,7 +1803,7 @@ function checkPortfolioAccess() {
     }
 }
 
-closePortfolioBtn.addEventListener('click', () => {
+if (closePortfolioBtn) closePortfolioBtn.addEventListener('click', () => {
     window.location.href = window.location.pathname;
 });
 
@@ -2537,15 +2544,37 @@ async function bootstrap() {
     // init3DTilt(); // Performance optimization
     initFloatingAddBtn();
 
-    // O'quvchi auth â€” token bo'lsa tiklaymiz, UI'ni yangilaymiz
-    initAuthUI();
-    if (window.Auth) {
-        await Auth.restore();
-        updateAuthUI();
+    // O'quvchi auth – token bo'lsa tiklaymiz, UI'ni yangilaymiz
+    try {
+        if (window.Auth) {
+            await Auth.restore();
+            // Auth holatiga qarab UI ni yangilaymiz
+            const userMenu = document.getElementById('user-menu');
+            const loginBtnEl = document.getElementById('login-btn');
+            if (Auth.isLoggedIn()) {
+                if (userMenu) userMenu.style.display = '';
+                if (loginBtnEl) loginBtnEl.style.display = 'none';
+                const nameLabel = document.getElementById('user-name-label');
+                const avatarEl = document.getElementById('user-avatar');
+                const ddName = document.getElementById('user-dd-name');
+                const ddUsername = document.getElementById('user-dd-username');
+                if (nameLabel) nameLabel.textContent = Auth.user.name || Auth.user.username;
+                if (avatarEl) avatarEl.textContent = (Auth.user.name || Auth.user.username || 'U').charAt(0).toUpperCase();
+                if (ddName) ddName.textContent = Auth.user.name || Auth.user.username;
+                if (ddUsername) ddUsername.textContent = '@' + (Auth.user.username || '');
+            } else {
+                if (userMenu) userMenu.style.display = 'none';
+                if (loginBtnEl) loginBtnEl.style.display = '';
+            }
+        }
+    } catch (authErr) {
+        console.error('Auth tiklashda xatolik:', authErr);
     }
 }
 
-bootstrap();
+bootstrap().catch(e => {
+    console.error("Bootstrap xatolik:", e);
+});
 
 
 
