@@ -1049,5 +1049,117 @@ body:not(.admin-mode) .fab {
     color: #fff;
 }
 
+/* ============================================================
+   LIGHT REJIM — Sahifa komponentlari uchun override
+   ============================================================ */
+
+/* Intro Splash — oq fon + binafsha / qizil gradient */
+[data-theme="light"] .intro-splash {
+    background:
+        radial-gradient(circle at 30% 30%, rgba(124, 58, 237, 0.12), transparent 60%),
+        radial-gradient(circle at 70% 70%, rgba(239, 68, 68, 0.08), transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.06), transparent 50%),
+        #F8F9FF;
+}
+[data-theme="light"] .cube-face {
+    background: linear-gradient(135deg, #7C3AED, #EF4444);
+    color: #fff;
+    box-shadow: 0 0 30px rgba(124, 58, 237, 0.30);
+}
+
+/* FAB — light rejimda binafsha gradient */
+[data-theme="light"] .fab {
+    background: linear-gradient(135deg, #7C3AED, #EF4444);
+    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.35), 0 4px 12px rgba(239, 68, 68, 0.20);
+}
+[data-theme="light"] .fab::before {
+    background: linear-gradient(135deg, #7C3AED, #EF4444);
+}
+@keyframes fabPulseLight {
+    0%, 100% { box-shadow: 0 8px 32px rgba(124, 58, 237, 0.35), 0 4px 12px rgba(239, 68, 68, 0.20); }
+    50%      { box-shadow: 0 8px 40px rgba(124, 58, 237, 0.55), 0 4px 18px rgba(239, 68, 68, 0.30); }
+}
+[data-theme="light"] .fab { animation-name: fabPulseLight; }
+
+/* Flashcard — light rejim uchun orqa tomon */
+[data-theme="light"] .flashcard-back {
+    background: linear-gradient(135deg, #7C3AED, #EF4444);
+    color: #fff;
+}
+
+/* Tag pilllar */
+[data-theme="light"] .tag-pill {
+    background: rgba(124, 58, 237, 0.06);
+    border-color: rgba(124, 58, 237, 0.15);
+    color: #7C3AED;
+}
+[data-theme="light"] .tag-pill:hover {
+    background: #7C3AED;
+    color: #fff;
+    border-color: #7C3AED;
+}
+
+/* Compose modal */
+[data-theme="light"] .compose-action-btn {
+    color: #7C3AED;
+    background: rgba(124, 58, 237, 0.08);
+}
+[data-theme="light"] .compose-action-btn:hover {
+    background: rgba(124, 58, 237, 0.15);
+}
+
+/* Toast */
+[data-theme="light"] .abdu-toast {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(124, 58, 237, 0.12);
+    box-shadow: 0 10px 40px rgba(124, 58, 237, 0.12);
+}
+
+/* Level blocks (Deutsch) */
+[data-theme="light"] .level-block {
+    background: rgba(255, 255, 255, 0.80);
+    border-color: rgba(124, 58, 237, 0.10);
+}
+[data-theme="light"] .test-card {
+    background: rgba(248, 249, 255, 0.90);
+    border-color: rgba(124, 58, 237, 0.08);
+}
+[data-theme="light"] .test-card:hover {
+    border-color: #7C3AED;
+    box-shadow: 0 8px 28px rgba(124, 58, 237, 0.12);
+}
+
+/* Lang dropdown */
+[data-theme="light"] .lang-toggle {
+    background: rgba(255, 255, 255, 0.80);
+    border-color: rgba(124, 58, 237, 0.12);
+}
+[data-theme="light"] .lang-toggle:hover {
+    border-color: #7C3AED;
+}
+[data-theme="light"] .lang-menu {
+    background: rgba(255, 255, 255, 0.96);
+    border-color: rgba(124, 58, 237, 0.10);
+}
+[data-theme="light"] .lang-menu li:hover {
+    background: rgba(124, 58, 237, 0.06);
+}
+
+/* Comment reply */
+[data-theme="light"] .comment-reply {
+    border-left-color: #7C3AED;
+    background: rgba(124, 58, 237, 0.04);
+}
+
+/* Contact links */
+[data-theme="light"] .contact-link {
+    background: rgba(255, 255, 255, 0.80);
+    border-color: rgba(124, 58, 237, 0.10);
+}
+[data-theme="light"] .contact-link:hover {
+    border-color: #7C3AED;
+    box-shadow: 0 6px 24px rgba(124, 58, 237, 0.10);
+}
+
 
 

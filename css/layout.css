@@ -1090,3 +1090,151 @@
     background: var(--text-muted);
 }
 
+/* ============================================================
+   LIGHT REJIM — Layout komponentlar uchun zamonaviy override
+   ============================================================ */
+
+/* Hero section — yorqin gradient fon effekti */
+[data-theme="light"] .hero {
+    background: linear-gradient(180deg, rgba(124, 58, 237, 0.04) 0%, rgba(248, 249, 255, 0) 60%);
+}
+
+[data-theme="light"] .hero-cta {
+    box-shadow: 0 0 24px rgba(124, 58, 237, 0.25), 0 0 48px rgba(239, 68, 68, 0.10);
+}
+[data-theme="light"] .hero-cta:hover {
+    box-shadow: 0 0 36px rgba(124, 58, 237, 0.40), 0 8px 30px rgba(239, 68, 68, 0.20);
+}
+
+/* Hero soat — light uchun shisha effekt */
+[data-theme="light"] .hero-clock {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(124, 58, 237, 0.12);
+    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+}
+[data-theme="light"] .hero-clock::before {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), transparent 55%);
+}
+
+/* Search input — binafsha fokus */
+[data-theme="light"] .search-input {
+    background: rgba(255, 255, 255, 0.70);
+    border-color: rgba(124, 58, 237, 0.12);
+    color: #1E1B4B;
+}
+[data-theme="light"] .search-input::placeholder {
+    color: #8B5CF6;
+}
+[data-theme="light"] .search-input:focus {
+    border-color: #7C3AED;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+/* Filter teglar — zamonaviy binafsha/qizil aksent */
+[data-theme="light"] .filter-tag {
+    background: rgba(124, 58, 237, 0.04);
+    border-color: rgba(124, 58, 237, 0.12);
+    color: #4338CA;
+}
+[data-theme="light"] .filter-tag:hover {
+    color: #7C3AED;
+    border-color: rgba(124, 58, 237, 0.30);
+    background: rgba(124, 58, 237, 0.08);
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.10);
+}
+[data-theme="light"] .filter-tag.active {
+    background: linear-gradient(135deg, #7C3AED, #A855F7);
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.25);
+}
+
+/* Post kartalar — oq shisha + binafsha border glow */
+[data-theme="light"] .post-card {
+    background: rgba(255, 255, 255, 0.80);
+    border-color: rgba(124, 58, 237, 0.08);
+    box-shadow: 0 4px 24px rgba(124, 58, 237, 0.06);
+}
+[data-theme="light"] .post-card:hover {
+    box-shadow: 0 18px 60px rgba(124, 58, 237, 0.18), 0 4px 20px rgba(239, 68, 68, 0.08);
+    border-color: transparent;
+}
+[data-theme="light"] .post-card::before {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(239, 68, 68, 0.3), rgba(56, 189, 248, 0.4));
+}
+[data-theme="light"] .post-card::after {
+    background: radial-gradient(80% 60% at 50% 0%, rgba(124, 58, 237, 0.10), transparent 60%);
+}
+
+/* Main content area */
+[data-theme="light"] #main-content {
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(124, 58, 237, 0.06);
+}
+
+/* Modal — oq shisha effekt */
+[data-theme="light"] .modal-overlay {
+    background-color: rgba(248, 249, 255, 0.80);
+}
+[data-theme="light"] .modal-container {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 255, 0.99));
+    border-color: rgba(124, 58, 237, 0.10);
+}
+[data-theme="light"] .modal-close {
+    background: rgba(255, 255, 255, 0.80);
+    border-color: rgba(124, 58, 237, 0.12);
+    color: #7C3AED;
+}
+[data-theme="light"] .modal-close:hover {
+    background: linear-gradient(135deg, #7C3AED, #EF4444);
+    color: #fff;
+}
+
+/* Btn secondary */
+[data-theme="light"] .btn-secondary {
+    background: rgba(124, 58, 237, 0.04);
+    border-color: rgba(124, 58, 237, 0.15);
+    color: #4338CA;
+}
+[data-theme="light"] .btn-secondary:hover {
+    background: rgba(124, 58, 237, 0.08);
+    border-color: rgba(124, 58, 237, 0.25);
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.10);
+}
+
+/* Form elementlar */
+[data-theme="light"] .form-input,
+[data-theme="light"] .form-textarea {
+    background-color: rgba(255, 255, 255, 0.80);
+    border-color: rgba(124, 58, 237, 0.12);
+    color: #1E1B4B;
+}
+[data-theme="light"] .form-input:focus,
+[data-theme="light"] .form-textarea:focus {
+    border-color: #7C3AED;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.10);
+}
+
+/* Footer — gradient chiziq */
+[data-theme="light"] .footer::before {
+    background: linear-gradient(90deg, transparent, #7C3AED, #EF4444, #38BDF8, transparent);
+    opacity: 0.5;
+}
+[data-theme="light"] .footer-socials a:hover {
+    color: #7C3AED;
+    text-shadow: 0 0 12px rgba(124, 58, 237, 0.35);
+}
+
+/* Scrollbar — light */
+[data-theme="light"] ::-webkit-scrollbar-track {
+    background: #F8F9FF;
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.20);
+    border-radius: 4px;
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 58, 237, 0.35);
+}
+

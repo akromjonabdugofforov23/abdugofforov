@@ -326,9 +326,275 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.desktop-dock .dock-item.active {
+    color: #fff;
+    background: rgba(56, 189, 248, 0.2); /* Soft accent bg */
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.desktop-dock .dock-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    box-shadow: 0 0 8px var(--accent-color);
+}
+
+.desktop-dock .dock-label {
+    position: absolute;
+    top: -36px;
+    background: rgba(15, 23, 42, 0.9);
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.1);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.desktop-dock .dock-item:hover .dock-label {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .hamburger-btn { display: block; }
+    
+    /* Hide top nav on mobile, but keep dock visible! */
+    .nav-links { display: none; }
+    
+    /* Hamburger Menu Overlay (Mobil uchun) */
+    .hamburger-overlay {
+        display: none;
+        position: fixed;
+        top: 60px;
+        right: 20px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 20px;
+        flex-direction: column;
+        gap: 15px;
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        animation: slideDown 0.3s ease;
+    }
+    .hamburger-overlay.active { display: flex; }
+    
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Adjust dock for mobile */
+    .desktop-dock {
+        width: 90%;
+        justify-content: space-around;
+        padding: 8px;
+        gap: 0;
+        bottom: 10px;
+        border-radius: 20px;
+    }
+    .desktop-dock .dock-item {
+        width: 44px;
+        height: 44px;
+    }
+    .desktop-dock .dock-item:hover {
+        transform: none; /* Mobilda hover kerak emas */
+        box-shadow: none;
+    }
+    .desktop-dock .dock-item:hover .dock-label {
+        display: none;
+    }
+}
+/* ===== QUICK COMPOSE UI ===== */
+.compose-modal {
+    padding: 0;
+    max-width: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--bg-color);
+}
+.compose-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--card-bg);
+}
+.compose-user-info strong {
+    font-size: 16px;
+    font-weight: 600;
+}
+.compose-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.compose-title {
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-color);
+    width: 100%;
+}
+.compose-title::placeholder {
+    color: var(--text-muted);
+}
+.compose-textarea {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    resize: none;
+    min-height: 120px;
+    background: transparent;
+    color: var(--text-color);
+    width: 100%;
+    font-family: inherit;
+}
+.compose-textarea::placeholder {
+    color: var(--text-muted);
+}
+.compose-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-color);
+    background: var(--card-bg);
+}
+.compose-actions {
+    display: flex;
+    gap: 16px;
+}
+.compose-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: rgba(139, 92, 246, 0.1);
+    transition: background 0.2s;
+}
+.compose-action-btn:hover {
+    background: rgba(139, 92, 246, 0.2);
+}
+.compose-previews {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.media-preview-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+.preview-remove {
+    background: rgba(255, 77, 77, 0.1);
+    color: #ff4d4d;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
 }
 
 
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
+/* ============================================================
+   LIGHT REJIM — Dock, Auth UI, User menyusi uchun override
+   ============================================================ */
+
+/* Desktop dock — oq shisha binafsha aksent */
+[data-theme="light"] .desktop-dock {
+    background: rgba(255, 255, 255, 0.72);
+    border-color: rgba(124, 58, 237, 0.10);
+    border-top-color: rgba(255, 255, 255, 0.90);
+    box-shadow: 0 10px 40px rgba(124, 58, 237, 0.10), inset 0 1px 0 rgba(255,255,255,0.8);
+}
+[data-theme="light"] .desktop-dock .dock-item {
+    color: #4338CA;
+}
+[data-theme="light"] .desktop-dock .dock-item:hover {
+    color: #7C3AED;
+    background: rgba(124, 58, 237, 0.08);
+}
+[data-theme="light"] .desktop-dock .dock-item.active {
+    color: #7C3AED;
+    background: rgba(124, 58, 237, 0.10);
+    border-color: rgba(124, 58, 237, 0.20);
+}
+[data-theme="light"] .desktop-dock .dock-label {
+    background: rgba(255, 255, 255, 0.95);
+    color: #1E1B4B;
+    border-color: rgba(124, 58, 237, 0.10);
+}
+
+/* Auth tabs */
+[data-theme="light"] .auth-tabs {
+    background: rgba(255, 255, 255, 0.70);
+    border-color: rgba(124, 58, 237, 0.10);
+}
+[data-theme="light"] .auth-tab {
+    color: #4338CA;
+}
+[data-theme="light"] .auth-tab.active {
+    background: linear-gradient(135deg, #7C3AED, #EF4444);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.30);
+}
+
+/* User chip */
+[data-theme="light"] .user-chip {
+    background: rgba(255, 255, 255, 0.70);
+    border-color: rgba(124, 58, 237, 0.12);
+}
+[data-theme="light"] .user-chip:hover {
+    border-color: rgba(124, 58, 237, 0.25);
+    background: rgba(255, 255, 255, 0.85);
+}
+[data-theme="light"] .user-avatar {
+    background: linear-gradient(135deg, #7C3AED, #EF4444);
+}
+[data-theme="light"] .user-dropdown {
+    background: rgba(255, 255, 255, 0.96);
+    border-color: rgba(124, 58, 237, 0.10);
+}
+[data-theme="light"] .user-dd-item:hover {
+    background: rgba(124, 58, 237, 0.06);
+}
+
+/* Hamburger overlay */
+[data-theme="light"] .hamburger-overlay {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(124, 58, 237, 0.10);
+}
+[data-theme="light"] .hamburger-btn {
+    color: #7C3AED;
+}

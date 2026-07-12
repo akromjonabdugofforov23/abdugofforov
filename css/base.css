@@ -173,3 +173,64 @@
 .btn-primary:hover::before { transform: translateX(100%); }
 .btn-primary:active { transform: scale(0.97) translateY(0); }
 
+/* ============================================================
+   LIGHT REJIM — Navbar, tugmalar va komponentlar uchun override
+   ============================================================ */
+[data-theme="light"] .navbar {
+    background: rgba(248, 249, 255, 0.72);
+    border-bottom-color: rgba(124, 58, 237, 0.10);
+}
+[data-theme="light"] .navbar::after {
+    background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.5), rgba(239, 68, 68, 0.4), rgba(56, 189, 248, 0.5), transparent);
+    opacity: 0.8;
+}
+
+[data-theme="light"] .logo {
+    background: linear-gradient(135deg, #7C3AED, #EF4444);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+[data-theme="light"] .logo:hover {
+    filter: drop-shadow(0 0 14px rgba(124, 58, 237, 0.5));
+}
+[data-theme="light"] .logo span {
+    background: linear-gradient(135deg, #EF4444, #38BDF8);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+[data-theme="light"] .nav-links a {
+    color: #4338CA;
+}
+[data-theme="light"] .nav-links a:hover {
+    color: #7C3AED;
+    background: rgba(124, 58, 237, 0.06);
+    border-color: rgba(124, 58, 237, 0.12);
+}
+[data-theme="light"] .nav-links a.active {
+    color: #fff;
+    background: linear-gradient(135deg, #7C3AED, #EF4444);
+    border-color: transparent;
+    box-shadow: 0 4px 18px rgba(124, 58, 237, 0.30);
+}
+
+[data-theme="light"] .btn-icon {
+    background: rgba(124, 58, 237, 0.04);
+    border-color: rgba(124, 58, 237, 0.12);
+    color: #7C3AED;
+}
+[data-theme="light"] .btn-icon:hover {
+    background: rgba(124, 58, 237, 0.10);
+    border-color: rgba(124, 58, 237, 0.25);
+    color: #7C3AED;
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.12);
+}
+
+[data-theme="light"] .btn-primary {
+    background: linear-gradient(135deg, #7C3AED, #A855F7);
+    box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.15) inset, 0 8px 20px rgba(124, 58, 237, 0.20);
+}
+[data-theme="light"] .btn-primary:hover {
+    box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.20) inset, 0 12px 28px rgba(124, 58, 237, 0.30);
+}
+
