@@ -1,4 +1,4 @@
-﻿// Rasmli savollar uchun ishonchli, o'rnatilgan (data URI) emoji-rasm
+// Rasmli savollar uchun ishonchli, o'rnatilgan (data URI) emoji-rasm
 function emojiImage(emoji, bg) {
     const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240'>"
         + "<rect width='100%' height='100%' fill='" + (bg || '#f3efe0') + "'/>"
@@ -20,7 +20,7 @@ const deutschTests = {
             icon: "🌱",
             sections: [
                 {
-                    name: "📝 Salomlashish va asosiy iboralar",
+                    name: "ğŸ“ Salomlashish va asosiy iboralar",
                     type: "text",
                     questions: [
                         { q: "'Wie geht es Ihnen?' savoliga to'g'ri javob qaysi?", options: ["Ich heiße Akrom.", "Mir geht es gut, danke.", "Ich komme aus Usbekistan.", "Ich bin 25 Jahre alt."], answer: 1, explanation: "'Mir geht es gut, danke' = Yaxshi, rahmat. Wie geht es Ihnen? = Qandaysiz? (rasmiy)." },
@@ -46,7 +46,7 @@ const deutschTests = {
                     ]
                 },
                 {
-                    name: "📝 So'z va grammatika",
+                    name: "ğŸ“ So'z va grammatika",
                     type: "text",
                     questions: [
                         { q: "Bo'sh joyga mos fe'l: 'Ich ___ Student.'", options: ["bin", "bist", "ist", "sind"], answer: 0, explanation: "'ich bin' = men ...man. sein: ich bin, du bist, er/sie ist." },
@@ -68,7 +68,7 @@ const deutschTests = {
             icon: "🌱",
             sections: [
                 {
-                    name: "📝 Ko'p tanlovli",
+                    name: "ğŸ“ Ko'p tanlovli",
                     type: "text",
                     questions: [
                         { q: "'Danke schön!' iborasiga eng mos javob qaysi?", options: ["Bitte schön!", "Tschüss!", "Guten Tag!", "Wie geht's?"], answer: 0, explanation: "'Bitte schön!' = Marhamat / Arzimaydi." },
@@ -82,7 +82,7 @@ const deutschTests = {
                     name: "🖼️  Rasmli — nemischa toping",
                     type: "image",
                     questions: [
-                        { q: "Bu hayvonning nemischa nomi?", image: emojiImage("🐈"), imageAlt: "Mushuk", options: ["der Hund", "die Katze", "das Pferd", "der Vogel"], answer: 1, explanation: "'die Katze' = mushuk. der Hund = it." },
+                        { q: "Bu hayvonning nemischa nomi?", image: emojiImage("🐱"), imageAlt: "Mushuk", options: ["der Hund", "die Katze", "das Pferd", "der Vogel"], answer: 1, explanation: "'die Katze' = mushuk. der Hund = it." },
                         { q: "Bu narsaning nemischa nomi?", image: emojiImage("🏠"), imageAlt: "Uy", options: ["die Schule", "das Haus", "die Kirche", "der Garten"], answer: 1, explanation: "'das Haus' = uy. die Schule = maktab." },
                         { q: "Bu narsaning nemischa nomi?", image: emojiImage("☀️", "#fff4d6"), imageAlt: "Quyosh", options: ["der Mond", "der Stern", "die Sonne", "der Regen"], answer: 2, explanation: "'die Sonne' = quyosh. der Mond = oy." },
                         { q: "Bu transport vositasining nemischa nomi?", image: emojiImage("🚗"), imageAlt: "Mashina", options: ["das Fahrrad", "der Bus", "das Auto", "der Zug"], answer: 2, explanation: "'das Auto' = mashina. das Fahrrad = velosiped." },
@@ -104,7 +104,7 @@ const deutschTests = {
             icon: "🌱",
             sections: [
                 {
-                    name: "📝 Ranglar, sanoq, oila",
+                    name: "📝  Ranglar, sanoq, oila",
                     type: "text",
                     questions: [
                         { q: "'rot' rangi o'zbekchada nima?", options: ["ko'k", "yashil", "qizil", "sariq"], answer: 2, explanation: "'rot' = qizil. blau = ko'k, grün = yashil, gelb = sariq." },
@@ -122,7 +122,7 @@ const deutschTests = {
                         { q: "Bu narsaning nemischa nomi?", image: emojiImage("📚"), imageAlt: "Kitob", options: ["das Heft", "das Buch", "der Stift", "der Tisch"], answer: 1, explanation: "'das Buch' = kitob. das Heft = daftar, der Stift = qalam." },
                         { q: "Bu obyektning nemischa nomi?", image: emojiImage("💧", "#dbe7f0"), imageAlt: "Suv", options: ["die Milch", "das Wasser", "der Saft", "der Tee"], answer: 1, explanation: "'das Wasser' = suv. die Milch = sut, der Tee = choy." },
                         { q: "Bu kasbning nemischa nomi?", image: emojiImage("👨‍⚕️"), imageAlt: "Shifokor", options: ["der Lehrer", "der Arzt", "der Koch", "der Polizist"], answer: 1, explanation: "'der Arzt' = shifokor. die Ärztin = ayol shifokor." },
-                        { q: "Bu narsaning nemischa nomi?", image: emojiImage("⏰", "#f0e6db"), imageAlt: "Soat", options: ["die Uhr", "der Tag", "das Buch", "die Tür"], answer: 0, explanation: "'die Uhr' = soat. Wie spät ist es? = Soat necha bo'ldi?" }
+                        { q: "Bu narsaning nemischa nomi?", image: emojiImage("⏲️", "#f0e6db"), imageAlt: "Soat", options: ["die Uhr", "der Tag", "das Buch", "die Tür"], answer: 0, explanation: "'die Uhr' = soat. Wie spät ist es? = Soat necha bo'ldi?" }
                     ]
                 }
             ]
@@ -140,7 +140,7 @@ const deutschTests = {
             icon: "🌿",
             sections: [
                 {
-                    name: "📝 Perfekt va modal fe'llar",
+                    name: "📝  Perfekt va modal fe'llar",
                     type: "text",
                     questions: [
                         { q: "Perfekt: 'Ich ___ gestern Fußball gespielt.'", options: ["habe", "bin", "hat", "bist"], answer: 0, explanation: "'spielen' Perfektda 'haben' bilan: Ich habe gespielt." },
@@ -151,14 +151,14 @@ const deutschTests = {
                     ]
                 },
                 {
-                    name: "🖼️ Rasmli — vaziyatlar",
+                    name: "🖼️  Rasmli — vaziyatlar",
                     type: "image",
                     questions: [
-                        { q: "Bu joyning nemischa nomi?", image: emojiImage("ğŸ¥"), imageAlt: "Shifoxona", options: ["die Apotheke", "das Krankenhaus", "das Rathaus", "die Post"], answer: 1, explanation: "'das Krankenhaus' = shifoxona. die Apotheke = dorixona." },
-                        { q: "Bu narsaning nemischa nomi?", image: emojiImage("ğŸ’Š"), imageAlt: "Tabletka", options: ["die Spritze", "die Tablette", "der Verband", "das Pflaster"], answer: 1, explanation: "'die Tablette' = tabletka." },
-                        { q: "Ob-havoni nemischa qanday ifodalaymiz?", image: emojiImage("ğŸŒ§ï¸", "#dbe7f0"), imageAlt: "Yomg'ir", options: ["Es schneit.", "Es regnet.", "Es ist sonnig.", "Es ist windig."], answer: 1, explanation: "'Es regnet' = Yomg'ir yog'yapti." },
-                        { q: "Bu kasbning nemischa nomi?", image: emojiImage("ğŸ§‘â€ğŸ³"), imageAlt: "Oshpaz", options: ["der Lehrer", "der Koch", "der Arzt", "der Fahrer"], answer: 1, explanation: "'der Koch' = oshpaz." },
-                        { q: "'Es ist Viertel nach acht.' — soat nechada?", image: emojiImage("â°", "#f0e6db"), imageAlt: "Soat", options: ["07:45", "08:15", "08:45", "08:30"], answer: 1, explanation: "'Viertel nach acht' = 08:15. nach = keyin." }
+                        { q: "Bu joyning nemischa nomi?", image: emojiImage("🏥"), imageAlt: "Shifoxona", options: ["die Apotheke", "das Krankenhaus", "das Rathaus", "die Post"], answer: 1, explanation: "'das Krankenhaus' = shifoxona. die Apotheke = dorixona." },
+                        { q: "Bu narsaning nemischa nomi?", image: emojiImage("💊"), imageAlt: "Tabletka", options: ["die Spritze", "die Tablette", "der Verband", "das Pflaster"], answer: 1, explanation: "'die Tablette' = tabletka." },
+                        { q: "Ob-havoni nemischa qanday ifodalaymiz?", image: emojiImage("🌧️", "#dbe7f0"), imageAlt: "Yomg'ir", options: ["Es schneit.", "Es regnet.", "Es ist sonnig.", "Es ist windig."], answer: 1, explanation: "'Es regnet' = Yomg'ir yog'yapti." },
+                        { q: "Bu kasbning nemischa nomi?", image: emojiImage("🧑‍🍳"), imageAlt: "Oshpaz", options: ["der Lehrer", "der Koch", "der Arzt", "der Fahrer"], answer: 1, explanation: "'der Koch' = oshpaz." },
+                        { q: "'Es ist Viertel nach acht.' — soat nechada?", image: emojiImage("⏲️", "#f0e6db"), imageAlt: "Soat", options: ["07:45", "08:15", "08:45", "08:30"], answer: 1, explanation: "'Viertel nach acht' = 08:15. nach = keyin." }
                     ]
                 }
             ]
@@ -176,25 +176,25 @@ const deutschTests = {
             icon: "🌿",
             sections: [
                 {
-                    name: "📝 Predloglar va ajraladigan fe'llar",
+                    name: "📝  Predloglar va ajraladigan fe'llar",
                     type: "text",
                     questions: [
-                        { q: "To'g'ri predlog: 'Ich fahre ___ Bus zur Arbeit.'", options: ["mit dem", "mit der", "in den", "auf dem"], answer: 0, explanation: "'mit dem Bus' = avtobusda. mit + Dativ; der Bus â†’ dem Bus." },
+                        { q: "To'g'ri predlog: 'Ich fahre ___ Bus zur Arbeit.'", options: ["mit dem", "mit der", "in den", "auf dem"], answer: 0, explanation: "'mit dem Bus' = avtobusda. mit + Dativ; der Bus → dem Bus." },
                         { q: "Ajraladigan fe'l: 'Der Zug fährt um 8 Uhr ___.' (jo'naydi)", options: ["ab", "auf", "an", "aus"], answer: 0, explanation: "'abfahren' = jo'nab ketmoq. 'ab' oxiriga boradi." },
                         { q: "To'g'ri predlog: 'Ich interessiere mich ___ Musik.'", options: ["für", "auf", "an", "mit"], answer: 0, explanation: "'sich interessieren für' = ...ga qiziqmoq." },
-                        { q: "Dativ: 'Ich helfe ___ Mann.'", options: ["dem", "den", "der", "das"], answer: 0, explanation: "'helfen' Dativ talab qiladi: der Mann â†’ dem Mann." },
+                        { q: "Dativ: 'Ich helfe ___ Mann.'", options: ["dem", "den", "der", "das"], answer: 0, explanation: "'helfen' Dativ talab qiladi: der Mann → dem Mann." },
                         { q: "Ajraladigan fe'l: 'Ich ___ um 7 Uhr ___.' (turaman)", options: ["auf / stehe", "stehe / auf", "stehe / ab", "ab / stehe"], answer: 1, explanation: "'aufstehen' = turmoq. Gapda: Ich stehe ... auf." },
                         { q: "To'g'ri predlog: 'Wir warten ___ den Bus.'", options: ["auf", "für", "an", "mit"], answer: 0, explanation: "'warten auf' = ...ni kutmoq. Wir warten auf den Bus." }
                     ]
                 },
                 {
-                    name: "🖼️ Rasmli — kundalik hayot",
+                    name: "🖼️  Rasmli — kundalik hayot",
                     type: "image",
                     questions: [
-                        { q: "Bu mevaning nemischa nomi?", image: emojiImage("ğŸ“"), imageAlt: "Qulupnay", options: ["die Erdbeere", "die Himbeere", "die Kirsche", "die Pflaume"], answer: 0, explanation: "'die Erdbeere' = qulupnay. die Kirsche = gilos." },
-                        { q: "Bu obyektning nemischa nomi?", image: emojiImage("âœˆï¸", "#dbe7f0"), imageAlt: "Samolyot", options: ["das Auto", "der Zug", "das Flugzeug", "das Schiff"], answer: 2, explanation: "'das Flugzeug' = samolyot. fliegen = uchmoq." },
-                        { q: "Bu obyektning nemischa nomi?", image: emojiImage("âš½"), imageAlt: "Futbol to'pi", options: ["der Ball", "das Spiel", "der Sport", "die Mannschaft"], answer: 0, explanation: "'der Ball' = to'p. Fußball = futbol." },
-                        { q: "Bu vaziyatning nemischa nomi?", image: emojiImage("â„ï¸", "#dbe7f0"), imageAlt: "Qor", options: ["Es regnet.", "Es schneit.", "Es ist heiß.", "Es ist windig."], answer: 1, explanation: "'Es schneit' = Qor yog'yapti. der Schnee = qor." }
+                        { q: "Bu mevaning nemischa nomi?", image: emojiImage("🍓"), imageAlt: "Qulupnay", options: ["die Erdbeere", "die Himbeere", "die Kirsche", "die Pflaume"], answer: 0, explanation: "'die Erdbeere' = qulupnay. die Kirsche = gilos." },
+                        { q: "Bu obyektning nemischa nomi?", image: emojiImage("✈️", "#dbe7f0"), imageAlt: "Samolyot", options: ["das Auto", "der Zug", "das Flugzeug", "das Schiff"], answer: 2, explanation: "'das Flugzeug' = samolyot. fliegen = uchmoq." },
+                        { q: "Bu obyektning nemischa nomi?", image: emojiImage("⚽"), imageAlt: "Futbol to'pi", options: ["der Ball", "das Spiel", "der Sport", "die Mannschaft"], answer: 0, explanation: "'der Ball' = to'p. Fußball = futbol." },
+                        { q: "Bu vaziyatning nemischa nomi?", image: emojiImage("❄️", "#dbe7f0"), imageAlt: "Qor", options: ["Es regnet.", "Es schneit.", "Es ist heiß.", "Es ist windig."], answer: 1, explanation: "'Es schneit' = Qor yog'yapti. der Schnee = qor." }
                     ]
                 }
             ]
@@ -212,25 +212,25 @@ const deutschTests = {
             icon: "🌿",
             sections: [
                 {
-                    name: "📝 Bog'lovchilar va qiyosiy daraja",
+                    name: "📝  Bog'lovchilar va qiyosiy daraja",
                     type: "text",
                     questions: [
                         { q: "Qiyosiy daraja: 'Berlin ist ___ als Bonn.' (kattaroq)", options: ["größer", "groß", "am größten", "großer"], answer: 0, explanation: "'größer als' = ...dan kattaroq." },
                         { q: "'weil' bog'lovchisidan keyin fe'l qayerda turadi?", options: ["Boshida", "Ikkinchi o'rinda", "Gap oxirida", "Ahamiyati yo'q"], answer: 2, explanation: "'weil' (chunki) fe'lni gap oxiriga suradi: ..., weil ich müde bin." },
                         { q: "'gestern' so'zi nimani bildiradi?", options: ["Bugun", "Ertaga", "Kecha", "Hozir"], answer: 2, explanation: "'gestern' = kecha. heute = bugun, morgen = ertaga." },
-                        { q: "Eng yuqori daraja: 'Das Buch ist ___.' (eng yaxshi)", options: ["gut", "besser", "am besten", "guter"], answer: 2, explanation: "'am besten' = eng yaxshi. gut â†’ besser â†’ am besten." },
+                        { q: "Eng yuqori daraja: 'Das Buch ist ___.' (eng yaxshi)", options: ["gut", "besser", "am besten", "guter"], answer: 2, explanation: "'am besten' = eng yaxshi. gut → besser → am besten." },
                         { q: "Bog'lovchi: 'Ich bleibe zu Hause, ___ ich krank bin.'", options: ["aber", "weil", "und", "oder"], answer: 1, explanation: "'weil' = chunki (sabab)." },
                         { q: "Qiyos: 'Anna ist ___ wie Maria.' (xuddi)", options: ["so groß", "größer", "am größten", "größere"], answer: 0, explanation: "'so ... wie' = xuddi ...dek. Anna ist so groß wie Maria." }
                     ]
                 },
                 {
-                    name: "🖼️ Rasmli — joylar va hodisalar",
+                    name: "🖼️  Rasmli — joylar va hodisalar",
                     type: "image",
                     questions: [
-                        { q: "Bu joyning nemischa nomi?", image: emojiImage("ğŸ«"), imageAlt: "Maktab", options: ["die Universität", "die Schule", "der Kindergarten", "das Büro"], answer: 1, explanation: "'die Schule' = maktab." },
-                        { q: "Bu obyektning nemischa nomi?", image: emojiImage("ğŸš²"), imageAlt: "Velosiped", options: ["das Motorrad", "das Fahrrad", "der Roller", "das Skateboard"], answer: 1, explanation: "'das Fahrrad' = velosiped. fahren = yurmoq." },
-                        { q: "Bu fasl nemischa qanday?", image: emojiImage("ğŸ‚", "#f4e4d4"), imageAlt: "Kuz", options: ["der Frühling", "der Sommer", "der Herbst", "der Winter"], answer: 2, explanation: "'der Herbst' = kuz. der Frühling = bahor, der Sommer = yoz, der Winter = qish." },
-                        { q: "Bu obyektning nemischa nomi?", image: emojiImage("âœï¸"), imageAlt: "Qalam", options: ["das Buch", "der Stift", "das Heft", "der Tisch"], answer: 1, explanation: "'der Stift' = qalam. der Bleistift = oddiy qalam." }
+                        { q: "Bu joyning nemischa nomi?", image: emojiImage("🏫"), imageAlt: "Maktab", options: ["die Universität", "die Schule", "der Kindergarten", "das Büro"], answer: 1, explanation: "'die Schule' = maktab." },
+                        { q: "Bu obyektning nemischa nomi?", image: emojiImage("🚲"), imageAlt: "Velosiped", options: ["das Motorrad", "das Fahrrad", "der Roller", "das Skateboard"], answer: 1, explanation: "'das Fahrrad' = velosiped. fahren = yurmoq." },
+                        { q: "Bu fasl nemischa qanday?", image: emojiImage("🍂", "#f4e4d4"), imageAlt: "Kuz", options: ["der Frühling", "der Sommer", "der Herbst", "der Winter"], answer: 2, explanation: "'der Herbst' = kuz. der Frühling = bahor, der Sommer = yoz, der Winter = qish." },
+                        { q: "Bu obyektning nemischa nomi?", image: emojiImage("🖊️"), imageAlt: "Qalam", options: ["das Buch", "der Stift", "das Heft", "der Tisch"], answer: 1, explanation: "'der Stift' = qalam. der Bleistift = oddiy qalam." }
                     ]
                 }
             ]
@@ -248,7 +248,7 @@ const deutschTests = {
             icon: "🌳",
             sections: [
                 {
-                    name: "📝 Konjunktiv II va Passiv",
+                    name: "📝  Konjunktiv II va Passiv",
                     type: "text",
                     questions: [
                         { q: "Konjunktiv II: 'Wenn ich Zeit ___, würde ich reisen.'", options: ["hätte", "habe", "hatte", "haben"], answer: 0, explanation: "'hätte' — Konjunktiv II (shart mayli). Wenn ich Zeit hätte = Agar vaqtim bo'lganida." },
@@ -260,13 +260,13 @@ const deutschTests = {
                     ]
                 },
                 {
-                    name: "🖼️ Rasmli — chuqurroq so'z boyligi",
+                    name: "🖼️  Rasmli — chuqurroq so'z boyligi",
                     type: "image",
                     questions: [
-                        { q: "Bu tibbiy asbobning nemischa nomi?", image: emojiImage("ğŸ©º"), imageAlt: "Stetoskop", options: ["das Thermometer", "das Stethoskop", "die Spritze", "der Verband"], answer: 1, explanation: "'das Stethoskop' = stetoskop." },
-                        { q: "Bu tadbirning nemischa nomi?", image: emojiImage("ğŸ“"), imageAlt: "Bitiruv", options: ["die Hochzeit", "der Abschluss", "die Beerdigung", "die Geburt"], answer: 1, explanation: "'der Abschluss' = bitiruv/yakunlash." },
-                        { q: "Bu favqulodda holatning nemischa nomi?", image: emojiImage("ğŸ”¥", "#ffe0d6"), imageAlt: "Yong'in", options: ["der Unfall", "das Feuer", "die Flut", "der Sturm"], answer: 1, explanation: "'das Feuer' = olov/yong'in. der Unfall = baxtsiz hodisa." },
-                        { q: "Bu hujjatning nemischa nomi?", image: emojiImage("ğŸ“œ"), imageAlt: "Sertifikat", options: ["der Pass", "das Zeugnis", "die Rechnung", "der Brief"], answer: 1, explanation: "'das Zeugnis' = sertifikat/guvohnoma." }
+                        { q: "Bu tibbiy asbobning nemischa nomi?", image: emojiImage("🩺"), imageAlt: "Stetoskop", options: ["das Thermometer", "das Stethoskop", "die Spritze", "der Verband"], answer: 1, explanation: "'das Stethoskop' = stetoskop." },
+                        { q: "Bu tadbirning nemischa nomi?", image: emojiImage("🎓"), imageAlt: "Bitiruv", options: ["die Hochzeit", "der Abschluss", "die Beerdigung", "die Geburt"], answer: 1, explanation: "'der Abschluss' = bitiruv/yakunlash." },
+                        { q: "Bu favqulodda holatning nemischa nomi?", image: emojiImage("🔥", "#ffe0d6"), imageAlt: "Yong'in", options: ["der Unfall", "das Feuer", "die Flut", "der Sturm"], answer: 1, explanation: "'das Feuer' = olov/yong'in. der Unfall = baxtsiz hodisa." },
+                        { q: "Bu hujjatning nemischa nomi?", image: emojiImage("📜"), imageAlt: "Sertifikat", options: ["der Pass", "das Zeugnis", "die Rechnung", "der Brief"], answer: 1, explanation: "'das Zeugnis' = sertifikat/guvohnoma." }
                     ]
                 }
             ]
@@ -284,25 +284,25 @@ const deutschTests = {
             icon: "🌳",
             sections: [
                 {
-                    name: "📝 Bog'lovchilar va nisbiy gaplar",
+                    name: "📝  Bog'lovchilar va nisbiy gaplar",
                     type: "text",
                     questions: [
                         { q: "Bog'lovchi: 'Es regnete. ___ gingen wir spazieren.' (shunga qaramay)", options: ["Deshalb", "Trotzdem", "Deswegen", "Darum"], answer: 1, explanation: "'trotzdem' = shunga qaramay. deshalb = shuning uchun." },
                         { q: "Nisbiy olmosh: 'Der Mann, ___ dort steht, ist mein Arzt.'", options: ["der", "den", "dem", "das"], answer: 0, explanation: "'der' — Nominativ. Nisbiy olmosh ergash gapda subyekt." },
                         { q: "'obwohl' bog'lovchisi qaysi ma'noni beradi?", options: ["chunki", "shuning uchun", "...ga qaramay", "agar"], answer: 2, explanation: "'obwohl' = ...ga qaramay (garchi). Fe'l ergash gap oxirida." },
-                        { q: "Nisbiy olmosh: 'Die Frau, ___ ich helfe, ist Lehrerin.'", options: ["der", "die", "dem", "das"], answer: 0, explanation: "'helfen' Dativ, ayol rod: die Frau â†’ der (Dativ)." },
+                        { q: "Nisbiy olmosh: 'Die Frau, ___ ich helfe, ist Lehrerin.'", options: ["der", "die", "dem", "das"], answer: 0, explanation: "'helfen' Dativ, ayol rod: die Frau → der (Dativ)." },
                         { q: "Bog'lovchi: 'Ich gehe ins Bett, ___ ich müde bin.'", options: ["weil", "aber", "und", "oder"], answer: 0, explanation: "'weil' = chunki (sabab). Fe'l oxiriga boradi." },
                         { q: "'damit' bog'lovchisi nimani ifodalaydi?", options: ["sabab", "qarama-qarshilik", "maqsad", "shart"], answer: 2, explanation: "'damit' = maqsad uchun (toki). Ich lerne, damit ich erfolgreich werde." }
                     ]
                 },
                 {
-                    name: "🖼️ Rasmli — abstrakt tushunchalar",
+                    name: "🖼️  Rasmli — abstrakt tushunchalar",
                     type: "image",
                     questions: [
-                        { q: "Bu tushunchaning nemischa nomi?", image: emojiImage("ğŸ’¼"), imageAlt: "Ish", options: ["der Beruf", "die Freizeit", "die Familie", "das Hobby"], answer: 0, explanation: "'der Beruf' = kasb. die Arbeit = ish." },
-                        { q: "Bu obyektning nemischa nomi?", image: emojiImage("ğŸ’°", "#f4e4d4"), imageAlt: "Pul", options: ["das Geld", "die Bank", "die Karte", "der Preis"], answer: 0, explanation: "'das Geld' = pul. das Bargeld = naqd pul." },
-                        { q: "Bu tushunchaning nemischa nomi?", image: emojiImage("ğŸŒ"), imageAlt: "Yer kurrasi", options: ["die Welt", "das Land", "die Stadt", "der Kontinent"], answer: 0, explanation: "'die Welt' = dunyo. das Land = mamlakat." },
-                        { q: "Bu vaziyatning nemischa nomi?", image: emojiImage("ğŸ“š"), imageAlt: "Kitoblar", options: ["die Bibliothek", "die Buchhandlung", "die Schule", "das Museum"], answer: 0, explanation: "'die Bibliothek' = kutubxona. die Buchhandlung = kitob do'koni." }
+                        { q: "Bu tushunchaning nemischa nomi?", image: emojiImage("💼"), imageAlt: "Ish", options: ["der Beruf", "die Freizeit", "die Familie", "das Hobby"], answer: 0, explanation: "'der Beruf' = kasb. die Arbeit = ish." },
+                        { q: "Bu obyektning nemischa nomi?", image: emojiImage("💵", "#f4e4d4"), imageAlt: "Pul", options: ["das Geld", "die Bank", "die Karte", "der Preis"], answer: 0, explanation: "'das Geld' = pul. das Bargeld = naqd pul." },
+                        { q: "Bu tushunchaning nemischa nomi?", image: emojiImage("🌍"), imageAlt: "Yer kurrasi", options: ["die Welt", "das Land", "die Stadt", "der Kontinent"], answer: 0, explanation: "'die Welt' = dunyo. das Land = mamlakat." },
+                        { q: "Bu vaziyatning nemischa nomi?", image: emojiImage("📚"), imageAlt: "Kitoblar", options: ["die Bibliothek", "die Buchhandlung", "die Schule", "das Museum"], answer: 0, explanation: "'die Bibliothek' = kutubxona. die Buchhandlung = kitob do'koni." }
                     ]
                 }
             ]
@@ -320,30 +320,30 @@ const deutschTests = {
             icon: "🌳",
             sections: [
                 {
-                    name: "📝 Genitiv va so'z boyligi",
+                    name: "📝  Genitiv va so'z boyligi",
                     type: "text",
                     questions: [
-                        { q: "Genitiv: 'das Auto ___ Vaters' (otaning mashinasi)", options: ["des", "der", "dem", "den"], answer: 0, explanation: "Genitivda erkak rod: der Vater â†’ des Vaters." },
+                        { q: "Genitiv: 'das Auto ___ Vaters' (otaning mashinasi)", options: ["des", "der", "dem", "den"], answer: 0, explanation: "Genitivda erkak rod: der Vater → des Vaters." },
                         { q: "'sich bewerben' fe'li nimani anglatadi?", options: ["dam olmoq", "ish uchun ariza bermoq", "kasal bo'lmoq", "sayohat qilmoq"], answer: 1, explanation: "'sich bewerben (um/bei)' = ishga ariza topshirmoq. die Bewerbung = ariza." },
                         { q: "'der Termin' so'zining ma'nosi?", options: ["narx", "uchrashuv / qabul vaqti", "manzil", "hujjat"], answer: 1, explanation: "'der Termin' = belgilangan vaqt/uchrashuv." },
-                        { q: "Nominalizatsiya: 'schwimmen' â†’ 'das ___'.", options: ["Schwimmen", "Schwimmung", "Geschwimm", "Schwimmer"], answer: 0, explanation: "Fe'lni otga aylantirish: schwimmen â†’ das Schwimmen. Artikel doim 'das'." },
+                        { q: "Nominalizatsiya: 'schwimmen' → 'das ___'.", options: ["Schwimmen", "Schwimmung", "Geschwimm", "Schwimmer"], answer: 0, explanation: "Fe'lni otga aylantirish: schwimmen → das Schwimmen. Artikel doim 'das'." },
                         { q: "'Je mehr ich lerne, ___ besser verstehe ich.'", options: ["desto", "als", "wie", "denn"], answer: 0, explanation: "'je ... desto ...' = qancha ... shuncha ...." },
                         { q: "To'g'ri predlog: 'Ich freue mich ___ das Wochenende.' (intizorlik)", options: ["auf", "über", "an", "für"], answer: 0, explanation: "'sich freuen auf' = kelajakdagi narsani intizorlik bilan kutmoq." },
                         { q: "'die Krankenversicherung' so'zi nimani bildiradi?", options: ["kasallik tarixi", "tibbiy sug'urta", "retsept", "shifokor"], answer: 1, explanation: "'die Krankenversicherung' = tibbiy sug'urta. Germaniyada majburiy." }
                     ]
                 },
                 {
-                    name: "🖼️ Rasmli — murakkab so'zlar",
+                    name: "🖼️  Rasmli — murakkab so'zlar",
                     type: "image",
                     questions: [
-                        { q: "Bu joyning nemischa nomi?", image: emojiImage("ğŸ›ï¸"), imageAlt: "Hokimiyat", options: ["das Rathaus", "die Kirche", "das Theater", "das Museum"], answer: 0, explanation: "'das Rathaus' = hokimiyat binosi. Rat = kengash + Haus = uy." },
-                        { q: "Bu hujjatning nemischa nomi?", image: emojiImage("ğŸ›‚"), imageAlt: "Pasport", options: ["der Pass", "der Brief", "der Ausweis", "die Karte"], answer: 0, explanation: "'der Pass' = pasport. der Personalausweis = shaxsiy guvohnoma." },
-                        { q: "Bu jarayonning nemischa nomi?", image: emojiImage("ğŸ”¬"), imageAlt: "Tadqiqot", options: ["die Forschung", "die Bildung", "die Erziehung", "die Lehre"], answer: 0, explanation: "'die Forschung' = tadqiqot. forschen = tadqiq qilmoq." }
+                        { q: "Bu joyning nemischa nomi?", image: emojiImage("🏛️"), imageAlt: "Hokimiyat", options: ["das Rathaus", "die Kirche", "das Theater", "das Museum"], answer: 0, explanation: "'das Rathaus' = hokimiyat binosi. Rat = kengash + Haus = uy." },
+                        { q: "Bu hujjatning nemischa nomi?", image: emojiImage("🛂"), imageAlt: "Pasport", options: ["der Pass", "der Brief", "der Ausweis", "die Karte"], answer: 0, explanation: "'der Pass' = pasport. der Personalausweis = shaxsiy guvohnoma." },
+                        { q: "Bu jarayonning nemischa nomi?", image: emojiImage("🔬"), imageAlt: "Tadqiqot", options: ["die Forschung", "die Bildung", "die Erziehung", "die Lehre"], answer: 0, explanation: "'die Forschung' = tadqiqot. forschen = tadqiq qilmoq." }
                     ]
                 }
             ]
         }]
-    }
+    },
     // ===== A1 — TO'PLAM 4 (Kundalik hayot) =====
     a1_t4: {
         title: "A1 — 4-to'plam (Kundalik hayot)",
@@ -487,7 +487,6 @@ const deutschTests = {
             ]
         }]
     },
-
     // ===== A2 — TO'PLAM 4 (Sog'liq va tana a'zolari) =====
     a2_t4: {
         title: "A2 — 4-to'plam (Sog'liq)",
@@ -627,7 +626,6 @@ const deutschTests = {
             ]
         }]
     },
-
     // ===== B1 — TO'PLAM 4 (Plusquamperfekt va vaqt ifodalari) =====
     b1_t4: {
         title: "B1 — 4-to'plam (Vaqt ifodalari)",
@@ -767,7 +765,6 @@ const deutschTests = {
             ]
         }]
     },
-
     // ===== B2 — TO'PLAM 1 (Konjunktiv I va bilvosita nutq) =====
     b2_t1: {
         title: "B2 — 1-to'plam (Bilvosita nutq)",
@@ -903,5 +900,3 @@ const deutschTests = {
     }
 
 };
-
-
