@@ -23,7 +23,8 @@ app.use(aiBotDetector);
 // Tezlikni oshirish uchun Caching tizimi
 app.use(cacheMiddleware);
 
-// Statik fayllarni (masalan 3D logo) public papkasidan o'qish
+// Statik fayllarni ilova manbalaridan o'qish
+app.use(express.static(path.join(__dirname, '.')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Marshrutlarni ulash

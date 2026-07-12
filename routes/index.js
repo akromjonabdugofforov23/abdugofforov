@@ -4,7 +4,7 @@ const path = require('path');
 
 // Asosiy sahifa (Frontend) uchun marshrut
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 // API tekshirish uchun test marshruti
