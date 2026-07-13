@@ -223,7 +223,6 @@ function initFloatingAddBtn() {
             // Backup: modal'ni to'g'ridan-to'g'ri ochish
             const modal = document.getElementById('add-post-modal');
             if (modal) {
-                if(typeof pushModalState !== 'undefined') pushModalState();
                 modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
@@ -870,6 +869,7 @@ async function bootstrap() {
 }
 
 bootstrap();
+
 
 
 

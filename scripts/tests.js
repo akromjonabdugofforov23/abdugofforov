@@ -653,7 +653,6 @@ function openAuthModal(mode) {
     setAuthMode(_authMode);
     const err = document.getElementById('auth-error');
     if (err) { err.textContent = ''; err.classList.remove('show'); }
-    if(typeof pushModalState !== 'undefined') pushModalState();
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
     setTimeout(() => document.getElementById('auth-username')?.focus(), 100);
@@ -787,7 +786,6 @@ function openMyResults() {
         }).join('');
         content.innerHTML = rows;
     }
-    if(typeof pushModalState !== 'undefined') pushModalState();
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -925,5 +923,6 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
 
 

@@ -1,50 +1,50 @@
-
+﻿
 
 
 // Abdugofforov Blog & Portfolio - JavaScript Engine
 
 // 1. Dastlabki Ma'lumotlar (Boshlang'ich Postlar)
-// Boshlang'ich postlar yo'q â€” sayt toza boshlanadi.
+// Boshlang'ich postlar yo'q Ã¢â‚¬â€ sayt toza boshlanadi.
 // Postlar faqat admin panelidan (PIN + Telegram) yoziladi va serverda
 // (Cloudflare KV) saqlanadi. Mehmonlar faqat o'qiydi.
 const defaultPosts = [
     {
         id: "1710000000000",
-        title: "Schwarzwald (Qora o'rmon) – Tabiatning jonli ertagi",
+        title: "Schwarzwald (Qora o'rmon) â€“ Tabiatning jonli ertagi",
         category: "Borishga arziydigan joylar",
         type: "memory",
         date: new Date().toISOString().split('T')[0],
-        excerpt: "Schwarzwald – qalin o'rmonlar, guldor qishloqlar va haqiqiy nemis ertaklari maskani.",
+        excerpt: "Schwarzwald â€“ qalin o'rmonlar, guldor qishloqlar va haqiqiy nemis ertaklari maskani.",
         image: "https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%29.jpg",
-        content: `Schwarzwald (Qora o'rmon) – Germaniyaning janubi-g'arbida joylashgan, qalin o'rmonlari, go'zal sharsharalari va an'anaviy qishloqlari bilan dunyoga mashhur tabiat maskani. Agar siz tabiat qo'ynida dam olishni, toza havodan nafas olishni va haqiqiy nemis ertaklaridagi manzalarini ko'rishni xohlasangiz, bu joy aynan siz uchun!
+        content: `Schwarzwald (Qora o'rmon) â€“ Germaniyaning janubi-g'arbida joylashgan, qalin o'rmonlari, go'zal sharsharalari va an'anaviy qishloqlari bilan dunyoga mashhur tabiat maskani. Agar siz tabiat qo'ynida dam olishni, toza havodan nafas olishni va haqiqiy nemis ertaklaridagi manzalarini ko'rishni xohlasangiz, bu joy aynan siz uchun!
 
-## 📍 Qanday qilib yetib borish mumkin?
+## ğŸ“ Qanday qilib yetib borish mumkin?
 
-Schwarzwald asosan Baden-Württemberg shtatida joylashgan. Eng qulay boshlanish nuqtalari – **Freiburg** yoki **Baden-Baden** shaharlari.
+Schwarzwald asosan Baden-WÃ¼rttemberg shtatida joylashgan. Eng qulay boshlanish nuqtalari â€“ **Freiburg** yoki **Baden-Baden** shaharlari.
 - **Poyezdda:** Germaniyaning istalgan katta shahridan (Frankfurt, Shtutgart, Myunxen) ICE yoki mintaqaviy (RE) poyezdlari orqali Freiburg markaziy vokzaliga kelish mumkin. 
-- **Mashinada:** B500 panoramali avtomagistrali (Schwarzwaldhochstraße) orqali yursangiz, tabiatning eng go'zal manzaralariga guvoh bo'lasiz.
+- **Mashinada:** B500 panoramali avtomagistrali (SchwarzwaldhochstraÃŸe) orqali yursangiz, tabiatning eng go'zal manzaralariga guvoh bo'lasiz.
 - **Vaqt:** Frankfurt yoki Shtutgartdan o'rtacha 2-3 soatda yetib kelish mumkin.
 
-## 💰 Xarajatlar va Logistika
+## ğŸ’° Xarajatlar va Logistika
 
 Sayohat xarajatlari sizning tanlovingizga qarab o'zgaradi, lekin o'rtacha byudjet quyidagicha:
 *   **Poyezd chiptasi (Deutschlandticket):** 49 yevro (butun oy uchun, mintaqaviy poyezdlarda).
 *   **Mehmonxona/Hostel:** Bir kecha uchun 40-100 yevro.
-*   **Ovqatlanish:** O'rtacha kafeda tushlik 15-25 yevro. Mashhur *Schwarzwälder Kirschtorte* (Qora o'rmon torti) tatib ko'rishni unutmang (taxminan 5 yevro).
+*   **Ovqatlanish:** O'rtacha kafeda tushlik 15-25 yevro. Mashhur *SchwarzwÃ¤lder Kirschtorte* (Qora o'rmon torti) tatib ko'rishni unutmang (taxminan 5 yevro).
 *   **Umumiy:** 1-2 kunlik qisqa sayohat uchun kishi boshiga taxminan 100-150 yevro yetarli bo'ladi.
 
 ![Qalin o'rmon manzarasi](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%292.jpg)
 
-## 🌲 Nimalarni ko'rish kerak?
+## ğŸŒ² Nimalarni ko'rish kerak?
 
 1.  **Triberg sharsharalari:** Germaniyaning eng baland sharsharalaridan biri. Suvning qoyalardan urilib tushishi ajoyib manzara hosil qiladi.
 2.  **Titisee va Schluchsee ko'llari:** Yozda cho'milish, qayiqda uchish va qirg'oqda sayr qilish uchun ideal joylar.
-3.  **Freiburg shahri:** Schwarzwaldning poytaxti. Tarixiy markaz va tor suv kanallari (Bächle) bilan mashhur.
+3.  **Freiburg shahri:** Schwarzwaldning poytaxti. Tarixiy markaz va tor suv kanallari (BÃ¤chle) bilan mashhur.
 
 ![Freiburg shahri manzarasi](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%293.jpg)
 ![Titisee ko'li](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%294.jpg)
 
-## 💡 Qo'shimcha Maslahatlar
+## ğŸ’¡ Qo'shimcha Maslahatlar
 
 *   **Aloqa:** Tog'li va o'rmonli hudud bo'lgani uchun ko'p joylarda internet, ba'zan esa uyali aloqa uzilib qolishi mumkin. Oflayn xaritalarni (masalan, Google Maps) oldindan yuklab olishni qat'iy tavsiya qilaman!
 *   **Kiyim-kechak:** Hatto yozda ham o'rmon ichi salqin bo'ladi. O'zingiz bilan qulay krossovka va yengil kurtka oling.
@@ -60,7 +60,7 @@ Siz ham bu ajoyib o'rmonga borishni xohlaysizmi? Yoki ehtimol, allaqachon bo'lga
 ];
 
 // State (Holat) - Abdugofforov rebrending kalitlari bilan boshlash
-// posts endi IndexedDB (Store) orqali yuklanadi â€” bootstrap() ichida hydrate qilinadi.
+// posts endi IndexedDB (Store) orqali yuklanadi Ã¢â‚¬â€ bootstrap() ichida hydrate qilinadi.
 let posts = defaultPosts;
 let currentTab = 'home'; 
 let filterType = 'none'; 
@@ -242,10 +242,10 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// (Ob-havo widgeti olib tashlandi â€” endi faqat soat/vaqt ko'rsatiladi)
+// (Ob-havo widgeti olib tashlandi Ã¢â‚¬â€ endi faqat soat/vaqt ko'rsatiladi)
 
 // 5. Mavzuni boshqarish (Kunduzgi / Tungi rejim)
-// Default: tungi (dark) â€” qora futuristic. Foydalanuvchi tanlovi saqlanadi.
+// Default: tungi (dark) Ã¢â‚¬â€ qora futuristic. Foydalanuvchi tanlovi saqlanadi.
 function initTheme() {
     const savedTheme = localStorage.getItem('kay_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
@@ -269,7 +269,7 @@ if (themeBtn) {
     });
 }
 
-// 6. Ma'lumotlarni saqlash (IndexedDB orqali â€” katta sig'im) + serverga sinxronlash
+// 6. Ma'lumotlarni saqlash (IndexedDB orqali Ã¢â‚¬â€ katta sig'im) + serverga sinxronlash
 function savePosts() {
     try {
         if (window.Store && Store.ready) {
@@ -282,7 +282,7 @@ function savePosts() {
         throw e;
     }
 
-    // Agar admin tizimga kirgan bo'lsa â€” postlarni umumiy serverga ham yuboramiz
+    // Agar admin tizimga kirgan bo'lsa Ã¢â‚¬â€ postlarni umumiy serverga ham yuboramiz
     // shunda barcha mehmonlar yangi postlarni ko'radi.
     syncPostsToServer();
 }
@@ -320,17 +320,17 @@ async function syncPostsToServer() {
     _syncInFlight = false;
 
     if (result.ok) {
-        showToast("âœ… Post serverga sinxronlandi â€” endi hammaga ko'rinadi", 'success');
+        showToast("Ã¢Å“â€¦ Post serverga sinxronlandi Ã¢â‚¬â€ endi hammaga ko'rinadi", 'success');
     } else if (result.reason === 'not_configured') {
-        showToast("âš ï¸ Server ombori sozlanmagan (POSTS_KV) â€” post faqat shu qurilmada ko'rinadi", 'warn');
+        showToast("Ã¢Å¡Â Ã¯Â¸Â Server ombori sozlanmagan (POSTS_KV) Ã¢â‚¬â€ post faqat shu qurilmada ko'rinadi", 'warn');
     } else if (result.reason === 'unauthorized') {
-        // Token eskirgan bo'lishi mumkin â€” admin sessiyasi tugagan
+        // Token eskirgan bo'lishi mumkin Ã¢â‚¬â€ admin sessiyasi tugagan
         sessionStorage.removeItem('kay_admin_token');
-        showToast("âŒ Admin sessiyasi tugagan â€” /kay sahifasiga kirib qayta tasdiqlang", 'error');
+        showToast("Ã¢ÂÅ’ Admin sessiyasi tugagan Ã¢â‚¬â€ /kay sahifasiga kirib qayta tasdiqlang", 'error');
     } else if (result.reason === 'too_large') {
-        showToast("âš ï¸ Ma'lumot juda katta â€” rasmlarni kichraytiring", 'warn');
+        showToast("Ã¢Å¡Â Ã¯Â¸Â Ma'lumot juda katta Ã¢â‚¬â€ rasmlarni kichraytiring", 'warn');
     } else {
-        showToast("âš ï¸ Sinxronlash bo'lmadi: " + (result.message || "noma'lum xato"), 'warn');
+        showToast("Ã¢Å¡Â Ã¯Â¸Â Sinxronlash bo'lmadi: " + (result.message || "noma'lum xato"), 'warn');
     }
 
     // Qator turgan yangi o'zgarishlar bo'lsa, yana yuboramiz
@@ -361,7 +361,7 @@ function updateHeroContent() {
 // 8. Postlarni filtrlash va render qilish
 let _renderTimer = null;
 function renderPosts(instant) {
-    // Avvalgi kutilayotgan renderni bekor qilamiz (qidiruvda har bosishda chaqiriladi â€”
+    // Avvalgi kutilayotgan renderni bekor qilamiz (qidiruvda har bosishda chaqiriladi Ã¢â‚¬â€
     // bu skeletonlar ustma-ust tushib miltillashining oldini oladi)
     if (_renderTimer) { clearTimeout(_renderTimer); _renderTimer = null; }
 
@@ -384,7 +384,7 @@ function renderPosts(instant) {
                 return fields.some(f => typeof f === 'string' && f.toLowerCase().includes(q));
             }
 
-            // Qidiruv yo'q â€” oddiy kategoriya/tab filtri
+            // Qidiruv yo'q Ã¢â‚¬â€ oddiy kategoriya/tab filtri
             // Default holat: hech narsa ko'rsatmaslik
             if (filterType === 'none') return false;
 
@@ -425,7 +425,7 @@ function renderPosts(instant) {
         if (filtered.length === 0) {
             blogGrid.innerHTML = `
                 <div class="empty-state">
-                    <span class="empty-state-icon">${searchQuery ? 'ğŸ”' : 'ğŸ“'}</span>
+                    <span class="empty-state-icon">${searchQuery ? 'ÄŸÅ¸â€Â' : 'ÄŸÅ¸â€œÂ'}</span>
                     <p class="empty-state-text">${searchQuery ? ('"' + escapeHTML(searchQuery) + '" bo\'yicha hech narsa topilmadi.') : "Hech qanday maqola yoki ma'lumot topilmadi."}</p>
                 </div>
             `;
@@ -443,12 +443,12 @@ function renderPosts(instant) {
                         <div class="post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600')}');"></div>
                     </div>
                     <div class="post-content">
-                        <span class="post-meta">ğŸµ ${escapeHTML(post.category)}</span>
+                        <span class="post-meta">ÄŸÅ¸ÂÂµ ${escapeHTML(post.category)}</span>
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
 
                         <div class="music-actions">
-                            ${post.artist ? `<span class="music-artist">ğŸ¤ ${escapeHTML(post.artist)}</span>` : ''}
+                            ${post.artist ? `<span class="music-artist">ÄŸÅ¸ÂÂ¤ ${escapeHTML(post.artist)}</span>` : ''}
                             <div class="music-btn-row">
                                 ${post.link ? `<button class="btn-primary btn-sm music-play-btn" data-id="${post.id}">${i18n.t('music.listen')}</button>` : ''}
                                 ${post.link ? `<a class="btn-secondary btn-sm music-open-btn" href="${safeUrl(post.link)}" target="_blank" rel="noopener noreferrer">${i18n.t('music.open')}</a>` : ''}
@@ -456,7 +456,7 @@ function renderPosts(instant) {
                         </div>
 
                         <div class="post-footer" style="margin-top: 15px;">
-                            <span class="post-date">${formatDate(post.date)} - â± ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)} - Ã¢ÂÂ± ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -476,12 +476,12 @@ function renderPosts(instant) {
                         <div class="post-image zoomable-bg" data-zoom-src="${escapeHTML(safeImageUrl(post.image))}" style="background-image: url('${cssUrl(post.image)}');"></div>
                     </div>
                     <div class="post-content">
-                        <span class="post-meta">ğŸ–¼ï¸ ${escapeHTML(post.category)}</span>
+                        <span class="post-meta">ÄŸÅ¸â€“Â¼Ã¯Â¸Â ${escapeHTML(post.category)}</span>
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)} - â± ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)} - Ã¢ÂÂ± ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -507,11 +507,11 @@ function renderPosts(instant) {
                         </div>
                     </div>
                     <div class="post-content">
-                        <span class="post-meta">ğŸ¬ ${escapeHTML(post.category)}</span>
+                        <span class="post-meta">ÄŸÅ¸ÂÂ¬ ${escapeHTML(post.category)}</span>
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)} - â± ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)} - Ã¢ÂÂ± ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -531,11 +531,11 @@ function renderPosts(instant) {
                         <div class="post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600')}');"></div>
                     </div>
                     <div class="post-content">
-                        <span class="post-meta">ğŸ“ ${escapeHTML(post.category)}</span>
+                        <span class="post-meta">ÄŸÅ¸â€œÂ ${escapeHTML(post.category)}</span>
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)} - â± ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)} - Ã¢ÂÂ± ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
@@ -558,7 +558,7 @@ function renderPosts(instant) {
                     const z = e.target.closest('.zoomable-bg');
                     openLightbox(z.getAttribute('data-zoom-src'));
                 } else if (e.target.closest('.music-open-btn')) {
-                    // Havola yangi oynada ochiladi â€” batafsil oyna ochilmasin
+                    // Havola yangi oynada ochiladi Ã¢â‚¬â€ batafsil oyna ochilmasin
                     e.stopPropagation();
                 } else if (e.target.closest('.music-play-btn')) {
                     e.stopPropagation();
@@ -641,14 +641,11 @@ if (mainNav) {
         if (!link) return;
 
         if (link.id === 'nav-contact-link') {
-            pushModalState();
             openContactModal();
             return;
         }
 
         const page = link.getAttribute('data-page') || 'home';
-        history.pushState({ view: page }, '', '#' + page);
-
         showMainView();
 
         mainNav.querySelectorAll('a').forEach(a => a.classList.remove('active'));
@@ -701,7 +698,6 @@ if (desktopDock) {
 
         // Maxsus tugmalar
         if (link.id === 'dock-contact') {
-            pushModalState();
             openContactModal();
             return;
         }
@@ -711,7 +707,6 @@ if (desktopDock) {
             return;
         }
         if (link.id === 'dock-deutsch') {
-            history.pushState({ view: 'deutsch' }, '', '#deutsch');
             openDeutschView();
             syncActiveNavState('deutsch');
             return;
@@ -720,8 +715,6 @@ if (desktopDock) {
         // Blog tugmasi (Asosiy sahifaga o'tadi)
         let page = link.getAttribute('data-page');
         if (page === 'blog') page = 'home'; // Blog aslida home
-
-        history.pushState({ view: page }, '', '#' + page);
 
         showMainView();
 
@@ -796,19 +789,19 @@ if (toolbarEl) toolbarEl.addEventListener('click', (e) => {
         if(subMenu) subMenu.style.display = 'none';
     }
 
-    // Deutsch tugmasi â€” filtr emas, test sahifasini ochadi
+    // Deutsch tugmasi Ã¢â‚¬â€ filtr emas, test sahifasini ochadi
     if (btn.id === 'deutsch-tag-btn') {
         openDeutschView();
         return;
     }
 
-    // Kartochka tugmasi â€” flashcards sahifasini ochadi
+    // Kartochka tugmasi Ã¢â‚¬â€ flashcards sahifasini ochadi
     if (btn.id === 'flashcards-tag-btn') {
         openFlashcardsView();
         return;
     }
 
-    // Turnir tugmasi â€” turnir sahifasini ochadi
+    // Turnir tugmasi Ã¢â‚¬â€ turnir sahifasini ochadi
     if (btn.id === 'tournament-tag-btn') {
         if (typeof openTournamentView === 'function') openTournamentView();
         return;
@@ -832,7 +825,7 @@ if (toolbarEl) toolbarEl.addEventListener('click', (e) => {
 // ===== JONLI QIDIRUV (live search) =====
 // Foydalanuvchi yozishni boshlashi bilan, barcha postlar (kundalik) ichidan
 // sarlavha/qisqacha/kategoriya/matn bo'yicha darhol qidiradi.
-// Eslatma: qidiruv FAQAT public postlar ichidan boradi â€” admin paneli (kay.html)
+// Eslatma: qidiruv FAQAT public postlar ichidan boradi Ã¢â‚¬â€ admin paneli (kay.html)
 // alohida sahifa, uning kontenti va so'zlari bu yerga umuman kirmaydi.
 let _searchTimer = null;
 
@@ -854,7 +847,7 @@ if (searchInput) searchInput.addEventListener('input', (e) => {
             showBlogResultsView();
             renderPosts(true); // darhol (skeletonsiz)
         } else {
-            // Qidiruv tozalandi â€” kategoriya tanlanmagan bo'lsa, dastlabki holatga qaytamiz
+            // Qidiruv tozalandi Ã¢â‚¬â€ kategoriya tanlanmagan bo'lsa, dastlabki holatga qaytamiz
             const activeBtn = filterTags.querySelector('.filter-tag.active');
             if (!activeBtn) filterType = 'none';
             renderPosts(true);
@@ -899,17 +892,17 @@ function openPostDetail(postId) {
 
     detailModalBody.innerHTML = `
         <div class="modal-actions-bar">
-            <button class="btn-secondary btn-sm share-post-btn">ğŸ”— Ulashish</button>
-            ${isAdmin ? `<button class="btn-secondary btn-sm edit-post-btn">âœï¸ Tahrirlash</button>
-            <button class="btn-secondary btn-sm delete-post-btn" style="color: #ff4d4d; border-color: rgba(255, 77, 77, 0.2);">ğŸ—‘ï¸ O'chirish</button>` : ''}
+            <button class="btn-secondary btn-sm share-post-btn">ÄŸÅ¸â€â€” Ulashish</button>
+            ${isAdmin ? `<button class="btn-secondary btn-sm edit-post-btn">Ã¢Å“ÂÃ¯Â¸Â Tahrirlash</button>
+            <button class="btn-secondary btn-sm delete-post-btn" style="color: #ff4d4d; border-color: rgba(255, 77, 77, 0.2);">ÄŸÅ¸â€”â€˜Ã¯Â¸Â O'chirish</button>` : ''}
         </div>
         
         <div class="modal-post-header">
             <span class="post-meta">${escapeHTML(post.category)}</span>
             <h1 class="modal-post-title">${escapeHTML(post.title)}</h1>
             <div class="modal-post-meta">
-                <span>ğŸ“… ${formatDate(post.date)}</span>
-                <span>â± ${readingTime(post)}</span>
+                <span>ÄŸÅ¸â€œâ€¦ ${formatDate(post.date)}</span>
+                <span>Ã¢ÂÂ± ${readingTime(post)}</span>
                 <span class="post-stat" id="modal-like-${post.id}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                     <span>${post.likes}</span>
@@ -922,7 +915,7 @@ function openPostDetail(postId) {
                    <img src="${post.image}" class="zoomable" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; cursor: zoom-in;">
                    ${post.musicData ? `<audio controls style="width:100%; margin-bottom:12px;" src="${post.musicData}"></audio>` : ''}
                    <div class="music-actions" style="justify-content:flex-start;">
-                       ${post.artist ? `<span class="music-artist">ğŸ¤ ${escapeHTML(post.artist)}</span>` : ''}
+                       ${post.artist ? `<span class="music-artist">ÄŸÅ¸ÂÂ¤ ${escapeHTML(post.artist)}</span>` : ''}
                        <div class="music-btn-row">
                            ${(post.musicData || post.link) ? `<button class="btn-primary btn-sm" id="detail-play-${post.id}">${i18n.t('music.listen')}</button>` : ''}
                            ${post.link ? `<a class="btn-secondary btn-sm" href="${safeUrl(post.link)}" target="_blank" rel="noopener noreferrer">${i18n.t('music.open')}</a>` : ''}
@@ -953,7 +946,7 @@ function openPostDetail(postId) {
             <form class="comment-form" id="modal-comment-form">
                 <input type="hidden" id="comment-author-input" value="${escapeHTML(Auth.user.name || Auth.user.username)}">
                 <div class="form-group">
-                    <label for="comment-text-input">Izoh â€” <span style="color:var(--color-purple-light);">${escapeHTML(Auth.user.name || Auth.user.username)}</span> nomidan</label>
+                    <label for="comment-text-input">Izoh Ã¢â‚¬â€ <span style="color:var(--color-purple-light);">${escapeHTML(Auth.user.name || Auth.user.username)}</span> nomidan</label>
                     <textarea id="comment-text-input" class="form-textarea" placeholder="Fikringizni yozib qoldiring..." required></textarea>
                 </div>
                 <button type="submit" class="btn-primary" style="align-self: flex-end;">Izoh qoldirish</button>
@@ -1017,7 +1010,6 @@ function openPostDetail(postId) {
             if (postVideoFileInput) postVideoFileInput.value = '';
             
             closePostDetailModal();
-            pushModalState();
             addPostModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
@@ -1068,15 +1060,13 @@ function openPostDetail(postId) {
         renderPosts();
     });
 
-    pushModalState();
     postDetailModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 
     // Deep-link (ulashiladigan havola) va dinamik meta
     currentDetailPostId = post.id;
     try {
-        history.pushState({ post: post.id }, '', `?post=${post.id}`);
-    } catch (e) { /* file:// muhitida o'tkazib yuboriladi */ }
+        } catch (e) { /* file:// muhitida o'tkazib yuboriladi */ }
     setMeta(`${post.title} | Abdugofforov`, post.excerpt || DEFAULT_DESC);
 }
 
@@ -1094,12 +1084,12 @@ function renderComments(commentsList) {
             ${comment.reply ? `
                 <div class="comment-reply">
                     <div class="comment-meta">
-                        <span class="comment-author">â†³ ${escapeHTML(comment.reply.author)}</span>
+                        <span class="comment-author">Ã¢â€ Â³ ${escapeHTML(comment.reply.author)}</span>
                         <span class="comment-date">${formatDate(comment.reply.date)}</span>
                     </div>
                     <p class="comment-text">${escapeHTML(comment.reply.text)}</p>
                 </div>` : ''}
-            ${isAdmin && !comment.reply ? `<button class="btn-secondary btn-sm comment-reply-btn" onclick="replyToComment(${comment.id})" style="margin-top:8px;">â†³ Javob berish</button>` : ''}
+            ${isAdmin && !comment.reply ? `<button class="btn-secondary btn-sm comment-reply-btn" onclick="replyToComment(${comment.id})" style="margin-top:8px;">Ã¢â€ Â³ Javob berish</button>` : ''}
         </div>
     `).join('');
 }
@@ -1112,8 +1102,7 @@ function closePostDetailModal() {
         currentDetailPostId = null;
         try {
             if (new URLSearchParams(location.search).has('post')) {
-                history.pushState({}, '', location.pathname);
-            }
+                }
         } catch (e) { /* o'tkazib yuboriladi */ }
         setMeta(DEFAULT_TITLE, DEFAULT_DESC);
     }
@@ -1155,7 +1144,6 @@ if (addPostBtn) addPostBtn.addEventListener('click', () => {
     if (postMusicPreview) postMusicPreview.style.display = 'none';
     if (postVideoPreview) postVideoPreview.style.display = 'none';
     if (postVideoPlayer) postVideoPlayer.src = '';
-    pushModalState();
     addPostModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 });
@@ -1257,7 +1245,7 @@ function toggleMusicGroup() {
     // Musiqa bo'limi endi doim ko'rinadi, alohida type tanlash kerak emas
 }
 
-// Rasm fayl tanlanganda â€” kichraytirib saqlaymiz
+// Rasm fayl tanlanganda Ã¢â‚¬â€ kichraytirib saqlaymiz
 postImageFileInput?.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -1436,7 +1424,6 @@ if (adminBtn) {
         if (pinInput) pinInput.value = '';
         if (pinError) pinError.style.display = 'none';
         if (pinModal) {
-            pushModalState();
             pinModal.classList.add('active');
         }
         document.body.style.overflow = 'hidden';
@@ -1469,7 +1456,7 @@ function handlePinSubmit() {
     
     if (!pin) return;
 
-    // PIN ni SERVERDA tekshiramiz â€” hash KODDA saqlanmaydi (server /check-pin hal qiladi)
+    // PIN ni SERVERDA tekshiramiz Ã¢â‚¬â€ hash KODDA saqlanmaydi (server /check-pin hal qiladi)
     fetch('/check-pin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1509,7 +1496,6 @@ function handlePinSubmit() {
 function openAdminPanel() {
     sessionStorage.setItem('kay_admin', 'true');
     isAdmin = true;
-    pushModalState();
     adminPanelModal?.classList.add('active');
     document.body.style.overflow = 'hidden';
     document.body.classList.add('admin-mode');
@@ -1604,8 +1590,8 @@ function renderTasks() {
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span class="task-badge ${badgeClass}">${badgeText}</span>
                 <div class="admin-task-actions">
-                    <button type="button" class="btn-icon" onclick="editTask(${task.id})" style="font-size:12px; padding: 4px;">âœï¸</button>
-                    <button type="button" class="btn-icon" onclick="deleteTask(${task.id})" style="font-size:12px; padding: 4px; color:#ff4d4d;">ğŸ—‘ï¸</button>
+                    <button type="button" class="btn-icon" onclick="editTask(${task.id})" style="font-size:12px; padding: 4px;">Ã¢Å“ÂÃ¯Â¸Â</button>
+                    <button type="button" class="btn-icon" onclick="deleteTask(${task.id})" style="font-size:12px; padding: 4px; color:#ff4d4d;">ÄŸÅ¸â€”â€˜Ã¯Â¸Â</button>
                 </div>
             </div>
         `;
@@ -1801,7 +1787,7 @@ function checkPortfolioAccess() {
             
             portfolioView.innerHTML = `
                 <div class="portfolio-expired animate-fade-in" style="background:#000; min-height:80vh; display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:24px;">
-                    <span style="font-size: 64px; display: block; margin-bottom: 20px;">🔒</span>
+                    <span style="font-size: 64px; display: block; margin-bottom: 20px;">ğŸ”’</span>
                     <h2 style="color:#ff4d4d; font-family:'Playfair Display', serif;">Ushbu kirish havolasi eskirgan yoki noto'g'ri!</h2>
                     <p style="color:#626a7f;">Xavfsizlik maqsadida ushbu portfolio havolasi faqat cheklangan vaqt yoki bir martalik foydalanish uchun mo'ljallangan.</p>
                     <button class="btn-primary" onclick="window.location.href = window.location.pathname" style="margin-top: 25px; border-color:#00ff88; color:#00ff88; background:transparent;">Bosh sahifaga o'tish</button>
@@ -1857,7 +1843,7 @@ function safeUrl(url) {
     return /^https?:\/\//i.test(url) ? url : '#';
 }
 
-// Rasmlar uchun â€” http(s) va data:image ga ruxsat (yuklangan rasmlar data: bo'ladi)
+// Rasmlar uchun Ã¢â‚¬â€ http(s) va data:image ga ruxsat (yuklangan rasmlar data: bo'ladi)
 function safeImageUrl(url) {
     if (!url) return '#';
     return (/^https?:\/\//i.test(url) || /^data:image\//i.test(url)) ? url : '#';
@@ -1865,7 +1851,7 @@ function safeImageUrl(url) {
 
 // CSS `url(...)` va HTML atribut kontekstida xavfsiz rasm manzili.
 // safeImageUrl bilan tekshiradi, so'ng kontekstdan "chiqib ketadigan" belgilarni
-// (' " ( ) < > \) percent-encode qiladi â€” XSS/CSS-injection oldini oladi.
+// (' " ( ) < > \) percent-encode qiladi Ã¢â‚¬â€ XSS/CSS-injection oldini oladi.
 function cssUrl(url, fallback) {
     let u = safeImageUrl(url);
     if (!u || u === '#') u = fallback || '';
@@ -1948,7 +1934,7 @@ function playMusic(post) {
     if (!link) return;
     const ytId = getYouTubeId(link);
 
-    // Telefon/planshet yoki YouTube bo'lmagan havola â€” yangi oynada ochiladi
+    // Telefon/planshet yoki YouTube bo'lmagan havola Ã¢â‚¬â€ yangi oynada ochiladi
     if (!isDesktopPlayer() || !ytId) {
         window.open(safeUrl(link), '_blank', 'noopener');
         return;
@@ -2061,7 +2047,7 @@ function observeReveal(el) {
 }
 
 function initScrollReveal() {
-    // Yangi dizaynda widget'lar hero ichida â€” eski selector kerak emas.
+    // Yangi dizaynda widget'lar hero ichida Ã¢â‚¬â€ eski selector kerak emas.
     // Faqat toolbar va footer container'iga reveal qo'llaymiz.
     document.querySelectorAll('.toolbar, .footer .container')
         .forEach(observeReveal);
@@ -2081,7 +2067,6 @@ function initFloatingAddBtn() {
             // Backup: modal'ni to'g'ridan-to'g'ri ochish
             const modal = document.getElementById('add-post-modal');
             if (modal) {
-                pushModalState();
                 modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
@@ -2117,7 +2102,7 @@ function openPostFromUrl() {
         if (post) openPostDetail(post.id);
     }
 
-    // PWA shortcuts:  /?new=1  â†’ "Yangi yozuv" modalini ochish
+    // PWA shortcuts:  /?new=1  Ã¢â€ â€™ "Yangi yozuv" modalini ochish
     if (params.get('new') === '1') {
         const addBtn = document.getElementById('add-post-btn');
         if (addBtn) {
@@ -2125,7 +2110,7 @@ function openPostFromUrl() {
         }
     }
 
-    // /?view=deutsch  â†’ Deutsch testlar sahifasiga o'tish
+    // /?view=deutsch  Ã¢â€ â€™ Deutsch testlar sahifasiga o'tish
     if (params.get('view') === 'deutsch') {
         setTimeout(() => {
             if (typeof openDeutschView === 'function') openDeutschView();
@@ -2188,7 +2173,7 @@ function replyToComment(commentId) {
     if (list) list.innerHTML = renderComments(post.comments);
 }
 
-// ===== NEMIS TESTLARI â€” NATIJALAR TARIXI =====
+// ===== NEMIS TESTLARI Ã¢â‚¬â€ NATIJALAR TARIXI =====
 function saveTestResult(level, score, total) {
     const hist = JSON.parse(localStorage.getItem('deutsch_history') || '[]');
     hist.unshift({ level, score, total, pct: total ? Math.round(score / total * 100) : 0, date: new Date().toISOString() });
@@ -2213,12 +2198,12 @@ function renderTestHistory() {
         </div>`;
     }).join('');
     return `<div class="post-card" style="max-width:680px;margin:30px auto 0;padding:22px;">
-        <h3 style="font-size:16px;margin-bottom:12px;">ğŸ“ˆ Sizning natijalaringiz</h3>
+        <h3 style="font-size:16px;margin-bottom:12px;">ÄŸÅ¸â€œË† Sizning natijalaringiz</h3>
         ${rows}
     </div>`;
 }
 
-// ===== FLASHCARD â€” SPACED REPETITION (Leitner) + STREAK =====
+// ===== FLASHCARD Ã¢â‚¬â€ SPACED REPETITION (Leitner) + STREAK =====
 const FC_INTERVALS = [0, 1, 2, 4, 7, 15]; // box raqami -> kunlar
 function fcProgress() { return JSON.parse(localStorage.getItem('fc_progress') || '{}'); }
 function fcSaveProgress(p) { localStorage.setItem('fc_progress', JSON.stringify(p)); }
@@ -2265,11 +2250,11 @@ function renderFlashcardDone() {
     const total = flashcardDecks[fcDeckKey].length;
     view.innerHTML = `
         <div style="max-width:480px;margin:0 auto;text-align:center;">
-            <div style="font-size:60px;margin-bottom:14px;">ğŸ‰</div>
+            <div style="font-size:60px;margin-bottom:14px;">ÄŸÅ¸Ââ€°</div>
             <h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:8px;">To'plam yakunlandi!</h2>
-            <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;-&nbsp; ğŸ”¥ Streak: <b>${getFcStreak()} kun</b></p>
+            <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;-&nbsp; ÄŸÅ¸â€Â¥ Streak: <b>${getFcStreak()} kun</b></p>
             <div style="display:flex;gap:12px;justify-content:center;">
-                <button class="btn-primary" onclick="startFlashcards('${fcDeckKey}')">ğŸ”„ Qayta</button>
+                <button class="btn-primary" onclick="startFlashcards('${fcDeckKey}')">ÄŸÅ¸â€â€ Qayta</button>
                 <button class="btn-secondary" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
             </div>
         </div>`;
@@ -2407,7 +2392,7 @@ function runTypewriter() {
     }, speed);
 }
 
-// CTA tugmasi â€” blog grid'iga skroll
+// CTA tugmasi Ã¢â‚¬â€ blog grid'iga skroll
 function initHeroCta() {
     const btn = document.getElementById('hero-cta-btn');
     if (!btn) return;
@@ -2479,7 +2464,7 @@ async function bootstrap() {
     // 3D kirish animatsiyasi darhol boshlanadi
     initIntroSplash();
 
-    // Til (i18n) â€” statik tarjimalar va til tanlagich
+    // Til (i18n) Ã¢â‚¬â€ statik tarjimalar va til tanlagich
     initLanguage();
 
     // Mavzu va kursorni darhol ishga tushiramiz (ma'lumotga bog'liq emas)
@@ -2491,11 +2476,11 @@ async function bootstrap() {
     initMiniPlayer();
 
     // Postlarni yuklash strategiyasi:
-    //   1. Avval serverdan (Cloudflare KV) o'qiymiz â€” bu admin yuborgan
+    //   1. Avval serverdan (Cloudflare KV) o'qiymiz Ã¢â‚¬â€ bu admin yuborgan
     //      eng so'nggi versiya; barcha mehmonlar shuni ko'radi.
     //   2. Server javob bermasa yoki bo'sh bo'lsa, mahalliy (IndexedDB) ga
     //      qaytamiz.
-    //   3. Mahalliy ham bo'sh bo'lsa â€” standart postlar.
+    //   3. Mahalliy ham bo'sh bo'lsa Ã¢â‚¬â€ standart postlar.
     let serverPosts = null;
     if (window.Sync) {
         serverPosts = await Sync.fetchPosts();
@@ -2531,7 +2516,7 @@ async function bootstrap() {
         posts = (ls && ls.length) ? ls : defaultPosts;
     }
 
-    // Admin holatini tiklash â€” sahifa yangilanganda ham admin tugmalari
+    // Admin holatini tiklash Ã¢â‚¬â€ sahifa yangilanganda ham admin tugmalari
     // (Yozish, Floating +) faqat admin uchun ko'rinishi uchun
     if (isAdmin) {
         document.body.classList.add('admin-mode');
@@ -2553,7 +2538,7 @@ async function bootstrap() {
     // init3DTilt(); // Performance optimization
     initFloatingAddBtn();
 
-    // O'quvchi auth – token bo'lsa tiklaymiz, UI'ni yangilaymiz
+    // O'quvchi auth â€“ token bo'lsa tiklaymiz, UI'ni yangilaymiz
     try {
         if (window.Auth) {
             await Auth.restore();
@@ -2611,44 +2596,6 @@ document.addEventListener('DOMContentLoaded', typeEffect);
 setTimeout(typeEffect, 500);
 
 
-// ===== SPA HISTORY (BACK BUTTON) MANAGEMENT =====
-function pushModalState() {
-    history.pushState({ isModal: true }, '');
-}
-
-window.addEventListener('popstate', (e) => {
-    // 1. Ochiq modallarni topib yopish
-    const activeModals = document.querySelectorAll('.modal.active, .fullscreen-modal.active, .hamburger-overlay.active');
-    if (activeModals.length > 0) {
-        activeModals.forEach(m => m.classList.remove('active'));
-        document.body.style.overflow = '';
-        return; // Agar modal yopilgan bo'lsa, boshqa ish qilmaymiz
-    }
-    
-    // 2. Asosiy view'larni tiklash (deutsch vs main)
-    if (e.state && e.state.view) {
-        if (e.state.view === 'deutsch') {
-            openDeutschView();
-            syncActiveNavState('deutsch');
-        } else if (e.state.view === 'home' || e.state.view === 'blog') {
-            showMainView();
-            syncActiveNavState(e.state.view);
-            // Sahifani blogga moslashtirish
-            currentTab = e.state.view;
-            filterType = 'none';
-            updateHeroContent();
-            renderPosts();
-        }
-    } else {
-        // Default holat (bosh sahifa)
-        showMainView();
-        syncActiveNavState('home');
-        currentTab = 'home';
-        filterType = 'none';
-        updateHeroContent();
-        renderPosts();
-    }
-});
 
 
 // --- Missing Button Handlers Added ---
@@ -2672,7 +2619,6 @@ const closeAuthModal = document.getElementById('close-auth-modal');
 
 window.openAuthModal = function(tab) {
     if (authModal) {
-        if (typeof pushModalState === 'function') pushModalState();
         authModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -2716,7 +2662,6 @@ const myresultsModal = document.getElementById('myresults-modal');
 const closeMyresultsModal = document.getElementById('close-myresults-modal');
 if (userResultsBtn && myresultsModal) {
     userResultsBtn.addEventListener('click', () => {
-        if (typeof pushModalState === 'function') pushModalState();
         myresultsModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     });
@@ -2744,4 +2689,7 @@ if (userLogoutBtn) {
         }
     });
 }
+
+
+
 
