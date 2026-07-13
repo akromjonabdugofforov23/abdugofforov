@@ -1,4 +1,4 @@
-﻿
+
 
 
 // Abdugofforov Blog & Portfolio - JavaScript Engine
@@ -2615,7 +2615,7 @@ if (hamburgerBtn && hamburgerMenu) {
 
 const loginBtn = document.getElementById('login-btn');
 const authModal = document.getElementById('auth-modal');
-const closeAuthModal = document.getElementById('close-auth-modal');
+const closeAuthModalBtn = document.getElementById('close-auth-modal');
 
 window.openAuthModal = function(tab) {
     if (authModal) {
@@ -2630,8 +2630,8 @@ if (loginBtn) {
     });
 }
 
-if (closeAuthModal && authModal) {
-    closeAuthModal.addEventListener('click', () => {
+if (closeAuthModalBtn && authModal) {
+    closeAuthModalBtn.addEventListener('click', () => {
         authModal.classList.remove('active');
         document.body.style.overflow = '';
     });

@@ -1,5 +1,5 @@
-﻿// ===== DEUTSCH TESTLAR =====
-// Rasmli savollar uchun ishonchli, o'rnatilgan (data URI) emoji-rasm â€” tashqi havola talab qilmaydi
+// ===== DEUTSCH TESTLAR =====
+// Rasmli savollar uchun ishonchli, o'rnatilgan (data URI) emoji-rasm — tashqi havola talab qilmaydi
 function emojiImage(emoji, bg) {
     const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='240'>"
         + "<rect width='100%' height='100%' fill='" + (bg || '#f3efe0') + "'/>"
@@ -9,11 +9,11 @@ function emojiImage(emoji, bg) {
 }
 
 // ============================================================
-// DEUTSCH TESTLAR â€” 3 daraja, har birida 3 ta to'plam, 10 ta savol
-// A1: a1_t1, a1_t2, a1_t3   (A1 â€” Boshlang'ich)
-// A2: a2_t1, a2_t2, a2_t3   (A2 â€” Asosiy)
-// B1: b1_t1, b1_t2, b1_t3   (B1 â€” O'rta)
-// Jami: 9 ta to'plam Ã— 10 ta savol = 90 ta savol
+// DEUTSCH TESTLAR — 3 daraja, har birida 3 ta to'plam, 10 ta savol
+// A1: a1_t1, a1_t2, a1_t3   (A1 — Boshlang'ich)
+// A2: a2_t1, a2_t2, a2_t3   (A2 — Asosiy)
+// B1: b1_t1, b1_t2, b1_t3   (B1 — O'rta)
+// Jami: 9 ta to'plam × 10 ta savol = 90 ta savol
 // ============================================================
 // ===== DEUTSCH TESTS MOVED TO data-tests.js =====
 
@@ -31,7 +31,7 @@ function renderDeutschHome() {
     // Darajalar va ularning to'plamlari (har birida 10 ta savol)
     const levels = [
         {
-            key: 'A1', icon: 'ğŸŒ±', label: "A1 â€” Boshlang'ich daraja",
+            key: 'A1', icon: '🌱', label: "A1 — Boshlang'ich daraja",
             sub: "Salomlashish, raqamlar, asosiy so'zlar",
             tests: [
                 { id: 'a1_t1', name: "1-to'plam", note: "Eshitish + matn" },
@@ -44,7 +44,7 @@ function renderDeutschHome() {
             ]
         },
         {
-            key: 'A2', icon: 'ğŸŒ¿', label: "A2 â€” Asosiy daraja",
+            key: 'A2', icon: '🌿', label: "A2 — Asosiy daraja",
             sub: "Perfekt, modal fe'llar, predloglar",
             tests: [
                 { id: 'a2_t1', name: "1-to'plam", note: "Grammatika asoslari" },
@@ -57,7 +57,7 @@ function renderDeutschHome() {
             ]
         },
         {
-            key: 'B1', icon: 'ğŸŒ³', label: "B1 â€” O'rta daraja",
+            key: 'B1', icon: '🌳', label: "B1 — O'rta daraja",
             sub: "Konjunktiv, Passiv, nisbiy gaplar",
             tests: [
                 { id: 'b1_t1', name: "1-to'plam", note: "Konjunktiv va Passiv" },
@@ -70,7 +70,7 @@ function renderDeutschHome() {
             ]
         },
         {
-            key: 'B2', icon: 'ğŸ”ï¸', label: "B2 â€” Yuqori-o'rta daraja",
+            key: 'B2', icon: '🏔️', label: "B2 — Yuqori-o'rta daraja",
             sub: "Murakkab gaplar, idiomalar, matn",
             tests: [
                 { id: 'b2_t1', name: "1-to'plam", note: "Konjunktiv I" },
@@ -81,7 +81,7 @@ function renderDeutschHome() {
         }
     ];
 
-    // Har bir savol soni 10 ta â€” etibordan chetda qolmasin
+    // Har bir savol soni 10 ta — etibordan chetda qolmasin
     function countQs(testId) {
         const t = deutschTests[testId];
         if (!t) return 0;
@@ -116,7 +116,7 @@ function renderDeutschHome() {
 
     view.innerHTML = `
         <div class="deutsch-hero">
-            <div class="deutsch-flag">ğŸ‡©ğŸ‡ª</div>
+            <div class="deutsch-flag">🇩🇪</div>
             <h2 class="deutsch-title">Nemis tili testlari</h2>
             <p class="deutsch-sub">4 daraja &middot; jami 25 ta test</p>
         </div>
@@ -188,7 +188,7 @@ function renderQuestion() {
     const isLast = isLastSection && currentQuestion === section.questions.length-1;
     const sectionType = section.type || 'text';
 
-    // Savol qismi â€” turga qarab
+    // Savol qismi — turga qarab
     let questionHTML = '';
     if (sectionType === 'image' || sectionType === 'image_reverse') {
         questionHTML = `
@@ -203,7 +203,7 @@ function renderQuestion() {
     } else if (sectionType === 'audio') {
         questionHTML = `
             <div class="post-card" style="padding:28px; margin-bottom:16px; text-align:center;">
-                <p style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--accent-color); margin-bottom:16px;">Savol ${doneQ+1} â€” ğŸ”Š HÃ¶ren</p>
+                <p style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--accent-color); margin-bottom:16px;">Savol ${doneQ+1} — 🔊 Hören</p>
                 <div style="background:var(--tag-bg); border-radius:16px; padding:24px; margin-bottom:16px;">
                     <div style="font-size:22px; font-weight:700; color:var(--text-primary); margin-bottom:16px; font-family:'Playfair Display',serif;">
                         ${q.displayWord}
@@ -211,7 +211,7 @@ function renderQuestion() {
                     <button onclick="speakText('${q.audio}', '${q.audioLang}')"
                         style="background:var(--accent-color); color:#000; border:none; border-radius:50px;
                         padding:12px 28px; font-size:15px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
-                        ğŸ”Š Eshitish
+                        🔊 Eshitish
                     </button>
                 </div>
                 <p style="font-size:14px; color:var(--text-secondary);">${q.q}</p>
@@ -226,7 +226,7 @@ function renderQuestion() {
             </div>`;
     }
 
-    const nextLabel = isLast ? "Natijani ko'rish ğŸ" : 'Keyingi savol \u2192';
+    const nextLabel = isLast ? "Natijani ko'rish 🏁" : 'Keyingi savol \u2192';
     const optionsHTML = q.options.map((opt, i) =>
         `<button onclick="checkAnswer(${i})" id="opt-${i}"
             style="text-align:left; padding:14px 18px; border-radius:12px; border:1px solid var(--border-color);
@@ -295,9 +295,9 @@ function checkAnswer(selected) {
         <div style="padding:16px 20px; border-radius:12px; border:1px solid ${isCorrect ? '#22c55e' : '#ef4444'};
             background:${isCorrect ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)'};">
             <p style="font-weight:600; margin-bottom:6px; color:${isCorrect ? '#22c55e' : '#ef4444'};">
-                ${isCorrect ? 'âœ… To\u02BBg\u02BBri!' : 'âŒ Noto\u02BBg\u02BBri'}
+                ${isCorrect ? '✅ To\u02BBg\u02BBri!' : '❌ Noto\u02BBg\u02BBri'}
             </p>
-            <p style="font-size:14px; color:var(--text-primary); line-height:1.6;">ğŸ’¡ ${q.explanation}</p>
+            <p style="font-size:14px; color:var(--text-primary); line-height:1.6;">💡 ${q.explanation}</p>
         </div>
     `;
 
@@ -329,11 +329,11 @@ function nextQuestion() {
 function renderTestResult() {
     const total = currentTest.parts.reduce((s,part) => s + part.sections.reduce((s2,sec) => s2 + sec.questions.length, 0), 0);
     const pct = total ? Math.round((score / total) * 100) : 0;
-    const emoji = pct >= 80 ? 'ğŸ†' : pct >= 60 ? 'ğŸ‘' : 'ğŸ“š';
+    const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : '📚';
     const levelName = (currentTest && currentTest.title) ? currentTest.title : 'test';
     const msg = pct >= 80 ? "Ajoyib natija! Bu darajani yaxshi egallabsiz." 
-              : pct >= 60 ? "Yaxshi! Bir oz mashq qilsangiz mukammal boÊ»ladi."
-              : "QoÊ»rqmang! Qayta oÊ»rganib, yana sinab koÊ»ring.";
+              : pct >= 60 ? "Yaxshi! Bir oz mashq qilsangiz mukammal boʻladi."
+              : "Qoʻrqmang! Qayta oʻrganib, yana sinab koʻring.";
 
     // Natijani tarixga saqlaymiz (lokal)
     saveTestResult(currentLevel, score, total);
@@ -341,7 +341,7 @@ function renderTestResult() {
     // Login bo'lgan o'quvchi natijasini serverga ham yuboramiz (admin ko'radi)
     if (window.Auth && Auth.isLoggedIn()) {
         Auth.submitResult({ testId: currentLevel, testTitle: levelName, score: score, total: total })
-            .then(r => { if (r && r.ok) showToast('ğŸ“Š Natija saqlandi', 'success'); });
+            .then(r => { if (r && r.ok) showToast('📊 Natija saqlandi', 'success'); });
     }
 
     document.getElementById('deutsch-content').innerHTML = `
@@ -362,8 +362,8 @@ function renderTestResult() {
             </div>
 
             <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-                <button onclick="startTest('${currentLevel}')" class="btn-primary">ğŸ”„ Qayta boshlash</button>
-                <button onclick="renderDeutschHome()" class="btn-secondary">â† Testlar</button>
+                <button onclick="startTest('${currentLevel}')" class="btn-primary">🔄 Qayta boshlash</button>
+                <button onclick="renderDeutschHome()" class="btn-secondary">← Testlar</button>
             </div>
         </div>
         ${renderTestHistory()}
@@ -376,7 +376,7 @@ function renderTestResult() {
 
 
 // ============================================================
-// TURNIR â€” 30 savol (nemis testlari + kartochkalardan aralash)
+// TURNIR — 30 savol (nemis testlari + kartochkalardan aralash)
 // Mehmon ism bilan qatnashadi; ro'yxatdan o'tgan bo'lsa avatar bilan.
 // ============================================================
 let tState = null;
@@ -419,7 +419,7 @@ function buildTournamentQuestions(count) {
                 if (distractors.length < 3) return;
                 const opts = _tShuffle([card.back, ...distractors]);
                 pool.push({
-                    q: card.front + " â€” tarjimasi/ma'nosi?",
+                    q: card.front + " — tarjimasi/ma'nosi?",
                     options: opts,
                     answer: opts.indexOf(card.back),
                 });
@@ -443,27 +443,27 @@ function renderTournamentHome() {
                <span class="t-avatar">${escapeHTML(initial)}</span>
                <div><strong>${escapeHTML(name)}</strong><br><small style="color:var(--text-muted);">@${escapeHTML(Auth.user.username)}</small></div>
            </div>
-           <button class="btn-primary t-start-btn" onclick="startTournamentGame()" style="margin-top:16px;">ğŸ† Turnirni boshlash</button>`
+           <button class="btn-primary t-start-btn" onclick="startTournamentGame()" style="margin-top:16px;">🏆 Turnirni boshlash</button>`
         : `<div class="form-group" style="max-width:320px;margin:0 auto 14px;">
                <label for="t-name-input">Ismingiz (mehmon sifatida)</label>
                <input type="text" id="t-name-input" class="form-input" placeholder="Masalan: Ism" maxlength="40">
            </div>
-           <button class="btn-primary t-start-btn" onclick="startTournamentGame()">ğŸ† Turnirni boshlash</button>
-           <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">Ro'yxatdan o'tsangiz â€” ism va avataringiz bilan, qayta yozmasdan qatnashasiz.
+           <button class="btn-primary t-start-btn" onclick="startTournamentGame()">🏆 Turnirni boshlash</button>
+           <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">Ro'yxatdan o'tsangiz — ism va avataringiz bilan, qayta yozmasdan qatnashasiz.
                <a href="#" onclick="openAuthModal('register');return false;" style="color:var(--color-purple-light);">Ro'yxatdan o'tish</a></p>`;
 
     view.innerHTML = `
         <div class="t-hero">
-            <div style="font-size:50px;margin-bottom:8px;">ğŸ†</div>
+            <div style="font-size:50px;margin-bottom:8px;">🏆</div>
             <h2 style="font-family:'Playfair Display',serif;font-size:30px;margin-bottom:8px;">Turnir</h2>
-            <p style="color:var(--text-secondary);font-size:15px;margin-bottom:6px;">30 ta savol â€” nemis testlari va kartochkalaridan aralash</p>
+            <p style="color:var(--text-secondary);font-size:15px;margin-bottom:6px;">30 ta savol — nemis testlari va kartochkalaridan aralash</p>
             <p style="color:var(--text-muted);font-size:13px;">Eng yaxshi natijangiz reytingga yoziladi</p>
         </div>
         <div class="t-card">
             ${playerBlock}
         </div>
         <div id="t-leaderboard" class="t-card" style="margin-top:18px;">
-            <h3 style="font-size:17px;margin-bottom:12px;">ğŸ“Š Reyting</h3>
+            <h3 style="font-size:17px;margin-bottom:12px;">📊 Reyting</h3>
             <p style="color:var(--text-muted);font-size:13px;">Yuklanmoqda...</p>
         </div>
     `;
@@ -478,13 +478,13 @@ async function loadLeaderboard() {
         const data = await res.json().catch(() => ({}));
         const lb = (data && data.leaderboard) || [];
         if (!lb.length) {
-            box.innerHTML = '<h3 style="font-size:17px;margin-bottom:12px;">ğŸ“Š Reyting</h3><p style="color:var(--text-muted);font-size:13px;">Hali hech kim qatnashmagan. Birinchi bo\'ling!</p>';
+            box.innerHTML = '<h3 style="font-size:17px;margin-bottom:12px;">📊 Reyting</h3><p style="color:var(--text-muted);font-size:13px;">Hali hech kim qatnashmagan. Birinchi bo\'ling!</p>';
             return;
         }
         const rows = lb.map((e, i) => {
-            const medal = i === 0 ? 'ğŸ¥‡' : i === 1 ? 'ğŸ¥ˆ' : i === 2 ? 'ğŸ¥‰' : (i + 1) + '.';
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1) + '.';
             const init = (e.name || '?').charAt(0).toUpperCase();
-            const reg = e.registered ? `<span class="t-badge-reg" title="Ro'yxatdan o'tgan">âœ“</span>` : '';
+            const reg = e.registered ? `<span class="t-badge-reg" title="Ro'yxatdan o'tgan">✓</span>` : '';
             return `<div class="t-lb-row">
                 <span class="t-lb-rank">${medal}</span>
                 <span class="t-avatar t-avatar-sm">${escapeHTML(init)}</span>
@@ -493,9 +493,9 @@ async function loadLeaderboard() {
                 <span class="t-lb-pct">${e.pct}%</span>
             </div>`;
         }).join('');
-        box.innerHTML = '<h3 style="font-size:17px;margin-bottom:12px;">ğŸ“Š Reyting (eng yaxshi natijalar)</h3>' + rows;
+        box.innerHTML = '<h3 style="font-size:17px;margin-bottom:12px;">📊 Reyting (eng yaxshi natijalar)</h3>' + rows;
     } catch (e) {
-        box.innerHTML = '<h3 style="font-size:17px;margin-bottom:12px;">ğŸ“Š Reyting</h3><p style="color:#f87171;font-size:13px;">Reytingni yuklab bo\'lmadi</p>';
+        box.innerHTML = '<h3 style="font-size:17px;margin-bottom:12px;">📊 Reyting</h3><p style="color:#f87171;font-size:13px;">Reytingni yuklab bo\'lmadi</p>';
     }
 }
 
@@ -542,8 +542,8 @@ function renderTournamentQ() {
     view.innerHTML = `
         <div style="max-width:640px;margin:0 auto;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <span style="font-size:13px;color:var(--text-secondary);">ğŸ† Turnir</span>
-                <span style="font-size:13px;color:var(--text-secondary);">${num} / ${total} &nbsp;-&nbsp; âœ… ${tState.score}</span>
+                <span style="font-size:13px;color:var(--text-secondary);">🏆 Turnir</span>
+                <span style="font-size:13px;color:var(--text-secondary);">${num} / ${total} &nbsp;-&nbsp; ✅ ${tState.score}</span>
             </div>
             <div style="height:5px;background:var(--glass-border);border-radius:3px;margin-bottom:20px;">
                 <div style="height:5px;background:var(--grad-primary);border-radius:3px;width:${pct}%;transition:width 0.3s;"></div>
@@ -556,7 +556,7 @@ function renderTournamentQ() {
                 ${optionsHTML}
             </div>
             <div id="t-next-wrap" style="display:none;text-align:right;margin-top:16px;">
-                <button class="btn-primary" onclick="tournamentNext()">${num >= total ? "Natija ğŸ" : 'Keyingi â†’'}</button>
+                <button class="btn-primary" onclick="tournamentNext()">${num >= total ? "Natija 🏁" : 'Keyingi →'}</button>
             </div>
         </div>
     `;
@@ -596,7 +596,7 @@ async function renderTournamentResult() {
     const total = tState.questions.length;
     const score = tState.score;
     const pct = Math.round((score / total) * 100);
-    const emoji = pct >= 80 ? 'ğŸ†' : pct >= 60 ? 'ğŸ‘' : 'ğŸ“š';
+    const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : '📚';
 
     view.innerHTML = `
         <div style="max-width:480px;margin:0 auto;text-align:center;">
@@ -609,8 +609,8 @@ async function renderTournamentResult() {
                 <div id="t-rank-info" style="margin-top:14px;font-size:14px;color:var(--text-muted);">Reytingga yozilmoqda...</div>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-                <button class="btn-primary" onclick="startTournamentGame()">ğŸ”„ Qayta</button>
-                <button class="btn-secondary" onclick="renderTournamentHome()">ğŸ“Š Reyting</button>
+                <button class="btn-primary" onclick="startTournamentGame()">🔄 Qayta</button>
+                <button class="btn-secondary" onclick="renderTournamentHome()">📊 Reyting</button>
             </div>
         </div>
     `;
@@ -628,7 +628,7 @@ async function renderTournamentResult() {
         const info = document.getElementById('t-rank-info');
         if (info) {
             if (data.ok && data.rank) {
-                info.innerHTML = `ğŸ… Reytingdagi o'rningiz: <b style="color:var(--color-purple-light);">${data.rank}</b> / ${data.totalPlayers}`;
+                info.innerHTML = `🏅 Reytingdagi o'rningiz: <b style="color:var(--color-purple-light);">${data.rank}</b> / ${data.totalPlayers}`;
             } else {
                 info.textContent = 'Natija saqlandi';
             }
@@ -730,7 +730,7 @@ function initAuthUI() {
         if (data && data.ok) {
             closeAuthModal();
             updateAuthUI();
-            showToast('âœ… Xush kelibsiz, ' + (Auth.user.name || Auth.user.username) + '!', 'success');
+            showToast('✅ Xush kelibsiz, ' + (Auth.user.name || Auth.user.username) + '!', 'success');
         } else if (err) {
             err.textContent = (data && data.message) || 'Xatolik yuz berdi';
             err.classList.add('show');
@@ -790,86 +790,6 @@ function openMyResults() {
     document.body.style.overflow = 'hidden';
 }
 
-// ===== GLOBAL SCOPE BINDINGS (ES MODULE UCHUN) =====
-window.initMouseFollower = initMouseFollower;
-window.updateClock = updateClock;
-window.initTheme = initTheme;
-window.updateThemeButton = updateThemeButton;
-window.savePosts = savePosts;
-window.showToast = showToast;
-window.updateHeroContent = updateHeroContent;
-window.renderPosts = renderPosts;
-window.hideAuxViews = hideAuxViews;
-window.showMainView = showMainView;
-window.openDeutschView = openDeutschView;
-window.openFlashcardsView = openFlashcardsView;
-window.openTournamentView = openTournamentView;
-window.openContactModal = openContactModal;
-window.closeContactModal = closeContactModal;
-window.openMobileMenu = openMobileMenu;
-window.closeMobileMenu = closeMobileMenu;
-window.showSkeletons = showSkeletons;
-window.showBlogResultsView = showBlogResultsView;
-window.handleLike = handleLike;
-window.openPostDetail = openPostDetail;
-window.renderComments = renderComments;
-window.closePostDetailModal = closePostDetailModal;
-window.closeAddPostModal = closeAddPostModal;
-window.compressImage = compressImage;
-window.readFileAsDataURL = readFileAsDataURL;
-window.showImagePreview = showImagePreview;
-window.toggleMusicGroup = toggleMusicGroup;
-window.handlePinSubmit = handlePinSubmit;
-window.openAdminPanel = openAdminPanel;
-window.renderTasks = renderTasks;
-window.loadPortfolioForm = loadPortfolioForm;
-window.renderPortfolioView = renderPortfolioView;
-window.checkPortfolioAccess = checkPortfolioAccess;
-window.escapeHTML = escapeHTML;
-window.formatDate = formatDate;
-window.safeUrl = safeUrl;
-window.safeImageUrl = safeImageUrl;
-window.cssUrl = cssUrl;
-window.openLightbox = openLightbox;
-window.closeLightbox = closeLightbox;
-window.initLightbox = initLightbox;
-window.isDesktopPlayer = isDesktopPlayer;
-window.getYouTubeId = getYouTubeId;
-window.playMusic = playMusic;
-window.stopMusic = stopMusic;
-window.initMiniPlayer = initMiniPlayer;
-window.renderFlashcardsHome = renderFlashcardsHome;
-window.startFlashcards = startFlashcards;
-window.renderFlashcard = renderFlashcard;
-window.flipFlashcard = flipFlashcard;
-window.nextFlashcard = nextFlashcard;
-window.prevFlashcard = prevFlashcard;
-window.shuffleFlashcards = shuffleFlashcards;
-window.initLanguage = initLanguage;
-window.initIntroSplash = initIntroSplash;
-window.getRevealObserver = getRevealObserver;
-window.observeReveal = observeReveal;
-window.initScrollReveal = initScrollReveal;
-window.initFloatingAddBtn = initFloatingAddBtn;
-window.registerServiceWorker = registerServiceWorker;
-window.setMeta = setMeta;
-window.openPostFromUrl = openPostFromUrl;
-window.sharePost = sharePost;
-window.escapeAttr = escapeAttr;
-window.readingTime = readingTime;
-window.renderTags = renderTags;
-window.filterByTag = filterByTag;
-window.replyToComment = replyToComment;
-window.saveTestResult = saveTestResult;
-window.getTestHistory = getTestHistory;
-window.renderTestHistory = renderTestHistory;
-window.fcProgress = fcProgress;
-window.fcSaveProgress = fcSaveProgress;
-window.fcCardKey = fcCardKey;
-window.fcAnswer = fcAnswer;
-window.updateFcStreak = updateFcStreak;
-window.getFcStreak = getFcStreak;
-window.fcMasteredCount = fcMasteredCount;
 window.renderFlashcardDone = renderFlashcardDone;
 window.createParticleCanvas = createParticleCanvas;
 window.initParticles = initParticles;
@@ -923,6 +843,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
 
 
 
