@@ -10,54 +10,138 @@
     let timeLeft = 10;
     let soundEnabled = true;
 
-    // Web Audio API yordamida yurak urishi va qo'rqinchli ovoz generatori (0 KB resurs!)
-    function playHeartbeatSound() {
+    // Web Audio API yordamida yurak urishi, og'ir nafas va mistik horror effektlar generatori
+    function initAudioContext() {
+        if (!horrorAudioContext) {
+            horrorAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (horrorAudioContext.state === 'suspended') {
+            horrorAudioContext.resume();
+        }
+    }
+
+    // 1. Qo'shaloq Yurak Urishi (lub-dub) + Past Ovozli Og'ir Nafas Olish
+    function playHeartbeatSound(isPanic = false) {
         if (!soundEnabled) return;
         try {
-            if (!horrorAudioContext) {
-                horrorAudioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (horrorAudioContext.state === 'suspended') {
-                horrorAudioContext.resume();
-            }
+            initAudioContext();
+            const now = horrorAudioContext.currentTime;
 
-            const osc = horrorAudioContext.createOscillator();
-            const gain = horrorAudioContext.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(60, horrorAudioContext.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(30, horrorAudioContext.currentTime + 0.15);
+            // First Thump (lub)
+            const osc1 = horrorAudioContext.createOscillator();
+            const gain1 = horrorAudioContext.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(isPanic ? 80 : 60, now);
+            osc1.frequency.exponentialRampToValueAtTime(30, now + 0.12);
+            gain1.gain.setValueAtTime(isPanic ? 0.5 : 0.35, now);
+            gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+            osc1.connect(gain1);
+            gain1.connect(horrorAudioContext.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.12);
 
-            gain.gain.setValueAtTime(0.4, horrorAudioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, horrorAudioContext.currentTime + 0.15);
+            // Second Thump (dub) - slightly delayed
+            const osc2 = horrorAudioContext.createOscillator();
+            const gain2 = horrorAudioContext.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(isPanic ? 65 : 48, now + 0.14);
+            osc2.frequency.exponentialRampToValueAtTime(25, now + 0.26);
+            gain2.gain.setValueAtTime(isPanic ? 0.35 : 0.22, now + 0.14);
+            gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.26);
+            osc2.connect(gain2);
+            gain2.connect(horrorAudioContext.destination);
+            osc2.start(now + 0.14);
+            osc2.stop(now + 0.26);
 
-            osc.connect(gain);
-            gain.connect(horrorAudioContext.destination);
-
-            osc.start();
-            osc.stop(horrorAudioContext.currentTime + 0.15);
+            // Past ovozda og'ir nafas olish effekti (Low-pass Filtered Noise Breath)
+            playSubtleBreathingSound(now, isPanic);
         } catch (e) {}
     }
 
+    // Past Ovozli Og'ir Nafas Synth (Background Breath)
+    function playSubtleBreathingSound(startTime, isPanic = false) {
+        try {
+            const bufferSize = horrorAudioContext.sampleRate * 0.4;
+            const buffer = horrorAudioContext.createBuffer(1, bufferSize, horrorAudioContext.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+
+            const noise = horrorAudioContext.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = horrorAudioContext.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(180, startTime);
+            filter.frequency.linearRampToValueAtTime(320, startTime + 0.2);
+            filter.frequency.linearRampToValueAtTime(140, startTime + 0.4);
+
+            const breathGain = horrorAudioContext.createGain();
+            const maxVol = isPanic ? 0.07 : 0.04;
+            breathGain.gain.setValueAtTime(0.005, startTime);
+            breathGain.gain.linearRampToValueAtTime(maxVol, startTime + 0.2);
+            breathGain.gain.linearRampToValueAtTime(0.001, startTime + 0.4);
+
+            noise.connect(filter);
+            filter.connect(breathGain);
+            breathGain.connect(horrorAudioContext.destination);
+
+            noise.start(startTime);
+            noise.stop(startTime + 0.4);
+        } catch (e) {}
+    }
+
+    // 2. Kuchli, Aqlli va Mistik Noto'g'ri Javob SFX (Layered Detuned Echo)
     function playScaryScreamSound() {
         if (!soundEnabled) return;
         try {
-            if (!horrorAudioContext) {
-                horrorAudioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            const osc = horrorAudioContext.createOscillator();
-            const gain = horrorAudioContext.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(400, horrorAudioContext.currentTime);
-            osc.frequency.linearRampToValueAtTime(150, horrorAudioContext.currentTime + 0.4);
+            initAudioContext();
+            const now = horrorAudioContext.currentTime;
 
-            gain.gain.setValueAtTime(0.3, horrorAudioContext.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, horrorAudioContext.currentTime + 0.4);
+            // Qatlam 1: Chuqur Sub-Bass Drop (220Hz -> 32Hz)
+            const subOsc = horrorAudioContext.createOscillator();
+            const subGain = horrorAudioContext.createGain();
+            subOsc.type = 'sine';
+            subOsc.frequency.setValueAtTime(220, now);
+            subOsc.frequency.exponentialRampToValueAtTime(32, now + 0.5);
+            subGain.gain.setValueAtTime(0.35, now);
+            subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+            subOsc.connect(subGain);
+            subGain.connect(horrorAudioContext.destination);
+            subOsc.start(now);
+            subOsc.stop(now + 0.5);
 
-            osc.connect(gain);
-            gain.connect(horrorAudioContext.destination);
+            // Qatlam 2: Mistik Qo'rqinchli Interferensiya (Detuned Sawtooth Pair)
+            const oscA = horrorAudioContext.createOscillator();
+            const oscB = horrorAudioContext.createOscillator();
+            const filter = horrorAudioContext.createBiquadFilter();
+            const mainGain = horrorAudioContext.createGain();
 
-            osc.start();
-            osc.stop(horrorAudioContext.currentTime + 0.4);
+            oscA.type = 'sawtooth';
+            oscB.type = 'sawtooth';
+
+            oscA.frequency.setValueAtTime(460, now);
+            oscA.frequency.linearRampToValueAtTime(140, now + 0.45);
+            oscB.frequency.setValueAtTime(468, now);
+            oscB.frequency.linearRampToValueAtTime(144, now + 0.45);
+
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(1600, now);
+            filter.frequency.exponentialRampToValueAtTime(180, now + 0.45);
+
+            mainGain.gain.setValueAtTime(0.25, now);
+            mainGain.gain.exponentialRampToValueAtTime(0.005, now + 0.45);
+
+            oscA.connect(filter);
+            oscB.connect(filter);
+            filter.connect(mainGain);
+            mainGain.connect(horrorAudioContext.destination);
+
+            oscA.start(now);
+            oscB.start(now);
+            oscA.stop(now + 0.45);
+            oscB.stop(now + 0.45);
         } catch (e) {}
     }
 
@@ -283,12 +367,28 @@
 
         timerInterval = setInterval(() => {
             timeLeft--;
-            playHeartbeatSound();
+            const isPanic = timeLeft <= 4;
+            playHeartbeatSound(isPanic);
 
             const fill = document.getElementById('timer-fill');
             const secEl = document.getElementById('timer-sec');
-            if (fill) fill.style.width = (timeLeft * 10) + '%';
-            if (secEl) secEl.innerHTML = `⏱️ ${timeLeft}`;
+            const card = document.getElementById('horror-card');
+
+            if (fill) {
+                fill.style.width = (timeLeft * 10) + '%';
+                if (isPanic) {
+                    fill.style.background = '#ef4444';
+                    fill.style.boxShadow = '0 0 14px #ef4444';
+                }
+            }
+            if (secEl) {
+                secEl.innerHTML = isPanic ? `⚠️ 00:0${timeLeft}` : `⏱️ ${timeLeft}`;
+                if (isPanic) secEl.style.color = '#ef4444';
+            }
+            if (isPanic && card) {
+                card.classList.add('screen-shake');
+                setTimeout(() => card.classList.remove('screen-shake'), 180);
+            }
 
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
