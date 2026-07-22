@@ -543,6 +543,10 @@ function hideAuxViews() {
         const el = document.getElementById(id);
         if (el) el.style.display = 'none';
     });
+    const fortune = document.getElementById('fortune-widget-wrap');
+    if (fortune) fortune.style.display = 'none';
+    const mapSec = document.getElementById('germany-map-section');
+    if (mapSec) mapSec.style.display = 'none';
 }
 
 // ===== SPA ROUTER & HISTORY STATE MANAGEMENT =====
@@ -585,6 +589,10 @@ function showMainView(pushHistory = true) {
     const hero = document.querySelector('.hero');
     if (hero) hero.style.display = '';
     if (mainContent) mainContent.style.display = '';
+    const fortune = document.getElementById('fortune-widget-wrap');
+    if (fortune) fortune.style.display = 'block';
+    const mapSec = document.getElementById('germany-map-section');
+    if (mapSec) mapSec.style.display = 'block';
     if (pushHistory) setAppRoute('#home', true);
 }
 
