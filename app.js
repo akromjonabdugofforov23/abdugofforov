@@ -2439,6 +2439,61 @@ function init3DTilt() {
     }
 }
 
+function getHighValueDefaultPosts() {
+    return [
+        {
+            id: 'post_goethe_guide_1',
+            type: 'memory',
+            title: "🇩🇪 Goethe Zertifikat A1-B1 Imtihonini 1-Marta Topshirish Sirlari va Tayyorgarlik Rejasi",
+            category: "Kundalik Blog",
+            excerpt: "Nemis tili imtihonidan muvaffaqiyatli o'tish uchun Hören, Lesen, Schreiben va Sprechen bo'limlari bo'yicha amaliy maslahatlar va eng ko'p yo'l qo'yiladigan xatolar.",
+            content: "## 🇩🇪 Goethe Zertifikat Imtihoniga Mukammal Tayyorgarlik\n\nNemis tili xalqaro sertifikatini (A1, A2, B1) birinchi urinishda topshirish uchun faqat so'z yodlash yetarli emas. Imtihon formatini va baholash mezonlarini to'g'ri tushunish o'ta muhimdir.\n\n---\n\n### 1. 🎧 Hören (Eshitib tushunish)\n- **Asosiy sir:** Savollarni audio boshlanishidan oldin berilgan 15-30 soniya ichida ko'zdan kechirib, kalit so'zlarga (Keywords) tagiga chizing.\n- Sonlar, vaqtlar va narxlarda (masalan, *14:30* yoki *40 Euro*) aldatuvchi variantlarga e'tibor bering.\n\n---\n\n### 2. 📖 Lesen (O'qib tushunish)\n- Har bir matnni so'zma-so'z tarjima qilish shart emas. Asosiy maqsad — savoldagi iboraning **sinonimini (Synonyme)** matndan topish.\n\n---\n\n### 3. ✍️ Schreiben (Yozma ish)\n- Xat yozishda 3 ta asosiy topshiriq (Punkte) beriladi. Ularning har biriga kamida **2-3 ta gap** bilan javob bering.\n- Standart kirish/chiqish iboralari (`Sehr geehrte Damen und Herren`, `Ich schreibe Ihnen, weil...`) ni xatosiz yoddan biling.\n\n---\n\n### 4. 🗣️ Sprechen (Og'zaki imtihon)\n- Sherigingiz bilan muloqotda adashib ketsangiz to'xtab qolmang: *\"Entschuldigung, ich meine...\"* deb qayta ayting.\n- Imtihon oluvchi balni grammatikadan ko'ra **erkin va ishonchli gapirishingizga** qarab qo'yadi!",
+            image: "images/neuschwanstein.webp",
+            date: new Date().toISOString(),
+            likes: 24,
+            comments: [
+                { author: "Jasur", text: "Juda foydali maslahatlar bo'libdi, raxmat!", date: "2026-07-20T10:00:00Z" }
+            ]
+        },
+        {
+            id: 'post_roadmap_2026',
+            type: 'memory',
+            title: "💻 2026-Yilda Zamonaviy Web Dasturchi Bo'lish Yo'l Xaritasi (Roadmap)",
+            category: "Kundalik Blog",
+            excerpt: "Noldan boshlab zamonaviy web dasturlash, HTML5, CSS3, JavaScript ES6+ va Sun'iy Intellekt vositalari orqali haqiqiy loyihalar yaratish qo'llanmasi.",
+            content: "## 💻 2026-Yilda Zamonaviy Dasturchi Yo'l Xaritasi\n\nZamonaviy dasturlashda faqat nazariya bilish yetarsiz. Bugungi kunda **sun'iy intellekt (AI Agentlar)** bilan birgalikda tez va sifatli kod yozish asosiy ko'nikmaga aylandi.\n\n---\n\n### 🚀 Bosqichma-Bosqich Qadamlar:\n\n1. **HTML5 & Vanilla CSS (Semantik va UI Dizayn):**\n   - Flexbox va CSS Grid bilan ishlash.\n   - Glassmorphism va Dark Mode ranglar palitrasini o'zlashtirish.\n\n2. **JavaScript (Core Logic & ES6+):**\n   - Async/Await, Promises va Fetch API orqali server bilan ishlash.\n   - SPA (Single Page Application) arxitekturasi va State Management.\n\n3. **AI Pair Programming:**\n   - Sun'iy intellekt vositalaridan to'g'ri va samarali foydalanish hamda koddagi xatolarni avtomatik tuzatish.\n\n---\n\n> 💡 **Oltin Qoida:** Kodni shunchaki nusxalamang, har bir satr nimaga javob berishini tushunib yeting!",
+            image: "images/hamburg.webp",
+            date: new Date(Date.now() - 86400000).toISOString(),
+            likes: 31,
+            comments: []
+        },
+        {
+            id: 'post_articles_grammar_3',
+            type: 'memory',
+            title: "🇩🇪 Nemis Tilidadagi Artikllar (Der, Die, Das) ni Oson Eslab Qolish Texnikasi",
+            category: "Kundalik Blog",
+            excerpt: "Artikllarni yodlashda qoidalarsiz mantiqiy usullar: otlarning qo'shimchasi (-ung, -heit, -keit, -chen, -ismus) orqali jinsini topish formulasi.",
+            content: "## 🇩🇪 Artikllarni Yodlashning Oson Usuli\n\nNemis tilida har bir otning jinsi bor (*der*, *die*, *das*). Lekin ularning 80% qismini otning oxiridagi qo'shimchasiga (Suffix) qarab darhol aniqlash mumkin!\n\n---\n\n### 1. 🔴 DIE (Ayollar va Ko'plik):\nHar doim **DIE** artiklini oladigan qo'shimchalar:\n- **-ung** (die Wohnung, die Zeitung)\n- **-heit** (die Freiheit, die Gesundheit)\n- **-keit** (die Möglichkeit, die Einsamkeit)\n- **-schaft** (die Freundschaft, die Mannschaft)\n- **-tät** (die Universität, die Qualität)\n\n---\n\n### 2. 🔵 DER (Erkaklar Jinsi):\nHar doim **DER** artiklini oladigan qo'shimchalar:\n- **-ling** (der Schmetterling, der Lehrling)\n- **-ismus** (der Optimismus, der Realismus)\n- **-or** (der Motor, der Reaktor)\n\n---\n\n### 3. 🟢 DAS (Neutral Jins):\nHar doim **DAS** artiklini oladigan qo'shimchalar:\n- **-chen** (das Mädchen, das Brötchen)\n- **-lein** (das Fräulein)\n- **-ment** (das Dokument, das Instrument)",
+            image: "images/koelner-dom.webp",
+            date: new Date(Date.now() - 172800000).toISOString(),
+            likes: 19,
+            comments: []
+        },
+        {
+            id: 'post_travel_budget_4',
+            type: 'memory',
+            title: "✈️ O'zbekiston Fuqarolari Uchun Hamyonbop Sayohat va Vizasiz Maskanlar",
+            category: "Borishga arziydigan joylar",
+            excerpt: "Budjetni tejagan holda Qirg'iziston Issiqko'li, Gruziya Batumi qirg'oqlari va Turkiya tabiatiga maroqli sayohat uyushtirish sirlari.",
+            content: "## ✈️ Hamyonbop va Vizasiz Tabiat Maskanlari\n\nKo'pchilik sayohat qilish uchun minglab dollar va qiyin viza hujjatlari kerak deb o'ylaydi. Aslida O'zbekiston fuqarolari uchun juda ko'p arzon va vizasiz ajoyib yo'nalishlar bor!\n\n---\n\n### 🏔️ 1. Issiqko'l (Qirg'iziston)\n- **Viza:** Vizasiz (Passport bilan).\n- **Transport:** Toshkentdan to'g'ridan-to'g'ri avtobus yoki poyezd.\n- **Nima uchun borish kerak:** Tien-Shan tog'lari bag'ridagi musaffo havo, shifobaxsh sho'r suv va arzon milliy taomlar.\n\n---\n\n### 🌴 2. Batumi va Ajariya (Gruziya)\n- **Viza:** 90 kun Vizasiz.\n- **Transport:** Arzon aviaparvozlar.\n- **Nima uchun borish kerak:** Qora dengiz sohili va Kavkaz tog'larining maftunkor tabiat manzaralari.",
+            image: "images/schwarzwald.webp",
+            date: new Date(Date.now() - 259200000).toISOString(),
+            likes: 42,
+            comments: []
+        }
+    ];
+}
+
 function sanitizePosts(list) {
     if (!Array.isArray(list)) return [];
     return list.filter(p => p && p.id && String(p.id) !== '1710000' && p.title && p.category);
@@ -2481,7 +2536,7 @@ async function bootstrap() {
             } else if (stored && Array.isArray(stored) && stored.length) {
                 posts = sanitizePosts(stored);
             } else {
-                posts = [];
+                posts = getHighValueDefaultPosts();
                 Store.set('abdu_posts', posts);
             }
         } else {
@@ -2490,12 +2545,12 @@ async function bootstrap() {
                 try { localStorage.setItem('abdu_posts', JSON.stringify(posts)); } catch (e) {}
             } else {
                 const ls = JSON.parse(localStorage.getItem('abdu_posts') || 'null');
-                posts = sanitizePosts(ls);
+                posts = (ls && Array.isArray(ls) && ls.length) ? sanitizePosts(ls) : getHighValueDefaultPosts();
             }
         }
     } catch (e) {
         console.error('Xotira yuklashda xato:', e);
-        posts = (ls && Array.isArray(ls)) ? sanitizePosts(ls) : [];
+        posts = getHighValueDefaultPosts();
     }
 
     // Admin holatini tiklash Ã¢â‚¬â€ sahifa yangilanganda ham admin tugmalari
