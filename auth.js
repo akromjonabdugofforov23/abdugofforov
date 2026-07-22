@@ -130,22 +130,23 @@
     };
 
     window.handleTelegramAuthFallback = function() {
-        const username = prompt("Telegram foydalanuvchi nomingizni kiriting (masalan: @foydalanuvchi):");
-        if (!username) return;
-        const cleanUser = username.replace('@', '').trim();
-        if (!cleanUser) return;
+        const input = prompt("Telegram ismingizni yoki foydalanuvchi nomingizni kiriting (Masalan: Akromjon yoki @foydalanuvchi):");
+        if (!input || !input.trim()) return;
+        
+        const cleanName = input.replace('@', '').trim();
+        const generatedId = Math.floor(Math.random() * 89999999) + 10000000;
         
         const tgUser = {
-            id: Math.floor(Math.random() * 89999999) + 10000000,
-            first_name: cleanUser,
-            username: cleanUser,
+            id: generatedId,
+            first_name: cleanName,
+            username: cleanName.toLowerCase().replace(/\s+/g, '_'),
             provider: 'telegram'
         };
 
         if (window.Auth) {
             Auth.loginWithTelegram(tgUser);
             if (typeof showToast === 'function') {
-                showToast("✈️ Telegram @" + cleanUser + " nomidan muvaffaqiyatli kirdingiz!", "success");
+                showToast("✈️ Telegram: " + cleanName + " nomidan muvaffaqiyatli kirdingiz!", "success");
             }
             setTimeout(() => location.reload(), 500);
         }
