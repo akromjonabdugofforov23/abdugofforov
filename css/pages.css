@@ -653,6 +653,71 @@
     font-size: 14px;
 }
 
+/* Nemis Tili Imkoniyatlar Hub Grid (4 ta rejim) */
+.deutsch-mode-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    max-width: 980px;
+    margin: 24px auto 16px auto;
+}
+
+.deutsch-mode-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.deutsch-mode-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-purple-light);
+    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.25);
+    background: rgba(124, 58, 237, 0.08);
+}
+
+.deutsch-mode-card.active {
+    border-color: var(--color-purple-light);
+    background: rgba(124, 58, 237, 0.12);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.25);
+}
+
+.deutsch-mode-card.horror-mode-card {
+    border-color: rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.06);
+}
+
+.deutsch-mode-card.horror-mode-card:hover {
+    border-color: #ef4444;
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.16);
+}
+
+.deutsch-mode-card .dm-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+.deutsch-mode-card .dm-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.deutsch-mode-card .dm-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
 .levels-stack {
     display: flex;
     flex-direction: column;

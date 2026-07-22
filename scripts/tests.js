@@ -132,12 +132,33 @@ function renderDeutschHome() {
     view.innerHTML = `
         <div class="deutsch-hero">
             <div class="deutsch-flag">🇩🇪</div>
-            <h2 class="deutsch-title">Nemis tili testlari</h2>
-            <p class="deutsch-sub">4 daraja &middot; jami 25 ta test</p>
-            <div style="margin-top:16px;">
-                <button class="btn-primary" style="background:linear-gradient(135deg, #ef4444, #991b1b); border:none; padding:12px 24px; font-weight:700; box-shadow:0 4px 15px rgba(239,68,68,0.4);" onclick="openHorrorHome()">
-                    💀 HORROR DEUTSCH — Adrenalin Rejimi
-                </button>
+            <h2 class="deutsch-title">Nemis Tili Akademiyasi</h2>
+            <p class="deutsch-sub">A1 - B2 Darajalar &middot; Interaktiv O'rganish Hub'i</p>
+
+            <div class="deutsch-mode-nav">
+                <div class="deutsch-mode-card active" onclick="window.scrollTo({top: 350, behavior: 'smooth'})">
+                    <span class="dm-icon">📝</span>
+                    <div class="dm-title">Mavzuli Testlar</div>
+                    <div class="dm-sub">A1-B2 (Jami 25 ta to'plam)</div>
+                </div>
+
+                <div class="deutsch-mode-card" onclick="openFlashcardsView()">
+                    <span class="dm-icon">🎴</span>
+                    <div class="dm-title">So'z Kartochkalari</div>
+                    <div class="dm-sub">Ovozli Leitner tizimi</div>
+                </div>
+
+                <div class="deutsch-mode-card" onclick="openTournamentView()">
+                    <span class="dm-icon">⚔️</span>
+                    <div class="dm-title">Deutsch Turnir</div>
+                    <div class="dm-sub">Jonli musobaqa & reyting</div>
+                </div>
+
+                <div class="deutsch-mode-card horror-mode-card" onclick="openHorrorHome()">
+                    <span class="dm-icon">💀</span>
+                    <div class="dm-title" style="color:#ef4444;">HORROR DEUTSCH</div>
+                    <div class="dm-sub">Adrenalin omon qolish</div>
+                </div>
             </div>
         </div>
         <div class="levels-stack">
