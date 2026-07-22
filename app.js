@@ -545,14 +545,51 @@ function hideAuxViews() {
     });
 }
 
-function showMainView() {
+// ===== SPA ROUTER & HISTORY STATE MANAGEMENT =====
+function setAppRoute(route, push = true) {
+    if (push && window.location.hash !== route) {
+        try { history.pushState({ route: route }, '', route); } catch (e) {}
+    }
+}
+
+function applyAppRoute(route) {
+    const cleanRoute = (route || window.location.hash || '#home').toLowerCase();
+
+    if (cleanRoute.includes('horror-deutsch')) {
+        if (mainContent) mainContent.style.display = 'none';
+        const hero = document.querySelector('.hero');
+        if (hero) hero.style.display = 'none';
+        hideAuxViews();
+        const deutschView = document.getElementById('deutsch-view');
+        if (deutschView) deutschView.style.display = 'block';
+        if (typeof openHorrorHome === 'function') openHorrorHome(true);
+    } else if (cleanRoute.includes('nemistili') || cleanRoute.includes('deutsch')) {
+        openDeutschView(false);
+    } else if (cleanRoute.includes('flashcards')) {
+        openFlashcardsView(false);
+    } else if (cleanRoute.includes('tournament')) {
+        openTournamentView(false);
+    } else {
+        showMainView(false);
+    }
+}
+
+window.addEventListener('popstate', (e) => {
+    const route = (e.state && e.state.route) ? e.state.route : (window.location.hash || '#home');
+    applyAppRoute(route);
+});
+
+function showMainView(pushHistory = true) {
+    document.body.classList.remove('horror-theme');
     hideAuxViews();
     const hero = document.querySelector('.hero');
     if (hero) hero.style.display = '';
     if (mainContent) mainContent.style.display = '';
+    if (pushHistory) setAppRoute('#home', true);
 }
 
-function openDeutschView() {
+function openDeutschView(pushHistory = true) {
+    document.body.classList.remove('horror-theme');
     if (mainContent) mainContent.style.display = 'none';
     const hero = document.querySelector('.hero');
     if (hero) hero.style.display = 'none';
@@ -560,9 +597,11 @@ function openDeutschView() {
     const deutschView = document.getElementById('deutsch-view');
     if (deutschView) deutschView.style.display = 'block';
     renderDeutschHome();
+    if (pushHistory) setAppRoute('#nemistili', true);
 }
 
-function openFlashcardsView() {
+function openFlashcardsView(pushHistory = true) {
+    document.body.classList.remove('horror-theme');
     if (mainContent) mainContent.style.display = 'none';
     const hero = document.querySelector('.hero');
     if (hero) hero.style.display = 'none';
@@ -570,9 +609,11 @@ function openFlashcardsView() {
     const flashView = document.getElementById('flashcards-view');
     if (flashView) flashView.style.display = 'block';
     renderFlashcardsHome();
+    if (pushHistory) setAppRoute('#flashcards', true);
 }
 
-function openTournamentView() {
+function openTournamentView(pushHistory = true) {
+    document.body.classList.remove('horror-theme');
     if (mainContent) mainContent.style.display = 'none';
     const hero = document.querySelector('.hero');
     if (hero) hero.style.display = 'none';
@@ -580,6 +621,7 @@ function openTournamentView() {
     const tView = document.getElementById('tournament-view');
     if (tView) tView.style.display = 'block';
     renderTournamentHome();
+    if (pushHistory) setAppRoute('#tournament', true);
 }
 
 // 9. SPA Routing Navigation
@@ -2493,6 +2535,9 @@ async function bootstrap() {
     initScrollReveal();
     registerServiceWorker();
     openPostFromUrl();
+    if (window.location.hash) {
+        applyAppRoute(window.location.hash);
+    }
 
     // Yangi: hero particles + footer particles + CTA tugmasi + 3D tilt + Floating +
     // initParticles(); // Performance optimization

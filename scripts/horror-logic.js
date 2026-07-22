@@ -146,9 +146,13 @@
     }
 
     // Main Horror Home View
-    window.openHorrorHome = function() {
+    window.openHorrorHome = function(fromPopState = false) {
         const view = document.getElementById('deutsch-content');
         if (!view) return;
+
+        if (!fromPopState && typeof setAppRoute === 'function') {
+            setAppRoute('#nemistili/horror-deutsch', true);
+        }
 
         // body kungi/tungi temaga horror sinfini ulash
         document.body.classList.add('horror-theme');
@@ -207,10 +211,14 @@
         `;
     };
 
-    window.closeHorrorMode = function() {
+    window.closeHorrorMode = function(fromPopState = false) {
         document.body.classList.remove('horror-theme');
         if (timerInterval) clearInterval(timerInterval);
-        if (typeof renderDeutschHome === 'function') renderDeutschHome();
+        if (!fromPopState && typeof setAppRoute === 'function') {
+            setAppRoute('#nemistili', true);
+        } else if (typeof renderDeutschHome === 'function') {
+            renderDeutschHome();
+        }
     };
 
     window.toggleHorrorSound = function() {
