@@ -70,6 +70,18 @@ jsFiles.forEach(file => {
             logFail(`O'chirilgan o'zgaruvchi chaqirilgan: '${sym}' -> ${relPath}:${lineNo}`);
         }
     });
+
+    // Check window.xyz = xyz assignments for undefined xyz in the file
+    const winAssignRegex = /window\.([a-zA-Z0-9_$]+)\s*=\s*\1\s*;/g;
+    let winMatch;
+    while ((winMatch = winAssignRegex.exec(codeNoComments)) !== null) {
+        const symName = winMatch[1];
+        const defRegex = new RegExp(`(function\\s+${symName}|const\\s+${symName}|let\\s+${symName}|var\\s+${symName}|class\\s+${symName})\\b`);
+        if (!defRegex.test(codeNoComments)) {
+            const lineNo = rawCode.substring(0, winMatch.index).split('\n').length;
+            logFail(`Mavjud bo'lmagan funksiya window'ga biriktirilgan: '${symName}' -> ${relPath}:${lineNo}`);
+        }
+    }
 });
 
 // -------------------------------------------------------------

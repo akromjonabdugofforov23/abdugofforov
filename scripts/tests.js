@@ -845,14 +845,6 @@ function openMyResults() {
     document.body.style.overflow = 'hidden';
 }
 
-window.renderFlashcardDone = renderFlashcardDone;
-window.createParticleCanvas = createParticleCanvas;
-window.initParticles = initParticles;
-window.initFooterParticles = initFooterParticles;
-window.initCarousel = initCarousel;
-window.runTypewriter = runTypewriter;
-window.initHeroCta = initHeroCta;
-window.init3DTilt = init3DTilt;
 window.emojiImage = emojiImage;
 window.renderDeutschHome = renderDeutschHome;
 window.startTest = startTest;
@@ -870,14 +862,6 @@ window.startTournamentGame = startTournamentGame;
 window.renderTournamentQ = renderTournamentQ;
 window.tournamentAnswer = tournamentAnswer;
 window.tournamentNext = tournamentNext;
-window.openAuthModal = openAuthModal;
-window.closeAuthModal = closeAuthModal;
-window.setAuthMode = setAuthMode;
-window.updateAuthUI = updateAuthUI;
-window.initAuthUI = initAuthUI;
-window.openMyResults = openMyResults;
-window.flashcardDecks = flashcardDecks;
-window.deutschTests = deutschTests;
 
 
 // ===== HAMBURGER MENU =====
