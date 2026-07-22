@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "test": "node scripts/health-check.js",
     "build": "node build.mjs",
     "serve-dist": "npx http-server dist -p 3000"
   },
