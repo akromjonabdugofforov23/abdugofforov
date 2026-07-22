@@ -653,69 +653,101 @@
     font-size: 14px;
 }
 
-/* Nemis Tili Imkoniyatlar Hub Grid (4 ta rejim) */
+/* Nemis Tili Imkoniyatlar Hub Grid (4 ta rejim — Bitta qator) */
 .deutsch-mode-nav {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center;
+    align-items: stretch;
+    gap: 12px;
     max-width: 980px;
-    margin: 24px auto 16px auto;
+    margin: 24px auto 20px auto;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+}
+
+.deutsch-mode-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .deutsch-mode-card {
+    flex: 1 1 0px;
+    min-width: 140px;
+    max-width: 220px;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 16px;
-    padding: 18px 16px;
+    padding: 16px 12px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.deutsch-mode-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--color-purple-light);
-    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.25);
-    background: rgba(124, 58, 237, 0.08);
+/* Individual Color Accents for each mode */
+.deutsch-mode-card.mode-tests {
+    border-color: rgba(168, 85, 247, 0.3);
+    background: rgba(168, 85, 247, 0.06);
+}
+.deutsch-mode-card.mode-tests:hover, .deutsch-mode-card.mode-tests.active {
+    border-color: #a855f7;
+    background: rgba(168, 85, 247, 0.16);
+    box-shadow: 0 8px 20px rgba(168, 85, 247, 0.25);
 }
 
-.deutsch-mode-card.active {
-    border-color: var(--color-purple-light);
-    background: rgba(124, 58, 237, 0.12);
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.25);
+.deutsch-mode-card.mode-flashcards {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(59, 130, 246, 0.06);
+}
+.deutsch-mode-card.mode-flashcards:hover, .deutsch-mode-card.mode-flashcards.active {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.16);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
 }
 
-.deutsch-mode-card.horror-mode-card {
+.deutsch-mode-card.mode-tournament {
+    border-color: rgba(245, 158, 11, 0.3);
+    background: rgba(245, 158, 11, 0.06);
+}
+.deutsch-mode-card.mode-tournament:hover, .deutsch-mode-card.mode-tournament.active {
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.16);
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25);
+}
+
+.deutsch-mode-card.mode-horror {
     border-color: rgba(239, 68, 68, 0.4);
     background: rgba(239, 68, 68, 0.06);
 }
-
-.deutsch-mode-card.horror-mode-card:hover {
+.deutsch-mode-card.mode-horror:hover, .deutsch-mode-card.mode-horror.active {
     border-color: #ef4444;
-    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.35);
-    background: rgba(239, 68, 68, 0.16);
+    background: rgba(239, 68, 68, 0.18);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
 }
 
 .deutsch-mode-card .dm-icon {
-    font-size: 32px;
-    margin-bottom: 8px;
+    font-size: 28px;
+    margin-bottom: 6px;
     display: inline-block;
 }
 
 .deutsch-mode-card .dm-title {
     font-weight: 700;
-    font-size: 15px;
+    font-size: 14px;
     color: var(--text-primary);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    white-space: nowrap;
 }
 
 .deutsch-mode-card .dm-sub {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-secondary);
+    white-space: nowrap;
 }
 
 .levels-stack {

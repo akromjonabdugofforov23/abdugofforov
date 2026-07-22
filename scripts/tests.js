@@ -136,25 +136,25 @@ function renderDeutschHome() {
             <p class="deutsch-sub">A1 - B2 Darajalar &middot; Interaktiv O'rganish Hub'i</p>
 
             <div class="deutsch-mode-nav">
-                <div class="deutsch-mode-card active" onclick="window.scrollTo({top: 350, behavior: 'smooth'})">
+                <div class="deutsch-mode-card mode-tests active" onclick="window.scrollTo({top: 350, behavior: 'smooth'})">
                     <span class="dm-icon">📝</span>
                     <div class="dm-title">Mavzuli Testlar</div>
-                    <div class="dm-sub">A1-B2 (Jami 25 ta to'plam)</div>
+                    <div class="dm-sub">A1-B2 Goethe</div>
                 </div>
 
-                <div class="deutsch-mode-card" onclick="openFlashcardsView()">
+                <div class="deutsch-mode-card mode-flashcards" onclick="openFlashcardsView()">
                     <span class="dm-icon">🎴</span>
                     <div class="dm-title">So'z Kartochkalari</div>
-                    <div class="dm-sub">Ovozli Leitner tizimi</div>
+                    <div class="dm-sub">Ovozli Leitner</div>
                 </div>
 
-                <div class="deutsch-mode-card" onclick="openTournamentView()">
+                <div class="deutsch-mode-card mode-tournament" onclick="openTournamentView()">
                     <span class="dm-icon">⚔️</span>
                     <div class="dm-title">Deutsch Turnir</div>
-                    <div class="dm-sub">Jonli musobaqa & reyting</div>
+                    <div class="dm-sub">Jonli musobaqa</div>
                 </div>
 
-                <div class="deutsch-mode-card horror-mode-card" onclick="openHorrorHome()">
+                <div class="deutsch-mode-card mode-horror" onclick="openHorrorHome()">
                     <span class="dm-icon">💀</span>
                     <div class="dm-title" style="color:#ef4444;">HORROR DEUTSCH</div>
                     <div class="dm-sub">Adrenalin omon qolish</div>
