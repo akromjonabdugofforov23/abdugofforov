@@ -1,0 +1,168 @@
+/* ===== HORROR DEUTSCH MODE STYLES ===== */
+
+.horror-theme {
+    --horror-bg: #09060d;
+    --horror-card-bg: rgba(22, 13, 31, 0.85);
+    --horror-red: #ef4444;
+    --horror-dark-red: #991b1b;
+    --horror-accent: #a855f7;
+    --horror-border: rgba(239, 68, 68, 0.3);
+    --horror-text: #f3f4f6;
+    background-color: var(--horror-bg) !important;
+    color: var(--horror-text) !important;
+}
+
+.horror-container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Horror Hero Card */
+.horror-hero-card {
+    background: radial-gradient(circle at top, rgba(153, 27, 27, 0.25), rgba(9, 6, 13, 0.95)), var(--horror-card-bg);
+    border: 1px solid var(--horror-border);
+    border-radius: 20px;
+    padding: 36px 24px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(239, 68, 68, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.horror-hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--horror-red), transparent);
+    animation: horror-glow 3s infinite alternate;
+}
+
+@keyframes horror-glow {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; filter: drop-shadow(0 0 8px var(--horror-red)); }
+}
+
+.horror-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: #fff;
+    text-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+    margin-bottom: 8px;
+}
+
+.horror-subtitle {
+    color: #d1d5db;
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+/* Level Grid */
+.horror-level-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.horror-level-card {
+    background: var(--horror-card-bg);
+    border: 1px solid var(--horror-border);
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.horror-level-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--horror-red);
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3);
+}
+
+.horror-level-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--horror-red);
+    margin-bottom: 8px;
+}
+
+.horror-level-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.horror-level-desc {
+    font-size: 13px;
+    color: #9ca3af;
+    line-height: 1.4;
+}
+
+/* Gameplay Effects */
+.screen-shake {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(3px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+    40%, 60% { transform: translate3d(5px, 0, 0); }
+}
+
+.screen-flicker {
+    animation: flicker 0.3s linear;
+}
+
+@keyframes flicker {
+    0% { opacity: 1; }
+    25% { opacity: 0.1; }
+    50% { opacity: 0.8; }
+    75% { opacity: 0.2; }
+    100% { opacity: 1; }
+}
+
+.horror-timer-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.horror-timer-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #eab308, #ef4444);
+    width: 100%;
+    transition: width 0.1s linear;
+}
+
+.horror-hp-hearts {
+    display: flex;
+    gap: 6px;
+    font-size: 20px;
+}
+
+/* Audio toggle floating btn */
+.horror-sound-toggle {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--horror-border);
+    color: #fff;
+    border-radius: 30px;
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}

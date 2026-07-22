@@ -134,6 +134,11 @@ function renderDeutschHome() {
             <div class="deutsch-flag">🇩🇪</div>
             <h2 class="deutsch-title">Nemis tili testlari</h2>
             <p class="deutsch-sub">4 daraja &middot; jami 25 ta test</p>
+            <div style="margin-top:16px;">
+                <button class="btn-primary" style="background:linear-gradient(135deg, #ef4444, #991b1b); border:none; padding:12px 24px; font-weight:700; box-shadow:0 4px 15px rgba(239,68,68,0.4);" onclick="openHorrorHome()">
+                    💀 HORROR DEUTSCH — Adrenalin Rejimi
+                </button>
+            </div>
         </div>
         <div class="levels-stack">
             ${levelsHTML}
