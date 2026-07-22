@@ -1,14 +1,14 @@
-// ===== 3. INTERACTIVE GERMANY EXPLORATION MAP & CITY GUIDE =====
+// ===== 3. DUNYO BO'YLAB INTERAKTIV SAYOHAT XARITASI (VIZASIZ & HAMYONBOP TABIAT) =====
 (function() {
-    const GERMAN_CITIES = [
-        { id: "berlin", name: "Berlin", tag: "🏛️ Poytaxt va Tarix", img: "images/berlin.webp", desc: "Germaniya poytaxti, Brandenburg darvozasi va madaniyat o'chog'i." },
-        { id: "koln", name: "Köln", tag: "⛪ Kölner Dom", img: "images/koeln.webp", desc: "800 yillik mo'jizaviy ibodatxona va Reynga tutashgan shahardir." },
-        { id: "hamburg", name: "Hamburg", tag: "⚓ Shimol Darvozasi", img: "images/hamburg.webp", desc: "Germaniyaning eng yirik dengiz porti va Elbphilharmonie saroyi." },
-        { id: "heidelberg", name: "Heidelberg", tag: "💖 Romantika Qasri", img: "images/heidelberg_hq.png", desc: "Sehrli Neckar daryosi va eng qadimiy universitet shahri." },
-        { id: "schwarzwald", name: "Schwarzwald", tag: "🌲 Qora O'rmon", img: "images/schwarzwald.webp", desc: "Aka-uka Grimmlar ertaklaridagi sirlarga boy go'zal tabiati." },
-        { id: "rothenburg", name: "Rothenburg", tag: "🕰️ O'rta Asr Mojizasi", img: "images/rothenburg.webp", desc: "Vaqt to'xtab qolgan ertaknamo nemis shaharchasi." },
-        { id: "zugspitze", name: "Zugspitze", tag: "🏔️ Alplar Cho'qqisi", img: "images/zugspitze.webp", desc: "Germaniyaning eng baland 2,962 metrlik tog' cho'qqisi." },
-        { id: "rheintal", name: "Rheintal", tag: "🏰 Qal'alar Vodiysi", img: "images/rheintal.webp", desc: "Uzum dalalari va Reyn daryosi bo'yidagi qadimiy qal'alar." }
+    const WORLD_DESTINATIONS = [
+        { id: "issyk_kul", name: "Issiqko'l (Qirg'iziston)", tag: "🏔️ Vizasiz & Hamyonbop Ko'l", img: "images/schwarzwald.webp", desc: "Tien-Shan tog'lari bag'ridagi zumrad dek musaffo issiq ko'l. Hamyonbop va vizasiz sayohat!" },
+        { id: "fann_mountains", name: "Fann Tog'lari (Tojikiston)", tag: "🌊 Vizasiz Mo'jizaviy Tog'lar", img: "images/zugspitze.webp", desc: "Iskandarko'l va zangori ko'llar vodiysi. Arzon va vizasiz tabiat maskani." },
+        { id: "antalya", name: "Antalya va Kemer (Turkiya)", tag: "🏖️ 90 kun Vizasiz Dengiz", img: "images/rheintal.webp", desc: "O'rta yer dengizining firuza ko'rfazlari, ulug'vor Toros tog'lari va vizasiz qulaylik." },
+        { id: "batumi", name: "Batumi va Kavkaz (Gruziya)", tag: "🌴 Vizasiz Qora Dengiz", img: "images/heidelberg_hq.png", desc: "Qora dengiz va Kavkaz tog'larining ajoyib uyg'unligi. Vizasiz va arzon taomlar." },
+        { id: "dubai", name: "Dubay va BAA (BAA)", tag: "🏜️ 30 kun Vizasiz Voha", img: "images/rothenburg.webp", desc: "O'zbekiston fuqarolari uchun 30 kunlik vizasiz rejim! Fors ko'rfazi va zamonaviy shahar." },
+        { id: "shahdag", name: "Shahdag (Ozarbayjon)", tag: "🏔️ Vizasiz Kaspiy va Tog'", img: "images/koeln.webp", desc: "Kaspiy dengizi va Shahdag tog' kurorti. Vizasiz hamda budjetbop hordiq." },
+        { id: "kolsai", name: "Kolsay Ko'llari (Qozog'iston)", tag: "🌲 Vizasiz Alp Tabiati", img: "images/berlin.webp", desc: "Olmaota yaqinidagi Alplarga teng mo'jizaviy tog' ko'llari va toza havo." },
+        { id: "halong", name: "Halong Bay va Phu Quoc (Vyetnam)", tag: "🏖️ Oson E-Viza Tropik Dengiz", img: "images/hamburg.webp", desc: "3 kunda online e-viza! Ekzotik okean qirg'oqlari va juda arzon mevalar hamda tabiat." }
     ];
 
     window.renderGermanyMapSection = function() {
@@ -23,7 +23,7 @@
             mainContent.insertBefore(section, mainContent.firstChild);
         }
 
-        const cardsHTML = GERMAN_CITIES.map(c => `
+        const cardsHTML = WORLD_DESTINATIONS.map(c => `
             <div class="city-exploration-card" onclick="openCityModal('${c.id}')">
                 <img src="${c.img}" alt="${c.name}" class="city-card-img" loading="lazy">
                 <div class="city-card-content">
@@ -34,20 +34,18 @@
         `).join('');
 
         section.innerHTML = `
-            <h3 class="germany-map-title">🇩🇪 Germaniya Bo'ylab Interaktiv Sayohat</h3>
-            <p class="germany-map-sub">Nemis madaniyati va eng go'zal joylari bilan tanishing!</p>
+            <h3 class="germany-map-title">🌍 Dunyo Bo'ylab Interaktiv Sayohat Xaritasi</h3>
+            <p class="germany-map-sub">O'zbekiston fuqarolari uchun vizasiz, hamyonbop va eng go'zal tabiat maskanlari!</p>
             <div class="germany-cities-grid">${cardsHTML}</div>
         `;
     };
 
     window.openCityModal = function(id) {
-        const city = GERMAN_CITIES.find(c => c.id === id);
-        if (!city) return;
+        const item = WORLD_DESTINATIONS.find(c => c.id === id);
+        if (!item) return;
         
-        if (typeof openLightbox === 'function') {
-            openLightbox(city.img);
-        } else if (typeof showToast === 'function') {
-            showToast(`🏰 ${city.name}: ${city.desc}`, 'info');
+        if (typeof showToast === 'function') {
+            showToast(`🏞️ ${item.name}: ${item.desc}`, 'info');
         }
         if (window.Gamification) Gamification.addXP(15);
     };
