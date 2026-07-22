@@ -769,51 +769,19 @@ if (toolbarEl) toolbarEl.addEventListener('click', (e) => {
     const btn = e.target.closest('.filter-tag');
     if (!btn) return;
 
-    const subMenu = document.getElementById('deutsch-sub-menu');
-
     if (btn.id === 'main-deutsch-btn') {
-        if(subMenu) subMenu.style.display = subMenu.style.display === 'none' ? 'flex' : 'none';
-        document.querySelectorAll('.toolbar .filter-tag').forEach(tag => tag.classList.remove('active'));
-        btn.classList.add('active');
         openDeutschView();
         return;
     }
 
-    if (btn.id === 'blog-tag-btn' || btn.id === 'places-tag-btn') {
-        if(subMenu) subMenu.style.display = 'none';
-    }
-
-    // Deutsch tugmasi Ã¢â‚¬â€ filtr emas, test sahifasini ochadi
-    if (btn.id === 'deutsch-tag-btn') {
-        openDeutschView();
-        return;
-    }
-
-    // Kartochka tugmasi Ã¢â‚¬â€ flashcards sahifasini ochadi
-    if (btn.id === 'flashcards-tag-btn') {
-        openFlashcardsView();
-        return;
-    }
-
-    // Turnir tugmasi Ã¢â‚¬â€ turnir sahifasini ochadi
-    if (btn.id === 'tournament-tag-btn') {
-        if (typeof openTournamentView === 'function') openTournamentView();
-        return;
-    }
-
-    showMainView();
-
-    // Kategoriya tanlanganda jonli qidiruvni tozalaymiz (chalkashmaslik uchun)
-    searchQuery = '';
-    if (searchInput) searchInput.value = '';
-
+    // Odatiy filtr tugmalari
     document.querySelectorAll('.toolbar .filter-tag').forEach(tag => tag.classList.remove('active'));
     btn.classList.add('active');
 
-    if (btn.hasAttribute('data-filter')) {
-        filterType = btn.getAttribute('data-filter');
-        renderPosts();
-    }
+    const filter = btn.getAttribute('data-filter');
+    filterType = filter || 'all';
+
+    renderPosts();
 });
 
 // ===== JONLI QIDIRUV (live search) =====
