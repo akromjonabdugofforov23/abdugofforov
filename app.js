@@ -17,7 +17,7 @@ function getCategoryIcon(category, type) {
 }
 // State (Holat) - Abdugofforov rebrending kalitlari bilan boshlash
 // posts endi IndexedDB (Store) orqali yuklanadi Ã¢â‚¬â€ bootstrap() ichida hydrate qilinadi.
-let posts = defaultPosts;
+let posts = [];
 let currentTab = 'home'; 
 let filterType = 'Kundalik Blog'; 
 let searchQuery = '';
@@ -164,19 +164,10 @@ function initMouseFollower() {
 function updateClock() {
     try {
         const now = new Date();
-        let h, m, s, dateStr;
-        try {
-            const tashkentTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tashkent' }));
-            h = String(tashkentTime.getHours()).padStart(2, '0');
-            m = String(tashkentTime.getMinutes()).padStart(2, '0');
-            s = String(tashkentTime.getSeconds()).padStart(2, '0');
-            dateStr = tashkentTime.toLocaleDateString('uz-UZ');
-        } catch (err) {
-            h = String(now.getHours()).padStart(2, '0');
-            m = String(now.getMinutes()).padStart(2, '0');
-            s = String(now.getSeconds()).padStart(2, '0');
-            dateStr = now.toLocaleDateString('uz-UZ');
-        }
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
         document.querySelectorAll('[data-clock="h"]').forEach(el => {
             if (el.textContent !== h) { el.textContent = h; el.classList.remove('flip'); void el.offsetWidth; el.classList.add('flip'); }
@@ -2486,8 +2477,7 @@ async function bootstrap() {
         }
     } catch (e) {
         console.error('Xotira yuklashda xato:', e);
-        const ls = JSON.parse(localStorage.getItem('abdu_posts') || 'null');
-        posts = (ls && ls.length) ? ls : defaultPosts;
+        posts = (ls && Array.isArray(ls)) ? sanitizePosts(ls) : [];
     }
 
     // Admin holatini tiklash Ã¢â‚¬â€ sahifa yangilanganda ham admin tugmalari
