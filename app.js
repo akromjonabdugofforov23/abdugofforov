@@ -2845,5 +2845,25 @@ if (userLogoutBtn) {
         }
         if (typeof renderPosts === 'function') renderPosts();
     });
+
+    // Mobile & iOS Safari Audio Unlocker
+    (function initAudioUnlocker() {
+        let unlocked = false;
+        function unlockAudio() {
+            if (unlocked) return;
+            unlocked = true;
+            if (window.speechSynthesis) {
+                try { window.speechSynthesis.cancel(); } catch(e) {}
+            }
+            if (window.AudioContext || window.webkitAudioContext) {
+                try {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    if (ctx.state === 'suspended') ctx.resume();
+                } catch(e) {}
+            }
+        }
+        window.addEventListener('click', unlockAudio, { once: true });
+        window.addEventListener('touchstart', unlockAudio, { once: true });
+    })();
 })();
 
