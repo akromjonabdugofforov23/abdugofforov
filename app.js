@@ -349,7 +349,9 @@ function renderPosts(instant) {
 
             // Toolbar filtr tugmalari
             if (filterType !== 'all') {
-                if (post.category.toLowerCase().replace(/[^a-z0-9]/g, '') !== filterType.toLowerCase().replace(/[^a-z0-9]/g, '')) return false;
+                const postCat = (post && post.category ? post.category : '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                const targetCat = (filterType || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                if (postCat !== targetCat) return false;
             }
 
             return true;
@@ -2428,11 +2430,16 @@ function init3DTilt() {
     }
 }
 
+function sanitizePosts(list) {
+    if (!Array.isArray(list)) return [];
+    return list.filter(p => p && p.id && String(p.id) !== '1710000' && p.title && p.category);
+}
+
 async function bootstrap() {
     // 3D kirish animatsiyasi darhol boshlanadi
     initIntroSplash();
 
-    // Til (i18n) Ã¢â‚¬â€ statik tarjimalar va til tanlagich
+    // Til (i18n) Ã¢â‚¬â€  statik tarjimalar va til tanlagich
     initLanguage();
 
     // Mavzu va kursorni darhol ishga tushiramiz (ma'lumotga bog'liq emas)
@@ -2444,11 +2451,11 @@ async function bootstrap() {
     initMiniPlayer();
 
     // Postlarni yuklash strategiyasi:
-    //   1. Avval serverdan (Cloudflare KV) o'qiymiz Ã¢â‚¬â€ bu admin yuborgan
+    //   1. Avval serverdan (Cloudflare KV) o'qiymiz — bu admin yuborgan
     //      eng so'nggi versiya; barcha mehmonlar shuni ko'radi.
     //   2. Server javob bermasa yoki bo'sh bo'lsa, mahalliy (IndexedDB) ga
     //      qaytamiz.
-    //   3. Mahalliy ham bo'sh bo'lsa Ã¢â‚¬â€ standart postlar.
+    //   3. Mahalliy ham bo'sh bo'lsa — standart postlar.
     let serverPosts = null;
     if (window.Sync) {
         serverPosts = await Sync.fetchPosts();
@@ -2460,26 +2467,25 @@ async function bootstrap() {
             const stored = Store.get('abdu_posts');
 
             if (serverPosts && serverPosts.length) {
-                // Serverdagi versiya birlamchi
-                posts = serverPosts;
-                Store.set('abdu_posts', posts); // mahalliyga ham keshlaymiz
+                posts = sanitizePosts(serverPosts);
+                Store.set('abdu_posts', posts);
             } else if (stored && Array.isArray(stored) && stored.length) {
-                posts = stored;
+                posts = sanitizePosts(stored);
             } else {
-                posts = defaultPosts;
+                posts = [];
                 Store.set('abdu_posts', posts);
             }
         } else {
             if (serverPosts && serverPosts.length) {
-                posts = serverPosts;
+                posts = sanitizePosts(serverPosts);
                 try { localStorage.setItem('abdu_posts', JSON.stringify(posts)); } catch (e) {}
             } else {
                 const ls = JSON.parse(localStorage.getItem('abdu_posts') || 'null');
-                posts = (ls && ls.length) ? ls : defaultPosts;
+                posts = sanitizePosts(ls);
             }
         }
     } catch (e) {
-        console.error('Xotira yuklashda xato, standart postlar ishlatiladi:', e);
+        console.error('Xotira yuklashda xato:', e);
         const ls = JSON.parse(localStorage.getItem('abdu_posts') || 'null');
         posts = (ls && ls.length) ? ls : defaultPosts;
     }
