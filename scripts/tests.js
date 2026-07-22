@@ -40,7 +40,10 @@ function renderDeutschHome() {
                 { id: 'a1_t4', name: "4-to'plam", note: "Kundalik hayot" },
                 { id: 'a1_t5', name: "5-to'plam", note: "Manzil va yo'nalish" },
                 { id: 'a1_t6', name: "6-to'plam", note: "Tanishish va suhbat" },
-                { id: 'a1_t7', name: "7-to'plam", note: "Ob-havo va tabiat" }
+                { id: 'a1_t7', name: "7-to'plam", note: "Ob-havo va tabiat" },
+                { id: 'a1_t8', name: "8-to'plam", note: "Kasblar va ish" },
+                { id: 'a1_t9', name: "9-to'plam", note: "Oila va bayramlar" },
+                { id: 'a1_t10', name: "10-to'plam", note: "Umumiy takrorlash" }
             ]
         },
         {
@@ -53,7 +56,10 @@ function renderDeutschHome() {
                 { id: 'a2_t4', name: "4-to'plam", note: "Sog'liq va tana" },
                 { id: 'a2_t5', name: "5-to'plam", note: "Sayohat va mehmonxona" },
                 { id: 'a2_t6', name: "6-to'plam", note: "Ish va kasb" },
-                { id: 'a2_t7', name: "7-to'plam", note: "Xarid va narxlar" }
+                { id: 'a2_t7', name: "7-to'plam", note: "Xarid va narxlar" },
+                { id: 'a2_t8', name: "8-to'plam", note: "Xobbi va bo'sh vaqt" },
+                { id: 'a2_t9', name: "9-to'plam", note: "Madaniyat va odatlar" },
+                { id: 'a2_t10', name: "10-to'plam", note: "Murakkab mashqlar" }
             ]
         },
         {
@@ -66,7 +72,10 @@ function renderDeutschHome() {
                 { id: 'b1_t4', name: "4-to'plam", note: "Plusquamperfekt va vaqt" },
                 { id: 'b1_t5', name: "5-to'plam", note: "N-deklination, otlar" },
                 { id: 'b1_t6', name: "6-to'plam", note: "Partizip sifatlari" },
-                { id: 'b1_t7', name: "7-to'plam", note: "Media va texnologiya" }
+                { id: 'b1_t7', name: "7-to'plam", note: "Media va texnologiya" },
+                { id: 'b1_t8', name: "8-to'plam", note: "Atrof-muhit va tabiat" },
+                { id: 'b1_t9', name: "9-to'plam", note: "Karyera va muvaffaqiyat" },
+                { id: 'b1_t10', name: "10-to'plam", note: "B1 imtihoniga tayyorgarlik" }
             ]
         },
         {
@@ -76,7 +85,13 @@ function renderDeutschHome() {
                 { id: 'b2_t1', name: "1-to'plam", note: "Konjunktiv I" },
                 { id: 'b2_t2', name: "2-to'plam", note: "Murakkab gaplar" },
                 { id: 'b2_t3', name: "3-to'plam", note: "Akademik so'zlar" },
-                { id: 'b2_t4', name: "4-to'plam", note: "Idiomalar va madaniyat" }
+                { id: 'b2_t4', name: "4-to'plam", note: "Idiomalar va madaniyat" },
+                { id: 'b2_t5', name: "5-to'plam", note: "Ilm-fan va kashfiyotlar" },
+                { id: 'b2_t6', name: "6-to'plam", note: "Iqtisodiyot va bozor" },
+                { id: 'b2_t7', name: "7-to'plam", note: "Adabiyot va san'at" },
+                { id: 'b2_t8', name: "8-to'plam", note: "Siyosat va huquq" },
+                { id: 'b2_t9', name: "9-to'plam", note: "Psixologiya va munosabatlar" },
+                { id: 'b2_t10', name: "10-to'plam", note: "B2 daraja testlari" }
             ]
         }
     ];

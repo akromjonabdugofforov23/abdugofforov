@@ -21,12 +21,12 @@ fs.writeFileSync(path.join(cssDir, 'components.css'), getChunk(1398, 1842));
 fs.writeFileSync(path.join(cssDir, 'pages.css'), getChunk(1842, 2895));
 fs.writeFileSync(path.join(cssDir, 'animations.css'), getChunk(2895, lines.length));
 
-fs.writeFileSync(cssPath, @import url("css/variables.css");
+fs.writeFileSync(cssPath, `@import url("css/variables.css");
 @import url("css/base.css");
 @import url("css/layout.css");
 @import url("css/components.css");
 @import url("css/pages.css");
 @import url("css/animations.css");
-);
+`);
 
 console.log("CSS split successful!");

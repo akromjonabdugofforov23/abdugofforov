@@ -37,6 +37,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <link rel="stylesheet" href="style.min.css?v=3">
+    <link rel="stylesheet" href="animations.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,7 +134,21 @@
 
     <!-- Hero Section -->
     <header class="hero" id="hero-section">
-        <div class="container hero-container">
+        <!-- Floating shapes background -->
+        <div class="bg-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        
+        <div class="container hero-container" style="position: relative; z-index: 1;">
             <div class="hero-text">
                 <p class="hero-subtitle" id="hero-sub" data-i18n="hero.subtitle">Shaxsiy blog & rivojlanish uchun</p>
                 <p class="hero-tagline" style="font-family: monospace; font-size: 1.1em; color: var(--accent-color);"><span id="typed-text"></span><span class="cursor" style="animation: blink 1s infinite;">|</span></p>
@@ -145,47 +160,47 @@
     <section class="germany-carousel" id="germany-carousel">
         <div class="carousel-track" id="carousel-track">
             <div class="carousel-slide">
-                <img src="images/neuschwanstein.webp" alt="Neuschwanstein Castle" fetchpriority="high">
+                <img class="zoomable" src="images/neuschwanstein.webp" alt="Neuschwanstein Castle" fetchpriority="high">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">🏰 Neuschwanstein - "Ertak qala" - Bavaria</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/rheintal.webp" alt="Rheintal" loading="lazy">
+                <img class="zoomable" src="images/rheintal.webp" alt="Rheintal" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">🍇 Rheintal - "Uzum dalalar va qalalar" - Rhineland</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/munich-marienplatz.webp" alt="München" loading="lazy">
+                <img class="zoomable" src="images/munich-marienplatz.webp" alt="München" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">🍻 München - "Bayerische Gemütlichkeit" - Bayern</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/koelner-dom.png" alt="Kölner Dom" loading="lazy">
+                <img class="zoomable" src="images/koelner-dom.png" alt="Kölner Dom" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">⛪ Kölner Dom - "800 yillik mojiza" - Köln</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/rothenburg.webp" alt="Rothenburg ob der Tauber" loading="lazy">
+                <img class="zoomable" src="images/rothenburg.webp" alt="Rothenburg ob der Tauber" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">🕰️ Rothenburg - "Vaqt toxtaghan joy" - Franken</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/hamburg.webp" alt="Hamburg Hafen" loading="lazy">
+                <img class="zoomable" src="images/hamburg.webp" alt="Hamburg Hafen" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">⚓ Hamburg - "Shimol darvozasi" - Norddeutschland</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/zugspitze.webp" alt="Zugspitze" loading="lazy">
+                <img class="zoomable" src="images/zugspitze.webp" alt="Zugspitze" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">⛰️ Zugspitze - "Germaniyaning choqqisi" - Alpen</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/heidelberg_hq.png" alt="Heidelberg" loading="lazy">
+                <img class="zoomable" src="images/heidelberg_hq.png" alt="Heidelberg" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">💖 Heidelberg - "Romantikaning poytaxti" - Baden</div>
             </div>
             <div class="carousel-slide">
-                <img src="images/schwarzwald.webp" alt="Schwarzwald" loading="lazy">
+                <img class="zoomable" src="images/schwarzwald.webp" alt="Schwarzwald" loading="lazy">
                 <div class="carousel-overlay"></div>
                 <div class="carousel-caption">🌲 Schwarzwald - "Sirli yollar" - Baden-Württemberg</div>
             </div>
@@ -255,9 +270,9 @@
         <!-- Asosiy bo'limlar -->
         <div class="toolbar">
             <div class="filter-tags filter-tags-centered" id="filter-tags">
-                <button class="filter-tag" data-filter="all" id="blog-tag-btn">📝 Kundalik Blog</button>
+                <button class="filter-tag" data-filter="Kundalik Blog" id="blog-tag-btn">📝 Kundalik Blog</button>
                 <button class="filter-tag" id="main-deutsch-btn">🇩🇪 Nemis tili</button>
-                <button class="filter-tag" id="places-tag-btn" data-filter="places">✈️ Borishga arziydigan joylar</button>
+                <button class="filter-tag" id="places-tag-btn" data-filter="Borishga arziydigan joylar">✈️ Borishga arziydigan joylar</button>
             </div>
             <!-- Nemis tili sub-menu -->
             <div class="filter-tags filter-tags-centered" id="deutsch-sub-menu" style="display: none; margin-top: 10px; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 12px;">
@@ -407,7 +422,7 @@
                         </span>
                     </a>
                     <a class="contact-link" href="mailto:akromjonabdugofforov23@gmail.com">
-                        <span class="contact-icon">­şôğ</span>
+                        <span class="contact-icon">📧</span>
                         <span>
                             <strong>Email (Gmail)</strong>
                             <small>akromjonabdugofforov23@gmail.com</small>
@@ -424,9 +439,9 @@
             <button class="modal-close" id="close-auth-modal" aria-label="Yopish">&times;</button>
             <div class="modal-body">
                 <div style="text-align:center; margin-bottom:22px;">
-                    <div style="font-size:40px; margin-bottom:10px;">­şÄô</div>
+                    <div style="font-size:40px; margin-bottom:10px;">👋</div>
                     <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:6px;">Xush kelibsiz</h2>
-                    <p style="color:var(--text-secondary); font-size:13px;">Ro'yxatdan o'ting ÔÇö test natijalaringiz va turnir reytingingiz har qanday qurilmada saqlanadi</p>
+                    <p style="color:var(--text-secondary); font-size:13px;">Ro'yxatdan o'ting — test natijalaringiz va turnir reytingingiz har qanday qurilmada saqlanadi</p>
                 </div>
                 <div class="auth-tabs">
                     <button class="auth-tab active" id="auth-tab-login" type="button">Kirish</button>
@@ -444,7 +459,7 @@
                     </div>
                     <div class="form-group">
                         <label for="auth-password">Parol</label>
-                        <input type="password" id="auth-password" class="form-input" placeholder="ÔÇóÔÇóÔÇóÔÇóÔÇóÔÇó" autocomplete="current-password" minlength="6">
+                        <input type="password" id="auth-password" class="form-input" placeholder="••••••" autocomplete="current-password" minlength="6">
                     </div>
                     <div class="auth-error" id="auth-error"></div>
                     <button type="submit" class="btn-primary" id="auth-submit" style="width:100%; justify-content:center; padding:13px;">Kirish</button>
@@ -458,7 +473,7 @@
         <div class="modal-container" style="max-width: 560px;">
             <button class="modal-close" id="close-myresults-modal" aria-label="Yopish">&times;</button>
             <div class="modal-body">
-                <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:16px;">­şôè Mening natijalarim</h2>
+                <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:16px;">📊 Mening natijalarim</h2>
                 <div id="myresults-content"><p style="color:var(--text-secondary);">Yuklanmoqda...</p></div>
             </div>
         </div>

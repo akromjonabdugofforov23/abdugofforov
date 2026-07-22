@@ -1,6 +1,35 @@
-﻿window.AppViews = {};
-window.AppViews['deutsch'] = "<div class="container animate-fade-in" id="deutsch-view" style="display:none; padding: 40px 0;">\n        <div id="deutsch-content"></div>\n    </div>\n\n    <!-- Kartochkalar (Flashcards) Sahifasi -->\n    \n";
-window.AppViews['flashcards'] = "<div class="container animate-fade-in" id="flashcards-view" style="display:none; padding: 40px 0;">\n        <div id="flashcards-content"></div>\n    </div>\n\n    <!-- Turnir Sahifasi -->\n    \n";
-window.AppViews['portfolio'] = "<div class="container portfolio-container animate-fade-in" id="portfolio-view" style="display: none; padding: 60px 0;">\n        <div class="portfolio-header" style="text-align: center; margin-bottom: 40px;">\n            <h1 class="portfolio-name" id="port-display-name" style="font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 10px;">Abdugofforov</h1>\n            <p class="portfolio-title" id="port-display-title" style="font-size: 18px; color: var(--accent-color); font-weight: 600; margin-bottom: 15px;"></p>\n            <p class="portfolio-bio" id="port-display-bio" style="max-width: 600px; margin: 0 auto; color: var(--text-secondary); line-height: 1.8;"></p>\n        </div>\n        <div class="portfolio-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">\n            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">\n                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">🛠️ Texnologiyalar & Ko'nikmalar</h3>\n                <ul id="port-display-skills" style="list-style: none; display: flex; flex-wrap: wrap; gap: 10px; padding: 0;">\n                    <!-- Ko'nikmalar bu yerga yoziladi -->\n                </ul>\n            </div>\n            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">\n                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">💼 Ish Tajribasi</h3>\n                <div id="port-display-experience" style="color: var(--text-secondary); line-height: 1.7;">\n                    <!-- Tajriba bu yerga yoziladi -->\n                </div>\n            </div>\n        </div>\n        <div style="text-align: center;">\n            <button class="btn-secondary" id="close-portfolio-btn">Bosh sahifaga qaytish</button>\n        </div>\n    </div>\n\n    <!-- Asosiy Kontent -->\n    <!-- Deutsch Test Sahifasi -->\n    \n";
-window.AppViews['tournament'] = "<div class="container animate-fade-in" id="tournament-view" style="display:none; padding: 40px 0;">\n        <div id="tournament-content"></div>\n    </div>\n\n    \n";
+window.AppViews = {};
+window.AppViews['deutsch'] = `<div class="container animate-fade-in" id="deutsch-view" style="display:none; padding: 40px 0;">
+        <div id="deutsch-content"></div>
+    </div>`;
 
+window.AppViews['flashcards'] = `<div class="container animate-fade-in" id="flashcards-view" style="display:none; padding: 40px 0;">
+        <div id="flashcards-content"></div>
+    </div>`;
+
+window.AppViews['portfolio'] = `<div class="container portfolio-container animate-fade-in" id="portfolio-view" style="display: none; padding: 60px 0;">
+        <div class="portfolio-header" style="text-align: center; margin-bottom: 40px;">
+            <h1 class="portfolio-name" id="port-display-name" style="font-family: 'Playfair Display', serif; font-size: 36px; margin-bottom: 10px;">Abdugofforov</h1>
+            <p class="portfolio-title" id="port-display-title" style="font-size: 18px; color: var(--accent-color); font-weight: 600; margin-bottom: 15px;"></p>
+            <p class="portfolio-bio" id="port-display-bio" style="max-width: 600px; margin: 0 auto; color: var(--text-secondary); line-height: 1.8;"></p>
+        </div>
+        <div class="portfolio-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">🛠️ Texnologiyalar & Ko'nikmalar</h3>
+                <ul id="port-display-skills" style="list-style: none; display: flex; flex-wrap: wrap; gap: 10px; padding: 0;">
+                </ul>
+            </div>
+            <div class="portfolio-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-sm);">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px;">💼 Ish Tajribasi</h3>
+                <div id="port-display-experience" style="color: var(--text-secondary); line-height: 1.7;">
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="btn-secondary" id="close-portfolio-btn">Bosh sahifaga qaytish</button>
+        </div>
+    </div>`;
+
+window.AppViews['tournament'] = `<div class="container animate-fade-in" id="tournament-view" style="display:none; padding: 40px 0;">
+        <div id="tournament-content"></div>
+    </div>`;

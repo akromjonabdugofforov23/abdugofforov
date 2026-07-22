@@ -1,7 +1,20 @@
-﻿
+
 
 
 // Abdugofforov Blog & Portfolio - JavaScript Engine
+
+function getCategoryIcon(category, type) {
+    if (!category) return '📝';
+    if (category === 'Borishga arziydigan joylar') return '✈️';
+    if (category === 'Musiqa') return '🎵';
+    if (category === 'Video') return '🎥';
+    if (category === 'Loyiha') return '💼';
+    
+    if (type === 'music') return '🎵';
+    if (type === 'video') return '🎥';
+    if (type === 'image') return '🖼️';
+    return '📝';
+}
 
 // 1. Dastlabki Ma'lumotlar (Boshlang'ich Postlar)
 // Boshlang'ich postlar yo'q Ã¢â‚¬â€ sayt toza boshlanadi.
@@ -9,42 +22,42 @@
 // (Cloudflare KV) saqlanadi. Mehmonlar faqat o'qiydi.
 const defaultPosts = [
     {
-        id: "1710000000000",
-        title: "Schwarzwald (Qora o'rmon) â€“ Tabiatning jonli ertagi",
+        id: "1710000",
+        title: "Schwarzwald (Qora o'rmon) — Tabiatning jonli ertagi",
         category: "Borishga arziydigan joylar",
         type: "memory",
         date: new Date().toISOString().split('T')[0],
-        excerpt: "Schwarzwald â€“ qalin o'rmonlar, guldor qishloqlar va haqiqiy nemis ertaklari maskani.",
+        excerpt: "Schwarzwald — qalin o'rmonlar, guldor qishloqlar va haqiqiy nemis ertaklari maskani.",
         image: "https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%29.jpg",
-        content: `Schwarzwald (Qora o'rmon) â€“ Germaniyaning janubi-g'arbida joylashgan, qalin o'rmonlari, go'zal sharsharalari va an'anaviy qishloqlari bilan dunyoga mashhur tabiat maskani. Agar siz tabiat qo'ynida dam olishni, toza havodan nafas olishni va haqiqiy nemis ertaklaridagi manzalarini ko'rishni xohlasangiz, bu joy aynan siz uchun!
+        content: `Schwarzwald (Qora o'rmon) — Germaniyaning janubi-g'arbida joylashgan, qalin o'rmonlari, go'zal sharsharalari va an'anaviy qishloqlari bilan dunyoga mashhur tabiat maskani. Agar siz tabiat qo'ynida dam olishni, toza havodan nafas olishni va haqiqiy nemis ertaklaridagi manzalarini ko'rishni xohlasangiz, bu joy aynan siz uchun!
 
-## ğŸ“ Qanday qilib yetib borish mumkin?
+## 📍 Qanday qilib yetib borish mumkin?
 
-Schwarzwald asosan Baden-WÃ¼rttemberg shtatida joylashgan. Eng qulay boshlanish nuqtalari â€“ **Freiburg** yoki **Baden-Baden** shaharlari.
+Schwarzwald asosan Baden-Württemberg shtatida joylashgan. Eng qulay boshlanish nuqtalari — **Freiburg** yoki **Baden-Baden** shaharlari.
 - **Poyezdda:** Germaniyaning istalgan katta shahridan (Frankfurt, Shtutgart, Myunxen) ICE yoki mintaqaviy (RE) poyezdlari orqali Freiburg markaziy vokzaliga kelish mumkin. 
-- **Mashinada:** B500 panoramali avtomagistrali (SchwarzwaldhochstraÃŸe) orqali yursangiz, tabiatning eng go'zal manzaralariga guvoh bo'lasiz.
+- **Mashinada:** B500 panoramali avtomagistrali (Schwarzwaldhochstraße) orqali yursangiz, tabiatning eng go'zal manzaralariga guvoh bo'lasiz.
 - **Vaqt:** Frankfurt yoki Shtutgartdan o'rtacha 2-3 soatda yetib kelish mumkin.
 
-## ğŸ’° Xarajatlar va Logistika
+## 💰 Xarajatlar va Logistika
 
 Sayohat xarajatlari sizning tanlovingizga qarab o'zgaradi, lekin o'rtacha byudjet quyidagicha:
 *   **Poyezd chiptasi (Deutschlandticket):** 49 yevro (butun oy uchun, mintaqaviy poyezdlarda).
 *   **Mehmonxona/Hostel:** Bir kecha uchun 40-100 yevro.
-*   **Ovqatlanish:** O'rtacha kafeda tushlik 15-25 yevro. Mashhur *SchwarzwÃ¤lder Kirschtorte* (Qora o'rmon torti) tatib ko'rishni unutmang (taxminan 5 yevro).
+*   **Ovqatlanish:** O'rtacha kafeda tushlik 15-25 yevro. Mashhur *Schwarzwälder Kirschtorte* (Qora o'rmon torti) tatib ko'rishni unutmang (taxminan 5 yevro).
 *   **Umumiy:** 1-2 kunlik qisqa sayohat uchun kishi boshiga taxminan 100-150 yevro yetarli bo'ladi.
 
 ![Qalin o'rmon manzarasi](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%292.jpg)
 
-## ğŸŒ² Nimalarni ko'rish kerak?
+## 🌲 Nimalarni ko'rish kerak?
 
 1.  **Triberg sharsharalari:** Germaniyaning eng baland sharsharalaridan biri. Suvning qoyalardan urilib tushishi ajoyib manzara hosil qiladi.
 2.  **Titisee va Schluchsee ko'llari:** Yozda cho'milish, qayiqda uchish va qirg'oqda sayr qilish uchun ideal joylar.
-3.  **Freiburg shahri:** Schwarzwaldning poytaxti. Tarixiy markaz va tor suv kanallari (BÃ¤chle) bilan mashhur.
+3.  **Freiburg shahri:** Schwarzwaldning poytaxti. Tarixiy markaz va tor suv kanallari (Bächle) bilan mashhur.
 
 ![Freiburg shahri manzarasi](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%293.jpg)
 ![Titisee ko'li](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%294.jpg)
 
-## ğŸ’¡ Qo'shimcha Maslahatlar
+## 💡 Qo'shimcha Maslahatlar
 
 *   **Aloqa:** Tog'li va o'rmonli hudud bo'lgani uchun ko'p joylarda internet, ba'zan esa uyali aloqa uzilib qolishi mumkin. Oflayn xaritalarni (masalan, Google Maps) oldindan yuklab olishni qat'iy tavsiya qilaman!
 *   **Kiyim-kechak:** Hatto yozda ham o'rmon ichi salqin bo'ladi. O'zingiz bilan qulay krossovka va yengil kurtka oling.
@@ -63,7 +76,7 @@ Siz ham bu ajoyib o'rmonga borishni xohlaysizmi? Yoki ehtimol, allaqachon bo'lga
 // posts endi IndexedDB (Store) orqali yuklanadi Ã¢â‚¬â€ bootstrap() ichida hydrate qilinadi.
 let posts = defaultPosts;
 let currentTab = 'home'; 
-let filterType = 'none'; 
+let filterType = 'Kundalik Blog'; 
 let searchQuery = '';
 let editingPostId = null;
 let isAdmin = sessionStorage.getItem('kay_admin') === 'true';
@@ -443,7 +456,7 @@ function renderPosts(instant) {
                         <div class="post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600')}');"></div>
                     </div>
                     <div class="post-content">
-                        <span class="post-meta">🎵 ${escapeHTML(post.category)}</span>
+                        <span class="post-meta">${getCategoryIcon(post.category, post.type)} ${escapeHTML(post.category)}</span>
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
 
@@ -476,7 +489,7 @@ function renderPosts(instant) {
                         <div class="post-image zoomable-bg" data-zoom-src="${escapeHTML(safeImageUrl(post.image))}" style="background-image: url('${cssUrl(post.image)}');"></div>
                     </div>
                     <div class="post-content">
-                        <span class="post-meta">🖼️ ${escapeHTML(post.category)}</span>
+                        <span class="post-meta">${getCategoryIcon(post.category, post.type)} ${escapeHTML(post.category)}</span>
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         
@@ -507,7 +520,7 @@ function renderPosts(instant) {
                         </div>
                     </div>
                     <div class="post-content">
-                        <span class="post-meta">🎬 ${escapeHTML(post.category)}</span>
+                        <span class="post-meta">${getCategoryIcon(post.category, post.type)} ${escapeHTML(post.category)}</span>
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         <div class="post-footer">
@@ -531,7 +544,7 @@ function renderPosts(instant) {
                         <div class="post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600')}');"></div>
                     </div>
                     <div class="post-content">
-                        <span class="post-meta">📝 ${escapeHTML(post.category)}</span>
+                        <span class="post-meta">${getCategoryIcon(post.category, post.type)} ${escapeHTML(post.category)}</span>
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         <div class="post-footer">
@@ -656,7 +669,8 @@ if (mainNav) {
         if (currentTab === 'projects') {
             filterType = 'project';
         } else {
-            filterType = 'none';
+            const activeTag = filterTags.querySelector('.filter-tag.active');
+            filterType = activeTag && activeTag.getAttribute('data-filter') ? activeTag.getAttribute('data-filter') : 'Kundalik Blog';
         }
 
         filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
@@ -722,7 +736,8 @@ if (desktopDock) {
         syncActiveNavState(page);
         
         currentTab = page;
-        filterType = (page === 'projects') ? 'project' : 'none';
+        const activeTag = filterTags.querySelector('.filter-tag.active');
+        filterType = (page === 'projects') ? 'project' : (activeTag && activeTag.getAttribute('data-filter') ? activeTag.getAttribute('data-filter') : 'Kundalik Blog');
 
         filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
 
@@ -843,13 +858,13 @@ if (searchInput) searchInput.addEventListener('input', (e) => {
         if (searchQuery) {
             // Qidiruv rejimi: barcha postlar ichidan jonli qidiramiz
             currentTab = 'home';
-            filterType = 'all';
+            filterType = 'all'; 
             showBlogResultsView();
             renderPosts(true); // darhol (skeletonsiz)
         } else {
-            // Qidiruv tozalandi Ã¢â‚¬â€ kategoriya tanlanmagan bo'lsa, dastlabki holatga qaytamiz
+            // Qidiruv tozalandi — kategoriya tanlanmagan bo'lsa, dastlabki holatga qaytamiz
             const activeBtn = filterTags.querySelector('.filter-tag.active');
-            if (!activeBtn) filterType = 'none';
+            if (!activeBtn) filterType = 'Kundalik Blog';
             renderPosts(true);
         }
     }, 120);
@@ -898,7 +913,7 @@ function openPostDetail(postId) {
         </div>
         
         <div class="modal-post-header">
-            <span class="post-meta">${escapeHTML(post.category)}</span>
+            <span class="post-meta">${getCategoryIcon(post.category, post.type)} ${escapeHTML(post.category)}</span>
             <h1 class="modal-post-title">${escapeHTML(post.title)}</h1>
             <div class="modal-post-meta">
                 <span>📅 ${formatDate(post.date)}</span>
@@ -2149,12 +2164,12 @@ function filterByTag(tag) {
     closePostDetailModal();
     showMainView();
     currentTab = 'home';
-    filterType = 'all';
+    filterType = 'all'; // Temporarily all to search tags
     searchQuery = tag;
     const si = document.getElementById('search-input');
     if (si) si.value = tag;
     document.querySelectorAll('#filter-tags .filter-tag').forEach(t => t.classList.remove('active'));
-    document.querySelector('#filter-tags [data-filter="all"]')?.classList.add('active');
+    
     renderPosts();
 }
 
@@ -2690,7 +2705,108 @@ if (userLogoutBtn) {
     });
 }
 
+// ===== AUTH FORM MANTIQI (Kirish / Ro'yxatdan o'tish) =====
+(function initAuthForm() {
+    const authFormEl = document.getElementById('auth-form');
+    const tabLogin = document.getElementById('auth-tab-login');
+    const tabRegister = document.getElementById('auth-tab-register');
+    const nameGroup = document.getElementById('auth-name-group');
+    const usernameHint = document.getElementById('auth-username-hint');
+    const errorEl = document.getElementById('auth-error');
+    const submitBtn = document.getElementById('auth-submit');
+    let loginMode = true;
 
+    if (!authFormEl) return; // forma topilmasa chiqamiz
 
+    // Tab almashtirish
+    if (tabLogin) {
+        tabLogin.addEventListener('click', () => {
+            loginMode = true;
+            tabLogin.classList.add('active');
+            if (tabRegister) tabRegister.classList.remove('active');
+            if (nameGroup) nameGroup.style.display = 'none';
+            if (usernameHint) usernameHint.style.display = 'none';
+            if (submitBtn) submitBtn.textContent = 'Kirish';
+            if (errorEl) { errorEl.textContent = ''; errorEl.style.display = 'none'; }
+        });
+    }
+    if (tabRegister) {
+        tabRegister.addEventListener('click', () => {
+            loginMode = false;
+            tabRegister.classList.add('active');
+            if (tabLogin) tabLogin.classList.remove('active');
+            if (nameGroup) nameGroup.style.display = 'block';
+            if (usernameHint) usernameHint.style.display = 'block';
+            if (submitBtn) submitBtn.textContent = "Ro'yxatdan o'tish";
+            if (errorEl) { errorEl.textContent = ''; errorEl.style.display = 'none'; }
+        });
+    }
 
+    // Formani yuborish
+    authFormEl.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (errorEl) { errorEl.textContent = ''; errorEl.style.display = 'none'; }
+
+        const nameInput = document.getElementById('auth-name');
+        const usernameInput = document.getElementById('auth-username');
+        const passwordInput = document.getElementById('auth-password');
+
+        const name = nameInput ? nameInput.value.trim() : '';
+        const username = usernameInput ? usernameInput.value.trim() : '';
+        const password = passwordInput ? passwordInput.value : '';
+
+        // Validatsiya
+        if (!username || !password) {
+            if (errorEl) { errorEl.textContent = "Username va parolni kiriting"; errorEl.style.display = 'block'; }
+            return;
+        }
+        if (password.length < 6) {
+            if (errorEl) { errorEl.textContent = "Parol kamida 6 belgidan iborat bo'lishi kerak"; errorEl.style.display = 'block'; }
+            return;
+        }
+        if (!loginMode && !name) {
+            if (errorEl) { errorEl.textContent = "Ismingizni kiriting"; errorEl.style.display = 'block'; }
+            return;
+        }
+
+        // Tugmani bloklash
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Kutilmoqda...';
+        }
+
+        try {
+            let result;
+            if (loginMode) {
+                result = await window.Auth.login(username, password);
+            } else {
+                result = await window.Auth.register(name, username, password);
+            }
+
+            if (result && result.ok) {
+                // Muvaffaqiyat — sahifani yangilaymiz
+                if (typeof showToast === 'function') {
+                    showToast(loginMode ? "✅ Muvaffaqiyatli kirdingiz!" : "✅ Ro'yxatdan o'tdingiz!", 'success');
+                }
+                setTimeout(() => location.reload(), 600);
+            } else {
+                // Xatolik xabari
+                const errMsg = (result && result.error) ? result.error : "Xatolik yuz berdi. Qayta urinib ko'ring.";
+                if (errorEl) { errorEl.textContent = errMsg; errorEl.style.display = 'block'; }
+            }
+        } catch (networkErr) {
+            console.error('Auth xatolik:', networkErr);
+            if (errorEl) { 
+                errorEl.textContent = "Server bilan aloqa yo'q. Server ishga tushganligini tekshiring."; 
+                errorEl.style.display = 'block'; 
+            }
+        }
+
+        // Tugmani qayta yoqish
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = loginMode ? 'Kirish' : "Ro'yxatdan o'tish";
+        }
+    });
+})();
 
