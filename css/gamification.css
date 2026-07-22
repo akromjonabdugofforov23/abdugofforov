@@ -56,10 +56,6 @@
     border-color: rgba(168, 85, 247, 0.3);
 }
 
-.fortune-card-3d.flipped {
-    transform: rotateY(180deg);
-}
-
 .fortune-quote-badge {
     display: inline-flex;
     align-items: center;
@@ -108,10 +104,10 @@
     box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
 }
 
-/* 3. GERMANY MAP EXPLORATION GRID */
+/* 3. GERMANY & WORLD MAP EXPLORATION GRID WITH ANIMATIONS */
 .germany-map-section {
     max-width: 980px;
-    margin: 40px auto;
+    margin: 32px auto;
     padding: 0 16px;
 }
 
@@ -142,20 +138,25 @@
     border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
 .city-exploration-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-8px) scale(1.02);
     border-color: #3b82f6;
-    box-shadow: 0 12px 30px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 14px 35px rgba(59, 130, 246, 0.3);
 }
 
 .city-card-img {
     width: 100%;
-    height: 120px;
+    height: 130px;
     object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.city-exploration-card:hover .city-card-img {
+    transform: scale(1.08);
 }
 
 .city-card-content {

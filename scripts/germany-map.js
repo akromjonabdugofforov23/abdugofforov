@@ -6,8 +6,8 @@
         { id: "antalya", name: "Antalya va Kemer (Turkiya)", tag: "🏖️ 90 kun Vizasiz Dengiz", img: "images/rheintal.webp", desc: "O'rta yer dengizining firuza ko'rfazlari, ulug'vor Toros tog'lari va vizasiz qulaylik." },
         { id: "batumi", name: "Batumi va Kavkaz (Gruziya)", tag: "🌴 Vizasiz Qora Dengiz", img: "images/heidelberg_hq.png", desc: "Qora dengiz va Kavkaz tog'larining ajoyib uyg'unligi. Vizasiz va arzon taomlar." },
         { id: "dubai", name: "Dubay va BAA (BAA)", tag: "🏜️ 30 kun Vizasiz Voha", img: "images/rothenburg.webp", desc: "O'zbekiston fuqarolari uchun 30 kunlik vizasiz rejim! Fors ko'rfazi va zamonaviy shahar." },
-        { id: "shahdag", name: "Shahdag (Ozarbayjon)", tag: "🏔️ Vizasiz Kaspiy va Tog'", img: "images/koeln.webp", desc: "Kaspiy dengizi va Shahdag tog' kurorti. Vizasiz hamda budjetbop hordiq." },
-        { id: "kolsai", name: "Kolsay Ko'llari (Qozog'iston)", tag: "🌲 Vizasiz Alp Tabiati", img: "images/berlin.webp", desc: "Olmaota yaqinidagi Alplarga teng mo'jizaviy tog' ko'llari va toza havo." },
+        { id: "shahdag", name: "Shahdag (Ozarbayjon)", tag: "🏔️ Vizasiz Kaspiy va Tog'", img: "images/koelner-dom.webp", desc: "Kaspiy dengizi va Shahdag tog' kurorti. Vizasiz hamda budjetbop hordiq." },
+        { id: "kolsai", name: "Kolsay Ko'llari (Qozog'iston)", tag: "🌲 Vizasiz Alp Tabiati", img: "images/neuschwanstein.webp", desc: "Olmaota yaqinidagi Alplarga teng mo'jizaviy tog' ko'llari va toza havo." },
         { id: "halong", name: "Halong Bay va Phu Quoc (Vyetnam)", tag: "🏖️ Oson E-Viza Tropik Dengiz", img: "images/hamburg.webp", desc: "3 kunda online e-viza! Ekzotik okean qirg'oqlari va juda arzon mevalar hamda tabiat." }
     ];
 
@@ -20,7 +20,13 @@
             section = document.createElement('section');
             section.id = 'germany-map-section';
             section.className = 'germany-map-section';
-            mainContent.insertBefore(section, mainContent.firstChild);
+            
+            const toolbar = mainContent.querySelector('.toolbar');
+            if (toolbar && toolbar.nextSibling) {
+                mainContent.insertBefore(section, toolbar.nextSibling);
+            } else {
+                mainContent.appendChild(section);
+            }
         }
 
         const cardsHTML = WORLD_DESTINATIONS.map(c => `
@@ -51,6 +57,6 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(renderGermanyMapSection, 500);
+        setTimeout(renderGermanyMapSection, 300);
     });
 })();

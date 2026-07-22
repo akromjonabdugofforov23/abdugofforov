@@ -385,4 +385,8 @@
 
     window.i18n.flag = flag;
     window.i18n.buildLangDropdown = buildLangDropdown;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        applyStaticTranslations();
+    });
 })();
