@@ -145,6 +145,64 @@
         } catch (e) {}
     }
 
+    let selectedHero = 'boy'; // 'boy' (👦 Karl) or 'girl' (👧 Anna)
+
+    function getHeroEmoji() {
+        return selectedHero === 'girl' ? '👧' : '👦';
+    }
+
+    function getHeroName() {
+        return selectedHero === 'girl' ? 'Anna' : 'Karl';
+    }
+
+    window.selectHorrorHero = function(hero) {
+        selectedHero = hero;
+        document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
+        const el = document.querySelector(`.character-card[onclick*="${hero}"]`);
+        if (el) el.classList.add('selected');
+        playFootstepSound();
+    };
+
+    // Door Unlock Sound (Creepy Iron Creak)
+    function playDoorOpenSound() {
+        if (!soundEnabled) return;
+        try {
+            initAudioContext();
+            const now = horrorAudioContext.currentTime;
+            const osc = horrorAudioContext.createOscillator();
+            const gain = horrorAudioContext.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(140, now);
+            osc.frequency.exponentialRampToValueAtTime(420, now + 0.35);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+            osc.connect(gain);
+            gain.connect(horrorAudioContext.destination);
+            osc.start(now);
+            osc.stop(now + 0.35);
+        } catch (e) {}
+    }
+
+    // Footsteps Sound (Walking on stone floor)
+    function playFootstepSound() {
+        if (!soundEnabled) return;
+        try {
+            initAudioContext();
+            const now = horrorAudioContext.currentTime;
+            const osc = horrorAudioContext.createOscillator();
+            const gain = horrorAudioContext.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(120, now);
+            osc.frequency.exponentialRampToValueAtTime(40, now + 0.08);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+            osc.connect(gain);
+            gain.connect(horrorAudioContext.destination);
+            osc.start(now);
+            osc.stop(now + 0.08);
+        } catch (e) {}
+    }
+
     // Main Horror Home View
     window.openHorrorHome = function(fromPopState = false) {
         const view = document.getElementById('deutsch-content');
@@ -170,6 +228,23 @@
                     <div style="font-size:56px; margin-bottom:12px; filter:drop-shadow(0 0 10px #ef4444);">💀</div>
                     <h1 class="horror-title">HORROR DEUTSCH</h1>
                     <p class="horror-subtitle">Adrenaliningizni oshiruvchi nemis tili omon qolish o'yini!</p>
+
+                    <div style="margin-top:16px;">
+                        <h4 style="color:#fff; font-size:14px; margin-bottom:10px;">🦸‍♂️ Personajingizni Tanlang:</h4>
+                        <div class="character-picker">
+                            <div class="character-card ${selectedHero === 'boy' ? 'selected' : ''}" onclick="selectHorrorHero('boy')">
+                                <div style="font-size:36px; margin-bottom:4px;">👦</div>
+                                <div style="font-weight:700; color:#fff; font-size:14px;">Karl</div>
+                                <div style="font-size:11px; color:#9ca3af;">Qasr tadqiqotchisi</div>
+                            </div>
+
+                            <div class="character-card ${selectedHero === 'girl' ? 'selected' : ''}" onclick="selectHorrorHero('girl')">
+                                <div style="font-size:36px; margin-bottom:4px;">👧</div>
+                                <div style="font-weight:700; color:#fff; font-size:14px;">Anna</div>
+                                <div style="font-size:11px; color:#9ca3af;">Jasur sayyoh</div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:20px;">
                         <button class="btn-primary" style="background:#ef4444; border-color:#ef4444; padding:12px 24px; font-weight:700;" onclick="startSurvivalMode()">
@@ -248,6 +323,8 @@
         }
 
         const hearts = '🩸'.repeat(hp) + '🖤'.repeat(3 - hp);
+        const heroPos = Math.min(80, 40 + (currentRoomIndex / game.rooms.length) * 40);
+        const monsterPos = Math.max(5, 30 - (3 - hp) * 10);
 
         view.innerHTML = `
             <div class="horror-container">
@@ -256,9 +333,30 @@
                     <div style="font-size:14px; font-weight:700; color:#ef4444;">Hayot: ${hearts}</div>
                 </div>
 
+                <!-- Animated 2D Game Scene Canvas -->
+                <div class="horror-game-canvas-wrap">
+                    <div class="horror-canvas-bg"></div>
+                    <div class="horror-corridor-walls"></div>
+                    
+                    <!-- Monster Stalker pursuing behind -->
+                    <div class="horror-character-sprite horror-monster-avatar" style="left: ${monsterPos}%;">
+                        👻
+                    </div>
+
+                    <!-- Player Hero Avatar -->
+                    <div class="horror-character-sprite horror-hero-avatar" style="left: ${heroPos}%;">
+                        ${getHeroEmoji()}
+                    </div>
+
+                    <!-- Locked Door / Exit Key -->
+                    <div class="horror-door-avatar">
+                        ${currentRoomIndex === game.rooms.length - 1 ? '🔑' : '🚪'}
+                    </div>
+                </div>
+
                 <div class="horror-hero-card" id="horror-card" style="text-align:left; padding:28px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                        <span class="horror-level-badge">${game.badge}</span>
+                        <span class="horror-level-badge">${game.badge} &middot; Qahramon: ${getHeroName()}</span>
                         <span style="color:#9ca3af; font-size:13px;">Xona ${currentRoomIndex + 1} / ${game.rooms.length}</span>
                     </div>
 
@@ -292,13 +390,14 @@
         const isCorrect = selected === room.answer;
 
         if (isCorrect) {
+            playDoorOpenSound();
             box.style.display = 'block';
             box.innerHTML = `
                 <div style="padding:14px; border-radius:10px; background:rgba(34,197,94,0.15); border:1px solid #22c55e; color:#22c55e;">
-                    <b>✅ Parol to'g'ri! Eshik ochildi.</b>
+                    <b>🔓 Parol to'g'ri! Eshik qulfi ochildi.</b>
                     <p style="font-size:13px; color:#d1d5db; margin-top:4px;">💡 ${room.explanation}</p>
                 </div>
-                <button onclick="nextEscapeRoom()" class="btn-primary" style="margin-top:12px; width:100%; background:#22c55e; border-color:#22c55e;">Keyingi Xonaga O'tish →</button>
+                <button onclick="nextEscapeRoom()" class="btn-primary" style="margin-top:12px; width:100%; background:#22c55e; border-color:#22c55e;">🚶‍♂️ Keyingi Xonaga O'tish →</button>
             `;
         } else {
             hp--;
@@ -316,15 +415,16 @@
             box.style.display = 'block';
             box.innerHTML = `
                 <div style="padding:14px; border-radius:10px; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444;">
-                    <b>❌ Noto'g'ri parol! Qasr ruhi yaqinlashmoqda (-1 🩸 Hayot).</b>
+                    <b>😱 Noto'g'ri parol! Qasr ruhi yaqinlashdi (-1 🩸 Hayot).</b>
                     <p style="font-size:13px; color:#d1d5db; margin-top:4px;">💡 ${room.explanation}</p>
                 </div>
-                <button onclick="nextEscapeRoom()" class="btn-primary" style="margin-top:12px; width:100%; background:#ef4444; border-color:#ef4444;">Davom Etish →</button>
+                <button onclick="nextEscapeRoom()" class="btn-primary" style="margin-top:12px; width:100%; background:#ef4444; border-color:#ef4444;">🏃 Qochishda Davom Etish →</button>
             `;
         }
     };
 
     window.nextEscapeRoom = function() {
+        playFootstepSound();
         currentRoomIndex++;
         renderEscapeRoom();
     };
