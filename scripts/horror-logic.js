@@ -430,9 +430,12 @@
     };
 
     // 10 Second Survival Mode
+    let survivalScore = 0;
+
     window.startSurvivalMode = function() {
         currentMode = 'survival';
         currentRoomIndex = 0;
+        survivalScore = 0;
         hp = 3;
         renderSurvivalQuestion();
     };
@@ -440,8 +443,13 @@
     function renderSurvivalQuestion() {
         const view = document.getElementById('deutsch-content');
         const pool = HorrorGamesData.survivalPool;
-        const q = pool[currentRoomIndex % pool.length];
 
+        if (currentRoomIndex >= pool.length) {
+            renderSurvivalVictory();
+            return;
+        }
+
+        const q = pool[currentRoomIndex];
         timeLeft = 10;
         const hearts = '🩸'.repeat(hp) + '🖤'.repeat(3 - hp);
 
@@ -449,6 +457,7 @@
             <div class="horror-container">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                     <button class="btn-secondary btn-sm" onclick="openHorrorHome()">← Survivalni to'xtatish</button>
+                    <div style="font-size:13px; color:#9ca3af;">Savol ${currentRoomIndex + 1} / ${pool.length}</div>
                     <div style="font-size:14px; font-weight:700; color:#ef4444;">Hayot: ${hearts}</div>
                 </div>
 
@@ -467,6 +476,8 @@
                             </button>
                         `).join('')}
                     </div>
+
+                    <div id="survival-explain-box" style="display:none; margin-top:16px;"></div>
                 </div>
             </div>
         `;
@@ -508,26 +519,59 @@
     window.checkSurvivalAns = function(selected) {
         if (timerInterval) clearInterval(timerInterval);
         const pool = HorrorGamesData.survivalPool;
-        const q = pool[currentRoomIndex % pool.length];
+        const q = pool[currentRoomIndex];
         const card = document.getElementById('horror-card');
+        const box = document.getElementById('survival-explain-box');
 
-        if (selected === q.answer) {
-            currentRoomIndex++;
-            renderSurvivalQuestion();
+        // Disabling option buttons during pause
+        const optsContainer = document.getElementById('survival-opts');
+        if (optsContainer) {
+            optsContainer.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        }
+
+        const isCorrect = selected === q.answer;
+
+        if (isCorrect) {
+            survivalScore++;
+            playDoorOpenSound();
+            if (card) card.style.borderColor = '#22c55e';
+            
+            setTimeout(() => {
+                currentRoomIndex++;
+                renderSurvivalQuestion();
+            }, 600);
         } else {
             hp--;
             playScaryScreamSound();
 
             if (card) {
                 card.classList.add('screen-shake', 'screen-flicker');
+                card.style.borderColor = '#ef4444';
             }
 
-            if (hp <= 0) {
-                setTimeout(renderHorrorGameOver, 400);
-            } else {
-                currentRoomIndex++;
-                setTimeout(renderSurvivalQuestion, 500);
+            if (box) {
+                box.style.display = 'block';
+                box.innerHTML = `
+                    <div style="padding:14px; border-radius:12px; background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#fff; font-size:14px; text-align:left;">
+                        <div style="font-weight:700; color:#ef4444; margin-bottom:4px;">
+                            ${selected === -1 ? '⏱️ Vaqt tugadi! Qasr ruhi hujum qildi (-1 🩸 Hayot)' : "❌ Noto'g'ri javob! Qasr ruhi yaqinlashdi (-1 🩸 Hayot)"}
+                        </div>
+                        <div style="color:#22c55e; font-weight:600; margin-top:4px;">
+                            ✅ To'g'ri javob: <b>${q.options[q.answer]}</b>
+                        </div>
+                    </div>
+                `;
             }
+
+            // 3 SONIYA KUTISH (3000ms pause)
+            setTimeout(() => {
+                if (hp <= 0) {
+                    renderHorrorGameOver();
+                } else {
+                    currentRoomIndex++;
+                    renderSurvivalQuestion();
+                }
+            }, 3000);
         }
     };
 
@@ -540,7 +584,35 @@
                     <h1 class="horror-title" style="color:#ef4444;">GAME OVER</h1>
                     <p class="horror-subtitle" style="font-size:16px;">Siz qasrdan qutula olmadingiz... Qasr ruhi sizni asir oldi!</p>
                     <div style="margin-top:24px; display:flex; justify-content:center; gap:12px;">
-                        <button class="btn-primary" style="background:#ef4444; border-color:#ef4444;" onclick="openHorrorHome()">🔄 Qayta Sinash</button>
+                        <button class="btn-primary" style="background:#ef4444; border-color:#ef4444;" onclick="startSurvivalMode()">🔄 Qayta Sinash</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderSurvivalVictory() {
+        const view = document.getElementById('deutsch-content');
+        const pool = HorrorGamesData.survivalPool;
+        const total = pool.length;
+        const pct = Math.round((survivalScore / total) * 100);
+
+        view.innerHTML = `
+            <div class="horror-container" style="text-align:center;">
+                <div class="horror-hero-card" style="padding:40px 24px; border-color:#22c55e;">
+                    <div style="font-size:64px; margin-bottom:12px; filter:drop-shadow(0 0 15px #22c55e);">🏆</div>
+                    <h1 class="horror-title" style="color:#22c55e;">SURVIVAL YAKUNLANDI!</h1>
+                    <p class="horror-subtitle" style="font-size:16px;">10 soniyalik vaqtga qarshi shiddatli kurash yakuniga etdi!</p>
+                    
+                    <div style="background:rgba(0,0,0,0.5); padding:20px; border-radius:16px; border:1px solid rgba(34,197,94,0.3); margin:20px auto; max-width:320px;">
+                        <div style="font-size:14px; color:#d1d5db; margin-bottom:6px;">Sizning Natijangiz:</div>
+                        <div style="font-size:36px; font-weight:800; color:#34d399;">${survivalScore} / ${total}</div>
+                        <div style="font-size:13px; color:#a7f3d0; margin-top:4px;">To'g'rilik ko'rsatkichi: ${pct}%</div>
+                    </div>
+
+                    <div style="margin-top:24px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+                        <button class="btn-primary" style="background:#22c55e; border-color:#22c55e; font-weight:700;" onclick="startSurvivalMode()">🔄 Qayta O'ynash</button>
+                        <button class="btn-secondary" onclick="openHorrorHome()">🏰 Bosh Rejimlar</button>
                     </div>
                 </div>
             </div>
