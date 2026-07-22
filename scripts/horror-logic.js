@@ -145,14 +145,14 @@
         } catch (e) {}
     }
 
-    let selectedHero = 'boy'; // 'boy' (👦 Karl) or 'girl' (👧 Anna)
+    let selectedHero = 'boy'; // 'boy' (👦 Kay) or 'girl' (👧 Gerda)
 
     function getHeroEmoji() {
         return selectedHero === 'girl' ? '👧' : '👦';
     }
 
     function getHeroName() {
-        return selectedHero === 'girl' ? 'Anna' : 'Karl';
+        return selectedHero === 'girl' ? 'Gerda' : 'Kay';
     }
 
     window.selectHorrorHero = function(hero) {
@@ -234,13 +234,13 @@
                         <div class="character-picker">
                             <div class="character-card ${selectedHero === 'boy' ? 'selected' : ''}" onclick="selectHorrorHero('boy')">
                                 <div style="font-size:36px; margin-bottom:4px;">👦</div>
-                                <div style="font-weight:700; color:#fff; font-size:14px;">Karl</div>
+                                <div style="font-weight:700; color:#fff; font-size:14px;">Kay</div>
                                 <div style="font-size:11px; color:#9ca3af;">Qasr tadqiqotchisi</div>
                             </div>
 
                             <div class="character-card ${selectedHero === 'girl' ? 'selected' : ''}" onclick="selectHorrorHero('girl')">
                                 <div style="font-size:36px; margin-bottom:4px;">👧</div>
-                                <div style="font-weight:700; color:#fff; font-size:14px;">Anna</div>
+                                <div style="font-weight:700; color:#fff; font-size:14px;">Gerda</div>
                                 <div style="font-size:11px; color:#9ca3af;">Jasur sayyoh</div>
                             </div>
                         </div>
