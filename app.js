@@ -2135,12 +2135,21 @@ function openPostFromUrl() {
 
 function sharePost(post) {
     const url = `${location.origin}/?post=${post.id}`;
+    const text = `📖 ${post.title}\n\n${post.excerpt || ''}`;
+    const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+
     if (navigator.share) {
         navigator.share({ title: post.title, text: post.excerpt || '', url }).catch(() => {});
     } else if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).then(() => alert('Havola nusxalandi:\n' + url)).catch(() => prompt('Havola:', url));
+        navigator.clipboard.writeText(url).then(() => {
+            if (typeof showToast === 'function') {
+                showToast("✅ Havola ko'chirildi!", 'success');
+            } else {
+                alert('Havola nusxalandi:\n' + url);
+            }
+        }).catch(() => prompt('Havola:', url));
     } else {
-        prompt('Havola:', url);
+        window.open(tgUrl, '_blank');
     }
 }
 

@@ -2,14 +2,22 @@
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
 // CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
 // bilan qorishib qolmasligi uchun
-const CACHE = 'abdu-cache-v2';
+const CACHE = 'abdu-cache-v3';
 const SHELL = [
     '/',
     '/index.html',
     '/style.css',
+    '/style.min.css',
+    '/animations.css',
     '/app.js',
     '/i18n.js',
     '/storage.js',
+    '/auth.js',
+    '/data-flashcards.js',
+    '/data-tests.js',
+    '/scripts/flashcards.js',
+    '/scripts/tests.js',
+    '/scripts/particles.js',
     '/manifest.webmanifest',
     '/icon.svg',
     '/og-image.svg'

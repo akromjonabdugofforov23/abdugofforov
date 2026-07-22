@@ -54,11 +54,25 @@ function startFlashcards(key) {
     renderFlashcard();
 }
 
+function speakGermanText(text, event) {
+    if (event) event.stopPropagation();
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'de-DE';
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+    } else {
+        alert("Brauzeringiz ovozli talaffuzni qo'llab-quvvatlamaydi.");
+    }
+}
+
 function renderFlashcard() {
     const view = document.getElementById('flashcards-content');
     const deck = flashcardDecks[fcDeckKey];
     if (!view || !deck) { renderFlashcardsHome(); return; }
     const card = deck[fcOrder[fcIndex]];
+    const germanText = fcDeckKey === 'uz_de' ? card.back : card.front;
     view.innerHTML = `
         <div style="max-width:560px; margin:0 auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:10px;">
@@ -69,10 +83,12 @@ function renderFlashcard() {
             <div class="flashcard" id="flashcard">
                 <div class="flashcard-inner">
                     <div class="flashcard-face flashcard-front">
+                        <button class="fc-audio-btn" title="Talaffuzni eshitish" onclick="speakGermanText('${escapeHTML(card.front).replace(/'/g, "\\'")}', event)">🔊</button>
                         <div class="fc-text">${escapeHTML(card.front)}</div>
                         <span class="fc-hint">${i18n.t('fc.tapHint')}</span>
                     </div>
                     <div class="flashcard-face flashcard-back">
+                        <button class="fc-audio-btn" title="Talaffuzni eshitish" onclick="speakGermanText('${escapeHTML(card.back).replace(/'/g, "\\'")}', event)">🔊</button>
                         <div class="fc-text">${escapeHTML(card.back)}</div>
                     </div>
                 </div>

@@ -152,6 +152,7 @@ function startTest(level) {
     currentSection = 0;
     currentQuestion = 0;
     score = 0;
+    wrongQuestions = [];
     answered = false;
     renderPartIntro();
 }
@@ -279,6 +280,8 @@ function renderQuestion() {
     answered = false;
 }
 
+let wrongQuestions = [];
+
 function checkAnswer(selected) {
     if (answered) return;
     answered = true;
@@ -286,7 +289,16 @@ function checkAnswer(selected) {
     const section = currentTest.parts[currentPart].sections[currentSection];
     const q = section.questions[currentQuestion];
     const isCorrect = selected === q.answer;
-    if (isCorrect) score++;
+    if (isCorrect) {
+        score++;
+    } else {
+        wrongQuestions.push({
+            q: q.q,
+            userAns: q.options[selected],
+            correctAns: q.options[q.answer],
+            explanation: q.explanation
+        });
+    }
 
     // Tugmalar rangini o'zgartirish
     q.options.forEach((_, i) => {
@@ -359,8 +371,29 @@ function renderTestResult() {
             .then(r => { if (r && r.ok) showToast('📊 Natija saqlandi', 'success'); });
     }
 
+    let mistakesHTML = '';
+    if (wrongQuestions.length > 0) {
+        mistakesHTML = `
+            <div class="post-card" style="padding:24px; margin-top:24px; text-align:left;">
+                <h3 style="font-size:16px; color:#ef4444; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                    ❌ Xatolar tahlili (${wrongQuestions.length} ta savol)
+                </h3>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                    ${wrongQuestions.map((w, idx) => `
+                        <div style="background:var(--tag-bg); padding:14px; border-radius:10px; font-size:13px; border-left:3px solid #ef4444;">
+                            <div style="font-weight:600; margin-bottom:4px; color:var(--text-primary);">${idx+1}. ${escapeHTML(w.q)}</div>
+                            <div style="color:#ef4444; margin-bottom:2px;">Sizning javobingiz: <s>${escapeHTML(w.userAns)}</s></div>
+                            <div style="color:#22c55e; font-weight:500;">To'g'ri javob: ${escapeHTML(w.correctAns)}</div>
+                            <div style="color:var(--text-muted); font-size:12px; margin-top:4px;">💡 ${escapeHTML(w.explanation)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
     document.getElementById('deutsch-content').innerHTML = `
-        <div style="max-width:480px; margin:0 auto; text-align:center;">
+        <div style="max-width:540px; margin:0 auto; text-align:center;">
             <div style="font-size:64px; margin-bottom:16px;">${emoji}</div>
             <h2 style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px;">Test yakunlandi!</h2>
             <p style="font-size:13px; color:var(--accent-color); margin-bottom:4px; text-transform:uppercase; letter-spacing:1px;">${levelName}</p>
@@ -376,7 +409,9 @@ function renderTestResult() {
                 </div>
             </div>
 
-            <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            ${mistakesHTML}
+
+            <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:24px;">
                 <button onclick="startTest('${currentLevel}')" class="btn-primary">🔄 Qayta boshlash</button>
                 <button onclick="renderDeutschHome()" class="btn-secondary">← Testlar</button>
             </div>
