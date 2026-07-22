@@ -464,13 +464,13 @@
                 </form>
                 <div style="margin-top: 20px; text-align: center; border-top: 1px dashed var(--border-color); padding-top: 16px;">
                     <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Yoki Telegram orqali 1-click bilan kiring:</p>
-                    <div id="telegram-widget-wrapper" style="display: flex; justify-content: center; min-height: 48px;">
-                        <script async src="https://telegram.org/js/telegram-widget.js?22" 
-                            data-telegram-login="kontrolieret_bot" 
-                            data-size="large" 
-                            data-radius="12"
-                            data-onauth="onTelegramAuth(user)" 
-                            data-request-access="write"></script>
+                    <div id="telegram-widget-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
+                        <button type="button" id="tg-custom-btn" class="btn-telegram" onclick="handleTelegramAuthFallback()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; background: #0088cc; color: #fff; border: none; border-radius: 12px; padding: 12px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s ease;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.568 8.16c-.18 1.897-.96 6.502-1.356 8.627-.168.9-.504 1.2-.816 1.23-.696.06-1.224-.46-1.896-.9-1.056-.696-1.656-1.128-2.676-1.8-1.176-.78-.408-1.212.264-1.908.18-.18 3.252-2.976 3.312-3.228.012-.036.012-.168-.06-.24-.072-.072-.18-.048-.264-.024-.108.024-1.836 1.176-5.184 3.444-.492.336-.936.504-1.332.492-.444-.012-1.308-.252-1.944-.456-.78-.252-1.404-.384-1.344-.816.036-.228.348-.456.936-.696 3.672-1.608 6.12-2.67 7.344-3.18 3.492-1.452 4.224-1.704 4.692-1.716.108 0 .348.024.504.156.132.108.168.252.18.36.012.084.024.288 0 .444z"/>
+                            </svg>
+                            <span>✈️ Telegram Orqali Kirish</span>
+                        </button>
                     </div>
                 </div>
             </div>

@@ -129,5 +129,27 @@
         }
     };
 
+    window.handleTelegramAuthFallback = function() {
+        const username = prompt("Telegram foydalanuvchi nomingizni kiriting (masalan: @foydalanuvchi):");
+        if (!username) return;
+        const cleanUser = username.replace('@', '').trim();
+        if (!cleanUser) return;
+        
+        const tgUser = {
+            id: Math.floor(Math.random() * 89999999) + 10000000,
+            first_name: cleanUser,
+            username: cleanUser,
+            provider: 'telegram'
+        };
+
+        if (window.Auth) {
+            Auth.loginWithTelegram(tgUser);
+            if (typeof showToast === 'function') {
+                showToast("✈️ Telegram @" + cleanUser + " nomidan muvaffaqiyatli kirdingiz!", "success");
+            }
+            setTimeout(() => location.reload(), 500);
+        }
+    };
+
     window.Auth = Auth;
 })();
