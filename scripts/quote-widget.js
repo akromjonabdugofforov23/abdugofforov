@@ -40,11 +40,28 @@
         }
     }
 
-    function getRandomQuote() {
-        const lang = userCountryLang || 'uz';
-        const pool = QUOTES_DB[lang] || QUOTES_DB.uz;
-        const index = Math.floor(Math.random() * pool.length);
-        return pool[index];
+    function getPinnedQuote(pool) {
+        const today = new Date().toDateString();
+        try {
+            const saved = localStorage.getItem('user_pinned_quote');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (parsed.date === today && typeof parsed.index === 'number' && pool[parsed.index]) {
+                    return { item: pool[parsed.index], index: parsed.index };
+                }
+            }
+        } catch(e) {}
+
+        // Tanlanmagan bo'lsa yangi iqtibos indeksini birinchi marta saqlaymiz
+        const randIndex = Math.floor(Math.random() * pool.length);
+        savePinnedQuote(randIndex, today);
+        return { item: pool[randIndex], index: randIndex };
+    }
+
+    function savePinnedQuote(index, date) {
+        try {
+            localStorage.setItem('user_pinned_quote', JSON.stringify({ index, date }));
+        } catch(e) {}
     }
 
     function speakGermanText(text) {
@@ -58,7 +75,16 @@
         } catch(e) {}
     }
 
-    window.renderDailyFortuneWidget = async function() {
+    window.nextIndividualQuote = function() {
+        const lang = userCountryLang || 'uz';
+        const pool = QUOTES_DB[lang] || QUOTES_DB.uz;
+        const today = new Date().toDateString();
+        const randIndex = Math.floor(Math.random() * pool.length);
+        savePinnedQuote(randIndex, today);
+        renderDailyFortuneWidget(true);
+    };
+
+    window.renderDailyFortuneWidget = async function(forceUpdate = false) {
         const hero = document.querySelector('.hero') || document.getElementById('functional-row');
         if (!hero) return;
 
@@ -71,24 +97,26 @@
         }
 
         await detectUserLanguage();
-        const item = getRandomQuote();
+        const lang = userCountryLang || 'uz';
+        const pool = QUOTES_DB[lang] || QUOTES_DB.uz;
+        const { item } = getPinnedQuote(pool);
 
         wrap.innerHTML = `
             <div class="fortune-card-3d" id="fortune-card">
-                <span class="fortune-quote-badge">💡 BUGUNGI MOTIVATSIYA & KUN IQTIBOSI</span>
+                <span class="fortune-quote-badge">💡 SHAXSIY KUN IQTIBOSI</span>
                 <div class="fortune-quote-text">"${item.quote}"</div>
                 <div class="fortune-quote-author">— ${item.author}</div>
                 
                 <div style="font-size:13px; color:#a7f3d0; margin-bottom:14px; background:rgba(0,0,0,0.3); padding:8px 14px; border-radius:10px; display:inline-block;">
-                    🇩🇪 Nemischa O'rganish Iqtibosi: <b>"${item.de}"</b>
+                    🇩🇪 Nemischa Variant: <b>"${item.de}"</b>
                 </div>
 
                 <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
                     <button class="fortune-action-btn" onclick="speakCurrentQuote('${item.de.replace(/'/g, "\\'")}')">
                         🔊 Nemischa Audio Eshitish
                     </button>
-                    <button class="fortune-action-btn" style="background:linear-gradient(90deg, #3b82f6, #10b981);" onclick="renderDailyFortuneWidget()">
-                        🎲 Yangi Iqtibos
+                    <button class="fortune-action-btn" style="background:linear-gradient(90deg, #3b82f6, #10b981);" onclick="nextIndividualQuote()">
+                        🎲 Menga Boshqa Iqtibos Tanlash
                     </button>
                 </div>
             </div>
