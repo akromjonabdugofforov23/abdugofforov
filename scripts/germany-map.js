@@ -3,14 +3,62 @@
     window.App = window.App || {};
 
     const WORLD_DESTINATIONS = [
-        { id: "issyk_kul", name: "Issiqko'l (Qirg'iziston)", tag: "🏔️ Vizasiz & Hamyonbop Ko'l", img: "images/schwarzwald.webp", desc: "Tien-Shan tog'lari bag'ridagi zumrad dek musaffo issiq ko'l. Hamyonbop va vizasiz sayohat!" },
-        { id: "fann_mountains", name: "Fann Tog'lari (Tojikiston)", tag: "🌊 Vizasiz Mo'jizaviy Tog'lar", img: "images/zugspitze.webp", desc: "Iskandarko'l va zangori ko'llar vodiysi. Arzon va vizasiz tabiat maskani." },
-        { id: "antalya", name: "Antalya va Kemer (Turkiya)", tag: "🏖️ 90 kun Vizasiz Dengiz", img: "images/rheintal.webp", desc: "O'rta yer dengizining firuza ko'rfazlari, ulug'vor Toros tog'lari va vizasiz qulaylik." },
-        { id: "batumi", name: "Batumi va Kavkaz (Gruziya)", tag: "🌴 Vizasiz Qora Dengiz", img: "images/heidelberg_hq.png", desc: "Qora dengiz va Kavkaz tog'larining ajoyib uyg'unligi. Vizasiz va arzon taomlar." },
-        { id: "dubai", name: "Dubay va BAA (BAA)", tag: "🏜️ 30 kun Vizasiz Voha", img: "images/rothenburg.webp", desc: "O'zbekiston fuqarolari uchun 30 kunlik vizasiz rejim! Fors ko'rfazi va zamonaviy shahar." },
-        { id: "shahdag", name: "Shahdag (Ozarbayjon)", tag: "🏔️ Vizasiz Kaspiy va Tog'", img: "images/koelner-dom.webp", desc: "Kaspiy dengizi va Shahdag tog' kurorti. Vizasiz hamda budjetbop hordiq." },
-        { id: "kolsai", name: "Kolsay Ko'llari (Qozog'iston)", tag: "🌲 Vizasiz Alp Tabiati", img: "images/neuschwanstein.webp", desc: "Olmaota yaqinidagi Alplarga teng mo'jizaviy tog' ko'llari va toza havo." },
-        { id: "halong", name: "Halong Bay va Phu Quoc (Vyetnam)", tag: "🏖️ Oson E-Viza Tropik Dengiz", img: "images/hamburg.webp", desc: "3 kunda online e-viza! Ekzotik okean qirg'oqlari va juda arzon mevalar hamda tabiat." }
+        { 
+            id: "issyk_kul", 
+            name: "Issiqko'l (Qirg'iziston)", 
+            tag: "🏔️ Vizasiz & Hamyonbop Ko'l", 
+            img: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=800", 
+            desc: "Tien-Shan tog'lari bag'ridagi zumrad dek musaffo issiq ko'l. Hamyonbop va vizasiz sayohat!" 
+        },
+        { 
+            id: "fann_mountains", 
+            name: "Fann Tog'lari (Tojikiston)", 
+            tag: "🌊 Vizasiz Mo'jizaviy Tog'lar", 
+            img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=800", 
+            desc: "Iskandarko'l va zangori ko'llar vodiysi. Arzon va vizasiz tabiat maskani." 
+        },
+        { 
+            id: "antalya", 
+            name: "Antalya va Kemer (Turkiya)", 
+            tag: "🏖️ 90 kun Vizasiz Dengiz", 
+            img: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?q=80&w=800", 
+            desc: "O'rta yer dengizining firuza ko'rfazlari, ulug'vor Toros tog'lari va vizasiz qulaylik." 
+        },
+        { 
+            id: "batumi", 
+            name: "Batumi va Kavkaz (Gruziya)", 
+            tag: "🌴 Vizasiz Qora Dengiz", 
+            img: "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?q=80&w=800", 
+            desc: "Qora dengiz va Kavkaz tog'larining ajoyib uyg'unligi. Vizasiz va arzon taomlar." 
+        },
+        { 
+            id: "dubai", 
+            name: "Dubay va BAA (BAA)", 
+            tag: "🏜️ 30 kun Vizasiz Voha", 
+            img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800", 
+            desc: "O'zbekiston fuqarolari uchun 30 kunlik vizasiz rejim! Fors ko'rfazi va zamonaviy shahar." 
+        },
+        { 
+            id: "shahdag", 
+            name: "Shahdag (Ozarbayjon)", 
+            tag: "🏔️ Vizasiz Kaspiy va Tog'", 
+            img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800", 
+            desc: "Kaspiy dengizi va Shahdag tog' kurorti. Vizasiz hamda budjetbop hordiq." 
+        },
+        { 
+            id: "kolsai", 
+            name: "Kolsay Ko'llari (Qozog'iston)", 
+            tag: "🌲 Vizasiz Alp Tabiati", 
+            img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=800", 
+            desc: "Olmaota yaqinidagi Alplarga teng mo'jizaviy tog' ko'llari va toza havo." 
+        },
+        { 
+            id: "halong", 
+            name: "Halong Bay va Phu Quoc (Vyetnam)", 
+            tag: "🏖️ Oson E-Viza Tropik Dengiz", 
+            img: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=800", 
+            desc: "3 kunda online e-viza! Ekzotik okean qirg'oqlari va juda arzon mevalar hamda tabiat." 
+        }
     ];
 
     function renderGermanyMapSection() {
