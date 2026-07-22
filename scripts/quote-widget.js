@@ -1,5 +1,7 @@
 // ===== 2. SMART MULTI-LANGUAGE DAILY FORTUNE & MOTIVATIONAL QUOTE WIDGET =====
 (function() {
+    window.App = window.App || {};
+
     const QUOTES_DB = {
         uz: [
             { quote: "Mag'lubiyat to'xtaganingda sodir bo'ladi. Har kuni kichik bo'lsa ham qadam tashla!", author: "Stoyatsizm Hikmati", de: "Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhältst." },
@@ -52,7 +54,6 @@
             }
         } catch(e) {}
 
-        // Tanlanmagan bo'lsa yangi iqtibos indeksini birinchi marta saqlaymiz
         const randIndex = Math.floor(Math.random() * pool.length);
         savePinnedQuote(randIndex, today);
         return { item: pool[randIndex], index: randIndex };
@@ -75,16 +76,16 @@
         } catch(e) {}
     }
 
-    window.nextIndividualQuote = function() {
+    function nextQuote() {
         const lang = userCountryLang || 'uz';
         const pool = QUOTES_DB[lang] || QUOTES_DB.uz;
         const today = new Date().toDateString();
         const randIndex = Math.floor(Math.random() * pool.length);
         savePinnedQuote(randIndex, today);
         renderDailyFortuneWidget(true);
-    };
+    }
 
-    window.renderDailyFortuneWidget = async function(forceUpdate = false) {
+    async function renderDailyFortuneWidget(forceUpdate = false) {
         const hero = document.querySelector('.hero') || document.getElementById('functional-row');
         if (!hero) return;
 
@@ -121,12 +122,18 @@
                 </div>
             </div>
         `;
-    };
+    }
 
-    window.speakCurrentQuote = function(text) {
+    function speakCurrent(text) {
         speakGermanText(text);
-        if (window.Gamification) Gamification.addXP(10);
-    };
+        if (App.Gamification) App.Gamification.addXP(10);
+    }
+
+    // Module Export
+    App.Quote = { render: renderDailyFortuneWidget, next: nextQuote, speak: speakCurrent };
+    window.renderDailyFortuneWidget = renderDailyFortuneWidget;
+    window.nextIndividualQuote = nextQuote;
+    window.speakCurrentQuote = speakCurrent;
 
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(renderDailyFortuneWidget, 300);

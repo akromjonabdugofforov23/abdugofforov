@@ -1,5 +1,7 @@
-// ===== 3. DUNYO BO'YLAB INTERAKTIV SAYOHAT XARITASI (VIZASIZ & HAMYONBOP TABIAT) =====
+// ===== 3. DUNYO BO'YLAB INTERAKTIV SAYOHAT XARITASI MODULE =====
 (function() {
+    window.App = window.App || {};
+
     const WORLD_DESTINATIONS = [
         { id: "issyk_kul", name: "Issiqko'l (Qirg'iziston)", tag: "🏔️ Vizasiz & Hamyonbop Ko'l", img: "images/schwarzwald.webp", desc: "Tien-Shan tog'lari bag'ridagi zumrad dek musaffo issiq ko'l. Hamyonbop va vizasiz sayohat!" },
         { id: "fann_mountains", name: "Fann Tog'lari (Tojikiston)", tag: "🌊 Vizasiz Mo'jizaviy Tog'lar", img: "images/zugspitze.webp", desc: "Iskandarko'l va zangori ko'llar vodiysi. Arzon va vizasiz tabiat maskani." },
@@ -11,7 +13,7 @@
         { id: "halong", name: "Halong Bay va Phu Quoc (Vyetnam)", tag: "🏖️ Oson E-Viza Tropik Dengiz", img: "images/hamburg.webp", desc: "3 kunda online e-viza! Ekzotik okean qirg'oqlari va juda arzon mevalar hamda tabiat." }
     ];
 
-    window.renderGermanyMapSection = function() {
+    function renderGermanyMapSection() {
         const mainContent = document.getElementById('main-content');
         if (!mainContent) return;
 
@@ -44,17 +46,22 @@
             <p class="germany-map-sub">O'zbekiston fuqarolari uchun vizasiz, hamyonbop va eng go'zal tabiat maskanlari!</p>
             <div class="germany-cities-grid">${cardsHTML}</div>
         `;
-    };
+    }
 
-    window.openCityModal = function(id) {
+    function openCityModal(id) {
         const item = WORLD_DESTINATIONS.find(c => c.id === id);
         if (!item) return;
         
         if (typeof showToast === 'function') {
             showToast(`🏞️ ${item.name}: ${item.desc}`, 'info');
         }
-        if (window.Gamification) Gamification.addXP(15);
-    };
+        if (App.Gamification) App.Gamification.addXP(15);
+    }
+
+    // Module Export
+    App.Map = { render: renderGermanyMapSection, openCity: openCityModal };
+    window.renderGermanyMapSection = renderGermanyMapSection;
+    window.openCityModal = openCityModal;
 
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(renderGermanyMapSection, 300);

@@ -1,5 +1,7 @@
-// ===== 1. GAMIFICATION: DAILY STREAKS & XP LEVEL SYSTEM =====
+// ===== 1. GAMIFICATION MODULE: DAILY STREAKS & XP LEVEL SYSTEM =====
 (function() {
+    window.App = window.App || {};
+
     function getStreakData() {
         const defaultData = { count: 1, lastDate: new Date().toDateString(), xp: 50 };
         try {
@@ -23,12 +25,12 @@
         if (data.lastDate !== today) {
             const yesterday = new Date(Date.now() - 86400000).toDateString();
             if (data.lastDate === yesterday) {
-                data.count += 1; // Continuous streak!
+                data.count += 1;
             } else {
-                data.count = 1; // Missed a day, reset streak
+                data.count = 1;
             }
             data.lastDate = today;
-            data.xp += 20; // Daily check-in bonus XP
+            data.xp += 20;
             saveStreakData(data);
         }
         renderGamificationPill(data);
@@ -71,8 +73,9 @@
         `;
     }
 
-    // Export API
-    window.Gamification = { updateStreak, addXP, getStreakData };
+    // Module Export
+    App.Gamification = { updateStreak, addXP, getStreakData, getLevelInfo };
+    window.Gamification = App.Gamification; // Backward compatibility
 
     document.addEventListener('DOMContentLoaded', updateStreak);
 })();
