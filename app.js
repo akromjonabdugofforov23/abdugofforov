@@ -15,63 +15,6 @@ function getCategoryIcon(category, type) {
     if (type === 'image') return '🖼️';
     return '📝';
 }
-
-// 1. Dastlabki Ma'lumotlar (Boshlang'ich Postlar)
-// Boshlang'ich postlar yo'q Ã¢â‚¬â€ sayt toza boshlanadi.
-// Postlar faqat admin panelidan (PIN + Telegram) yoziladi va serverda
-// (Cloudflare KV) saqlanadi. Mehmonlar faqat o'qiydi.
-const defaultPosts = [
-    {
-        id: "1710000",
-        title: "Schwarzwald (Qora o'rmon) — Tabiatning jonli ertagi",
-        category: "Borishga arziydigan joylar",
-        type: "memory",
-        date: new Date().toISOString().split('T')[0],
-        excerpt: "Schwarzwald — qalin o'rmonlar, guldor qishloqlar va haqiqiy nemis ertaklari maskani.",
-        image: "https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%29.jpg",
-        content: `Schwarzwald (Qora o'rmon) — Germaniyaning janubi-g'arbida joylashgan, qalin o'rmonlari, go'zal sharsharalari va an'anaviy qishloqlari bilan dunyoga mashhur tabiat maskani. Agar siz tabiat qo'ynida dam olishni, toza havodan nafas olishni va haqiqiy nemis ertaklaridagi manzalarini ko'rishni xohlasangiz, bu joy aynan siz uchun!
-
-## 📍 Qanday qilib yetib borish mumkin?
-
-Schwarzwald asosan Baden-Württemberg shtatida joylashgan. Eng qulay boshlanish nuqtalari — **Freiburg** yoki **Baden-Baden** shaharlari.
-- **Poyezdda:** Germaniyaning istalgan katta shahridan (Frankfurt, Shtutgart, Myunxen) ICE yoki mintaqaviy (RE) poyezdlari orqali Freiburg markaziy vokzaliga kelish mumkin. 
-- **Mashinada:** B500 panoramali avtomagistrali (Schwarzwaldhochstraße) orqali yursangiz, tabiatning eng go'zal manzaralariga guvoh bo'lasiz.
-- **Vaqt:** Frankfurt yoki Shtutgartdan o'rtacha 2-3 soatda yetib kelish mumkin.
-
-## 💰 Xarajatlar va Logistika
-
-Sayohat xarajatlari sizning tanlovingizga qarab o'zgaradi, lekin o'rtacha byudjet quyidagicha:
-*   **Poyezd chiptasi (Deutschlandticket):** 49 yevro (butun oy uchun, mintaqaviy poyezdlarda).
-*   **Mehmonxona/Hostel:** Bir kecha uchun 40-100 yevro.
-*   **Ovqatlanish:** O'rtacha kafeda tushlik 15-25 yevro. Mashhur *Schwarzwälder Kirschtorte* (Qora o'rmon torti) tatib ko'rishni unutmang (taxminan 5 yevro).
-*   **Umumiy:** 1-2 kunlik qisqa sayohat uchun kishi boshiga taxminan 100-150 yevro yetarli bo'ladi.
-
-![Qalin o'rmon manzarasi](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%292.jpg)
-
-## 🌲 Nimalarni ko'rish kerak?
-
-1.  **Triberg sharsharalari:** Germaniyaning eng baland sharsharalaridan biri. Suvning qoyalardan urilib tushishi ajoyib manzara hosil qiladi.
-2.  **Titisee va Schluchsee ko'llari:** Yozda cho'milish, qayiqda uchish va qirg'oqda sayr qilish uchun ideal joylar.
-3.  **Freiburg shahri:** Schwarzwaldning poytaxti. Tarixiy markaz va tor suv kanallari (Bächle) bilan mashhur.
-
-![Freiburg shahri manzarasi](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%293.jpg)
-![Titisee ko'li](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%294.jpg)
-
-## 💡 Qo'shimcha Maslahatlar
-
-*   **Aloqa:** Tog'li va o'rmonli hudud bo'lgani uchun ko'p joylarda internet, ba'zan esa uyali aloqa uzilib qolishi mumkin. Oflayn xaritalarni (masalan, Google Maps) oldindan yuklab olishni qat'iy tavsiya qilaman!
-*   **Kiyim-kechak:** Hatto yozda ham o'rmon ichi salqin bo'ladi. O'zingiz bilan qulay krossovka va yengil kurtka oling.
-
-![An'anaviy Schwarzwald uylari](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%295.jpg)
-![Tabiat qo'ynidagi yo'l](https://pub-223db9911bd14e83bf853fcaccf7ca25.r2.dev/%28Schwarzwald%296.jpg)
-
-Siz ham bu ajoyib o'rmonga borishni xohlaysizmi? Yoki ehtimol, allaqachon bo'lgandirsiz? Fikrlaringizni izohlarda yozib qoldiring!`,
-        tags: ["Germaniya", "Sayohat", "Tabiat", "Schwarzwald"],
-        comments: [],
-        likes: 12
-    }
-];
-
 // State (Holat) - Abdugofforov rebrending kalitlari bilan boshlash
 // posts endi IndexedDB (Store) orqali yuklanadi Ã¢â‚¬â€ bootstrap() ichida hydrate qilinadi.
 let posts = defaultPosts;
@@ -797,6 +740,7 @@ if (toolbarEl) toolbarEl.addEventListener('click', (e) => {
         if(subMenu) subMenu.style.display = subMenu.style.display === 'none' ? 'flex' : 'none';
         document.querySelectorAll('.toolbar .filter-tag').forEach(tag => tag.classList.remove('active'));
         btn.classList.add('active');
+        openDeutschView();
         return;
     }
 
