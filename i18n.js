@@ -44,7 +44,20 @@
             "deck.grammar": "📐 Grammatika",
             "deck.sentences": "💬 Gaplar",
             "deck.quotes": "🏛️ Faylasuf gaplari",
-            "deck.ueber_mich": "🙋‍♂️ O'zim haqimda"
+            "deck.ueber_mich": "🙋‍♂️ O'zim haqimda",
+            "tag.blog": "📝 Kundalik Blog",
+            "tag.deutsch": "🇩🇪 Nemis tili",
+            "tag.places": "✈️ Borishga arziydigan joylar",
+            "de.title": "Nemis Tili Akademiyasi",
+            "de.subtitle": "A1 - B2 Darajalar · Interaktiv O'rganish Hub'i",
+            "de.mode.tests": "Mavzuli Testlar",
+            "de.mode.tests_sub": "A1-B2 Goethe",
+            "de.mode.flashcards": "So'z Kartochkalari",
+            "de.mode.flashcards_sub": "Ovozli Leitner",
+            "de.mode.tournament": "Deutsch Turnir",
+            "de.mode.tournament_sub": "Jonli musobaqa",
+            "de.mode.horror": "HORROR DEUTSCH",
+            "de.mode.horror_sub": "Adrenalin omon qolish"
         },
         ru: {
             "nav.home": "Главная",
@@ -86,7 +99,20 @@
             "deck.grammar": "📐 Грамматика",
             "deck.sentences": "💬 Предложения",
             "deck.quotes": "🏛️ Цитаты философов",
-            "deck.ueber_mich": "🙋‍♂️ Обо мне"
+            "deck.ueber_mich": "🙋‍♂️ Обо мне",
+            "tag.blog": "📝 Блог",
+            "tag.deutsch": "🇩🇪 Немецкий язык",
+            "tag.places": "✈️ Места для посещения",
+            "de.title": "Академия Немецкого Языка",
+            "de.subtitle": "Уровни A1 - B2 · Интерактивный Учебный Хаб",
+            "de.mode.tests": "Тематические Тесты",
+            "de.mode.tests_sub": "A1-B2 Гёте",
+            "de.mode.flashcards": "Карточки Слов",
+            "de.mode.flashcards_sub": "Голосовой Лейтнер",
+            "de.mode.tournament": "Немецкий Турнир",
+            "de.mode.tournament_sub": "Живой турнир",
+            "de.mode.horror": "HORROR DEUTSCH",
+            "de.mode.horror_sub": "Выживание на адреналине"
         },
         de: {
             "nav.home": "Startseite",
@@ -128,7 +154,20 @@
             "deck.grammar": "📐 Grammatik",
             "deck.sentences": "💬 Sätze",
             "deck.quotes": "🏛️ Philosophen-Zitate",
-            "deck.ueber_mich": "🙋‍♂️ Über mich"
+            "deck.ueber_mich": "🙋‍♂️ Über mich",
+            "tag.blog": "📝 Blog",
+            "tag.deutsch": "🇩🇪 Deutsch-Akademie",
+            "tag.places": "✈️ Sehenswürdigkeiten",
+            "de.title": "Deutsch-Sprachakademie",
+            "de.subtitle": "Niveaus A1 - B2 · Interaktiver Lern-Hub",
+            "de.mode.tests": "Thementests",
+            "de.mode.tests_sub": "A1-B2 Goethe",
+            "de.mode.flashcards": "Vokabelkarten",
+            "de.mode.flashcards_sub": "Audio-Leitner",
+            "de.mode.tournament": "Deutsch-Turnier",
+            "de.mode.tournament_sub": "Live-Wettbewerb",
+            "de.mode.horror": "HORROR DEUTSCH",
+            "de.mode.horror_sub": "Adrenalin-Survival"
         },
         en: {
             "nav.home": "Home",
@@ -170,7 +209,20 @@
             "deck.grammar": "📐 Grammar",
             "deck.sentences": "💬 Sentences",
             "deck.quotes": "🏛️ Philosopher quotes",
-            "deck.ueber_mich": "🙋‍♂️ About me"
+            "deck.ueber_mich": "🙋‍♂️ About me",
+            "tag.blog": "📝 Daily Blog",
+            "tag.deutsch": "🇩🇪 German Language",
+            "tag.places": "✈️ Places to Visit",
+            "de.title": "German Language Academy",
+            "de.subtitle": "Levels A1 - B2 · Interactive Learning Hub",
+            "de.mode.tests": "Topic Tests",
+            "de.mode.tests_sub": "A1-B2 Goethe",
+            "de.mode.flashcards": "Word Flashcards",
+            "de.mode.flashcards_sub": "Voice Leitner",
+            "de.mode.tournament": "German Tournament",
+            "de.mode.tournament_sub": "Live competition",
+            "de.mode.horror": "HORROR DEUTSCH",
+            "de.mode.horror_sub": "Adrenaline survival"
         }
     };
 

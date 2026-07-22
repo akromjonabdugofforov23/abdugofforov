@@ -2802,5 +2802,17 @@ if (userLogoutBtn) {
             submitBtn.textContent = loginMode ? 'Kirish' : "Ro'yxatdan o'tish";
         }
     });
+
+    // Dynamic Language Switching Handler
+    document.addEventListener('langchange', () => {
+        if (window.i18n && typeof i18n.applyStaticTranslations === 'function') {
+            i18n.applyStaticTranslations();
+        }
+        const deutschView = document.getElementById('deutsch-view');
+        if (deutschView && deutschView.style.display !== 'none') {
+            if (typeof renderDeutschHome === 'function') renderDeutschHome();
+        }
+        if (typeof renderPosts === 'function') renderPosts();
+    });
 })();
 

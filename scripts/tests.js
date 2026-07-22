@@ -129,35 +129,37 @@ function renderDeutschHome() {
             </section>`;
     }).join('');
 
+    const t = (key, fallback) => (window.i18n && typeof i18n.t === 'function') ? i18n.t(key) : fallback;
+
     view.innerHTML = `
         <div class="deutsch-hero">
             <div class="deutsch-flag">🇩🇪</div>
-            <h2 class="deutsch-title">Nemis Tili Akademiyasi</h2>
-            <p class="deutsch-sub">A1 - B2 Darajalar &middot; Interaktiv O'rganish Hub'i</p>
+            <h2 class="deutsch-title">${t('de.title', 'Nemis Tili Akademiyasi')}</h2>
+            <p class="deutsch-sub">${t('de.subtitle', "A1 - B2 Darajalar &middot; Interaktiv O'rganish Hub'i")}</p>
 
             <div class="deutsch-mode-nav">
                 <div class="deutsch-mode-card mode-tests active" onclick="window.scrollTo({top: 350, behavior: 'smooth'})">
                     <span class="dm-icon">📝</span>
-                    <div class="dm-title">Mavzuli Testlar</div>
-                    <div class="dm-sub">A1-B2 Goethe</div>
+                    <div class="dm-title">${t('de.mode.tests', 'Mavzuli Testlar')}</div>
+                    <div class="dm-sub">${t('de.mode.tests_sub', 'A1-B2 Goethe')}</div>
                 </div>
 
                 <div class="deutsch-mode-card mode-flashcards" onclick="openFlashcardsView()">
                     <span class="dm-icon">🎴</span>
-                    <div class="dm-title">So'z Kartochkalari</div>
-                    <div class="dm-sub">Ovozli Leitner</div>
+                    <div class="dm-title">${t('de.mode.flashcards', "So'z Kartochkalari")}</div>
+                    <div class="dm-sub">${t('de.mode.flashcards_sub', 'Ovozli Leitner')}</div>
                 </div>
 
                 <div class="deutsch-mode-card mode-tournament" onclick="openTournamentView()">
                     <span class="dm-icon">⚔️</span>
-                    <div class="dm-title">Deutsch Turnir</div>
-                    <div class="dm-sub">Jonli musobaqa</div>
+                    <div class="dm-title">${t('de.mode.tournament', 'Deutsch Turnir')}</div>
+                    <div class="dm-sub">${t('de.mode.tournament_sub', 'Jonli musobaqa')}</div>
                 </div>
 
                 <div class="deutsch-mode-card mode-horror" onclick="openHorrorHome()">
                     <span class="dm-icon">💀</span>
                     <div class="dm-title" style="color:#ef4444;">HORROR DEUTSCH</div>
-                    <div class="dm-sub">Adrenalin omon qolish</div>
+                    <div class="dm-sub">${t('de.mode.horror_sub', 'Adrenalin omon qolish')}</div>
                 </div>
             </div>
         </div>
