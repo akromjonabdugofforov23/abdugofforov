@@ -167,16 +167,19 @@ function updateClock() {
         const h = String(now.getHours()).padStart(2, '0');
         const m = String(now.getMinutes()).padStart(2, '0');
         const s = String(now.getSeconds()).padStart(2, '0');
-        const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const d = String(now.getDate()).padStart(2, '0');
+        const mo = String(now.getMonth() + 1).padStart(2, '0');
+        const y = now.getFullYear();
+        const dateStr = `${d}.${mo}.${y}`;
 
         document.querySelectorAll('[data-clock="h"]').forEach(el => {
-            if (el.textContent !== h) { el.textContent = h; el.classList.remove('flip'); void el.offsetWidth; el.classList.add('flip'); }
+            if (el.textContent !== h) el.textContent = h;
         });
         document.querySelectorAll('[data-clock="m"]').forEach(el => {
-            if (el.textContent !== m) { el.textContent = m; el.classList.remove('flip'); void el.offsetWidth; el.classList.add('flip'); }
+            if (el.textContent !== m) el.textContent = m;
         });
         document.querySelectorAll('[data-clock="s"]').forEach(el => {
-            el.textContent = s;
+            if (el.textContent !== s) el.textContent = s;
         });
 
         document.querySelectorAll('#widget-date, .fc-date').forEach(el => {
@@ -187,34 +190,51 @@ function updateClock() {
     }
 }
 setInterval(updateClock, 1000);
-updateClock();
-
-// (Ob-havo widgeti olib tashlandi Ã¢â‚¬â€ endi faqat soat/vaqt ko'rsatiladi)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateClock);
+} else {
+    updateClock();
+}
 
 // 5. Mavzuni boshqarish (Kunduzgi / Tungi rejim)
-// Default: tungi (dark) Ã¢â‚¬â€ qora futuristic. Foydalanuvchi tanlovi saqlanadi.
 function initTheme() {
     const savedTheme = localStorage.getItem('kay_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
+    if (document.body) document.body.setAttribute('data-theme', savedTheme);
     updateThemeButton(savedTheme);
 }
 
 function updateThemeButton(theme) {
-    if (!themeBtn) return;
-    themeBtn.setAttribute('aria-label', theme === 'dark' ? 'Kunduzgi rejimga o\'tish' : 'Tungi rejimga o\'tish');
+    const themeBtns = document.querySelectorAll('.theme-toggle, #theme-btn, #dock-theme');
+    themeBtns.forEach(btn => {
+        btn.setAttribute('aria-label', theme === 'dark' ? 'Kunduzgi rejimga o\'tish' : 'Tungi rejimga o\'tish');
+        const moon = btn.querySelector('.moon-icon');
+        const sun = btn.querySelector('.sun-icon');
+        if (moon && sun) {
+            if (theme === 'light') {
+                moon.style.display = 'none';
+                sun.style.display = 'block';
+            } else {
+                moon.style.display = 'block';
+                sun.style.display = 'none';
+            }
+        }
+    });
 }
 
-if (themeBtn) {
-    themeBtn.addEventListener('click', () => {
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('#theme-btn, .theme-toggle, #dock-theme');
+    if (btn) {
+        e.preventDefault();
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', newTheme);
+        if (document.body) document.body.setAttribute('data-theme', newTheme);
         localStorage.setItem('kay_theme', newTheme);
         updateThemeButton(newTheme);
-        // Particles fonini yangi rejimga moslash (rang yorqinligi)
         if (typeof refreshParticlesTheme === 'function') refreshParticlesTheme();
-    });
-}
+    }
+});
 
 // 6. Ma'lumotlarni saqlash (IndexedDB orqali Ã¢â‚¬â€ katta sig'im) + serverga sinxronlash
 function savePosts() {
