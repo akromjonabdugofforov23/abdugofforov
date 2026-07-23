@@ -381,6 +381,34 @@
         `;
     }
 
+    function triggerScaryBorderOverlay(durationMs = 2800) {
+        let overlay = document.getElementById('horror-scary-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'horror-scary-overlay';
+            overlay.className = 'horror-scary-overlay';
+            overlay.innerHTML = `
+                <div class="scary-vignette-border"></div>
+                <div class="scary-corner scary-top-left">👻</div>
+                <div class="scary-corner scary-top-right">👹</div>
+                <div class="scary-corner scary-bottom-left">🕷️</div>
+                <div class="scary-corner scary-bottom-right">💀</div>
+                <div class="scary-corner scary-left-edge">🩸</div>
+                <div class="scary-corner scary-right-edge">👀</div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        overlay.classList.remove('active');
+        void overlay.offsetWidth;
+        overlay.classList.add('active');
+
+        clearTimeout(triggerScaryBorderOverlay._t);
+        triggerScaryBorderOverlay._t = setTimeout(() => {
+            overlay.classList.remove('active');
+        }, durationMs);
+    }
+
     window.checkHorrorEscapeAns = function(selected) {
         const game = HorrorGamesData[currentDeckKey];
         const room = game.rooms[currentRoomIndex];
@@ -402,6 +430,7 @@
         } else {
             hp--;
             playScaryScreamSound();
+            triggerScaryBorderOverlay(2500);
             if (card) {
                 card.classList.add('screen-shake', 'screen-flicker');
                 setTimeout(() => card.classList.remove('screen-shake', 'screen-flicker'), 400);
@@ -543,6 +572,7 @@
         } else {
             hp--;
             playScaryScreamSound();
+            triggerScaryBorderOverlay(3000);
 
             if (card) {
                 card.classList.add('screen-shake', 'screen-flicker');

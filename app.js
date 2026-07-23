@@ -2784,16 +2784,6 @@ if (closeMyresultsModal && myresultsModal) {
     });
 }
 
-const userLogoutBtn = document.getElementById('user-logout-btn');
-if (userLogoutBtn) {
-    userLogoutBtn.addEventListener('click', async () => {
-        if (window.Auth) {
-            await window.Auth.logout();
-            location.reload();
-        }
-    });
-}
-
 // ===== AUTH FORM MANTIQI (Kirish / Ro'yxatdan o'tish) =====
 (function initAuthForm() {
     const authFormEl = document.getElementById('auth-form');
