@@ -391,7 +391,7 @@ function renderTestResult() {
               : "Qoʻrqmang! Qayta oʻrganib, yana sinab koʻring.";
 
     // Natijani tarixga saqlaymiz (lokal)
-    saveTestResult(currentLevel, score, total);
+    saveTestResult(currentLevel, score, total, typeof wrongQuestions !== 'undefined' ? wrongQuestions : []);
 
     // Login bo'lgan o'quvchi natijasini serverga ham yuboramiz (admin ko'radi)
     if (window.Auth && Auth.isLoggedIn()) {
@@ -842,31 +842,187 @@ function initAuthUI() {
     });
 }
 
-function openMyResults() {
+function openMyResults(tab) {
     const modal = document.getElementById('myresults-modal');
     const content = document.getElementById('myresults-content');
     if (!modal || !content) return;
+
+    const user = (window.Auth && Auth.user) ? Auth.user : { name: 'Foydalanuvchi', username: 'mehmon' };
     const hist = (window.Auth && Auth.getLocalResults) ? Auth.getLocalResults() : [];
+
+    let totalTests = hist.length;
+    let totalScore = 0;
+    let totalQuestions = 0;
+    let totalCorrect = 0;
+    let totalWrong = 0;
+
+    hist.forEach(h => {
+        totalScore += (h.score || 0);
+        totalQuestions += (h.total || 0);
+        totalCorrect += (h.score || 0);
+        totalWrong += ((h.total || 0) - (h.score || 0));
+    });
+
+    const avgPct = totalQuestions ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+    const xp = localStorage.getItem('abdu_xp') || '0';
+    const streak = localStorage.getItem('abdu_streak') || '1';
+
+    let avatarHtml = `<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#0088cc,#9333ea);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#fff;box-shadow:0 4px 12px rgba(0,136,204,0.3);">${(user.name || user.username || 'U').charAt(0).toUpperCase()}</div>`;
+    if (user.photo && (user.photo.startsWith('http') || user.photo.startsWith('data:'))) {
+        avatarHtml = `<img src="${escapeHTML(user.photo)}" alt="Avatar" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--accent-color);box-shadow:0 4px 12px rgba(0,136,204,0.3);">`;
+    } else if (user.photo) {
+        avatarHtml = `<div style="width:56px;height:56px;border-radius:50%;background:var(--glass-bg-strong);display:flex;align-items:center;justify-content:center;font-size:28px;border:1px solid var(--glass-border);box-shadow:0 4px 12px rgba(0,136,204,0.3);">${escapeHTML(user.photo)}</div>`;
+    }
+
+    let historyRows = '';
     if (!hist.length) {
-        content.innerHTML = '<p style="color:var(--text-secondary);">Hali test ishlamadingiz. Nemis testlari yoki Turnirdan boshlang!</p>';
+        historyRows = '<div style="text-align:center;padding:30px;color:var(--text-secondary);background:var(--glass-bg);border-radius:12px;border:1px solid var(--glass-border);">Hali biror test ishlanmadi. Nemis tili testlari yoki Turnirdan boshlang! 📚</div>';
     } else {
-        const rows = hist.slice(0, 30).map(h => {
+        historyRows = hist.slice(0, 30).map((h, idx) => {
             const d = new Date(h.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
             const color = h.pct >= 80 ? '#34d399' : h.pct >= 60 ? '#fbbf24' : '#f87171';
-            return `<div style="display:flex;align-items:center;gap:10px;font-size:13px;padding:10px 0;border-bottom:1px solid var(--glass-border);">
-                <span style="text-transform:uppercase;font-weight:700;width:60px;color:var(--color-purple-light);">${escapeHTML(String(h.level || ''))}</span>
-                <div style="flex:1;height:6px;background:var(--glass-border);border-radius:3px;overflow:hidden;">
-                    <div style="height:100%;width:${h.pct}%;background:${color};"></div>
+            const wrongCount = (h.total || 0) - (h.score || 0);
+
+            let detailsBtn = '';
+            let detailsBlock = '';
+            if (h.details && h.details.length) {
+                const detailsId = `hist-details-${idx}`;
+                detailsBtn = `<button type="button" onclick="document.getElementById('${detailsId}').style.display = document.getElementById('${detailsId}').style.display === 'none' ? 'block' : 'none'" style="background:transparent;border:none;color:var(--color-purple-light);font-size:12px;cursor:pointer;padding:4px 0;text-decoration:underline;">🔍 Xatolar va to'g'ri javoblarni ko'rish (${h.details.length} ta)</button>`;
+                
+                detailsBlock = `
+                    <div id="${detailsId}" style="display:none;margin-top:10px;padding:12px;background:var(--tag-bg);border-radius:10px;border-left:3px solid #ef4444;font-size:12px;text-align:left;">
+                        ${h.details.map((w, wIdx) => `
+                            <div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--glass-border);">
+                                <div style="font-weight:600;color:var(--text-primary);">${wIdx+1}. ${escapeHTML(w.q || '')}</div>
+                                <div style="color:#ef4444;">Sizning javobingiz: <s>${escapeHTML(w.userAns || '')}</s></div>
+                                <div style="color:#22c55e;font-weight:500;">To'g'ri javob: ${escapeHTML(w.correctAns || '')}</div>
+                                ${w.explanation ? `<div style="color:var(--text-muted);font-size:11px;margin-top:2px;">💡 ${escapeHTML(w.explanation)}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            return `
+                <div style="padding:14px;margin-bottom:10px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:14px;text-align:left;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:6px;">
+                        <span style="text-transform:uppercase;font-weight:700;color:var(--color-purple-light);">${escapeHTML(String(h.level || 'TEST'))}</span>
+                        <span style="font-weight:700;color:${color};">${h.score}/${h.total} (${h.pct}%)</span>
+                        <span style="color:var(--text-muted);font-size:11px;">${d}</span>
+                    </div>
+                    <div style="height:6px;background:var(--glass-border);border-radius:3px;overflow:hidden;margin-bottom:8px;">
+                        <div style="height:100%;width:${h.pct}%;background:${color};"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-secondary);">
+                        <span>🟢 ${h.score} to'g'ri | 🔴 ${wrongCount} xato</span>
+                        ${detailsBtn}
+                    </div>
+                    ${detailsBlock}
                 </div>
-                <span style="width:64px;text-align:right;color:var(--text-secondary);">${h.score}/${h.total}</span>
-                <span style="width:90px;text-align:right;color:var(--text-muted);font-size:11px;">${d}</span>
-            </div>`;
+            `;
         }).join('');
-        content.innerHTML = rows;
     }
+
+    content.innerHTML = `
+        <!-- Profile Header Card -->
+        <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:16px;margin-bottom:20px;flex-wrap:wrap;text-align:left;">
+            ${avatarHtml}
+            <div style="flex:1;min-width:180px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <h3 style="font-family:'Playfair Display',serif;font-size:20px;margin:0;color:var(--text-primary);">${escapeHTML(user.name || user.username || 'Foydalanuvchi')}</h3>
+                    <button type="button" onclick="toggleEditProfileForm()" style="background:none;border:none;cursor:pointer;font-size:15px;" title="Profilni tahrirlash">✏️</button>
+                </div>
+                <p style="color:var(--text-secondary);font-size:13px;margin:2px 0 0 0;">@${escapeHTML(user.username || 'user')}</p>
+                <div style="display:flex;gap:10px;margin-top:8px;font-size:12px;">
+                    <span style="background:rgba(147,51,234,0.15);color:var(--color-purple-light);padding:4px 10px;border-radius:8px;font-weight:600;">🔥 ${streak} Kunlik Streak</span>
+                    <span style="background:rgba(59,130,246,0.15);color:#60a5fa;padding:4px 10px;border-radius:8px;font-weight:600;">⭐ ${xp} XP</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inline Profile Edit Form (Hidden by default) -->
+        <div id="profile-edit-section" style="display:${tab === 'edit' ? 'block' : 'none'};padding:16px;background:rgba(0,136,204,0.06);border:1px solid rgba(0,136,204,0.2);border-radius:14px;margin-bottom:20px;text-align:left;">
+            <h4 style="margin:0 0 12px 0;font-size:15px;color:var(--text-primary);">✏️ Nickname va Avatarni Tahrirlash</h4>
+            <form onsubmit="saveProfileChanges(event)">
+                <div style="margin-bottom:12px;">
+                    <label for="edit-profile-name" style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Ismingiz yoki Nickname:</label>
+                    <input type="text" id="edit-profile-name" class="form-input" value="${escapeHTML(user.name || '')}" placeholder="Ismingizni kiriting" style="width:100%;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label for="edit-profile-photo" style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Avatar emoji tanlang yoki Rasm havolasini kiriting (URL):</label>
+                    <div style="display:flex;gap:6px;margin-bottom:8px;">
+                        ${['👨‍💻', '🎓', '🦁', '🚀', '⭐', '⚡', '👑', '🔥'].map(emoji => `
+                            <button type="button" onclick="document.getElementById('edit-profile-photo').value='${emoji}'" style="padding:6px 10px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:8px;cursor:pointer;font-size:18px;">${emoji}</button>
+                        `).join('')}
+                    </div>
+                    <input type="text" id="edit-profile-photo" class="form-input" value="${escapeHTML(user.photo || '')}" placeholder="Masalan: 👨‍💻 yoki https://..." style="width:100%;">
+                </div>
+                <div style="display:flex;gap:8px;justify-content:flex-end;">
+                    <button type="button" onclick="toggleEditProfileForm()" class="btn-secondary" style="padding:8px 14px;font-size:13px;">Bekor qilish</button>
+                    <button type="submit" class="btn-primary" style="padding:8px 16px;background:#0088cc;border:none;font-size:13px;">Saqlash</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Overall Statistics Grid -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
+            <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:12px;text-align:center;">
+                <div style="font-size:20px;font-weight:700;color:var(--color-purple-light);">${totalTests}</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Testlar</div>
+            </div>
+            <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:12px;text-align:center;">
+                <div style="font-size:20px;font-weight:700;color:#22c55e;">${totalCorrect}</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">To'g'ri 🟢</div>
+            </div>
+            <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:12px;text-align:center;">
+                <div style="font-size:20px;font-weight:700;color:#ef4444;">${totalWrong}</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Xatolar 🔴</div>
+            </div>
+            <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:12px;text-align:center;">
+                <div style="font-size:20px;font-weight:700;color:#fbbf24;">${avgPct}%</div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">O'rtacha</div>
+            </div>
+        </div>
+
+        <h4 style="text-align:left;font-size:15px;margin:0 0 12px 0;color:var(--text-primary);">
+            📜 Ishlangan Testlar va Xatolar Tahlili:
+        </h4>
+        <div style="max-height:340px;overflow-y:auto;padding-right:4px;">
+            ${historyRows}
+        </div>
+    `;
+
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
+
+window.openMyResults = openMyResults;
+
+window.toggleEditProfileForm = function() {
+    const sec = document.getElementById('profile-edit-section');
+    if (sec) sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+};
+
+window.saveProfileChanges = async function(e) {
+    if (e) e.preventDefault();
+    const nameInput = document.getElementById('edit-profile-name');
+    const photoInput = document.getElementById('edit-profile-photo');
+    const name = nameInput ? nameInput.value.trim() : '';
+    const photo = photoInput ? photoInput.value.trim() : '';
+
+    if (!name) {
+        if (typeof showToast === 'function') showToast("Ismingizni kiriting", "error");
+        return;
+    }
+
+    if (window.Auth) {
+        const res = await Auth.updateProfile(name, photo);
+        if (res.ok) {
+            if (typeof showToast === 'function') showToast("✏️ Profil muvaffaqiyatli yangilandi!", "success");
+            openMyResults(); // Refresh modal
+        }
+    }
+};
 
 window.emojiImage = emojiImage;
 window.renderDeutschHome = renderDeutschHome;

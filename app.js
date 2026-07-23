@@ -2153,9 +2153,16 @@ function replyToComment(commentId) {
 }
 
 // ===== NEMIS TESTLARI — NATIJALAR TARIXI =====
-function saveTestResult(level, score, total) {
+function saveTestResult(level, score, total, wrongDetails) {
     const hist = JSON.parse(localStorage.getItem('deutsch_history') || '[]');
-    hist.unshift({ level, score, total, pct: total ? Math.round(score / total * 100) : 0, date: new Date().toISOString() });
+    hist.unshift({
+        level,
+        score,
+        total,
+        pct: total ? Math.round(score / total * 100) : 0,
+        date: new Date().toISOString(),
+        details: wrongDetails ? JSON.parse(JSON.stringify(wrongDetails)) : []
+    });
     localStorage.setItem('deutsch_history', JSON.stringify(hist.slice(0, 50)));
 }
 function getTestHistory() {
@@ -2679,22 +2686,47 @@ const userDropdown = document.getElementById('user-dropdown');
 if (userChip && userDropdown) {
     userChip.addEventListener('click', (e) => {
         e.stopPropagation();
-        userDropdown.classList.toggle('active');
+        const isOpen = userDropdown.classList.contains('open') || userDropdown.classList.contains('active');
+        if (isOpen) {
+            userDropdown.classList.remove('open', 'active');
+        } else {
+            userDropdown.classList.add('open', 'active');
+        }
     });
     document.addEventListener('click', (e) => {
         if (!userDropdown.contains(e.target) && !userChip.contains(e.target)) {
-            userDropdown.classList.remove('active');
+            userDropdown.classList.remove('open', 'active');
         }
     });
 }
 
 const userResultsBtn = document.getElementById('user-results-btn');
+const userEditProfileBtn = document.getElementById('user-edit-profile-btn');
+const userLogoutBtn = document.getElementById('user-logout-btn');
 const myresultsModal = document.getElementById('myresults-modal');
 const closeMyresultsModal = document.getElementById('close-myresults-modal');
-if (userResultsBtn && myresultsModal) {
+
+if (userResultsBtn) {
     userResultsBtn.addEventListener('click', () => {
-        myresultsModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        if (userDropdown) userDropdown.classList.remove('open', 'active');
+        if (typeof openMyResults === 'function') openMyResults();
+    });
+}
+
+if (userEditProfileBtn) {
+    userEditProfileBtn.addEventListener('click', () => {
+        if (userDropdown) userDropdown.classList.remove('open', 'active');
+        if (typeof openMyResults === 'function') openMyResults('edit');
+    });
+}
+
+if (userLogoutBtn) {
+    userLogoutBtn.addEventListener('click', async () => {
+        if (userDropdown) userDropdown.classList.remove('open', 'active');
+        if (window.Auth) {
+            await Auth.logout();
+            if (typeof showToast === 'function') showToast('🚪 Tizimdan muvaffaqiyatli chiqdingiz', 'info');
+        }
     });
 }
 

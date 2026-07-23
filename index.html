@@ -125,8 +125,9 @@
                                 <strong id="user-dd-name">Foydalanuvchi</strong>
                                 <small id="user-dd-username">@user</small>
                             </div>
-                            <button class="user-dd-item" id="user-results-btn" type="button">­şôè Mening natijalarim</button>
-                            <button class="user-dd-item" id="user-logout-btn" type="button">ÔÄï Chiqish</button>
+                            <button class="user-dd-item" id="user-results-btn" type="button">📊 Mening profilim va natijalarim</button>
+                            <button class="user-dd-item" id="user-edit-profile-btn" type="button">✏️ Nick / Profilni tahrirlash</button>
+                            <button class="user-dd-item" id="user-logout-btn" type="button" style="color: #f87171;">🚪 Chiqish</button>
                         </div>
                     </div>
                 </div>
@@ -510,13 +511,14 @@
         </div>
     </div>
 
-    <!-- ===== MENING NATIJALARIM MODALI ===== -->
+    <!-- ===== FOYDALANUVCHI PROFILI VA NATIJALARI MODALI ===== -->
     <div class="modal-overlay" id="myresults-modal">
-        <div class="modal-container" style="max-width: 560px;">
+        <div class="modal-container" style="max-width: 640px; width: 95%;">
             <button class="modal-close" id="close-myresults-modal" aria-label="Yopish">&times;</button>
-            <div class="modal-body">
-                <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:16px;">📊 Mening natijalarim</h2>
-                <div id="myresults-content"><p style="color:var(--text-secondary);">Yuklanmoqda...</p></div>
+            <div class="modal-body" style="padding: 24px;">
+                <div id="myresults-content">
+                    <p style="color:var(--text-secondary); text-align:center;">Yuklanmoqda...</p>
+                </div>
             </div>
         </div>
     </div>

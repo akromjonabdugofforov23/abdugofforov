@@ -79,6 +79,31 @@
             return { ok: false, message: "Server bilan bog'lanishda xatolik." };
         },
 
+        async updateProfile(name, photo) {
+            if (!this.user) return { ok: false, message: "Tizimga kirilmagan" };
+            if (name && typeof name === 'string') this.user.name = name.trim();
+            if (photo !== undefined) this.user.photo = photo;
+            
+            localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+            this.updateUIState();
+
+            try {
+                const res = await fetch('/auth/profile', {
+                    method: 'POST',
+                    headers: this._headers(),
+                    body: JSON.stringify({ name: this.user.name, photo: this.user.photo }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (data.ok && data.user) {
+                    this.user = Object.assign(this.user, data.user);
+                    localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+                    this.updateUIState();
+                }
+            } catch (e) {}
+
+            return { ok: true, user: this.user };
+        },
+
         async logout() {
             try {
                 await fetch('/auth/logout', { method: 'POST', headers: this._headers() });
@@ -133,8 +158,17 @@
                     const ddName = document.getElementById('user-dd-name');
                     const ddUsername = document.getElementById('user-dd-username');
                     const nameStr = this.user.name || this.user.username || 'Foydalanuvchi';
+                    
                     if (nameLabel) nameLabel.textContent = nameStr;
-                    if (avatarEl) avatarEl.textContent = nameStr.charAt(0).toUpperCase();
+                    if (avatarEl) {
+                        if (this.user.photo && (this.user.photo.startsWith('http') || this.user.photo.startsWith('data:'))) {
+                            avatarEl.innerHTML = `<img src="${this.user.photo}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                        } else if (this.user.photo) {
+                            avatarEl.textContent = this.user.photo; // Emoji avatar
+                        } else {
+                            avatarEl.textContent = nameStr.charAt(0).toUpperCase();
+                        }
+                    }
                     if (ddName) ddName.textContent = nameStr;
                     if (ddUsername) ddUsername.textContent = '@' + (this.user.username || '');
                 } else {
@@ -167,7 +201,7 @@
         },
     };
 
-    // Global Telegram OAuth Widget Callback (Telegram.org rasmiy javobi)
+    // Global Telegram OAuth Widget Callback
     window.onTelegramAuth = async function(user) {
         if (window.Auth && user) {
             const res = await Auth.loginWithTelegram(user);
@@ -190,7 +224,7 @@
     window.initTelegramWidget = function(botUsername) {
         const container = document.getElementById('telegram-official-widget-container');
         if (!container) return;
-        container.innerHTML = ''; // tozalash
+        container.innerHTML = '';
 
         const botName = botUsername || window.TELEGRAM_BOT_USERNAME || 'abdugofforov_admin_bot';
         const script = document.createElement('script');
