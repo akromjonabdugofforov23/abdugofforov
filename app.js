@@ -2578,27 +2578,15 @@ async function bootstrap() {
     // init3DTilt(); // Performance optimization
     initFloatingAddBtn();
 
-    // O'quvchi auth â€“ token bo'lsa tiklaymiz, UI'ni yangilaymiz
+    // O'quvchi auth – token bo'lsa tiklaymiz, UI'ni yangilaymiz
     try {
         if (window.Auth) {
             await Auth.restore();
-            // Auth holatiga qarab UI ni yangilaymiz
-            const userMenu = document.getElementById('user-menu');
-            const loginBtnEl = document.getElementById('login-btn');
-            if (Auth.isLoggedIn()) {
-                if (userMenu) userMenu.style.display = '';
-                if (loginBtnEl) loginBtnEl.style.display = 'none';
-                const nameLabel = document.getElementById('user-name-label');
-                const avatarEl = document.getElementById('user-avatar');
-                const ddName = document.getElementById('user-dd-name');
-                const ddUsername = document.getElementById('user-dd-username');
-                if (nameLabel) nameLabel.textContent = Auth.user.name || Auth.user.username;
-                if (avatarEl) avatarEl.textContent = (Auth.user.name || Auth.user.username || 'U').charAt(0).toUpperCase();
-                if (ddName) ddName.textContent = Auth.user.name || Auth.user.username;
-                if (ddUsername) ddUsername.textContent = '@' + (Auth.user.username || '');
+            // Agar hali tizimga kirilmagan bo'lsa va sayt Telegram ichida (WebApp/Mini App) ochilgan bo'lsa, avto 1-click kirish
+            if (!Auth.isLoggedIn() && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                await Auth.loginWithTelegram(window.Telegram.WebApp.initDataUnsafe.user);
             } else {
-                if (userMenu) userMenu.style.display = 'none';
-                if (loginBtnEl) loginBtnEl.style.display = '';
+                Auth.updateUIState();
             }
         }
     } catch (authErr) {

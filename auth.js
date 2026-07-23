@@ -28,6 +28,8 @@
                 this.token = data.token;
                 this.user = data.user;
                 localStorage.setItem(TOKEN_KEY, data.token);
+                localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+                this.updateUIState();
             }
             return data;
         },
@@ -43,23 +45,53 @@
                 this.token = data.token;
                 this.user = data.user;
                 localStorage.setItem(TOKEN_KEY, data.token);
+                localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+                this.updateUIState();
             }
             return data;
         },
 
         async loginWithTelegram(tgUser) {
-            if (!tgUser) return { ok: false };
-            const token = 'tg_token_' + tgUser.id + '_' + Date.now();
+            if (!tgUser) return { ok: false, message: "Foydalanuvchi ma'lumoti bo'sh" };
+
+            // 1. Server API (/auth/telegram) ga so'rov yuborish
+            try {
+                const res = await fetch('/auth/telegram', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user: tgUser }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (data.ok && data.token) {
+                    this.token = data.token;
+                    this.user = data.user;
+                    localStorage.setItem(TOKEN_KEY, data.token);
+                    localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+                    this.updateUIState();
+                    return { ok: true, user: this.user };
+                }
+            } catch (e) {
+                console.warn('Server Telegram Auth so\'rovida xatolik (offlayn fallback ishlatiladi):', e);
+            }
+
+            // 2. Local fallback rejim (server javob bermasa)
+            const id = tgUser.id || Math.floor(Math.random() * 89999999) + 10000000;
+            const cleanName = (tgUser.first_name || tgUser.name || 'Telegram Foydalanuvchi').trim();
+            const username = tgUser.username || ('tg_' + id);
+            const token = 'tg_token_' + id + '_' + Date.now();
+
             this.token = token;
             this.user = {
-                id: tgUser.id,
-                name: tgUser.first_name + (tgUser.last_name ? (' ' + tgUser.last_name) : ''),
-                username: tgUser.username || ('tg_' + tgUser.id),
-                photo: tgUser.photo_url || '',
+                id: id,
+                name: cleanName + (tgUser.last_name ? (' ' + tgUser.last_name) : ''),
+                username: username,
+                photo: tgUser.photo_url || tgUser.photo || '',
                 provider: 'telegram'
             };
+
             localStorage.setItem(TOKEN_KEY, token);
             localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+            this.updateUIState();
             return { ok: true, user: this.user };
         },
 
@@ -71,6 +103,7 @@
             this.user = null;
             localStorage.removeItem(TOKEN_KEY);
             localStorage.removeItem('abdu_user_data');
+            this.updateUIState();
         },
 
         // Token amal qilsa, foydalanuvchini tiklaydi
@@ -80,6 +113,7 @@
             if (savedData) {
                 try {
                     this.user = JSON.parse(savedData);
+                    this.updateUIState();
                     return this.user;
                 } catch(e) {}
             }
@@ -88,14 +122,44 @@
                 const data = await res.json().catch(() => ({}));
                 if (data.ok && data.user) {
                     this.user = data.user;
+                    localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+                    this.updateUIState();
                     return this.user;
                 }
             } catch (e) {}
             // Token yaroqsiz — tozalaymiz
             this.token = null;
+            this.user = null;
             localStorage.removeItem(TOKEN_KEY);
             localStorage.removeItem('abdu_user_data');
+            this.updateUIState();
             return null;
+        },
+
+        // UI holatini yangilash
+        updateUIState() {
+            try {
+                const userMenu = document.getElementById('user-menu');
+                const loginBtnEl = document.getElementById('login-btn');
+                if (this.isLoggedIn()) {
+                    if (userMenu) userMenu.style.display = '';
+                    if (loginBtnEl) loginBtnEl.style.display = 'none';
+                    const nameLabel = document.getElementById('user-name-label');
+                    const avatarEl = document.getElementById('user-avatar');
+                    const ddName = document.getElementById('user-dd-name');
+                    const ddUsername = document.getElementById('user-dd-username');
+                    const nameStr = this.user.name || this.user.username || 'Foydalanuvchi';
+                    if (nameLabel) nameLabel.textContent = nameStr;
+                    if (avatarEl) avatarEl.textContent = nameStr.charAt(0).toUpperCase();
+                    if (ddName) ddName.textContent = nameStr;
+                    if (ddUsername) ddUsername.textContent = '@' + (this.user.username || '');
+                } else {
+                    if (userMenu) userMenu.style.display = 'none';
+                    if (loginBtnEl) loginBtnEl.style.display = '';
+                }
+            } catch (e) {
+                console.error("UI state update error:", e);
+            }
         },
 
         // Test natijasini serverga yuborish
@@ -119,23 +183,66 @@
         },
     };
 
-    window.onTelegramAuth = function(user) {
+    // Global Telegram Callback
+    window.onTelegramAuth = async function(user) {
         if (window.Auth && user) {
-            Auth.loginWithTelegram(user);
-            if (typeof showToast === 'function') {
-                showToast("✈️ Telegram orqali muvaffaqiyatli kirdingiz!", "success");
+            const res = await Auth.loginWithTelegram(user);
+            if (res.ok) {
+                const authModal = document.getElementById('auth-modal');
+                if (authModal) authModal.classList.remove('active');
+                document.body.style.overflow = '';
+                if (typeof showToast === 'function') {
+                    showToast("✈️ Telegram orqali muvaffaqiyatli kirdingiz!", "success");
+                }
             }
-            setTimeout(() => location.reload(), 500);
         }
     };
 
-    window.handleTelegramAuthFallback = function() {
-        const input = prompt("Telegram ismingizni yoki foydalanuvchi nomingizni kiriting (Masalan: Akromjon yoki @foydalanuvchi):");
+    // Telegram WebApp ichida bo'lsa avto-detect
+    function detectTelegramWebApp() {
+        try {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                return window.Telegram.WebApp.initDataUnsafe.user;
+            }
+        } catch (e) {}
+        return null;
+    }
+
+    // 1-Click Telegram tugmasi bosilganda
+    window.handleTelegramAuthFallback = async function() {
+        // 1. Agar Telegram WebApp (Mini App) ichida bo'lsak — avtomatik 1-click kirish!
+        const webAppUser = detectTelegramWebApp();
+        if (webAppUser) {
+            const res = await Auth.loginWithTelegram(webAppUser);
+            if (res.ok) {
+                const authModal = document.getElementById('auth-modal');
+                if (authModal) authModal.classList.remove('active');
+                document.body.style.overflow = '';
+                if (typeof showToast === 'function') {
+                    showToast("✈️ Telegram: " + (res.user.name || res.user.username) + " sifatida kirdingiz!", "success");
+                }
+                return;
+            }
+        }
+
+        // 2. Agar modal ichida telegram quick-form bo'lsa, uni ko'rsatamiz
+        const tgInlineForm = document.getElementById('tg-inline-form');
+        const tgCustomBtn = document.getElementById('tg-custom-btn');
+        if (tgInlineForm) {
+            tgInlineForm.style.display = 'block';
+            if (tgCustomBtn) tgCustomBtn.style.display = 'none';
+            const tgInput = document.getElementById('tg-username-input');
+            if (tgInput) tgInput.focus();
+            return;
+        }
+
+        // 3. Muqobil dialog (agar inline form bo'lmasa)
+        const input = prompt("Telegram ismingizni yoki username'ingizni kiriting (Masalan: Akromjon yoki @username):");
         if (!input || !input.trim()) return;
-        
+
         const cleanName = input.replace('@', '').trim();
         const generatedId = Math.floor(Math.random() * 89999999) + 10000000;
-        
+
         const tgUser = {
             id: generatedId,
             first_name: cleanName,
@@ -144,11 +251,43 @@
         };
 
         if (window.Auth) {
-            Auth.loginWithTelegram(tgUser);
+            const res = await Auth.loginWithTelegram(tgUser);
+            if (res.ok) {
+                const authModal = document.getElementById('auth-modal');
+                if (authModal) authModal.classList.remove('active');
+                document.body.style.overflow = '';
+                if (typeof showToast === 'function') {
+                    showToast("✈️ Telegram: " + cleanName + " nomidan muvaffaqiyatli kirdingiz!", "success");
+                }
+            }
+        }
+    };
+
+    // Quick form'dan kirish funksiyasi
+    window.submitTelegramQuickAuth = async function(e) {
+        if (e) e.preventDefault();
+        const tgInput = document.getElementById('tg-username-input');
+        const val = tgInput ? tgInput.value.trim() : '';
+        if (!val) {
+            if (typeof showToast === 'function') showToast("Telegram username yoki ismingizni kiriting", "error");
+            return;
+        }
+        const cleanName = val.replace('@', '').trim();
+        const generatedId = Math.floor(Math.random() * 89999999) + 10000000;
+        const tgUser = {
+            id: generatedId,
+            first_name: cleanName,
+            username: cleanName.toLowerCase().replace(/\s+/g, '_'),
+            provider: 'telegram'
+        };
+        const res = await Auth.loginWithTelegram(tgUser);
+        if (res.ok) {
+            const authModal = document.getElementById('auth-modal');
+            if (authModal) authModal.classList.remove('active');
+            document.body.style.overflow = '';
             if (typeof showToast === 'function') {
                 showToast("✈️ Telegram: " + cleanName + " nomidan muvaffaqiyatli kirdingiz!", "success");
             }
-            setTimeout(() => location.reload(), 500);
         }
     };
 
