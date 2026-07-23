@@ -649,38 +649,54 @@ function openTournamentView(pushHistory = true) {
 }
 
 // 9. SPA Routing Navigation
+// 9. SPA Routing Navigation
 if (mainNav) {
     mainNav.addEventListener('click', (e) => {
-        e.preventDefault();
         const link = e.target.closest('a');
         if (!link) return;
+        e.preventDefault();
 
         if (link.id === 'nav-contact-link') {
             openContactModal();
             return;
         }
+        if (link.id === 'nav-deutsch-link' || link.getAttribute('data-page') === 'deutsch') {
+            openDeutschView();
+            syncActiveNavState('deutsch');
+            return;
+        }
+        if (link.id === 'nav-flashcards-link' || link.getAttribute('data-page') === 'flashcards') {
+            openFlashcardsView();
+            syncActiveNavState('flashcards');
+            return;
+        }
+        if (link.id === 'nav-tournament-link' || link.getAttribute('data-page') === 'tournament') {
+            openTournamentView();
+            syncActiveNavState('tournament');
+            return;
+        }
 
         const page = link.getAttribute('data-page') || 'home';
         showMainView();
+        syncActiveNavState(page);
 
-        mainNav.querySelectorAll('a').forEach(a => a.classList.remove('active'));
-        link.classList.add('active');
-        
         currentTab = page;
-
         if (currentTab === 'projects') {
             filterType = 'project';
         } else {
-            const activeTag = filterTags.querySelector('.filter-tag.active');
+            const activeTag = filterTags ? filterTags.querySelector('.filter-tag.active') : null;
             filterType = activeTag && activeTag.getAttribute('data-filter') ? activeTag.getAttribute('data-filter') : 'Kundalik Blog';
         }
 
-        filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+        if (filterTags) {
+            filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+        }
 
-        updateHeroContent();
-        renderPosts();
+        if (typeof updateHeroContent === 'function') updateHeroContent();
+        if (typeof renderPosts === 'function') renderPosts();
     });
 }
+
 // Kontakt modali
 const contactModal = document.getElementById('contact-modal');
 function openContactModal() {
@@ -699,8 +715,8 @@ contactModal?.addEventListener('click', (e) => {
 if (navLogo) {
     navLogo.addEventListener('click', (e) => {
         e.preventDefault();
-        const blogTagBtn = document.getElementById('blog-tag-btn');
-        if (blogTagBtn) blogTagBtn.click();
+        showMainView();
+        syncActiveNavState('home');
     });
 }
 
@@ -708,9 +724,9 @@ if (navLogo) {
 const desktopDock = document.getElementById('desktop-dock');
 if (desktopDock) {
     desktopDock.addEventListener('click', (e) => {
-        e.preventDefault();
         const link = e.target.closest('a');
         if (!link) return;
+        e.preventDefault();
 
         // Maxsus tugmalar
         if (link.id === 'dock-contact') {
@@ -722,29 +738,38 @@ if (desktopDock) {
             if (themeBtn) themeBtn.click();
             return;
         }
-        if (link.id === 'dock-deutsch') {
+        if (link.id === 'dock-deutsch' || link.getAttribute('data-page') === 'deutsch') {
             openDeutschView();
             syncActiveNavState('deutsch');
             return;
         }
+        if (link.getAttribute('data-page') === 'flashcards') {
+            openFlashcardsView();
+            syncActiveNavState('flashcards');
+            return;
+        }
+        if (link.getAttribute('data-page') === 'tournament') {
+            openTournamentView();
+            syncActiveNavState('tournament');
+            return;
+        }
         
-        // Blog tugmasi (Asosiy sahifaga o'tadi)
-        let page = link.getAttribute('data-page');
-        if (page === 'blog') page = 'home'; // Blog aslida home
+        let page = link.getAttribute('data-page') || 'home';
+        if (page === 'blog') page = 'home';
 
         showMainView();
-
-        // Active state sinxronlash (dock va main-nav)
         syncActiveNavState(page);
         
         currentTab = page;
-        const activeTag = filterTags.querySelector('.filter-tag.active');
+        const activeTag = filterTags ? filterTags.querySelector('.filter-tag.active') : null;
         filterType = (page === 'projects') ? 'project' : (activeTag && activeTag.getAttribute('data-filter') ? activeTag.getAttribute('data-filter') : 'Kundalik Blog');
 
-        filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+        if (filterTags) {
+            filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+        }
 
-        updateHeroContent();
-        renderPosts();
+        if (typeof updateHeroContent === 'function') updateHeroContent();
+        if (typeof renderPosts === 'function') renderPosts();
     });
 }
 
