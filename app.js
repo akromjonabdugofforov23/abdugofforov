@@ -2649,6 +2649,9 @@ window.openAuthModal = function(tab) {
     if (authModal) {
         authModal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        if (typeof initTelegramWidget === 'function') {
+            initTelegramWidget();
+        }
     }
 };
 

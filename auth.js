@@ -51,10 +51,10 @@
             return data;
         },
 
+        // Real Telegram OAuth / WebApp foydalanuvchisini autentifikatsiya qilish
         async loginWithTelegram(tgUser) {
-            if (!tgUser) return { ok: false, message: "Foydalanuvchi ma'lumoti bo'sh" };
+            if (!tgUser) return { ok: false, message: "Telegram foydalanuvchi ma'lumoti bo'sh" };
 
-            // 1. Server API (/auth/telegram) ga so'rov yuborish
             try {
                 const res = await fetch('/auth/telegram', {
                     method: 'POST',
@@ -69,30 +69,14 @@
                     localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
                     this.updateUIState();
                     return { ok: true, user: this.user };
+                } else if (data.message) {
+                    return { ok: false, message: data.message };
                 }
             } catch (e) {
-                console.warn('Server Telegram Auth so\'rovida xatolik (offlayn fallback ishlatiladi):', e);
+                console.warn('Server Telegram Auth so\'rovida xatolik:', e);
             }
 
-            // 2. Local fallback rejim (server javob bermasa)
-            const id = tgUser.id || Math.floor(Math.random() * 89999999) + 10000000;
-            const cleanName = (tgUser.first_name || tgUser.name || 'Telegram Foydalanuvchi').trim();
-            const username = tgUser.username || ('tg_' + id);
-            const token = 'tg_token_' + id + '_' + Date.now();
-
-            this.token = token;
-            this.user = {
-                id: id,
-                name: cleanName + (tgUser.last_name ? (' ' + tgUser.last_name) : ''),
-                username: username,
-                photo: tgUser.photo_url || tgUser.photo || '',
-                provider: 'telegram'
-            };
-
-            localStorage.setItem(TOKEN_KEY, token);
-            localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
-            this.updateUIState();
-            return { ok: true, user: this.user };
+            return { ok: false, message: "Server bilan bog'lanishda xatolik." };
         },
 
         async logout() {
@@ -127,7 +111,7 @@
                     return this.user;
                 }
             } catch (e) {}
-            // Token yaroqsiz — tozalaymiz
+
             this.token = null;
             this.user = null;
             localStorage.removeItem(TOKEN_KEY);
@@ -183,7 +167,7 @@
         },
     };
 
-    // Global Telegram Callback
+    // Global Telegram OAuth Widget Callback (Telegram.org rasmiy javobi)
     window.onTelegramAuth = async function(user) {
         if (window.Auth && user) {
             const res = await Auth.loginWithTelegram(user);
@@ -192,102 +176,123 @@
                 if (authModal) authModal.classList.remove('active');
                 document.body.style.overflow = '';
                 if (typeof showToast === 'function') {
-                    showToast("✈️ Telegram orqali muvaffaqiyatli kirdingiz!", "success");
+                    showToast("✈️ Telegram orqali tasdiqlangan profil bilan kirdingiz!", "success");
+                }
+            } else {
+                if (typeof showToast === 'function') {
+                    showToast(res.message || "Telegram tasdiqlashda xatolik yuz berdi", "error");
                 }
             }
         }
     };
 
-    // Telegram WebApp ichida bo'lsa avto-detect
-    function detectTelegramWebApp() {
+    // Rasmiy Telegram Widget funksiyasini yuklash
+    window.initTelegramWidget = function(botUsername) {
+        const container = document.getElementById('telegram-official-widget-container');
+        if (!container) return;
+        container.innerHTML = ''; // tozalash
+
+        const botName = botUsername || window.TELEGRAM_BOT_USERNAME || 'abdugofforov_admin_bot';
+        const script = document.createElement('script');
+        script.src = 'https://telegram.org/js/telegram-widget.js?22';
+        script.setAttribute('data-telegram-login', botName);
+        script.setAttribute('data-size', 'large');
+        script.setAttribute('data-radius', '12');
+        script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+        script.setAttribute('data-request-access', 'write');
+        script.async = true;
+        container.appendChild(script);
+    };
+
+    // Telegram Code Auth UI ko'rsatish/yashirish
+    window.toggleTelegramCodeAuthUI = function() {
+        const form = document.getElementById('tg-code-form');
+        if (!form) return;
+        if (form.style.display === 'none' || !form.style.display) {
+            form.style.display = 'block';
+            const chatInput = document.getElementById('tg-chat-input');
+            if (chatInput) chatInput.focus();
+        } else {
+            form.style.display = 'none';
+        }
+    };
+
+    // Telegram Bot orqali 6-xonali kod so'rash
+    let pendingTgTarget = '';
+    window.sendTelegramAuthCode = async function() {
+        const chatInput = document.getElementById('tg-chat-input');
+        const target = chatInput ? chatInput.value.trim() : '';
+        const btn = document.getElementById('tg-send-code-btn');
+
+        if (!target) {
+            if (typeof showToast === 'function') showToast("Telegram Chat ID yoki @username kiriting", "error");
+            return;
+        }
+
+        if (btn) { btn.disabled = true; btn.textContent = 'Yuborilmoqda...'; }
+
         try {
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-                return window.Telegram.WebApp.initDataUnsafe.user;
+            const res = await fetch('/auth/telegram-code-request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (data.ok) {
+                pendingTgTarget = data.target || target.replace('@', '');
+                document.getElementById('tg-code-step-1').style.display = 'none';
+                document.getElementById('tg-code-step-2').style.display = 'block';
+                const codeInput = document.getElementById('tg-code-input');
+                if (codeInput) codeInput.focus();
+                if (typeof showToast === 'function') showToast("📩 Kod Telegram'ingizga yuborildi!", "success");
+            } else {
+                if (typeof showToast === 'function') showToast(data.message || "Kod yuborishda xatolik!", "error");
             }
-        } catch (e) {}
-        return null;
-    }
-
-    // 1-Click Telegram tugmasi bosilganda
-    window.handleTelegramAuthFallback = async function() {
-        // 1. Agar Telegram WebApp (Mini App) ichida bo'lsak — avtomatik 1-click kirish!
-        const webAppUser = detectTelegramWebApp();
-        if (webAppUser) {
-            const res = await Auth.loginWithTelegram(webAppUser);
-            if (res.ok) {
-                const authModal = document.getElementById('auth-modal');
-                if (authModal) authModal.classList.remove('active');
-                document.body.style.overflow = '';
-                if (typeof showToast === 'function') {
-                    showToast("✈️ Telegram: " + (res.user.name || res.user.username) + " sifatida kirdingiz!", "success");
-                }
-                return;
-            }
-        }
-
-        // 2. Agar modal ichida telegram quick-form bo'lsa, uni ko'rsatamiz
-        const tgInlineForm = document.getElementById('tg-inline-form');
-        const tgCustomBtn = document.getElementById('tg-custom-btn');
-        if (tgInlineForm) {
-            tgInlineForm.style.display = 'block';
-            if (tgCustomBtn) tgCustomBtn.style.display = 'none';
-            const tgInput = document.getElementById('tg-username-input');
-            if (tgInput) tgInput.focus();
-            return;
-        }
-
-        // 3. Muqobil dialog (agar inline form bo'lmasa)
-        const input = prompt("Telegram ismingizni yoki username'ingizni kiriting (Masalan: Akromjon yoki @username):");
-        if (!input || !input.trim()) return;
-
-        const cleanName = input.replace('@', '').trim();
-        const generatedId = Math.floor(Math.random() * 89999999) + 10000000;
-
-        const tgUser = {
-            id: generatedId,
-            first_name: cleanName,
-            username: cleanName.toLowerCase().replace(/\s+/g, '_'),
-            provider: 'telegram'
-        };
-
-        if (window.Auth) {
-            const res = await Auth.loginWithTelegram(tgUser);
-            if (res.ok) {
-                const authModal = document.getElementById('auth-modal');
-                if (authModal) authModal.classList.remove('active');
-                document.body.style.overflow = '';
-                if (typeof showToast === 'function') {
-                    showToast("✈️ Telegram: " + cleanName + " nomidan muvaffaqiyatli kirdingiz!", "success");
-                }
-            }
+        } catch (e) {
+            if (typeof showToast === 'function') showToast("Server bilan bog'lanishda xato!", "error");
+        } finally {
+            if (btn) { btn.disabled = false; btn.textContent = 'Kod olish'; }
         }
     };
 
-    // Quick form'dan kirish funksiyasi
-    window.submitTelegramQuickAuth = async function(e) {
-        if (e) e.preventDefault();
-        const tgInput = document.getElementById('tg-username-input');
-        const val = tgInput ? tgInput.value.trim() : '';
-        if (!val) {
-            if (typeof showToast === 'function') showToast("Telegram username yoki ismingizni kiriting", "error");
+    // Telegram 6-xonali kodini tasdiqlash
+    window.verifyTelegramAuthCode = async function() {
+        const codeInput = document.getElementById('tg-code-input');
+        const code = codeInput ? codeInput.value.trim() : '';
+        const btn = document.getElementById('tg-verify-code-btn');
+
+        if (!code || code.length !== 6) {
+            if (typeof showToast === 'function') showToast("6 xonali kodni kiriting", "error");
             return;
         }
-        const cleanName = val.replace('@', '').trim();
-        const generatedId = Math.floor(Math.random() * 89999999) + 10000000;
-        const tgUser = {
-            id: generatedId,
-            first_name: cleanName,
-            username: cleanName.toLowerCase().replace(/\s+/g, '_'),
-            provider: 'telegram'
-        };
-        const res = await Auth.loginWithTelegram(tgUser);
-        if (res.ok) {
-            const authModal = document.getElementById('auth-modal');
-            if (authModal) authModal.classList.remove('active');
-            document.body.style.overflow = '';
-            if (typeof showToast === 'function') {
-                showToast("✈️ Telegram: " + cleanName + " nomidan muvaffaqiyatli kirdingiz!", "success");
+
+        if (btn) { btn.disabled = true; btn.textContent = 'Tekshirilmoqda...'; }
+
+        try {
+            const res = await fetch('/auth/telegram-code-verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target: pendingTgTarget, code })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (data.ok && data.token) {
+                Auth.token = data.token;
+                Auth.user = data.user;
+                localStorage.setItem(TOKEN_KEY, data.token);
+                localStorage.setItem('abdu_user_data', JSON.stringify(Auth.user));
+                Auth.updateUIState();
+
+                const authModal = document.getElementById('auth-modal');
+                if (authModal) authModal.classList.remove('active');
+                document.body.style.overflow = '';
+                if (typeof showToast === 'function') showToast("✈️ Telegram orqali muvaffaqiyatli kirdingiz!", "success");
+            } else {
+                if (typeof showToast === 'function') showToast(data.message || "Kod noto'g'ri!", "error");
             }
+        } catch (e) {
+            if (typeof showToast === 'function') showToast("Tasdiqlashda xatolik yuz berdi", "error");
+        } finally {
+            if (btn) { btn.disabled = false; btn.textContent = 'Tasdiqlash'; }
         }
     };
 
