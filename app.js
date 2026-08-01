@@ -2623,7 +2623,7 @@ async function bootstrap() {
     // initFooterParticles(); // Performance optimization
     initCarousel();
     initHeroCta();
-    // init3DTilt(); // Performance optimization
+    initFortuneQuotes();
     initFloatingAddBtn();
 
     // O'quvchi auth – token bo'lsa tiklaymiz, UI'ni yangilaymiz
@@ -2920,4 +2920,210 @@ if (closeMyresultsModal && myresultsModal) {
         window.addEventListener('touchstart', unlockAudio, { once: true });
     })();
 })();
+
+// ===== 3D KUN IQTIBOSI (FORTUNE QUOTES ENGINE) =====
+const FORTUNE_QUOTES = [
+    {
+        category: "🎯 STOYATSIZM",
+        quote: "Mag'lubiyat to'xtaganingda sodir bo'ladi. Har kuni kichik bo'lsa ham qadam tashla!",
+        author: "— Stoyatsizm Hikmati",
+        de: "Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhältst."
+    },
+    {
+        category: "🏛️ MARKUS AURELIY",
+        quote: "Sening hayoting sening fikrlaring qanday bo'lsa, shunday shakllanadi.",
+        author: "— Markus Aureliy (Rim imperatori & faylasuf)",
+        de: "Das Leben eines Menschen ist das, was seine Gedanken daraus machen."
+    },
+    {
+        category: "🧠 SENEKA",
+        quote: "Bizda vaqt kam emas, shunchaki biz foydalanmaydigan vaqt juda ko'p.",
+        author: "— Seneka (Rim faylasufi)",
+        de: "Es ist nicht zu wenig Zeit, die wir haben, sondern es ist zu viel Zeit, die wir nicht nutzen."
+    },
+    {
+        category: "⚡ EPIKTET",
+        quote: "Seni voqealar emas, balki u voqealarga bo'lgan munosabating tashvishga soladi.",
+        author: "— Epiktet (Stoyik faylasuf)",
+        de: "Nicht die Dinge selbst beunruhigen die Menschen, sondern die Vorstellungen von den Dingen."
+    },
+    {
+        category: "💻 DASTURLASH",
+        quote: "Muammoni avval tushunib yet, keyin kod yoz. Kod bu faqat fikrlash mahsulidir.",
+        author: "— John Johnson (Dasturlash arxitektori)",
+        de: "Erst das Problem verstehen, dann den Code schreiben."
+    },
+    {
+        category: "💻 STEVE JOBS",
+        quote: "Ajoyib ish qilishning yagona yo'li — qilayotgan ishingizni sevishdir.",
+        author: "— Steve Jobs (Apple asoschisi)",
+        de: "Der einzige Weg, großartige Arbeit zu leisten, ist zu lieben, was man tut."
+    },
+    {
+        category: "🚀 INTIZOM",
+        quote: "Har kuni qilingan kichik harakatlar vaqt o'tishi bilan buyuk natijalarni beradi.",
+        author: "— Robin Sharma (Rivojlanish ustozi)",
+        de: "Kleine tägliche Verbesserungen führen im Laufe der Zeit zu erstaunlichen Ergebnissen."
+    },
+    {
+        category: "🎯 GYOTE",
+        quote: "Yo'lingizga qo'yilgan toshlardan ham chiroyli narsalar qurishingiz mumkin.",
+        author: "— Johann Wolfgang von Goethe",
+        de: "Auch aus Steinen, die einem in den Weg gelegt werden, kann man Schönes bauen."
+    },
+    {
+        category: "💡 ALBERT EYNSHTEYN",
+        quote: "Muvaffaqiyatli odam bo'lishga emas, balki qadrli odam bo'lishga intiling.",
+        author: "— Albert Eynshteyn (Fizik olim)",
+        de: "Versuche nicht, ein erfolgreicher, sondern ein wertvoller Mensch zu werden."
+    },
+    {
+        category: "💻 LINUS TORVALDS",
+        quote: "Gapirish oson. Menga kodni ko'rsat (Talk is cheap. Show me the code).",
+        author: "— Linus Torvalds (Linux & Git yaratuvchisi)",
+        de: "Reden ist billig. Zeig mir den Code."
+    },
+    {
+        category: "🔥 CHIDAM",
+        quote: "Meni o'ldirmagan narsa meni kuchliroq qiladi.",
+        author: "— Friedrich Nietzsche (Faylasuf)",
+        de: "Was mich nicht umbringt, macht mich starker."
+    },
+    {
+        category: "🌱 MAQSAD",
+        quote: "Qaysi portga suzishni bilmagan kapitan uchun hech qanday shamol qulay emas.",
+        author: "— Seneka (Faylasuf)",
+        de: "Wer den Hafen nicht kennt, in den er segeln will, für den ist kein Wind der richtige."
+    },
+    {
+        category: "🎓 BILIM",
+        quote: "Bilim — bu kuch, lekin amaliyotsiz u faqat potensial bo'lib qolaveradi.",
+        author: "— Francis Bacon",
+        de: "Wissen ist Macht, aber ohne Anwendung bleibt es nur Potenzial."
+    },
+    {
+        category: "⚖️ ARISTOTEL",
+        quote: "Biz qayta-qayta qilayotgan narsamizning o'zimizmiz. Mukammallik amaliyat emas, odatdir.",
+        author: "— Aristotel (Yunon faylasufi)",
+        de: "Wir sind das, was wir wiederholt tun. Vorzuglichkeit ist also eine Gewohnheit."
+    },
+    {
+        category: "💻 BILL GATES",
+        quote: "Ko'pchilik odamlar 1 yilda nima qila olishlarini oshirib yuborishadi, lekin 10 yilda nima qila olishlarini past baholaydilar.",
+        author: "— Bill Gates (Microsoft asoschisi)",
+        de: "Die meisten Menschen uberschatzen, was sie in einem Jahr tun konnen, und unterschatzen, was sie in 10 Jahren tun konnen."
+    },
+    {
+        category: "🧭 KONFUTSIY",
+        quote: "Qanchalik sekin yurishingiz muhim emas, muhimi to'xtab qolmasligingizda.",
+        author: "— Konfutsiy (Faylasuf)",
+        de: "Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhaltst."
+    },
+    {
+        category: "💡 NIKOLA TESLA",
+        quote: "Koinot sirlarini tushunmoqchi bo'lsangiz, energiya, chastota va tebranishlar haqida o'ylang.",
+        author: "— Nikola Tesla (Ixtirochi olim)",
+        de: "Wenn du die Geheimnisse des Universums finden willst, denke in Begriffen von Energie, Frequenz und Schwingung."
+    },
+    {
+        category: "💻 ALAN KAY",
+        quote: "Kelajakni bashorat qilishning eng yaxshi yo'li — uni yaratishdir.",
+        author: "— Alan Kay (Informatik olim)",
+        de: "Die beste Moglichkeit, die Zukunft vorauszusagen, ist, sie zu erfinden."
+    },
+    {
+        category: "🏆 DIQQAT VA FOKUS",
+        quote: "G'oliblar diqqatini g'alabaga qaratadi, mag'lublar esa g'oliblarga.",
+        author: "— Motivatsion Hikmat",
+        de: "Gewinner konzentrieren sich auf das Gewinnen, Verlierer auf die Gewinner."
+    },
+    {
+        category: "✨ VIZION",
+        quote: "Tasavvur bilimdan muhimroqdir, chunki bilim cheklangan, tasavvur esa butun dunyoni qamrab oladi.",
+        author: "— Albert Eynshteyn",
+        de: "Phantasie ist wichtiger als Wissen, denn Wissen ist begrenzt."
+    }
+];
+
+let currentQuoteIndex = 0;
+
+function initFortuneQuotes() {
+    const card = document.getElementById('fortune-card');
+    const badge = document.getElementById('quote-category-badge');
+    const qText = document.getElementById('quote-text');
+    const qAuthor = document.getElementById('quote-author');
+    const deText = document.getElementById('quote-de-text');
+    const audioBtn = document.getElementById('quote-audio-btn');
+    const nextBtn = document.getElementById('quote-next-btn');
+
+    if (!card || !qText || !qAuthor) return;
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const saved = localStorage.getItem('abdu_quote_today');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (parsed.date === todayStr && typeof parsed.idx === 'number' && FORTUNE_QUOTES[parsed.idx]) {
+                currentQuoteIndex = parsed.idx;
+            } else {
+                currentQuoteIndex = Math.floor(Math.random() * FORTUNE_QUOTES.length);
+                localStorage.setItem('abdu_quote_today', JSON.stringify({ date: todayStr, idx: currentQuoteIndex }));
+            }
+        } catch (e) {
+            currentQuoteIndex = Math.floor(Math.random() * FORTUNE_QUOTES.length);
+        }
+    } else {
+        currentQuoteIndex = Math.floor(Math.random() * FORTUNE_QUOTES.length);
+        localStorage.setItem('abdu_quote_today', JSON.stringify({ date: todayStr, idx: currentQuoteIndex }));
+    }
+
+    function renderQuote(idx) {
+        const item = FORTUNE_QUOTES[idx];
+        if (!item) return;
+
+        card.style.opacity = '0';
+        card.style.transform = 'perspective(1000px) rotateX(15deg) translateY(10px)';
+
+        setTimeout(() => {
+            if (badge) badge.textContent = item.category || '💡 HIKMAT';
+            qText.textContent = `"${item.quote}"`;
+            qAuthor.textContent = item.author;
+            if (deText) deText.textContent = `"${item.de || ''}"`;
+
+            card.style.opacity = '1';
+            card.style.transform = 'perspective(1000px) rotateX(0deg) translateY(0deg)';
+        }, 200);
+    }
+
+    renderQuote(currentQuoteIndex);
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            currentQuoteIndex = (currentQuoteIndex + 1 + Math.floor(Math.random() * (FORTUNE_QUOTES.length - 1))) % FORTUNE_QUOTES.length;
+            renderQuote(currentQuoteIndex);
+        });
+    }
+
+    if (audioBtn) {
+        audioBtn.addEventListener('click', () => {
+            const item = FORTUNE_QUOTES[currentQuoteIndex];
+            if (!item || !window.speechSynthesis) return;
+
+            window.speechSynthesis.cancel();
+            
+            const textToSpeak = item.de ? item.de : item.quote;
+            const langCode = item.de ? 'de-DE' : 'uz-UZ';
+
+            const utter = new SpeechSynthesisUtterance(textToSpeak);
+            utter.lang = langCode;
+            utter.rate = 0.9;
+            window.speechSynthesis.speak(utter);
+            
+            audioBtn.textContent = '🔊 Ovoz berilmoqda...';
+            utter.onend = () => { audioBtn.textContent = '🔊 Audio Eshitish'; };
+            utter.onerror = () => { audioBtn.textContent = '🔊 Audio Eshitish'; };
+        });
+    }
+}
+
 
