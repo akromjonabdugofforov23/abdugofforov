@@ -137,29 +137,29 @@ function renderDeutschHome() {
             <h2 class="deutsch-title">${t('de.title', 'Nemis Tili Akademiyasi')}</h2>
             <p class="deutsch-sub">${t('de.subtitle', "A1 - B2 Darajalar &middot; Interaktiv O'rganish Hub'i")}</p>
 
-            <div class="deutsch-mode-nav">
-                <div class="deutsch-mode-card mode-tests active" onclick="window.scrollTo({top: 350, behavior: 'smooth'})">
-                    <span class="dm-icon">📝</span>
-                    <div class="dm-title">${t('de.mode.tests', 'Mavzuli Testlar')}</div>
-                    <div class="dm-sub">${t('de.mode.tests_sub', 'A1-B2 Goethe')}</div>
+            <div class="deutsch-mode-nav" style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 18px; margin-top: 24px; width: 100%;">
+                <div class="deutsch-mode-card mode-tests active" onclick="window.scrollTo({top: 350, behavior: 'smooth'})" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(59, 130, 246, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.18);">
+                    <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">📝</span>
+                    <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">${t('de.mode.tests', 'Mavzuli Testlar')}</div>
+                    <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.tests_sub', 'A1-B2 Goethe')}</div>
                 </div>
 
-                <div class="deutsch-mode-card mode-flashcards" onclick="openFlashcardsView()">
-                    <span class="dm-icon">🎴</span>
-                    <div class="dm-title">${t('de.mode.flashcards', "So'z Kartochkalari")}</div>
-                    <div class="dm-sub">${t('de.mode.flashcards_sub', 'Ovozli Leitner')}</div>
+                <div class="deutsch-mode-card mode-flashcards" onclick="openFlashcardsView()" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(139, 92, 246, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(139, 92, 246, 0.18);">
+                    <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">🎴</span>
+                    <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">${t('de.mode.flashcards', "So'z Kartochkalari")}</div>
+                    <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.flashcards_sub', 'Ovozli Leitner')}</div>
                 </div>
 
-                <div class="deutsch-mode-card mode-tournament" onclick="openTournamentView()">
-                    <span class="dm-icon">⚔️</span>
-                    <div class="dm-title">${t('de.mode.tournament', 'Deutsch Turnir')}</div>
-                    <div class="dm-sub">${t('de.mode.tournament_sub', 'Jonli musobaqa')}</div>
+                <div class="deutsch-mode-card mode-tournament" onclick="openTournamentView()" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(245, 158, 11, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.18);">
+                    <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">⚔️</span>
+                    <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">${t('de.mode.tournament', 'Deutsch Turnir')}</div>
+                    <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.tournament_sub', 'Jonli musobaqa')}</div>
                 </div>
 
-                <div class="deutsch-mode-card mode-horror" onclick="openHorrorHome()">
-                    <span class="dm-icon">💀</span>
-                    <div class="dm-title" style="color:#ef4444;">HORROR DEUTSCH</div>
-                    <div class="dm-sub">${t('de.mode.horror_sub', 'Adrenalin omon qolish')}</div>
+                <div class="deutsch-mode-card mode-horror" onclick="openHorrorHome()" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(239, 68, 68, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25);">
+                    <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">💀</span>
+                    <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ef4444; margin-bottom: 4px;">HORROR DEUTSCH</div>
+                    <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.horror_sub', 'Adrenalin omon qolish')}</div>
                 </div>
             </div>
         </div>
