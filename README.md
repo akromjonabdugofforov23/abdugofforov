@@ -20,7 +20,7 @@ Frontend qismida esa interaktiv zarralardan iborat 3D gologramma uslubidagi (Can
 
 1. Loyiha papkasiga kiring:
 ```bash
-cd logo-project
+cd abdugofforov
 ```
 
 2. Modullarni o'rnating:
