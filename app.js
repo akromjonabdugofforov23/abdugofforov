@@ -656,8 +656,11 @@ if (mainNav) {
         if (!link) return;
         e.preventDefault();
 
-        if (link.id === 'nav-contact-link') {
-            openContactModal();
+        if (link.id === 'nav-contact-link' || link.getAttribute('href') === '#contact') {
+            showMainView();
+            syncActiveNavState('contact');
+            const contactSec = document.getElementById('contact');
+            if (contactSec) contactSec.scrollIntoView({ behavior: 'smooth' });
             return;
         }
         if (link.id === 'nav-deutsch-link' || link.getAttribute('data-page') === 'deutsch') {
@@ -729,8 +732,11 @@ if (desktopDock) {
         e.preventDefault();
 
         // Maxsus tugmalar
-        if (link.id === 'dock-contact') {
-            openContactModal();
+        if (link.id === 'dock-contact' || link.getAttribute('href') === '#contact') {
+            showMainView();
+            syncActiveNavState('contact');
+            const contactSec = document.getElementById('contact');
+            if (contactSec) contactSec.scrollIntoView({ behavior: 'smooth' });
             return;
         }
         if (link.id === 'dock-theme') {
@@ -2624,6 +2630,7 @@ async function bootstrap() {
     initCarousel();
     initHeroCta();
     initFortuneQuotes();
+    initStatsCounters();
     initFloatingAddBtn();
 
     // O'quvchi auth – token bo'lsa tiklaymiz, UI'ni yangilaymiz
@@ -3125,5 +3132,140 @@ function initFortuneQuotes() {
         });
     }
 }
+
+// ===== LIVE STATS & MILESTONES COUNTER ENGINE =====
+function initStatsCounters() {
+    const statsSection = document.getElementById('stats');
+    if (!statsSection) return;
+
+    const counters = statsSection.querySelectorAll('.stat-counter');
+    if (!counters.length) return;
+
+    let animated = false;
+
+    function animateCounters() {
+        if (animated) return;
+        animated = true;
+
+        const duration = 2000; // 2 seconds counting animation
+        const startTime = performance.now();
+
+        function update(now) {
+            const elapsedTime = now - startTime;
+            const progress = Math.min(elapsedTime / duration, 1);
+            // Ease-out cubic formula for smooth deceleration
+            const easeOutProgress = 1 - Math.pow(1 - progress, 3);
+
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target') || '0', 10);
+                const currentValue = Math.floor(easeOutProgress * target);
+                counter.textContent = currentValue.toLocaleString();
+            });
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                counters.forEach(counter => {
+                    const target = parseInt(counter.getAttribute('data-target') || '0', 10);
+                    counter.textContent = target.toLocaleString();
+                });
+            }
+        }
+
+        requestAnimationFrame(update);
+    }
+
+    // IntersectionObserver to trigger counter when scrolled into view
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        observer.observe(statsSection);
+    } else {
+        // Fallback for browsers without IntersectionObserver support
+        animateCounters();
+    }
+}
+
+// ===== QUICK CONTACT FORM SUBMISSION ENGINE =====
+function initContactForm() {
+    const contactForm = document.getElementById('contact-form');
+    if (!contactForm) return;
+
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const nameInput = document.getElementById('contact-name');
+        const contactInput = document.getElementById('contact-contact');
+        const messageInput = document.getElementById('contact-message');
+        const submitBtn = document.getElementById('contact-submit-btn');
+
+        const name = nameInput ? nameInput.value.trim() : '';
+        const contact = contactInput ? contactInput.value.trim() : '';
+        const message = messageInput ? messageInput.value.trim() : '';
+
+        if (!name || !contact || !message) {
+            if (typeof showToast === 'function') {
+                showToast("⚠️ Iltimos, barcha maydonlarni to'ldiring!", "warn");
+            } else {
+                alert("Iltimos, barcha maydonlarni to'ldiring!");
+            }
+            return;
+        }
+
+        // Disable submit button temporarily to prevent duplicate submissions
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+        }
+
+        // Save message locally
+        try {
+            const savedMessages = safeJSONParse('abdu_contact_messages', []);
+            savedMessages.push({
+                id: Date.now(),
+                name: name,
+                contact: contact,
+                message: message,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('abdu_contact_messages', JSON.stringify(savedMessages));
+        } catch (e) {
+            console.error('Contact message save error:', e);
+        }
+
+        // Show toast notification
+        if (typeof showToast === 'function') {
+            showToast("✅ Xabaringiz muvaffaqiyatli yuborildi! Rahmat.", "success");
+        }
+
+        // Reset form inputs
+        contactForm.reset();
+
+        if (submitBtn) {
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }, 800);
+        }
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initContactForm();
+        if (typeof initStatsCounters === 'function') initStatsCounters();
+    });
+} else {
+    initContactForm();
+    if (typeof initStatsCounters === 'function') initStatsCounters();
+}
+
 
 
