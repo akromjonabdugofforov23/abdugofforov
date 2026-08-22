@@ -1,0 +1,365 @@
+/* ===== MATCHING PAIRS & SPEED QUIZ — CSS Styles ===== */
+
+/* ----- Matching Grid ----- */
+.matching-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+.matching-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.matching-info {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    align-items: center;
+}
+.matching-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    perspective: 800px;
+}
+@media (max-width: 520px) {
+    .matching-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+    }
+}
+
+/* ----- Match Card ----- */
+.match-card {
+    aspect-ratio: 1;
+    cursor: pointer;
+    perspective: 600px;
+    position: relative;
+    border-radius: 14px;
+    transition: transform 0.15s ease;
+}
+.match-card:hover {
+    transform: scale(1.04);
+}
+.match-card .match-card-front,
+.match-card .match-card-back {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    backface-visibility: hidden;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
+    padding: 8px;
+    word-break: break-word;
+    overflow: hidden;
+}
+.match-card .match-card-front {
+    background: linear-gradient(135deg, var(--card-bg), var(--tag-bg));
+    border: 2px solid var(--border-color);
+    font-size: 28px;
+    color: var(--text-secondary);
+}
+.match-card .match-card-back {
+    background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.12));
+    border: 2px solid rgba(139,92,246,0.4);
+    color: var(--text-primary);
+    transform: rotateY(180deg);
+    font-size: 13px;
+}
+.match-card.flipped .match-card-front {
+    transform: rotateY(180deg);
+}
+.match-card.flipped .match-card-back {
+    transform: rotateY(0deg);
+}
+.match-card.matched {
+    pointer-events: none;
+}
+.match-card.matched .match-card-back {
+    background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(16,185,129,0.15));
+    border-color: rgba(34,197,94,0.5);
+    box-shadow: 0 0 16px rgba(34,197,94,0.25);
+}
+
+/* ----- Matching Results ----- */
+.matching-results {
+    text-align: center;
+    padding: 30px 20px;
+    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.matching-results-icon {
+    font-size: 56px;
+    margin-bottom: 12px;
+    animation: bounceIn 0.6s ease;
+}
+.matching-results h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+.matching-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin: 24px 0;
+}
+.matching-stat {
+    background: var(--tag-bg);
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+}
+.matching-stat .stat-value {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+.matching-stat .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+.matching-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* ----- Game Mode Grid (Home) ----- */
+.game-mode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin: 0 auto;
+    max-width: 700px;
+}
+.game-mode-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 28px 24px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.game-mode-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+.game-mode-card.matching-mode {
+    border-color: rgba(139,92,246,0.3);
+}
+.game-mode-card.matching-mode:hover {
+    box-shadow: 0 12px 30px rgba(139,92,246,0.15);
+}
+.game-mode-card.speed-mode {
+    border-color: rgba(245,158,11,0.3);
+}
+.game-mode-card.speed-mode:hover {
+    box-shadow: 0 12px 30px rgba(245,158,11,0.15);
+}
+.game-mode-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+.game-mode-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+.game-mode-card p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+.game-mode-decks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+.game-mode-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+/* ----- Speed Quiz ----- */
+.sq-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.sq-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.sq-stats {
+    display: flex;
+    gap: 14px;
+    font-size: 16px;
+    align-items: center;
+}
+.sq-timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+}
+.sq-timer-bar-bg {
+    width: 100px;
+    height: 8px;
+    background: var(--tag-bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.sq-timer-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #8b5cf6, #6366f1);
+    border-radius: 4px;
+    transition: width 1s linear;
+}
+.sq-timer-bar.danger {
+    background: linear-gradient(90deg, #ef4444, #f97316);
+    animation: pulse 0.5s ease infinite;
+}
+.sq-timer-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 28px;
+    text-align: center;
+}
+.sq-timer-value.sq-timer-danger {
+    color: #ef4444;
+    animation: pulse 0.5s ease infinite;
+}
+
+/* ----- Speed Quiz Question ----- */
+.sq-question-area {
+    text-align: center;
+    animation: fadeInUp 0.3s ease;
+}
+.sq-question-number {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+.sq-question-text {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 28px;
+    padding: 20px;
+    background: var(--tag-bg);
+    border-radius: 16px;
+    line-height: 1.4;
+}
+.sq-options {
+    display: grid;
+    gap: 12px;
+}
+.sq-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+    color: var(--text-primary);
+}
+.sq-option:hover:not(:disabled) {
+    border-color: var(--accent);
+    transform: translateX(4px);
+    background: rgba(139,92,246,0.06);
+}
+.sq-option-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--tag-bg);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+.sq-option.sq-correct {
+    border-color: #22c55e;
+    background: rgba(34,197,94,0.12);
+    box-shadow: 0 0 12px rgba(34,197,94,0.2);
+}
+.sq-option.sq-wrong {
+    border-color: #ef4444;
+    background: rgba(239,68,68,0.1);
+    box-shadow: 0 0 12px rgba(239,68,68,0.2);
+    animation: shake 0.3s ease;
+}
+
+/* ----- Speed Quiz Results ----- */
+.sq-results {
+    text-align: center;
+    padding: 30px 20px;
+    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sq-results-icon {
+    font-size: 56px;
+    margin-bottom: 12px;
+    animation: bounceIn 0.6s ease;
+}
+.sq-results h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+/* ----- Animations ----- */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+}
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.1); }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1); opacity: 1; }
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* ----- Search Highlight ----- */
+.search-highlight, mark.search-highlight {
+    background: rgba(245,158,11,0.25);
+    color: inherit;
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-weight: 600;
+}

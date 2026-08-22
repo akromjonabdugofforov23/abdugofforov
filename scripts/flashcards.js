@@ -2,20 +2,143 @@
 let fcDeckKey = null;
 let fcOrder = [];
 let fcIndex = 0;
+let fcDeckFilter = 'all';
+let fcSearchQuery = '';
+let _fcSearchTimer = null;
+
+const FC_ALL_DECKS = [
+    { key: 'de_uz', i: 'deck.de_uz' },
+    { key: 'uz_de', i: 'deck.uz_de' },
+    { key: 'grammar', i: 'deck.grammar' },
+    { key: 'sentences', i: 'deck.sentences' },
+    { key: 'quotes', i: 'deck.quotes' },
+    { key: 'ueber_mich', i: 'deck.ueber_mich' }
+];
+
+function renderFlashcardsGridHTML() {
+    const q = (fcSearchQuery || '').trim().toLowerCase();
+    const activeDeck = fcDeckFilter || 'all';
+
+    const hl = (txt) => {
+        if (!q || typeof window.SearchEngine === 'undefined') return (typeof escapeHTML === 'function' ? escapeHTML(txt) : txt);
+        return window.SearchEngine.highlight(txt, q);
+    };
+
+    // SEARCH MODE: Agar qidiruv so'zi kiritilgan bo'lsa, barcha kartalar ichidan qidiramiz
+    if (q) {
+        let matchedCards = [];
+        const targetDecks = activeDeck === 'all' ? FC_ALL_DECKS.map(d => d.key) : [activeDeck];
+
+        targetDecks.forEach(dKey => {
+            const deck = flashcardDecks[dKey] || [];
+            const deckInfo = FC_ALL_DECKS.find(d => d.key === dKey);
+            const deckName = deckInfo && window.i18n ? i18n.t(deckInfo.i) : dKey;
+
+            deck.forEach((card, idx) => {
+                const f = card.front || '';
+                const b = card.back || '';
+                const fNorm = typeof window.SearchEngine !== 'undefined' ? window.SearchEngine.normalize(f) : f.toLowerCase();
+                const bNorm = typeof window.SearchEngine !== 'undefined' ? window.SearchEngine.normalize(b) : b.toLowerCase();
+                const qNorm = typeof window.SearchEngine !== 'undefined' ? window.SearchEngine.normalize(q) : q;
+
+                if (fNorm.includes(qNorm) || bNorm.includes(qNorm)) {
+                    matchedCards.push({
+                        deckKey: dKey,
+                        deckName: deckName,
+                        cardIndex: idx,
+                        front: f,
+                        back: b
+                    });
+                }
+            });
+        });
+
+        if (matchedCards.length === 0) {
+            return `
+                <div class="empty-state" style="grid-column: 1 / -1; margin-top: 20px;">
+                    <span class="empty-state-icon">🔍</span>
+                    <p class="empty-state-text">"${typeof escapeHTML === 'function' ? escapeHTML(q) : q}" bo'yicha hech qanday so'z yoki kartochka topilmadi.</p>
+                </div>
+            `;
+        }
+
+        return `
+            <div style="margin-bottom: 12px; font-size: 14px; color: var(--text-secondary);">
+                🎯 Topildi: <b>${matchedCards.length}</b> ta so'z kartochkasi
+            </div>
+            <div class="fc-result-grid">
+                ${matchedCards.map(c => `
+                    <div class="fc-search-card" onclick="startFlashcardAt('${c.deckKey}', ${c.cardIndex})">
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                            <span class="search-type-badge badge-type-fc">${escapeHTML(c.deckName)}</span>
+                            <button class="btn-icon" style="width: 28px; height: 28px; font-size: 13px;" title="Ovozli eshitish" onclick="speakGermanText('${escapeHTML(c.deckKey === 'uz_de' ? c.back : c.front).replace(/'/g, "\\'")}', event)">🔊</button>
+                        </div>
+                        <div class="fc-search-front">${hl(c.front)}</div>
+                        <div class="fc-search-back">${hl(c.back)}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    // DECK GRID MODE: Oddiy to'plamlar ro'yxati
+    let filteredDecks = FC_ALL_DECKS;
+    if (activeDeck !== 'all') {
+        filteredDecks = FC_ALL_DECKS.filter(d => d.key === activeDeck);
+    }
+
+    return `
+        <div class="fc-deck-grid">
+            ${filteredDecks.map(d => `
+                <div class="post-card fc-deck-card" onclick="startFlashcards('${d.key}')" style="animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+                    <div class="fc-deck-emoji">${i18n.t(d.i).split(' ')[0]}</div>
+                    <h3>${i18n.t(d.i)}</h3>
+                    <span class="fc-deck-count">${fcMasteredCount(d.key)} / ${flashcardDecks[d.key] ? flashcardDecks[d.key].length : 0}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function updateFlashcardsView() {
+    const container = document.getElementById('fc-grid-container');
+    if (container) {
+        container.innerHTML = renderFlashcardsGridHTML();
+    }
+}
+
+function setFcDeckFilter(dk) {
+    fcDeckFilter = dk;
+    const filterContainer = document.getElementById('fc-deck-filters');
+    if (filterContainer) {
+        filterContainer.querySelectorAll('.filter-tag').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-deck') === dk);
+        });
+    }
+    updateFlashcardsView();
+}
+
+function startFlashcardAt(key, targetIndex) {
+    if (!flashcardDecks[key]) return;
+    fcDeckKey = key;
+    const len = flashcardDecks[key].length;
+    fcOrder = Array.from({ length: len }, (_, i) => i);
+    // Move targetIndex to front
+    const pos = fcOrder.indexOf(targetIndex);
+    if (pos > -1) {
+        fcOrder.splice(pos, 1);
+        fcOrder.unshift(targetIndex);
+    }
+    fcIndex = 0;
+    renderFlashcard();
+}
 
 function renderFlashcardsHome() {
     const view = document.getElementById('flashcards-content');
     if (!view) return;
-    const decks = [
-        { key: 'de_uz', i: 'deck.de_uz' },
-        { key: 'uz_de', i: 'deck.uz_de' },
-        { key: 'grammar', i: 'deck.grammar' },
-        { key: 'sentences', i: 'deck.sentences' },
-        { key: 'quotes', i: 'deck.quotes' },
-        { key: 'ueber_mich', i: 'deck.ueber_mich' }
-    ];
+
     view.innerHTML = `
-        <div style="text-align:center; margin-bottom:36px;">
+        <div style="text-align:center; margin-bottom:28px;">
             <div style="font-size:48px; margin-bottom:12px;">🃏</div>
             <h2 style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px;">${i18n.t('fc.title')}</h2>
             <p style="color:var(--text-secondary);">${i18n.t('fc.subtitle')}</p>
@@ -23,16 +146,38 @@ function renderFlashcardsHome() {
                 🔥 <b>${getFcStreak()}</b> kunlik streak
             </div>
         </div>
-        <div class="fc-deck-grid">
-            ${decks.map(d => `
-                <div class="post-card fc-deck-card" onclick="startFlashcards('${d.key}')">
-                    <div class="fc-deck-emoji">${i18n.t(d.i).split(' ')[0]}</div>
-                    <h3>${i18n.t(d.i)}</h3>
-                    <span class="fc-deck-count">${fcMasteredCount(d.key)} / ${flashcardDecks[d.key].length}</span>
-                </div>
-            `).join('')}
+
+        <!-- Flashcards Qidiruv va To'plam Filtrlari -->
+        <div class="fc-search-box">
+            <input type="text" id="flashcard-search-input" class="search-input" placeholder="🔍 Kartochkalar ichidan so'z qidirish (150+ so'z)..." value="${escapeAttr(fcSearchQuery)}">
+        </div>
+
+        <div class="fc-deck-filters" id="fc-deck-filters">
+            <button class="filter-tag ${fcDeckFilter === 'all' ? 'active' : ''}" data-deck="all" onclick="setFcDeckFilter('all')">✨ Barchasi</button>
+            <button class="filter-tag ${fcDeckFilter === 'de_uz' ? 'active' : ''}" data-deck="de_uz" onclick="setFcDeckFilter('de_uz')">🇩🇪→🇺🇿 Nemischa-O'zbekcha</button>
+            <button class="filter-tag ${fcDeckFilter === 'uz_de' ? 'active' : ''}" data-deck="uz_de" onclick="setFcDeckFilter('uz_de')">🇺🇿→🇩🇪 O'zbekcha-Nemischa</button>
+            <button class="filter-tag ${fcDeckFilter === 'grammar' ? 'active' : ''}" data-deck="grammar" onclick="setFcDeckFilter('grammar')">📐 Grammatika</button>
+            <button class="filter-tag ${fcDeckFilter === 'sentences' ? 'active' : ''}" data-deck="sentences" onclick="setFcDeckFilter('sentences')">💬 Gaplar</button>
+            <button class="filter-tag ${fcDeckFilter === 'quotes' ? 'active' : ''}" data-deck="quotes" onclick="setFcDeckFilter('quotes')">🏛️ Iqtiboslar</button>
+            <button class="filter-tag ${fcDeckFilter === 'ueber_mich' ? 'active' : ''}" data-deck="ueber_mich" onclick="setFcDeckFilter('ueber_mich')">🙋‍♂️ O'zim haqimda</button>
+        </div>
+
+        <div id="fc-grid-container">
+            ${renderFlashcardsGridHTML()}
         </div>
     `;
+
+    // Debounced real-time search input listener
+    const fcInput = document.getElementById('flashcard-search-input');
+    if (fcInput) {
+        fcInput.addEventListener('input', (e) => {
+            fcSearchQuery = e.target.value;
+            if (_fcSearchTimer) clearTimeout(_fcSearchTimer);
+            _fcSearchTimer = setTimeout(() => {
+                updateFlashcardsView();
+            }, 50); // Instant 50ms debouncing
+        });
+    }
 }
 
 function startFlashcards(key) {

@@ -1,10 +1,10 @@
 const flashcardDecks = {
-    // Nemis → O'zbek so'zlar
+    // 1. Nemis → O'zbek so'zlar (A1 Asosiy)
     de_uz: [
         { front: "das Haus", back: "uy" },
         { front: "der Freund", back: "do'st" },
-        { front: "die Arbeit", back: "ish" },
-        { front: "lernen", back: "o'rganmoq" },
+        { front: "die Arbeit", back: "ish / mehnat" },
+        { front: "lernen", back: "o'rganmoq / dars qilmoq" },
         { front: "die Gesundheit", back: "sog'liq" },
         { front: "das Wasser", back: "suv" },
         { front: "die Liebe", back: "sevgi / muhabbat" },
@@ -14,7 +14,7 @@ const flashcardDecks = {
         { front: "der Schlüssel", back: "kalit" },
         { front: "danken", back: "minnatdorchilik bildirmoq" },
         { front: "der Apfel", back: "olma" },
-        { front: "das Auto", back: "avtomobil" },
+        { front: "das Auto", back: "avtomobil / mashina" },
         { front: "die Familie", back: "oila" },
         { front: "das Geld", back: "pul" },
         { front: "das Kind", back: "bola" },
@@ -22,12 +22,32 @@ const flashcardDecks = {
         { front: "die Sprache", back: "til" },
         { front: "verstehen", back: "tushunmoq" },
         { front: "fragen", back: "so'ramoq" },
-        { front: "antworten", back: "javob bermoq" }
+        { front: "antworten", back: "javob bermoq" },
+        { front: "die Zeit", back: "vaqt" },
+        { front: "das Leben", back: "hayot" },
+        { front: "der Tag", back: "kun" },
+        { front: "die Nacht", back: "tun" },
+        { front: "die Reise", back: "sayohat" },
+        { front: "die Stadt", back: "shahar" },
+        { front: "das Land", back: "mamlakat / qishloq" },
+        { front: "helfen", back: "yordam bermoq" },
+        { front: "kaufen", back: "sotib olmoq" },
+        { front: "verkaufen", back: "sotmoq" },
+        { front: "schön", back: "chiroyli / go'zal" },
+        { front: "schwer", back: "og'ir / qiyin" },
+        { front: "einfach", back: "oddiy / oson" },
+        { front: "schnell", back: "tez" },
+        { front: "langsam", back: "sekin" },
+        { front: "immer", back: "doimo" },
+        { front: "manchmal", back: "ba'zan" },
+        { front: "nie", back: "hech qachon" }
     ],
-    // O'zbek → Nemis so'zlar
+
+    // 2. O'zbek → Nemis so'zlar
     uz_de: [
         { front: "kitob", back: "das Buch" },
         { front: "ona", back: "die Mutter" },
+        { front: "ota", back: "der Vater" },
         { front: "shahar", back: "die Stadt" },
         { front: "non", back: "das Brot" },
         { front: "yo'l", back: "der Weg" },
@@ -38,18 +58,117 @@ const flashcardDecks = {
         { front: "tezkor / tez", back: "schnell" },
         { front: "bilim", back: "das Wissen" },
         { front: "yurak", back: "das Herz" },
-        { front: "kuchuk", back: "der Hund" },
+        { front: "kuchuk / it", back: "der Hund" },
         { front: "mushuk", back: "die Katze" },
         { front: "daraxt", back: "der Baum" },
         { front: "quyosh", back: "die Sonne" },
-        { front: "oy", back: "der Mond" },
+        { front: "oy (fazodagi)", back: "der Mond" },
         { front: "ertalab", back: "der Morgen" },
         { front: "kechqurun", back: "der Abend" },
         { front: "tun", back: "die Nacht" },
         { front: "yozmoq", back: "schreiben" },
-        { front: "o'qimoq", back: "lesen" }
+        { front: "o'qimoq", back: "lesen" },
+        { front: "gapirmoq", back: "sprechen" },
+        { front: "tinglamoq", back: "hören" },
+        { front: "ichmoq", back: "trinken" },
+        { front: "yemoq", back: "essen" },
+        { front: "yashamoq", back: "wohnen / leben" },
+        { front: "kelmoq", back: "kommen" },
+        { front: "ketmoq / bormoq", back: "gehen" },
+        { front: "yangi", back: "neu" },
+        { front: "eski", back: "alt" },
+        { front: "katta", back: "groß" },
+        { front: "kichik", back: "klein" },
+        { front: "baxtli", back: "glücklich" }
     ],
-    // Grammatika savollari
+
+    // 3. A1 Eng muhim kuchli & tartibsiz fe'llar (Starke Verben)
+    a1_verbs: [
+        { front: "sein (bo'lmoq): er ___", back: "ist (war, ist gewesen)" },
+        { front: "haben (ega bo'lmoq): er ___", back: "hat (hatte, hat gehabt)" },
+        { front: "werden (bo'lmoq/aylanmoq): er ___", back: "wird (wurde, ist geworden)" },
+        { front: "sprechen (gapirmoq): er ___", back: "spricht (sprach, hat gesprochen)" },
+        { front: "lesen (o'qimoq): er ___", back: "liest (las, hat gelesen)" },
+        { front: "sehen (ko'rmoq): er ___", back: "sieht (sah, hat gesehen)" },
+        { front: "fahren (transportda yurmoq): er ___", back: "fährt (fuhr, ist gefahren)" },
+        { front: "laufen (yugurmoq): er ___", back: "läuft (lief, ist gelaufen)" },
+        { front: "schlafen (uxlamoq): er ___", back: "schläft (schlief, hat geschlafen)" },
+        { front: "essen (yemoq): er ___", back: "isst (aß, hat gegessen)" },
+        { front: "geben (bermoq): er ___", back: "gibt (gab, hat gegeben)" },
+        { front: "nehmen (olmoq): er ___", back: "nimmt (nahm, hat genommen)" },
+        { front: "helfen (yordam bermoq): er ___", back: "hilft (half, hat geholfen)" },
+        { front: "treffen (uchrashmoq): er ___", back: "trifft (traf, hat getroffen)" },
+        { front: "wissen (bilmoq): er ___", back: "weiß (wusste, hat gewusst)" },
+        { front: "bringen (keltirmoq): er ___", back: "bringt (brachte, hat gebracht)" },
+        { front: "denken (o'ylamoq): er ___", back: "denkt (dachte, hat gedacht)" },
+        { front: "kennen (tanimoq): er ___", back: "kennt (kannte, hat gekannt)" },
+        { front: "tragen (kiymoq/ko'tarmoq): er ___", back: "trägt (trug, hat getragen)" },
+        { front: "waschen (yuvmoq): er ___", back: "wäscht (wusch, hat gewaschen)" }
+    ],
+
+    // 4. A2 Kundalik hayot va muloqot (A2 Alltag & Reisen)
+    a2_daily: [
+        { front: "der Termin", back: "belgilangan uchrashuv / vaqt" },
+        { front: "die Verspätung", back: "kechikish" },
+        { front: "der Ausweis", back: "shaxsni tasdiqlovchi hujjat / pasport" },
+        { front: "die Fahrkarte", back: "yo'l chiptasi" },
+        { front: "der Bahnsteig", back: "poyezd platformasi / perron" },
+        { front: "die Quittung / der Beleg", back: "chek / kvitansiya" },
+        { front: "der Rabatt / das Sonderangebot", back: "chegirma / maxsus taklif" },
+        { front: "die Öffnungszeiten (Pl.)", back: "ish vaqtlari / ochiq soatlar" },
+        { front: "die Beschwerde", back: "shikoyat" },
+        { front: "das Rezept", back: "retsept (doriga yoki taomga)" },
+        { front: "die Apotheke", back: "dorixona" },
+        { front: "das Schmerzmittel", back: "og'riq qoldiruvchi dori" },
+        { front: "die Überweisung", back: "pul o'tkazmasi / shifokor yo'llanmasi" },
+        { front: "das Vorstellungsgespräch", back: "ishga qabul suhbati (intervyu)" },
+        { front: "die Kündigung", back: "ishdan yoki shartnomadan bo'shash/bekor qilish" },
+        { front: "der Mietvertrag", back: "ijara shartnomasi" },
+        { front: "die Nebenkosten (Pl.)", back: "kommunal to'lovlar" },
+        { front: "die Kaution", back: "garov puli (depozit)" },
+        { front: "die Sehenswürdigkeit", back: "diqqatga sazovor joy" },
+        { front: "die Gepäckausgabe", back: "bagaj topshirish/olish joyi" }
+    ],
+
+    // 5. B1 Bog'lovchilar & Grammatika (B1 Konnektoren & Struktur)
+    b1_connectors: [
+        { front: "obwohl (garchi ... bo'lsa ham)", back: "Ergash gap (fe'l gap oxirida): Obwohl es regnet, gehe ich spazieren." },
+        { front: "trotzdem (shunga qaramay)", back: "Asosiy gap (Inversion: fe'l 2-o'rinda): Es regnet, trotzdem gehe ich spazieren." },
+        { front: "weil (chunki)", back: "Ergash gap (fe'l gap oxirida): Ich lerne Deutsch, weil ich in Deutschland studieren will." },
+        { front: "deshalb / darum / deswegen (shuning uchun)", back: "Asosiy gap (fe'l 2-o'rinda): Ich will in Deutschland studieren, deshalb lerne ich Deutsch." },
+        { front: "damit (uchun / ... maqsadida — har xil subyekt)", back: "Ergash gap: Ich gebe ihm Geld, damit er das Buch kauft." },
+        { front: "um ... zu + Infinitiv (uchun — bir xil subyekt)", back: "Ich lerne viel, um die Prüfung zu bestehen." },
+        { front: "während (davomida / ... vaqtda)", back: "Ergash gap yoki Genitiv: Während ich koche, hört er Musik. / Während des Sommers." },
+        { front: "nachdem (...dan so'ng)", back: "Vaqtlar ketma-ketligi (Perfekt/Plusquamperfekt): Nachdem er gegessen hatte, ging er schlafen." },
+        { front: "indem (... orqali / ... vositasida)", back: "Ergash gap: Man lernt Sprachen am besten, indem man viel spricht." },
+        { front: "anstatt ... zu + Infinitiv (... o'rniga)", back: "Anstatt zu lernen, spielte er Videospiele." },
+        { front: "ohne ... zu + Infinitiv (...masdan)", back: "Er ging weg, ohne ein Wort zu sagen." },
+        { front: "sowohl ... als auch (ham ... ham)", back: "Qo'sh bog'lovchi: Er spricht sowohl Deutsch als auch Englisch." },
+        { front: "weder ... noch (na ... na)", back: "Inkor: Er trinkt weder Kaffee noch Tee." },
+        { front: "entweder ... oder (yo ... yoki)", back: "Tanlov: Entweder wir fahren mit dem Zug, oder wir fliegen." },
+        { front: "zwar ... aber (to'g'ri ... lekin)", back: "Zwar ist Deutsch schwer, aber es macht Spaß." }
+    ],
+
+    // 6. Predlogli fe'llar (Rektion der Verben — A2/B1)
+    rektion_verben: [
+        { front: "warten ___ (kutmoq)", back: "auf + Akkusativ: Ich warte auf den Bus." },
+        { front: "denken ___ (o'ylamoq)", back: "an + Akkusativ: Ich denke an dich." },
+        { front: "sich freuen ___ (kelajakdagi voqeaga quvonmoq)", back: "auf + Akkusativ: Ich freue mich auf den Urlaub." },
+        { front: "sich freuen ___ (hozirgi/o'tgan voqeadan xursand bo'lmoq)", back: "über + Akkusativ: Ich freue mich über das Geschenk." },
+        { front: "sich interessieren ___ (qiziqmoq)", back: "für + Akkusativ: Sie interessiert sich für Musik." },
+        { front: "teilnehmen ___ (qatnashmoq)", back: "an + Dativ: Er nimmt an dem Deutschkurs teil." },
+        { front: "träumen ___ (orzu qilmoq)", back: "von + Dativ: Ich träume von einer Reise." },
+        { front: "bitten ___ (so'ramoq/iltimos qilmoq)", back: "um + Akkusativ: Er bittet um Hilfe." },
+        { front: "danken ___ (minnatdor bo'lmoq)", back: "für + Akkusativ: Ich danke dir für deine Unterstützung." },
+        { front: "gehören ___ (tegishli bo'lmoq)", back: "zu + Dativ: Das gehört zu meinen Aufgaben." },
+        { front: "sich erinnern ___ (eslamoq/yodga olmoq)", back: "an + Akkusativ: Erinnerst du dich an unseren Urlaub?" },
+        { front: "sprechen ___ (haqida gapirmoq)", back: "über + Akk / von + Dat: Wir sprechen über das Wetter." },
+        { front: "suchen ___ (qidirmoq)", back: "nach + Dativ: Die Polizei sucht nach dem Täter." },
+        { front: "gehören ___ (biror kimsiga tegishli bo'lmoq - Dativ)", back: "Dativ (predlogsiz): Das Buch gehört mir." },
+        { front: "passen ___ (mos tushmoq)", back: "zu + Dativ: Die Schuhe passen gut zu dieser Hose." }
+    ],
+
+    // 7. Grammatika savollari
     grammar: [
         { front: "Artikel: ___ Buch", back: "das Buch (neytral rod)" },
         { front: "Ko'plik: das Kind → ?", back: "die Kinder" },
@@ -58,7 +177,7 @@ const flashcardDecks = {
         { front: "Akkusativ: 'Ich sehe ___ Mann.'", back: "den Mann (der → den)" },
         { front: "Dativ: 'mit ___ Auto'", back: "mit dem Auto (das → dem)" },
         { front: "Qiyosiy: gut → ?", back: "besser (yaxshiroq), am besten (eng yaxshi)" },
-        { front: "'weil' dan keyin fe'l qayerda?", back: "Gap oxirida (ergash gap)" },
+        { front: "'weil' dan keyin fe'l qayerda?", back: "Gap oxirida (ergash gap tartibi)" },
         { front: "Modal: 'Ich ___ schwimmen.' (qila olaman)", back: "kann (können)" },
         { front: "Possessiv: 'mening kitobim'", back: "mein Buch" },
         { front: "Präteritum: 'sein' (ich)", back: "ich war" },
@@ -68,11 +187,14 @@ const flashcardDecks = {
         { front: "Dativ: 'Er hilft ___ Kind.'", back: "dem Kind" },
         { front: "Präposition mit Dativ: 'aus'", back: "aus dem Haus" },
         { front: "Präposition mit Akkusativ: 'für'", back: "für dich" },
-        { front: "Adjektivdeklinations: 'der gut___ Mann'", back: "der gute Mann" },
-        { front: "Plural: 'das Buch -> ?'", back: "die Bücher" },
-        { front: "Modalverb: 'müssen' (er)", back: "er muss" }
+        { front: "Wechselpräposition: 'Ich lege das Buch ___ den Tisch.' (harakat)", back: "auf den Tisch (Akkusativ)" },
+        { front: "Wechselpräposition: 'Das Buch liegt ___ dem Tisch.' (holat)", back: "auf dem Tisch (Dativ)" },
+        { front: "Adjektivdeklination: 'der gut___ Mann'", back: "der gute Mann" },
+        { front: "Passiv (Präsens): 'Das Haus ___ gebaut.'", back: "wird gebaut (werden + Partizip II)" },
+        { front: "Konjunktiv II (Wunsch): 'Ich ___ gern reich.'", back: "wäre (sein fe'lidan)" }
     ],
-    // Gaplar (kundalik iboralar)
+
+    // 8. Gaplar (kundalik iboralar)
     sentences: [
         { front: "Wie geht es dir?", back: "Ahvoling qanday?" },
         { front: "Ich verstehe das nicht.", back: "Men buni tushunmayapman." },
@@ -81,44 +203,44 @@ const flashcardDecks = {
         { front: "Ich komme aus Usbekistan.", back: "Men O'zbekistondanman." },
         { front: "Wo ist der Bahnhof?", back: "Bekat (vokzal) qayerda?" },
         { front: "Es tut mir leid.", back: "Kechirasiz / Afsusdaman." },
-        { front: "Ich hätte gern einen Kaffee.", back: "Men bir qahva olardim." },
+        { front: "Ich hätte gern einen Kaffee.", back: "Men bir chashka qahva olardim." },
         { front: "Sprechen Sie Englisch?", back: "Siz inglizcha gapirasizmi?" },
         { front: "Bis bald!", back: "Tez orada ko'rishguncha!" },
         { front: "Ich bin müde.", back: "Men charchadim." },
         { front: "Ich habe Hunger.", back: "Qornim och." },
-        { front: "Mir ist kalt.", back: "Men sovuqotyapman." },
+        { front: "Mir ist kalt.", back: "Sovuqotyapman." },
         { front: "Wie spät ist es?", back: "Soat necha bo'ldi?" },
         { front: "Es ist drei Uhr.", back: "Soat uch bo'ldi." },
         { front: "Woher kommst du?", back: "Qayerdan kelgansan?" },
         { front: "Ich brauche Hilfe.", back: "Menga yordam kerak." },
         { front: "Das ist sehr teuer.", back: "Bu juda qimmat." },
-        { front: "Ich stimme zu.", back: "Men qo'shilaman." },
-        { front: "Viel Glück!", back: "Omad!" }
+        { front: "Ich stimme zu.", back: "Men qo'shilaman (roziman)." },
+        { front: "Viel Glück!", back: "Omad yor bo'lsin!" },
+        { front: "Guten Appetit!", back: "Yoqimli ishtaha!" },
+        { front: "Herzlichen Glückwunsch!", back: "Chin yurakdan tabriklayman!" },
+        { front: "Keine Sorge!", back: "Xavotir olmang!" },
+        { front: "Alles Gute zum Geburtstag!", back: "Tug'ilgan kuningiz bilan!" }
     ],
-    // Faylasuf / olimlarning gaplari (Zitate) — DE + UZ
+
+    // 9. Faylasuf / olimlarning gaplari (Zitate) — DE + UZ
     quotes: [
         { front: "„Der Mensch ist, was er isst.“ — Ludwig Feuerbach", back: "Inson o'zi yegan narsadir. (ya'ni inson mohiyati uning hayot tarzida) — Lyudvig Feyerbax" },
-        { front: "„Ich denke, also bin ich.“ — René Descartes", back: "Men o'ylayapman, demak men borman. — Rene Dekart" },
+        { front: "„Ich denke, also bin ich.“ — René Descartes", back: "Men fikrlayapman, demak men mavjudman. — Rene Dekart" },
         { front: "„Wissen ist Macht.“ — Francis Bacon", back: "Bilim — bu kuch. — Frensis Bekon" },
         { front: "„Der Weg ist das Ziel.“ — Konfuzius", back: "Yo'lning o'zi maqsaddir. — Konfutsiy" },
-        { front: "„Was mich nicht umbringt, macht mich stärker.“ — Friedrich Nietzsche", back: "Meni o'ldirmagan narsa meni kuchliroq qiladi. — Fridrix Nitsshe" },
+        { front: "„Was mich nicht umbringt, macht mich stärker.“ — Friedrich Nietzsche", back: "Meni yengolmagan qiyinchilik meni yanada kuchli qiladi. — Fridrix Nitsshe" },
         { front: "„Die Zeit ist das, was man an der Uhr abliest.“ — Albert Einstein", back: "Vaqt — bu soatdan o'qiladigan narsa. — Albert Eynshteyn" },
         { front: "„Der Anfang ist die Hälfte des Ganzen.“ — Aristoteles", back: "Boshlanish — butun ishning yarmidir. — Aristotel" },
-        { front: "„Hilf dir selbst, dann hilft dir Gott.“ — (Sprichwort)", back: "O'zingga o'zing yordam ber, shunda Xudo ham yordam beradi. — (Maqol)" },
-        { front: "„Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.“ — Bertolt Brecht", back: "Kurashgan yutqazishi mumkin. Kurashmagan esa allaqachon yutqazgan. — Bertolt Brext" },
-        { front: "„Die Grenzen meiner Sprache sind die Grenzen meiner Welt.“ — Ludwig Wittgenstein", back: "Tilimning chegaralari — dunyomning chegaralaridir. — Lyudvig Vitgenshteyn" },
-        { front: "„Phantasie ist wichtiger als Wissen, denn Wissen ist begrenzt.“ — Albert Einstein", back: "Tasavvur bilimdan muhimroqdir, chunki bilim cheklangan. — Albert Eynshteyn" },
-        { front: "„Wer den Hafen nicht kennt, in den er segeln will, für den ist kein Wind der richtige.“ — Seneca", back: "Qaysi portga suzishni bilmagan odam uchun hech qanday shamol qulay emas. — Seneka" },
-        { front: "„Es ist nicht zu wenig Zeit, die wir haben, sondern es ist zu viel Zeit, die wir nicht nutzen.“ — Seneca", back: "Bizda vaqt kam emas, shunchaki biz foydalanmaydigan vaqt juda ko'p. — Seneka" },
-        { front: "„Auch aus Steinen, die einem in den Weg gelegt werden, kann man Schönes bauen.“ — Johann Wolfgang von Goethe", back: "Yo'lingizga qo'yilgan toshlardan ham chiroyli narsalar qurishingiz mumkin. — Iohann Volfgang fon Gyote" },
-        { front: "„Die Wahrheit ist oft nicht das, was wir hören wollen, aber das, was wir brauchen.“ — Unbekannt", back: "Haqiqat ko'pincha biz eshitishni xohlagan narsa emas, balki bizga kerak bo'lgan narsadir. — Noma'lum" },
-        { front: "„Leben, das ist das Allerseltenste in der Welt. Die meisten Menschen existieren nur.“ — Oscar Wilde", back: "Yashash - bu dunyodagi eng noyob narsa. Aksariyat odamlar shunchaki mavjud bo'lishadi. — Oskar Uayld" },
-        { front: "„Glück ist kein Ziel. Es ist ein Nebenprodukt eines gut gelebten Lebens.“ — Eleanor Roosevelt", back: "Baxt bu maqsad emas. Bu yaxshi yashalgan hayotning qo'shimcha mahsulotidir. — Eleanor Ruzvelt" },
-        { front: "„Die beste Zeit, einen Baum zu pflanzen, war vor zwanzig Jahren. Die nächstbeste Zeit ist jetzt.“ — Chinesisches Sprichwort", back: "Daraxt ekish uchun eng yaxshi vaqt yigirma yil oldin edi. Keyingi eng yaxshi vaqt hozir. — Xitoy maqoli" },
-        { front: "„Wer sich nicht bewegt, spürt seine Ketten nicht.“ — Rosa Luxemburg", back: "Harakat qilmagan odam o'z zanjirlarini his qilmaydi. — Roza Lyuksemburg" },
-        { front: "„Das Geheimnis des Könnens liegt im Wollen.“ — Giuseppe Mazzini", back: "Qo'lidan kelish siri xohlashdadir. — Juzeppe Mazzini" }
+        { front: "„Hilf dir selbst, dann hilft dir Gott.“ — Sprichwort", back: "O'zingga o'zing yordam ber, shunda Tangri ham madad beradi. — Maqol" },
+        { front: "„Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.“ — Bertolt Brecht", back: "Kurashgan yutqazishi mumkin. Kurashmagan esa allaqachon mag'lubdir. — Bertolt Brext" },
+        { front: "„Die Grenzen meiner Sprache sind die Grenzen meiner Welt.“ — Ludwig Wittgenstein", back: "Tilimning chegaralari — mening olamim chegaralaridir. — Lyudvig Vitgenshteyn" },
+        { front: "„Phantasie ist wichtiger als Wissen, denn Wissen ist begrenzt.“ — Albert Einstein", back: "Tasavvur bilimdan ustundir, chunki bilim chegaralangan. — Albert Eynshteyn" },
+        { front: "„Wer den Hafen nicht kennt, für den ist kein Wind der richtige.“ — Seneca", back: "Qaysi manzilga borishni bilmagan suzuvchiga hech qanday shamol yordam bermaydi. — Seneka" },
+        { front: "„Auch aus Steinen, die einem in den Weg gelegt werden, kann man Schönes bauen.“ — Goethe", back: "Yo'lingizga to'siq bo'lgan toshlardan ham muazzam qasr qurish mumkin. — Gyote" },
+        { front: "„Das Geheimnis des Könnens liegt im Wollen.“ — Giuseppe Mazzini", back: "Qo'ldan kelishning asl siri — chin dildan xohlashda. — Juzeppe Madzini" }
     ],
-    // O'zini tanishtirish / über mich
+
+    // 10. O'zini tanishtirish / über mich
     ueber_mich: [
         { front: "Men O'zbekistondanman.", back: "Ich komme aus Usbekistan." },
         { front: "Ich bin 25 Jahre alt.", back: "Men 25 yoshdaman." },
@@ -129,16 +251,15 @@ const flashcardDecks = {
         { front: "Mening kasbim dasturchi.", back: "Mein Beruf ist Programmierer." },
         { front: "Ich arbeite als Lehrer.", back: "Men o'qituvchi bo'lib ishlayman." },
         { front: "Men bo'sh vaqtimda kitob o'qiyman.", back: "In meiner Freizeit lese ich Bücher." },
-        { front: "Meine Muttersprache ist Usbekisch.", back: "Mening ona tilim - o'zbek tili." },
-        { front: "Men ingliz va rus tillarida gapiraman.", back: "Ich spreche Englisch und Russisch." },
+        { front: "Meine Muttersprache ist Usbekisch.", back: "Mening ona tilim — o'zbek tili." },
+        { front: "Men ingliz va nemis tillarida gapiraman.", back: "Ich spreche Englisch und Deutsch." },
         { front: "Ich habe eine große Familie.", back: "Mening katta oilam bor." },
-        { front: "Men uylanganman.", back: "Ich bin verheiratet." },
-        { front: "Ich bin ledig.", back: "Men bo'ydoqman / turmushga chiqmaganman." },
+        { front: "Men uylanganman / turmush qurganman.", back: "Ich bin verheiratet." },
+        { front: "Ich bin ledig.", back: "Men bo'ydoqman / oila qurmaganman." },
         { front: "Mening hobbiylarim sport va musiqa.", back: "Meine Hobbys sind Sport und Musik." },
-        { front: "Ich reise gern.", back: "Men sayohat qilishni yaxshi ko'raman." },
-        { front: "Men Germaniyaga borishni xohlayman.", back: "Ich möchte nach Deutschland reisen." },
+        { front: "Ich reise sehr gern.", back: "Men sayohat qilishni juda yaxshi ko'raman." },
+        { front: "Men Germaniyada o'qishni xohlayman.", back: "Ich möchte in Deutschland studieren." },
         { front: "Mir gefällt die deutsche Kultur.", back: "Menga nemis madaniyati yoqadi." },
-        { front: "Men har kuni sport bilan shug'ullanaman.", back: "Ich treibe jeden Tag Sport." },
-        { front: "Ich freue mich, Sie kennenzulernen.", back: "Siz bilan tanishganimdan xursandman." }
+        { front: "Ich freue mich, Sie kennenzulernen.", back: "Siz bilan tanishganimdan juda xursandman." }
     ]
 };

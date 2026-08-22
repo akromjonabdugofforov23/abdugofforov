@@ -43,6 +43,8 @@
     <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="css/gamification.css">
     <link rel="stylesheet" href="css/horror.css">
+    <link rel="stylesheet" href="css/matching-game.css">
+    <link rel="stylesheet" href="css/verb-trainer.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -87,6 +89,7 @@
 
             <div class="nav-links" id="top-nav-links">
                 <a href="#home" class="active" data-page="home">🏠 Asosiy</a>
+                <a href="#verbs" id="nav-verbs-link" data-page="verbs">🔤 Fe'llar</a>
                 <a href="#about" id="nav-about-link" data-page="about">👨‍💻 Haqida</a>
                 <a href="#contact" id="nav-contact-link" data-page="contact">📬 Bog'lanish</a>
             </div>
@@ -297,6 +300,11 @@
         <div id="tournament-content"></div>
     </div>
 
+    <!-- Nemis Tili Fe'llar Trenajyori Sahifasi -->
+    <div class="container animate-fade-in" id="verb-trainer-view" style="display:none; padding: 40px 0;">
+        <div id="verb-trainer-content"></div>
+    </div>
+
     <main class="container animate-fade-in" id="main-content">
 
         <!-- Asosiy bo'limlar -->
@@ -304,6 +312,7 @@
             <div class="filter-tags filter-tags-centered" id="filter-tags">
                 <button class="filter-tag" data-filter="Kundalik Blog" id="blog-tag-btn" data-i18n="tag.blog">📝 Kundalik Blog</button>
                 <button class="filter-tag" id="main-deutsch-btn" data-i18n="tag.deutsch">🇩🇪 Nemis tili</button>
+                <button class="filter-tag" id="main-verbs-btn">🔤 Fe'llar Trenajyori</button>
                 <button class="filter-tag" id="places-tag-btn" data-filter="Borishga arziydigan joylar" data-i18n="tag.places">✈️ Borishga arziydigan joylar</button>
             </div>
         </div>
@@ -679,6 +688,14 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
             <span class="dock-label">Kartochkalar</span>
         </a>
+        <a href="#games" class="dock-item" id="dock-games" data-page="games" title="Interaktiv o'yinlar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><line x1="6" y1="12" x2="10" y2="12"></line><line x1="8" y1="10" x2="8" y2="14"></line><circle cx="15" cy="11" r="1"></circle><circle cx="18" cy="13" r="1"></circle></svg>
+            <span class="dock-label">O'yinlar</span>
+        </a>
+        <a href="#verbs" class="dock-item" id="dock-verbs" data-page="verbs" title="Nemis tili fe'llar trenajyori">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+            <span class="dock-label">Fe'llar</span>
+        </a>
         <a href="#tournament" class="dock-item" data-page="tournament" title="Nemis tili turniri">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path></svg>
             <span class="dock-label">Turnir</span>
@@ -696,8 +713,11 @@
     <script src="auth.js?v=2" defer></script>
     <script src="data-flashcards.js" defer></script>
     <script src="data-tests.js" defer></script>
+    <script src="scripts/verb-trainer-data.js" defer></script>
     <script src="scripts/flashcards.js" defer></script>
+    <script src="scripts/matching-game.js" defer></script>
     <script src="scripts/tests.js" defer></script>
+    <script src="scripts/verb-trainer.js" defer></script>
     <script src="scripts/horror-data.js" defer></script>
     <script src="scripts/horror-logic.js" defer></script>
     <script src="scripts/gamification.js" defer></script>

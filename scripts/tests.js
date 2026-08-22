@@ -24,100 +24,129 @@ let currentSection = 0;
 let currentQuestion = 0;
 let score = 0;
 let answered = false;
+let deutschLevelFilter = 'all';
+let deutschSearchQuery = '';
+let _deutschSearchTimer = null;
 
-function renderDeutschHome() {
-    const view = document.getElementById('deutsch-content');
+const DEUTSCH_LEVELS_DATA = [
+    {
+        key: 'A1', icon: '🌱', label: "A1 — Boshlang'ich daraja",
+        sub: "Salomlashish, raqamlar, asosiy so'zlar",
+        tests: [
+            { id: 'a1_t1', name: "1-to'plam", note: "Eshitish + matn" },
+            { id: 'a1_t2', name: "2-to'plam", note: "Matn + rasm" },
+            { id: 'a1_t3', name: "3-to'plam", note: "So'z + grammatika" },
+            { id: 'a1_t4', name: "4-to'plam", note: "Kundalik hayot" },
+            { id: 'a1_t5', name: "5-to'plam", note: "Manzil va yo'nalish" },
+            { id: 'a1_t6', name: "6-to'plam", note: "Tanishish va suhbat" },
+            { id: 'a1_t7', name: "7-to'plam", note: "Ob-havo va tabiat" },
+            { id: 'a1_t8', name: "8-to'plam", note: "Kasblar va ish" },
+            { id: 'a1_t9', name: "9-to'plam", note: "Oila va bayramlar" },
+            { id: 'a1_t10', name: "10-to'plam", note: "Umumiy takrorlash" }
+        ]
+    },
+    {
+        key: 'A2', icon: '🌿', label: "A2 — Asosiy daraja",
+        sub: "Perfekt, modal fe'llar, predloglar",
+        tests: [
+            { id: 'a2_t1', name: "1-to'plam", note: "Grammatika asoslari" },
+            { id: 'a2_t2', name: "2-to'plam", note: "Predloglar va fe'llar" },
+            { id: 'a2_t3', name: "3-to'plam", note: "Bog'lovchilar va qiyos" },
+            { id: 'a2_t4', name: "4-to'plam", note: "Sog'liq va tana" },
+            { id: 'a2_t5', name: "5-to'plam", note: "Sayohat va mehmonxona" },
+            { id: 'a2_t6', name: "6-to'plam", note: "Ish va kasb" },
+            { id: 'a2_t7', name: "7-to'plam", note: "Xarid va narxlar" },
+            { id: 'a2_t8', name: "8-to'plam", note: "Xobbi va bo'sh vaqt" },
+            { id: 'a2_t9', name: "9-to'plam", note: "Madaniyat va odatlar" },
+            { id: 'a2_t10', name: "10-to'plam", note: "Murakkab mashqlar" }
+        ]
+    },
+    {
+        key: 'B1', icon: '🌳', label: "B1 — O'rta daraja",
+        sub: "Konjunktiv, Passiv, nisbiy gaplar",
+        tests: [
+            { id: 'b1_t1', name: "1-to'plam", note: "Konjunktiv va Passiv" },
+            { id: 'b1_t2', name: "2-to'plam", note: "Bog'lovchi va nisbiy gap" },
+            { id: 'b1_t3', name: "3-to'plam", note: "Genitiv va iboralar" },
+            { id: 'b1_t4', name: "4-to'plam", note: "Plusquamperfekt va vaqt" },
+            { id: 'b1_t5', name: "5-to'plam", note: "N-deklination, otlar" },
+            { id: 'b1_t6', name: "6-to'plam", note: "Partizip sifatlari" },
+            { id: 'b1_t7', name: "7-to'plam", note: "Media va texnologiya" },
+            { id: 'b1_t8', name: "8-to'plam", note: "Atrof-muhit va tabiat" },
+            { id: 'b1_t9', name: "9-to'plam", note: "Karyera va muvaffaqiyat" },
+            { id: 'b1_t10', name: "10-to'plam", note: "B1 imtihoniga tayyorgarlik" }
+        ]
+    },
+    {
+        key: 'B2', icon: '🏔️', label: "B2 — Yuqori-o'rta daraja",
+        sub: "Murakkab gaplar, idiomalar, matn",
+        tests: [
+            { id: 'b2_t1', name: "1-to'plam", note: "Konjunktiv I" },
+            { id: 'b2_t2', name: "2-to'plam", note: "Murakkab gaplar" },
+            { id: 'b2_t3', name: "3-to'plam", note: "Akademik so'zlar" },
+            { id: 'b2_t4', name: "4-to'plam", note: "Idiomalar va madaniyat" },
+            { id: 'b2_t5', name: "5-to'plam", note: "Ilm-fan va kashfiyotlar" },
+            { id: 'b2_t6', name: "6-to'plam", note: "Iqtisodiyot va bozor" },
+            { id: 'b2_t7', name: "7-to'plam", note: "Adabiyot va san'at" },
+            { id: 'b2_t8', name: "8-to'plam", note: "Siyosat va huquq" },
+            { id: 'b2_t9', name: "9-to'plam", note: "Psixologiya va munosabatlar" },
+            { id: 'b2_t10', name: "10-to'plam", note: "B2 daraja testlari" }
+        ]
+    }
+];
 
-    // Darajalar va ularning to'plamlari (har birida 10 ta savol)
-    const levels = [
-        {
-            key: 'A1', icon: '🌱', label: "A1 — Boshlang'ich daraja",
-            sub: "Salomlashish, raqamlar, asosiy so'zlar",
-            tests: [
-                { id: 'a1_t1', name: "1-to'plam", note: "Eshitish + matn" },
-                { id: 'a1_t2', name: "2-to'plam", note: "Matn + rasm" },
-                { id: 'a1_t3', name: "3-to'plam", note: "So'z + grammatika" },
-                { id: 'a1_t4', name: "4-to'plam", note: "Kundalik hayot" },
-                { id: 'a1_t5', name: "5-to'plam", note: "Manzil va yo'nalish" },
-                { id: 'a1_t6', name: "6-to'plam", note: "Tanishish va suhbat" },
-                { id: 'a1_t7', name: "7-to'plam", note: "Ob-havo va tabiat" },
-                { id: 'a1_t8', name: "8-to'plam", note: "Kasblar va ish" },
-                { id: 'a1_t9', name: "9-to'plam", note: "Oila va bayramlar" },
-                { id: 'a1_t10', name: "10-to'plam", note: "Umumiy takrorlash" }
-            ]
-        },
-        {
-            key: 'A2', icon: '🌿', label: "A2 — Asosiy daraja",
-            sub: "Perfekt, modal fe'llar, predloglar",
-            tests: [
-                { id: 'a2_t1', name: "1-to'plam", note: "Grammatika asoslari" },
-                { id: 'a2_t2', name: "2-to'plam", note: "Predloglar va fe'llar" },
-                { id: 'a2_t3', name: "3-to'plam", note: "Bog'lovchilar va qiyos" },
-                { id: 'a2_t4', name: "4-to'plam", note: "Sog'liq va tana" },
-                { id: 'a2_t5', name: "5-to'plam", note: "Sayohat va mehmonxona" },
-                { id: 'a2_t6', name: "6-to'plam", note: "Ish va kasb" },
-                { id: 'a2_t7', name: "7-to'plam", note: "Xarid va narxlar" },
-                { id: 'a2_t8', name: "8-to'plam", note: "Xobbi va bo'sh vaqt" },
-                { id: 'a2_t9', name: "9-to'plam", note: "Madaniyat va odatlar" },
-                { id: 'a2_t10', name: "10-to'plam", note: "Murakkab mashqlar" }
-            ]
-        },
-        {
-            key: 'B1', icon: '🌳', label: "B1 — O'rta daraja",
-            sub: "Konjunktiv, Passiv, nisbiy gaplar",
-            tests: [
-                { id: 'b1_t1', name: "1-to'plam", note: "Konjunktiv va Passiv" },
-                { id: 'b1_t2', name: "2-to'plam", note: "Bog'lovchi va nisbiy gap" },
-                { id: 'b1_t3', name: "3-to'plam", note: "Genitiv va iboralar" },
-                { id: 'b1_t4', name: "4-to'plam", note: "Plusquamperfekt va vaqt" },
-                { id: 'b1_t5', name: "5-to'plam", note: "N-deklination, otlar" },
-                { id: 'b1_t6', name: "6-to'plam", note: "Partizip sifatlari" },
-                { id: 'b1_t7', name: "7-to'plam", note: "Media va texnologiya" },
-                { id: 'b1_t8', name: "8-to'plam", note: "Atrof-muhit va tabiat" },
-                { id: 'b1_t9', name: "9-to'plam", note: "Karyera va muvaffaqiyat" },
-                { id: 'b1_t10', name: "10-to'plam", note: "B1 imtihoniga tayyorgarlik" }
-            ]
-        },
-        {
-            key: 'B2', icon: '🏔️', label: "B2 — Yuqori-o'rta daraja",
-            sub: "Murakkab gaplar, idiomalar, matn",
-            tests: [
-                { id: 'b2_t1', name: "1-to'plam", note: "Konjunktiv I" },
-                { id: 'b2_t2', name: "2-to'plam", note: "Murakkab gaplar" },
-                { id: 'b2_t3', name: "3-to'plam", note: "Akademik so'zlar" },
-                { id: 'b2_t4', name: "4-to'plam", note: "Idiomalar va madaniyat" },
-                { id: 'b2_t5', name: "5-to'plam", note: "Ilm-fan va kashfiyotlar" },
-                { id: 'b2_t6', name: "6-to'plam", note: "Iqtisodiyot va bozor" },
-                { id: 'b2_t7', name: "7-to'plam", note: "Adabiyot va san'at" },
-                { id: 'b2_t8', name: "8-to'plam", note: "Siyosat va huquq" },
-                { id: 'b2_t9', name: "9-to'plam", note: "Psixologiya va munosabatlar" },
-                { id: 'b2_t10', name: "10-to'plam", note: "B2 daraja testlari" }
-            ]
-        }
-    ];
+function countTestQuestions(testId) {
+    const t = typeof deutschTests !== 'undefined' ? deutschTests[testId] : null;
+    if (!t || !t.parts) return 10;
+    return t.parts.reduce((s, p) => s + (p.sections ? p.sections.reduce((s2, sec) => s2 + (sec.questions ? sec.questions.length : 0), 0) : 0), 0) || 10;
+}
 
-    // Har bir savol soni 10 ta — etibordan chetda qolmasin
-    function countQs(testId) {
-        const t = deutschTests[testId];
-        if (!t) return 0;
-        return t.parts.reduce((s, p) => s + p.sections.reduce((s2, sec) => s2 + sec.questions.length, 0), 0);
+function renderDeutschLevelsHTML() {
+    const q = (deutschSearchQuery || '').trim().toLowerCase();
+    const activeLevel = deutschLevelFilter || 'all';
+
+    let filteredLevels = DEUTSCH_LEVELS_DATA;
+    if (activeLevel !== 'all') {
+        filteredLevels = filteredLevels.filter(lv => lv.key === activeLevel);
     }
 
-    const levelsHTML = levels.map(lv => {
-        const cards = lv.tests.map(t => {
-            const qCount = countQs(t.id);
+    const hl = (txt) => {
+        if (!q || typeof window.SearchEngine === 'undefined') return (typeof escapeHTML === 'function' ? escapeHTML(txt) : txt);
+        return window.SearchEngine.highlight(txt, q);
+    };
+
+    let totalMatchedCards = 0;
+
+    const sectionsHTML = filteredLevels.map(lv => {
+        const matchingCards = lv.tests.filter(t => {
+            if (!q) return true;
+            const fields = [t.name, t.note, lv.label, lv.sub, lv.key, 'goethe', 'test', 'nemis tili'];
+            return fields.some(f => {
+                if (!f) return false;
+                const fNorm = typeof window.SearchEngine !== 'undefined' ? window.SearchEngine.normalize(f) : f.toLowerCase();
+                const qNorm = typeof window.SearchEngine !== 'undefined' ? window.SearchEngine.normalize(q) : q;
+                return fNorm.includes(qNorm);
+            });
+        });
+
+        if (matchingCards.length === 0 && q) return '';
+        totalMatchedCards += matchingCards.length;
+
+        const cards = matchingCards.map(t => {
+            const qCount = countTestQuestions(t.id);
             return `
                 <button class="test-card" onclick="startTest('${t.id}')">
                     <div class="test-card-head">
-                        <span class="test-card-name">${t.name}</span>
+                        <span class="test-card-name">${hl(t.name)}</span>
                         <span class="test-card-badge">${qCount} savol</span>
                     </div>
-                    <div class="test-card-note">${t.note}</div>
+                    <div class="test-card-note">${hl(t.note)}</div>
                     <div class="test-card-cta">Boshlash &rarr;</div>
                 </button>`;
         }).join('');
+
         return `
-            <section class="level-block">
+            <section class="level-block" style="animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
                 <header class="level-head">
                     <span class="level-icon">${lv.icon}</span>
                     <div>
@@ -128,6 +157,40 @@ function renderDeutschHome() {
                 <div class="test-grid">${cards}</div>
             </section>`;
     }).join('');
+
+    if (q && totalMatchedCards === 0) {
+        return `
+            <div class="empty-state">
+                <span class="empty-state-icon">🔍</span>
+                <p class="empty-state-text">"${typeof escapeHTML === 'function' ? escapeHTML(q) : q}" bo'yicha hech qanday nemis tili testi topilmadi.</p>
+            </div>
+        `;
+    }
+
+    return sectionsHTML;
+}
+
+function updateDeutschLevelsView() {
+    const container = document.getElementById('deutsch-levels-container');
+    if (container) {
+        container.innerHTML = renderDeutschLevelsHTML();
+    }
+}
+
+function setDeutschLevelFilter(lvl) {
+    deutschLevelFilter = lvl;
+    const filterContainer = document.getElementById('deutsch-level-filters');
+    if (filterContainer) {
+        filterContainer.querySelectorAll('.filter-tag').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-level') === lvl);
+        });
+    }
+    updateDeutschLevelsView();
+}
+
+function renderDeutschHome() {
+    const view = document.getElementById('deutsch-content');
+    if (!view) return;
 
     const t = (key, fallback) => (window.i18n && typeof i18n.t === 'function') ? i18n.t(key) : fallback;
 
@@ -141,7 +204,7 @@ function renderDeutschHome() {
                 <div class="deutsch-mode-card mode-tests active" onclick="window.scrollTo({top: 350, behavior: 'smooth'})" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(59, 130, 246, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.18);">
                     <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">📝</span>
                     <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">${t('de.mode.tests', 'Mavzuli Testlar')}</div>
-                    <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.tests_sub', 'A1-B2 Goethe')}</div>
+                    <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.tests_sub', 'A1-B2 Goethe (40 ta to\'plam)')}</div>
                 </div>
 
                 <div class="deutsch-mode-card mode-flashcards" onclick="openFlashcardsView()" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(139, 92, 246, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(139, 92, 246, 0.18);">
@@ -156,6 +219,12 @@ function renderDeutschHome() {
                     <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.tournament_sub', 'Jonli musobaqa')}</div>
                 </div>
 
+                <div class="deutsch-mode-card mode-verbs" onclick="openVerbTrainerView()" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(168, 85, 247, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(168, 85, 247, 0.18);">
+                    <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">🔤</span>
+                    <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">Fe'llar Trenajyori</div>
+                    <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">Präsens &bull; Präteritum &bull; Perfekt</div>
+                </div>
+
                 <div class="deutsch-mode-card mode-horror" onclick="openHorrorHome()" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(239, 68, 68, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25);">
                     <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">💀</span>
                     <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ef4444; margin-bottom: 4px;">HORROR DEUTSCH</div>
@@ -163,11 +232,37 @@ function renderDeutschHome() {
                 </div>
             </div>
         </div>
-        <div class="levels-stack">
-            ${levelsHTML}
+
+        <!-- Deutsch Daraja Filtrlari va Tezkor Qidiruv -->
+        <div class="deutsch-search-box" style="margin-top: 32px;">
+            <input type="text" id="deutsch-search-input" class="search-input" placeholder="🔍 Test nomi, grammatik mavzu yoki kalit so'zni qidiring..." value="${escapeAttr(deutschSearchQuery)}">
         </div>
-        ${renderTestHistory()}
+
+        <div class="deutsch-level-filters" id="deutsch-level-filters">
+            <button class="filter-tag ${deutschLevelFilter === 'all' ? 'active' : ''}" data-level="all" onclick="setDeutschLevelFilter('all')">✨ Barchasi (40 ta test)</button>
+            <button class="filter-tag ${deutschLevelFilter === 'A1' ? 'active' : ''}" data-level="A1" onclick="setDeutschLevelFilter('A1')">🌱 A1 (Boshlang'ich)</button>
+            <button class="filter-tag ${deutschLevelFilter === 'A2' ? 'active' : ''}" data-level="A2" onclick="setDeutschLevelFilter('A2')">🌿 A2 (Asosiy)</button>
+            <button class="filter-tag ${deutschLevelFilter === 'B1' ? 'active' : ''}" data-level="B1" onclick="setDeutschLevelFilter('B1')">🌳 B1 (O'rta)</button>
+            <button class="filter-tag ${deutschLevelFilter === 'B2' ? 'active' : ''}" data-level="B2" onclick="setDeutschLevelFilter('B2')">🏔️ B2 (Yuqori)</button>
+        </div>
+
+        <div class="levels-stack" id="deutsch-levels-container">
+            ${renderDeutschLevelsHTML()}
+        </div>
+        ${typeof renderTestHistory === 'function' ? renderTestHistory() : ''}
     `;
+
+    // Jonli debounced qidiruv hodisasini o'rnatish
+    const deSearchInput = document.getElementById('deutsch-search-input');
+    if (deSearchInput) {
+        deSearchInput.addEventListener('input', (e) => {
+            deutschSearchQuery = e.target.value;
+            if (_deutschSearchTimer) clearTimeout(_deutschSearchTimer);
+            _deutschSearchTimer = setTimeout(() => {
+                updateDeutschLevelsView();
+            }, 50); // Instant 50ms debouncing
+        });
+    }
 }
 
 let currentPart = 0;

@@ -901,26 +901,543 @@ const deutschTests = {
 
     // YUKLASH UCHUN QO'SHILGAN YANGI TESTLAR (15 ta to'plam)
     
-    // A1 YANGI TESTLAR
-    a1_t8: { title: "A1 — 8-to'plam (Kasblar va ish)", level: "A1", testNo: 8, parts: [{ partNum: 1, name: "A1 — 8-to'plam", icon: "🌱", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    a1_t9: { title: "A1 — 9-to'plam (Oila va bayramlar)", level: "A1", testNo: 9, parts: [{ partNum: 1, name: "A1 — 9-to'plam", icon: "🌱", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    a1_t10: { title: "A1 — 10-to'plam (Umumiy takrorlash)", level: "A1", testNo: 10, parts: [{ partNum: 1, name: "A1 — 10-to'plam", icon: "🌱", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
+    // ===== A1 — TO'PLAM 8 (Kasblar va ish) =====
+    a1_t8: {
+        title: "A1 — 8-to'plam (Kasblar va ish)",
+        level: "A1",
+        testNo: 8,
+        parts: [{
+            partNum: 1,
+            name: "A1 — 8-to'plam",
+            icon: "🌱",
+            sections: [
+                {
+                    name: "📝 Kasblar va ish joyi",
+                    type: "text",
+                    questions: [
+                        { q: "'Was sind Sie von Beruf?' savoliga qaysi javob to'g'ri?", options: ["Ich bin 25 Jahre alt.", "Ich bin Arzt von Beruf.", "Ich wohne in Berlin.", "Ich habe zwei Kinder."], answer: 1, explanation: "'Ich bin Arzt von Beruf' = Men kasbim bo'yicha shifokorman." },
+                        { q: "Ayol o'qituvchi nemis tilida qanday aytiladi?", options: ["der Lehrer", "die Lehrerin", "das Lehrer", "die Lehrerinnen"], answer: 1, explanation: "Ayol kasb egalariga '-in' qo'shimchasi qo'shiladi: die Lehrerin." },
+                        { q: "'arbeiten als ...' birikmasi: 'Er arbeitet ___ Ingenieur.'", options: ["wie", "als", "für", "bei"], answer: 1, explanation: "'arbeiten als + Kasb' = ... bo'lib ishlamoq: Er arbeitet als Ingenieur." },
+                        { q: "Dasturchi kasbi nemis tilida qanday nomlanadi?", options: ["der Programmierer", "der Verkäufer", "der Kellner", "der Fahrer"], answer: 0, explanation: "'der Programmierer' = dasturchi." },
+                        { q: "Qaysi gap grammatik jihatdan to'g'ri?", options: ["Ich arbeite bei Siemens.", "Ich arbeite als Siemens.", "Ich bin Siemens von Beruf.", "Ich arbeite zu Siemens."], answer: 0, explanation: "Kompaniyada ishlaganda 'bei + Kompaniya nomi' ishlatiladi: Ich arbeite bei Siemens." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Kasb egalari",
+                    type: "image",
+                    questions: [
+                        { q: "Bu kasb egasining nemischa nomi?", image: emojiImage("👨‍⚕️"), imageAlt: "Shifokor", options: ["der Arzt", "der Polizist", "der Bäcker", "der Maler"], answer: 0, explanation: "'der Arzt' = shifokor (vrach)." },
+                        { q: "Bu kasb egasining nemischa nomi?", image: emojiImage("👮"), imageAlt: "Politsiyachi", options: ["der Feuerwehrmann", "der Polizist", "der Pilot", "der Richter"], answer: 1, explanation: "'der Polizist' = politsiya xodimi." },
+                        { q: "Bu kasb egasining nemischa nomi?", image: emojiImage("👨‍🌾"), imageAlt: "Fermer / Dehqon", options: ["der Bauer", "der Gärtner", "der Koch", "der Kellner"], answer: 0, explanation: "'der Bauer' / 'der Landwirt' = fermer, dehqon." },
+                        { q: "Bu ish quroli kimga tegishli?", image: emojiImage("✂️"), imageAlt: "Qaychi", options: ["der Friseur", "der Mechaniker", "der Musiker", "der Pilot"], answer: 0, explanation: "'der Friseur' = sartarosh." },
+                        { q: "Bu ish joyining nemischa nomi?", image: emojiImage("🏢"), imageAlt: "Ofis binosi", options: ["das Büro", "die Schule", "das Kino", "der Park"], answer: 0, explanation: "'das Büro' = ofis / idora." }
+                    ]
+                }
+            ]
+        }]
+    },
 
-    // A2 YANGI TESTLAR
-    a2_t8: { title: "A2 — 8-to'plam (Xobbi va bo'sh vaqt)", level: "A2", testNo: 8, parts: [{ partNum: 1, name: "A2 — 8-to'plam", icon: "🌿", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    a2_t9: { title: "A2 — 9-to'plam (Madaniyat va odatlar)", level: "A2", testNo: 9, parts: [{ partNum: 1, name: "A2 — 9-to'plam", icon: "🌿", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    a2_t10: { title: "A2 — 10-to'plam (Murakkab mashqlar)", level: "A2", testNo: 10, parts: [{ partNum: 1, name: "A2 — 10-to'plam", icon: "🌿", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
+    // ===== A1 — TO'PLAM 9 (Oila va bayramlar) =====
+    a1_t9: {
+        title: "A1 — 9-to'plam (Oila va bayramlar)",
+        level: "A1",
+        testNo: 9,
+        parts: [{
+            partNum: 1,
+            name: "A1 — 9-to'plam",
+            icon: "🌱",
+            sections: [
+                {
+                    name: "📝 Oila a'zolari va tabriklar",
+                    type: "text",
+                    questions: [
+                        { q: "Ota-ona nemis tilida bir so'z bilan qanday ataladi?", options: ["die Geschwister", "die Eltern", "die Großeltern", "die Verwandten"], answer: 1, explanation: "'die Eltern' = ota-ona. die Geschwister = aka-uka, opa-singillar." },
+                        { q: "Tug'ilgan kunda qaysi tilak aytiladi?", options: ["Gute Reise!", "Guten Appetit!", "Herzlichen Glückwunsch zum Geburtstag!", "Schlaf gut!"], answer: 2, explanation: "'Herzlichen Glückwunsch zum Geburtstag!' = Tug'ilgan kuningiz muborak bo'lsin!" },
+                        { q: "'die Großmutter' so'zining qisqa so'zlashuv shakli?", options: ["die Oma", "die Tante", "die Mama", "die Schwester"], answer: 0, explanation: "'die Oma' = buvi (die Großmutter)." },
+                        { q: "Egalik olmoshi: 'Das ist ___ Schwester.' (mening)", options: ["mein", "meine", "meinen", "meiner"], answer: 1, explanation: "Ayol rodidagi otlar oldidan 'meine' ishlatiladi: meine Schwester." },
+                        { q: "Yangi yil tilagi qanday bo'ladi?", options: ["Frohe Ostern!", "Frohes neues Jahr!", "Guten Rutsch!", "B va C javoblar to'g'ri"], answer: 3, explanation: "Nemis tilida Yangi yil uchun 'Frohes neues Jahr!' va 'Guten Rutsch!' ishlatiladi." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Bayramlar va sovg'alar",
+                    type: "image",
+                    questions: [
+                        { q: "Bu bayramona narsaning nemischa nomi?", image: emojiImage("🎁"), imageAlt: "Sovg'a", options: ["das Geschenk", "der Kuchen", "die Karte", "der Baum"], answer: 0, explanation: "'das Geschenk' = sovg'a. schenken = sovg'a qilmoq." },
+                        { q: "Bu bayram shirinligining nemischa nomi?", image: emojiImage("🎂"), imageAlt: "Tort", options: ["die Torte / der Kuchen", "das Brot", "der Keks", "das Eis"], answer: 0, explanation: "'die Torte' / 'der Kuchen' = tort, pirog." },
+                        { q: "Germaniyada Rojdestvo bayrami qanday ataladi?", image: emojiImage("🎄"), imageAlt: "Rojdestvo archasi", options: ["Ostern", "Weihnachten", "Silvester", "Karneval"], answer: 1, explanation: "'Weihnachten' = Rojdestvo bayrami (25-dekabr)." },
+                        { q: "Bu oila a'zosi kim?", image: emojiImage("👶"), imageAlt: "Chaqaloq", options: ["das Baby", "der Großvater", "der Onkel", "der Bruder"], answer: 0, explanation: "'das Baby' / 'das Kleinkind' = chaqaloq." },
+                        { q: "Bu oilaviy tadbir nima deb ataladi?", image: emojiImage("💍"), imageAlt: "Nikoh uzugi", options: ["die Hochzeit", "die Party", "die Reise", "der Geburtstag"], answer: 0, explanation: "'die Hochzeit' = to'y (nikoh to'yi)." }
+                    ]
+                }
+            ]
+        }]
+    },
 
-    // B1 YANGI TESTLAR
-    b1_t8: { title: "B1 — 8-to'plam (Atrof-muhit va tabiat)", level: "B1", testNo: 8, parts: [{ partNum: 1, name: "B1 — 8-to'plam", icon: "🌳", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    b1_t9: { title: "B1 — 9-to'plam (Karyera va muvaffaqiyat)", level: "B1", testNo: 9, parts: [{ partNum: 1, name: "B1 — 9-to'plam", icon: "🌳", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    b1_t10: { title: "B1 — 10-to'plam (B1 imtihoniga tayyorgarlik)", level: "B1", testNo: 10, parts: [{ partNum: 1, name: "B1 — 10-to'plam", icon: "🌳", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
+    // ===== A1 — TO'PLAM 10 (Umumiy takrorlash) =====
+    a1_t10: {
+        title: "A1 — 10-to'plam (A1 Yakuniy takrorlash)",
+        level: "A1",
+        testNo: 10,
+        parts: [{
+            partNum: 1,
+            name: "A1 — 10-to'plam",
+            icon: "🌱",
+            sections: [
+                {
+                    name: "📝 A1 Daraja sinovi",
+                    type: "text",
+                    questions: [
+                        { q: "Bo'sh joyni to'ldiring: '___ Sie Deutsch?'", options: ["Sprechen", "Sprichst", "Sprecht", "Spricht"], answer: 0, explanation: "'Sie' (hurmat ma'nosi) bilan fe'l 'Sprechen' shaklida keladi: Sprechen Sie Deutsch?" },
+                        { q: "To'g'ri inkor so'zini tanlang: 'Ich habe ___ Auto.'", options: ["nicht", "kein", "keine", "keinen"], answer: 1, explanation: "Neytral rod ('das Auto') noaniq artiklli otni inkor qilishda 'kein' ishlatiladi." },
+                        { q: "Soat vaqti: 'Es ist halb drei' qaysi vaqtni bildiradi?", options: ["03:30", "02:30", "01:30", "03:15"], answer: 1, explanation: "'halb drei' = soat 02:30 (ya'ni uchga yarim soat qoldi)." },
+                        { q: "Savol olmoshi: '___ kostet das Buch?'", options: ["Wie viele", "Wie viel", "Wo", "Wer"], answer: 1, explanation: "Narx so'rashda 'Wie viel kostet ...?' ishlatiladi." },
+                        { q: "Buyruq mayli (Imperativ): '___ bitte leise!' (du shaklida)", options: ["Sei", "Bist", "Seid", "Seien"], answer: 0, explanation: "'sein' fe'lining du uchun buyruq shakli 'Sei' bo'ladi: Sei bitte leise!" }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Yakuniy tushunchalar",
+                    type: "image",
+                    questions: [
+                        { q: "Bu joy qanday ataladi?", image: emojiImage("✈️"), imageAlt: "Aeroport", options: ["der Bahnhof", "der Flughafen", "der Hafen", "die Haltestelle"], answer: 1, explanation: "'der Flughafen' = aeroport." },
+                        { q: "Bu ovqatlanish joyining nomi?", image: emojiImage("🍽️"), imageAlt: "Restoran", options: ["das Restaurant", "das Museum", "das Kino", "die Bank"], answer: 0, explanation: "'das Restaurant' = restoran." },
+                        { q: "Bu aloqa vositasining nemischa nomi?", image: emojiImage("📱"), imageAlt: "Smartfon", options: ["das Handy", "der Computer", "das Radio", "der Fernseher"], answer: 0, explanation: "'das Handy' / 'das Smartphone' = mobil telefon." },
+                        { q: "Bu kiyim turining nemischa nomi?", image: emojiImage("👟"), imageAlt: "Sport poyabzali", options: ["die Schuhe", "die Hose", "das Hemd", "die Jacke"], answer: 0, explanation: "'die Schuhe' = poyabzal, oyoq kiyim." },
+                        { q: "Bu ichimlikning nemischa nomi?", image: emojiImage("☕"), imageAlt: "Qahva", options: ["der Tee", "der Kaffee", "die Milch", "der Saft"], answer: 1, explanation: "'der Kaffee' = qahva." }
+                    ]
+                }
+            ]
+        }]
+    },
 
-    // B2 YANGI TESTLAR
-    b2_t5: { title: "B2 — 5-to'plam (Ilm-fan va kashfiyotlar)", level: "B2", testNo: 5, parts: [{ partNum: 1, name: "B2 — 5-to'plam", icon: "🏔️", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    b2_t6: { title: "B2 — 6-to'plam (Iqtisodiyot va bozor)", level: "B2", testNo: 6, parts: [{ partNum: 1, name: "B2 — 6-to'plam", icon: "🏔️", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    b2_t7: { title: "B2 — 7-to'plam (Adabiyot va san'at)", level: "B2", testNo: 7, parts: [{ partNum: 1, name: "B2 — 7-to'plam", icon: "🏔️", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    b2_t8: { title: "B2 — 8-to'plam (Siyosat va huquq)", level: "B2", testNo: 8, parts: [{ partNum: 1, name: "B2 — 8-to'plam", icon: "🏔️", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    b2_t9: { title: "B2 — 9-to'plam (Psixologiya va munosabatlar)", level: "B2", testNo: 9, parts: [{ partNum: 1, name: "B2 — 9-to'plam", icon: "🏔️", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] },
-    b2_t10: { title: "B2 — 10-to'plam (B2 daraja testlari)", level: "B2", testNo: 10, parts: [{ partNum: 1, name: "B2 — 10-to'plam", icon: "🏔️", sections: [{ name: "📝 Matnli savollar", type: "text", questions: [{ q: "1-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "2-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "3-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "4-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "5-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "6-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }, { q: "7-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 2, explanation: "" }, { q: "8-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 3, explanation: "" }, { q: "9-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 0, explanation: "" }, { q: "10-savol. Yangi test tez kunda yangilanadi.", options: ["A", "B", "C", "D"], answer: 1, explanation: "" }] }] }] }
+    // ===== A2 — TO'PLAM 8 (Xobbi va bo'sh vaqt) =====
+    a2_t8: {
+        title: "A2 — 8-to'plam (Xobbi va bo'sh vaqt)",
+        level: "A2",
+        testNo: 8,
+        parts: [{
+            partNum: 1,
+            name: "A2 — 8-to'plam",
+            icon: "🌿",
+            sections: [
+                {
+                    name: "📝 Qiziqishlar va dam olish",
+                    type: "text",
+                    questions: [
+                        { q: "'In meiner Freizeit spiele ich gerne Gitarre' jumlasi nimani bildiradi?", options: ["Bo'sh vaqtimda gitara chalishni yoqtiraman", "Ish vaqtimda musiqa tinglayman", "Men gitara sotib olmoqchiman", "Men pianino chala olmayman"], answer: 0, explanation: "'In meiner Freizeit' = bo'sh vaqtimda; 'Gitarre spielen' = gitara chalmoq." },
+                        { q: "Fe'l birikmasi: 'Sport ___' (sport bilan shug'ullanmoq)?", options: ["treiben / machen", "nehmen", "geben", "gehen"], answer: 0, explanation: "'Sport treiben' yoki 'Sport machen' = sport bilan shug'ullanmoq." },
+                        { q: "Modal fe'l: 'Ich ___ gut schwimmen.' (qila olaman)", options: ["muss", "kann", "will", "darf"], answer: 1, explanation: "Qobiliyat va imkoniyat uchun 'können' (ich kann) ishlatiladi." },
+                        { q: "'Ich habe keine Lust' nima degani?", options: ["Vaqtim yo'q", "Hafsalayam / xohishim yo'q", "Pulim yo'q", "Charchamadim"], answer: 1, explanation: "'keine Lust haben' = xohishi / ishtiyoqi bo'lmaslik." },
+                        { q: "Taklif bildirish: '___ wir heute Abend ins Kino gehen?'", options: ["Wollen", "Müssen", "Dürfen", "Sollen"], answer: 0, explanation: "'Wollen wir ... gehen?' = ...ga boramizmi? (birgalikda reja tuzish)." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Qiziqishlar",
+                    type: "image",
+                    questions: [
+                        { q: "Bu qanday xobbi?", image: emojiImage("🏊"), imageAlt: "Suzish", options: ["das Schwimmen", "das Wandern", "das Kochen", "das Lesen"], answer: 0, explanation: "'das Schwimmen' = suzish (schwimmen fe'lidan)." },
+                        { q: "Bu qanday mashg'ulot?", image: emojiImage("📸"), imageAlt: "Suratga olish", options: ["das Fotografieren", "das Malen", "das Tanzen", "das Singen"], answer: 0, explanation: "'das Fotografieren' = suratga olish (Fotos machen)." },
+                        { q: "Bu ochiq havoda sayr qilish nima deyiladi?", image: emojiImage("🥾⛰️"), imageAlt: "Tog'da sayr", options: ["das Wandern", "das Joggen", "das Reiten", "das Angeln"], answer: 0, explanation: "'das Wandern' = piyoda sayr qilish / tog' turizmi." },
+                        { q: "Bu musiqa asbobining nemischa nomi?", image: emojiImage("🎹"), imageAlt: "Pianino", options: ["das Klavier", "die Geige", "die Trommel", "die Flöte"], answer: 0, explanation: "'das Klavier' = pianino / royal." },
+                        { q: "Bu qishki sport turi nima?", image: emojiImage("⛷️"), imageAlt: "Chang'i sporti", options: ["das Skifahren", "das Schlittschuhlaufen", "das Snowboarden", "das Rodeln"], answer: 0, explanation: "'das Skifahren' = chang'i uchish." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== A2 — TO'PLAM 9 (Madaniyat va odatlar) =====
+    a2_t9: {
+        title: "A2 — 9-to'plam (Madaniyat va odatlar)",
+        level: "A2",
+        testNo: 9,
+        parts: [{
+            partNum: 1,
+            name: "A2 — 9-to'plam",
+            icon: "🌿",
+            sections: [
+                {
+                    name: "📝 Germaniya hayoti va odatlari",
+                    type: "text",
+                    questions: [
+                        { q: "Germaniyada aniqlik va vaqtga rioya qilish nima deb ataladi?", options: ["die Pünktlichkeit", "die Gemütlichkeit", "die Sparsamkeit", "die Höflichkeit"], answer: 0, explanation: "'die Pünktlichkeit' = punktuallik, vaqtga rioya qilish." },
+                        { q: "Germaniyada yakshanba kunlari do'konlar ochiq bo'ladimi?", options: ["Ha, 24 soat ochiq", "Yo'q, yakshanba dam olish kuni (Sonntagsruhe)", "Faqat kechasi ochiq", "Faqat kiyim do'konlari ochiq"], answer: 1, explanation: "Germaniyada qonun bo'yicha yakshanba kunlari aksariyat do'konlar yopiq bo'ladi." },
+                        { q: "Birovhikiga mehmonga borganda nima olib borish odat tusiga kirgan?", options: ["Gullar yoki shokolad", "Non va tuz", "Hech narsa", "Katta sovg'alar"], answer: 0, explanation: "Blumen (gullar) yoki Pralinen (shokolad) olib borish yaxshi odat." },
+                        { q: "'Mülltrennung' tushunchasi nimani bildiradi?", options: ["Chiqindilarni saralash (qog'oz, plastik, organik)", "Uy tozalash", "Ovqat tayyorlash", "Kiyim yuvish"], answer: 0, explanation: "'die Mülltrennung' = chiqindilarni turiga qarab alohida idishlarga ajratish." },
+                        { q: "Qaysi salomlashish Janubiy Germaniya va Avstriyada keng tarqalgan?", options: ["Moin Moin", "Grüß Gott / Servus", "Guten Tag", "Hallo"], answer: 1, explanation: "'Grüß Gott' va 'Servus' Bavariya va Avstriyada juda mashhur." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Germaniya timsollari",
+                    type: "image",
+                    questions: [
+                        { q: "Germaniyaning poytaxti qaysi shahar?", image: emojiImage("🏛️🇩🇪"), imageAlt: "Brandenburg darvozasi", options: ["München", "Berlin", "Frankfurt", "Hamburg"], answer: 1, explanation: "Germaniya Federativ Respublikasi poytaxti — Berlin." },
+                        { q: "Germaniyaning eng mashhur milliy pishirig'i?", image: emojiImage("🥨"), imageAlt: "Brezel", options: ["die Brezel", "das Croissant", "der Döner", "das Baguette"], answer: 0, explanation: "'die Brezel' (Brezn) = an'anaviy nemis pishirig'i." },
+                        { q: "Germaniyada pul birligi sifatida nima ishlatiladi?", image: emojiImage("💶"), imageAlt: "Yevro", options: ["der Euro", "der Dollar", "die D-Mark", "das Pfund"], answer: 0, explanation: "'der Euro' = Yevro (Germaniyaning rasmiy valyutasi)." },
+                        { q: "Germaniya bayrog'i ranglari ketma-ketligi?", image: emojiImage("⬛🟥🟨"), imageAlt: "Germaniya bayrog'i", options: ["Qora, qizil, oltin-sariq (Schwarz-Rot-Gold)", "Qizil, oq, ko'k", "Yashil, oq, qizil", "Moviy, oq, qizil"], answer: 0, explanation: "Schwarz-Rot-Gold (Qora-Qizil-Oltin)." },
+                        { q: "Germaniyadagi eng baland tog' cho'qqisi qaysi?", image: emojiImage("⛰️"), imageAlt: "Zugspitze", options: ["die Zugspitze", "der Brocken", "der Feldberg", "der Mont Blanc"], answer: 0, explanation: "'die Zugspitze' (2962 m) — Germaniyaning eng baland cho'qqisi." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== A2 — TO'PLAM 10 (Murakkab mashqlar) =====
+    a2_t10: {
+        title: "A2 — 10-to'plam (A2 Yakuniy imtihon)",
+        level: "A2",
+        testNo: 10,
+        parts: [{
+            partNum: 1,
+            name: "A2 — 10-to'plam",
+            icon: "🌿",
+            sections: [
+                {
+                    name: "📝 Grammatika va ifodalar",
+                    type: "text",
+                    questions: [
+                        { q: "Sifat turlanishi: 'Ich habe einen ___ Wagen gekauft.' (yangi)", options: ["neu", "neuen", "neues", "neuer"], answer: 1, explanation: "Akkusativ erkak rodida sifatga '-en' qo'shiladi: einen neuen Wagen." },
+                        { q: "Predlog: 'Wir fahren ___ dem Zug nach München.'", options: ["mit", "bei", "von", "aus"], answer: 0, explanation: "'mit dem Zug' = poyezdda (mit + Dativ)." },
+                        { q: "Nisbiy bog'lovchi: 'Das ist der Film, ___ ich gestern gesehen habe.'", options: ["der", "den", "dem", "das"], answer: 1, explanation: "Ergash gapda 'Film' to'ldiruvchi (Akkusativ): den ich gesehen habe." },
+                        { q: "O'tgan zamon: 'Gestern ___ ich den ganzen Tag gearbeitet.'", options: ["habe", "bin", "hatte", "war"], answer: 0, explanation: "'arbeiten' fe'lining Perfekti 'haben' bilan yasaladi: habe gearbeitet." },
+                        { q: "Bog'lovchi: 'Ich lerne fleißig, ___ ich die Prüfung bestehe.' (uchun)", options: ["damit", "weil", "obwohl", "denn"], answer: 0, explanation: "'damit' = toki ... uchun (maqsad ergash gapi)." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Situatsiyalar",
+                    type: "image",
+                    questions: [
+                        { q: "Bu belgi nima haqida ogohlantiradi?", image: emojiImage("🚭"), imageAlt: "Chekish taqiqlangan", options: ["Rauchen verboten", "Parken verboten", "Eintritt frei", "Bitte Ruhe"], answer: 0, explanation: "'Rauchen verboten' = chekish taqiqlanadi." },
+                        { q: "Bu shaxs kim?", image: emojiImage("👨‍🔧"), imageAlt: "Usta / Mexanik", options: ["der Mechaniker / Handwerker", "der Arzt", "der Lehrer", "der Musiker"], answer: 0, explanation: "'der Handwerker' / 'der Mechaniker' = usta, ta'mirlovchi." },
+                        { q: "Xarid cheki nemis tilida qanday nomlanadi?", image: emojiImage("🧾"), imageAlt: "Kvitansiya", options: ["die Quittung / der Kassenbon", "der Brief", "die Zeitung", "das Buch"], answer: 0, explanation: "'der Kassenbon' / 'die Quittung' = chek, kvitansiya." },
+                        { q: "Bu qayerga kirish joyi?", image: emojiImage("🚇"), imageAlt: "Metro", options: ["die U-Bahn", "der Bus", "das Taxi", "die Fähre"], answer: 0, explanation: "'die U-Bahn' = metro (Untergrundbahn)." },
+                        { q: "Bu ob-havo holati qanday nomlanadi?", image: emojiImage("⛈️"), imageAlt: "Momaqaldiroq", options: ["das Gewitter", "der Sonnenschein", "der Nebel", "der Schnee"], answer: 0, explanation: "'das Gewitter' = momaqaldiroq va chaqmoq." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== B1 — TO'PLAM 8 (Atrof-muhit va tabiat) =====
+    b1_t8: {
+        title: "B1 — 8-to'plam (Atrof-muhit va tabiat)",
+        level: "B1",
+        testNo: 8,
+        parts: [{
+            partNum: 1,
+            name: "B1 — 8-to'plam",
+            icon: "🌳",
+            sections: [
+                {
+                    name: "📝 Ekologiya va tabiatni asrash",
+                    type: "text",
+                    questions: [
+                        { q: "'Erneuerbare Energien' nimani anglatadi?", options: ["Qayta tiklanuvchi energiya manbalari (quyosh, shamol)", "Yadro energiyasi", "Neft va gaz", "Ko'mir yoqilg'isi"], answer: 0, explanation: "'erneuerbare Energien' = quyosh, shamol kabi yashil energiya manbalari." },
+                        { q: "Fe'l birikmasi: 'Energie ___' (energiyani tejash)?", options: ["sparen", "verschwenden", "kaufen", "zerstören"], answer: 0, explanation: "'Energie sparen' = energiyani tejamoq. verschwenden = isrof qilmoq." },
+                        { q: "Passiv: 'Der Müll ___ regelmäßig abgeholt.' (olib ketiladi)", options: ["wird", "wurde", "ist", "hat"], answer: 0, explanation: "Präsens Passiv: werden + Partizip II: Der Müll wird abgeholt." },
+                        { q: "'Der Treibhauseffekt' tushunchasi tarjimasi?", options: ["Issiqxona effekti", "O'rmon yong'inlari", "Suv toshqini", "Qurg'oqchilik"], answer: 0, explanation: "'der Treibhauseffekt' = issiqxona effekti." },
+                        { q: "Infinitiv gap: 'Es ist wichtig, die Natur zu ___.'", options: ["schützen", "zerstören", "vergessen", "verlieren"], answer: 0, explanation: "'die Natur schützen' = tabiatni muhofaza qilmoq/asramoq." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Yashil kelajak",
+                    type: "image",
+                    questions: [
+                        { q: "Bu energiya manbasi nima?", image: emojiImage("💨⚡"), imageAlt: "Shamol generatori", options: ["die Windkraftanlage", "das Atomkraftwerk", "das Kohlekraftwerk", "der Staudamm"], answer: 0, explanation: "'die Windkraftanlage' = shamol elektr stansiyasi." },
+                        { q: "Bu jarayon nima deb ataladi?", image: emojiImage("♻️"), imageAlt: "Qayta ishlash", options: ["das Recycling", "der Müll", "die Verbrennung", "der Abbau"], answer: 0, explanation: "'das Recycling' = ikkilamchi qayta ishlash." },
+                        { q: "Bu ekologik transport turi nima?", image: emojiImage("🚗⚡"), imageAlt: "Elektromobil", options: ["das Elektroauto (E-Auto)", "der Dieselwagen", "der Traktor", "das Mofa"], answer: 0, explanation: "'das Elektroauto' = elektr quvvatli avtomobil." },
+                        { q: "Bu tabiiy ofat qanday ataladi?", image: emojiImage("🌊🏘️"), imageAlt: "Suv toshqini", options: ["die Überschwemmung / das Hochwasser", "die Dürre", "das Erdbeben", "der Vulkanausbruch"], answer: 0, explanation: "'die Überschwemmung' = suv toshqini." },
+                        { q: "Bu quyoshdan energiya oluvchi moslama nima?", image: emojiImage("☀️🔋"), imageAlt: "Quyosh paneli", options: ["die Solaranlage / Fotovoltaik", "der Heizkörper", "die Batterie", "der Motor"], answer: 0, explanation: "'die Solaranlage' = quyosh batareyasi/paneli." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== B1 — TO'PLAM 9 (Karyera va muvaffaqiyat) =====
+    b1_t9: {
+        title: "B1 — 9-to'plam (Karyera va muvaffaqiyat)",
+        level: "B1",
+        testNo: 9,
+        parts: [{
+            partNum: 1,
+            name: "B1 — 9-to'plam",
+            icon: "🌳",
+            sections: [
+                {
+                    name: "📝 Ishga kirish va suhbat",
+                    type: "text",
+                    questions: [
+                        { q: "'Das Vorstellungsgespräch' nima?", options: ["Ishga qabul suhbati (intervyu)", "Ishdan bo'shash xati", "Ish shartnomasi", "Oylik maosh varaqasi"], answer: 0, explanation: "'das Vorstellungsgespräch' = ish beruvchi bilan suhbat (intervyu)." },
+                        { q: "Rezyume nemis tilida qanday nomlanadi?", options: ["der Lebenslauf", "das Zeugnis", "das Anschreiben", "der Vertrag"], answer: 0, explanation: "'der Lebenslauf' = rezyume / CV." },
+                        { q: "Predlogli fe'l: 'Ich bewerbe mich ___ die Stelle als Manager.'", options: ["um", "für", "an", "nach"], answer: 0, explanation: "'sich bewerben um + Akkusativ' = biror lavozimga ariza topshirmoq." },
+                        { q: "Konjunktiv II: 'Ich ___ mich über eine Einladung freuen.'", options: ["würde", "werde", "wurde", "wäre"], answer: 0, explanation: "Rasmiy maktubda: 'Ich würde mich sehr freuen' = Men juda minnatdor bo'lardim." },
+                        { q: "'Die Berufserfahrung' so'zi nimani bildiradi?", options: ["Ish tajribasi", "Kasbiy ta'lim", "Ish haqi", "Ta'til muddati"], answer: 0, explanation: "'die Berufserfahrung' = mehnat faoliyati / ish tajribasi." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Biznes va Karyera",
+                    type: "image",
+                    questions: [
+                        { q: "Bu jarayon nima deb ataladi?", image: emojiImage("🤝"), imageAlt: "Kelishev / Shartnoma", options: ["der Vertragsschluss", "die Kündigung", "der Streit", "der Streik"], answer: 0, explanation: "'der Vertragsschluss' / 'die Vereinbarung' = shartnoma tuzish / kelishuv." },
+                        { q: "Bu kasbiy ta'lim turi Germaniyada qanday ataladi?", image: emojiImage("👨‍🎓🔧"), imageAlt: "Kasb-hunar ta'limi", options: ["die duale Ausbildung", "das Abitur", "der Kindergarten", "die Grundschule"], answer: 0, explanation: "'die duale Ausbildung' = Germaniyada nazariya va amaliyot uyg'unlashgan kasbiy ta'lim." },
+                        { q: "Bu taqdimot jarayoni nima deb ataladi?", image: emojiImage("📊👨‍💼"), imageAlt: "Prezentatsiya", options: ["die Präsentation", "die Pause", "das Telefonat", "der Feierabend"], answer: 0, explanation: "'die Präsentation' / 'der Vortrag' = taqdimot." },
+                        { q: "Bu narsa nima?", image: emojiImage("🏆"), imageAlt: "Yutuq / Kubok", options: ["der Erfolg / die Auszeichnung", "die Niederlage", "die Strafe", "die Beschwerde"], answer: 0, explanation: "'der Erfolg' = muvaffaqiyat; 'die Auszeichnung' = mukofot." },
+                        { q: "Bu xodimlar jamoasi nima deb ataladi?", image: emojiImage("👥💼"), imageAlt: "Jamoa", options: ["das Team / die Kollegen", "die Kunden", "die Konkurrenten", "die Chefs"], answer: 0, explanation: "'das Team' / 'die Kollegen' = jamoa, hamkasblar." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== B1 — TO'PLAM 10 (B1 Imtihoniga tayyorgarlik) =====
+    b1_t10: {
+        title: "B1 — 10-to'plam (B1 Goethe Yakuniy test)",
+        level: "B1",
+        testNo: 10,
+        parts: [{
+            partNum: 1,
+            name: "B1 — 10-to'plam",
+            icon: "🌳",
+            sections: [
+                {
+                    name: "📝 Murakkab sintaksis va leksika",
+                    type: "text",
+                    questions: [
+                        { q: "'Weder ... noch ...' birikmasi: 'Er spricht ___ Englisch ___ Deutsch.'", options: ["weder / noch", "entweder / oder", "sowohl / als auch", "nicht nur / sondern auch"], answer: 0, explanation: "'weder ... noch ...' = na ... na ... (ikkalasini ham inkor qilish)." },
+                        { q: "Genitiv predlog: '___ des schlechten Wetters machten wir einen Spaziergang.'", options: ["Trotz", "Wegen", "Während", "Wegen dem"], answer: 0, explanation: "'Trotz + Genitiv' = ...ga qaramay: Trotz des schlechten Wetters." },
+                        { q: "Partizip I sifat sifatida: 'Das ___ Kind' (kulayotgan)?", options: ["lachende", "gelachte", "lachend", "gelachte"], answer: 0, explanation: "Partizip I (Infinitiv + d) + sifat qo'shimchasi: das lachende Kind." },
+                        { q: "Plusquamperfekt zamoni: 'Nachdem er die E-Mail ___ ___ , verließ er das Büro.'", options: ["geschrieben hatte", "geschrieben hat", "schrieb", "schreiben würde"], answer: 0, explanation: "O'tgan zamondan oldingi voqea: hatte geschrieben (Plusquamperfekt)." },
+                        { q: "N-Deklination: 'Ich kenne den neuen ___.' (talaba - der Student)", options: ["Studenten", "Student", "Studentem", "Studenter"], answer: 0, explanation: "'der Student' N-Deklination otidir: den Studenten (Akkusativ)." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — B1 Imtihon vaziyatlari",
+                    type: "image",
+                    questions: [
+                        { q: "Bu xalqaro nemis tili sertifikati qanday ataladi?", image: emojiImage("📜🇩🇪"), imageAlt: "Goethe Sertifikat", options: ["das Goethe-Zertifikat", "der Führerschein", "der Mietvertrag", "die Rechnung"], answer: 0, explanation: "'das Goethe-Zertifikat' = xalqaro tan olingan nemis tili sertifikati." },
+                        { q: "Bu ommaviy axborot vositasi nima?", image: emojiImage("📰"), imageAlt: "Gazeta", options: ["die Zeitung / die Presse", "das Radio", "das Fernsehen", "das Plakat"], answer: 0, explanation: "'die Zeitung' = gazeta; 'die Presse' = matbuot." },
+                        { q: "Bu muhim davlat binosi nima?", image: emojiImage("🏛️⚖️"), imageAlt: "Sud / Adliya", options: ["das Gericht", "das Rathaus", "die Bank", "die Post"], answer: 0, explanation: "'das Gericht' = sud idorasi." },
+                        { q: "Bu ilmiy laboratoriya jarayoni nima?", image: emojiImage("🧪"), imageAlt: "Tajriba", options: ["das Experiment", "die Kunst", "die Musik", "der Sport"], answer: 0, explanation: "'das Experiment' / 'der Versuch' = ilmiy tajriba." },
+                        { q: "Bu xalqaro sayohat nima deb ataladi?", image: emojiImage("🌍✈️"), imageAlt: "Dunyo bo'ylab sayohat", options: ["die Weltreise", "der Ausflug", "die Geschäftsreise", "die Wanderung"], answer: 0, explanation: "'die Weltreise' = dunyo bo'ylab sayohat." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== B2 — TO'PLAM 5 (Ilm-fan va kashfiyotlar) =====
+    b2_t5: {
+        title: "B2 — 5-to'plam (Ilm-fan va kashfiyotlar)",
+        level: "B2",
+        testNo: 5,
+        parts: [{
+            partNum: 1,
+            name: "B2 — 5-to'plam",
+            icon: "🏔️",
+            sections: [
+                {
+                    name: "📝 Ilmiy terminologiya",
+                    type: "text",
+                    questions: [
+                        { q: "'Eine Hypothese aufstellen' iborasining ma'nosi nima?", options: ["Faraz (gipoteza) ilgari surmoq", "Tajribani to'xtatmoq", "Xulosani inkor qilmoq", "Kitob yozmoq"], answer: 0, explanation: "'eine Hypothese aufstellen' = ilmiy gipoteza yaratmoq." },
+                        { q: "Zustandspassiv (Holat passivi): 'Die Tür ___ geschlossen.' (qulflangan)", options: ["ist", "wird", "wurde", "worden"], answer: 0, explanation: "Zustandspassiv: sein + Partizip II (natija/holatni bildiradi)." },
+                        { q: "So'z birikmasi: 'Künstliche ___' (Sun'iy intellekt)?", options: ["Intelligenz (KI)", "Information", "Wissenschaft", "Technik"], answer: 0, explanation: "'die Künstliche Intelligenz' (KI) = sun'iy intellekt." },
+                        { q: "'Zweifel hegen an + Dativ' nimani anglatadi?", options: ["Shubhalanmoq / ikkilanmoq", "To'liq ishonmoq", "Kashf qilmoq", "Isbotlamoq"], answer: 0, explanation: "'Zweifel hegen an' = bezweifeln (shubha bildirmoq)." },
+                        { q: "Qaysi konstruksiya Passiv ma'nosini beradi (Passiversatz)?", options: ["sich lassen + Infinitiv", "wollen + Infinitiv", "müssen + Infinitiv", "haben + Partizip II"], answer: 0, explanation: "'Das Problem lässt sich lösen' = Das Problem kann gelöst werden (yechsa bo'ladi)." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Innovatsiyalar",
+                    type: "image",
+                    questions: [
+                        { q: "Bu kosmik obyekt nemis tilida nima?", image: emojiImage("🛰️"), imageAlt: "Sun'iy yo'ldosh", options: ["der Satellit", "die Rakete", "das Teleskop", "der Planet"], answer: 0, explanation: "'der Satellit' = sun'iy yo'ldosh." },
+                        { q: "Bu ilmiy kashfiyot sohasi nima?", image: emojiImage("🧬"), imageAlt: "Genetika / DNK", options: ["die Genetik / DNA", "die Geologie", "die Astronomie", "die Botanik"], answer: 0, explanation: "'die Genetik' / 'die DNA-Forschung' = genetika." },
+                        { q: "Bu sun'iy intellekt va robototexnika ramzi nima?", image: emojiImage("🤖"), imageAlt: "Robot", options: ["der Roboter", "der Mensch", "der Computer", "die Maschine"], answer: 0, explanation: "'der Roboter' = robot." },
+                        { q: "Bu energiya saqlash vositasi nima?", image: emojiImage("⚡🔋"), imageAlt: "Akkumulyator", options: ["der Speicher / die Batterie", "der Generator", "die Turbine", "der Reaktor"], answer: 0, explanation: "'der Energiespeicher' / 'der Akku' = energiya saqlovchi qurilma." },
+                        { q: "Bu tadqiqot asbobi nima?", image: emojiImage("🔬"), imageAlt: "Mikroskop", options: ["das Mikroskop", "das Fernrohr", "die Brille", "die Lupe"], answer: 0, explanation: "'das Mikroskop' = mikroskop." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== B2 — TO'PLAM 6 (Iqtisodiyot va bozor) =====
+    b2_t6: {
+        title: "B2 — 6-to'plam (Iqtisodiyot va bozor)",
+        level: "B2",
+        testNo: 6,
+        parts: [{
+            partNum: 1,
+            name: "B2 — 6-to'plam",
+            icon: "🏔️",
+            sections: [
+                {
+                    name: "📝 Iqtisodiy tushunchalar",
+                    type: "text",
+                    questions: [
+                        { q: "'Angebot und Nachfrage' iborasining o'zbekcha muqobili nima?", options: ["Talab va taklif", "Foyda va zarar", "Eksport va import", "Kredit va qarz"], answer: 0, explanation: "'das Angebot' = taklif; 'die Nachfrage' = talab." },
+                        { q: "'Umsatz erzielen' nimani bildiradi?", options: ["Tovar aylanmasiga (daromadga) erishmoq", "Zarar ko'rmoq", "Kompaniyani yopmoq", "Ishchilarni bo'shatmoq"], answer: 0, explanation: "'Umsatz erzielen' = daromad/tovar aylanmasini qo'lga kiritmoq." },
+                        { q: "'Die Inflation' iqtisodiyotda nimani anglatadi?", options: ["Pulning qadrsizlanishi va narxlarning oshishi", "Narxlarning pasayishi", "Eksportning ko'payishi", "Ishsizlikning kamayishi"], answer: 0, explanation: "'die Inflation' = inflatsiya, pul qadrsizlanishi." },
+                        { q: "Funktionsverbgefüge: 'in Betracht ziehen' = ?", options: ["berücksichtigen (hisobga olmoq)", "vergessen", "bezahlen", "kritisieren"], answer: 0, explanation: "'in Betracht ziehen' = biror narsani e'tiborga olmoq, hisobga olmoq." },
+                        { q: "'Die Dienstleistung' nimani anglatadi?", options: ["Xizmat ko'rsatish sohasi", "Ishlab chiqarish zavodi", "Xomashyo", "Qarz majburiyati"], answer: 0, explanation: "'die Dienstleistung' = xizmat (servis)." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Moliya va Bozor",
+                    type: "image",
+                    questions: [
+                        { q: "Bu bozor turi qanday ataladi?", image: emojiImage("📈"), imageAlt: "Fond birjasi / Aksiyalar", options: ["die Börse / der Aktienmarkt", "der Wochenmarkt", "der Supermarkt", "der Flohmarkt"], answer: 0, explanation: "'die Börse' = fond birjasi." },
+                        { q: "Bu bank vositasi nima?", image: emojiImage("💳"), imageAlt: "Kredit karta", options: ["die Kreditkarte / EC-Karte", "das Sparbuch", "der Scheck", "die Münze"], answer: 0, explanation: "'die Kreditkarte' = bank kredit kartasi." },
+                        { q: "Bu savdo aloqasi nima?", image: emojiImage("🚢📦"), imageAlt: "Eksport va Import", options: ["der Im- und Export / Welthandel", "der lokale Handel", "die Spende", "der Umtausch"], answer: 0, explanation: "'der Welthandel' / 'der Export' = xalqaro savdo va eksport." },
+                        { q: "Bu pul oqimi nima deb ataladi?", image: emojiImage("💰"), imageAlt: "Investitsiya", options: ["die Investition / das Kapital", "die Schuld", "die Steuer", "die Gebühr"], answer: 0, explanation: "'die Investition' = investitsiya, sarmoya." },
+                        { q: "Bu soliq tushunchasi nemischa nima?", image: emojiImage("🏛️💸"), imageAlt: "Soliq", options: ["die Steuer", "das Gehalt", "der Zins", "der Rabatt"], answer: 0, explanation: "'die Steuer' = davlat solig'i." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== B2 — TO'PLAM 7 (Adabiyot va san'at) =====
+    b2_t7: {
+        title: "B2 — 7-to'plam (Adabiyot va san'at)",
+        level: "B2",
+        testNo: 7,
+        parts: [{
+            partNum: 1,
+            name: "B2 — 7-to'plam",
+            icon: "🏔️",
+            sections: [
+                {
+                    name: "📝 Madaniyat va adabiy til",
+                    type: "text",
+                    questions: [
+                        { q: "Gyotening eng mashhur dramatik asari qaysi?", options: ["Faust", "Die Räuber", "Der Schimmelreiter", "Effi Briest"], answer: 0, explanation: "Iohann Volfgang fon Gyotening shoh asari — 'Faust'." },
+                        { q: "'Das Meisterwerk' nima degani?", options: ["Shohasar (shedevr)", "Boshlang'ich qoralama", "Xato ish", "Qisqa hikoya"], answer: 0, explanation: "'das Meisterwerk' = shedevr, buyuk san'at asari." },
+                        { q: "Adabiy uslub: 'Die Metapher' nimani anglatadi?", options: ["Ko'chma ma'noli ifoda (metafora)", "Qofiya", "Qahramon ismi", "Sahna ko'rinishi"], answer: 0, explanation: "'die Metapher' = ko'chma ma'no, o'xshatish." },
+                        { q: "'Zur Aufführung bringen' birikmasi nimani bildiradi?", options: ["Teatrda sahnalashtirmoq", "Kitob sotmoq", "Surat chizmoq", "Musiqa bastalamoq"], answer: 0, explanation: "'zur Aufführung bringen' = aufführen (spektaklni sahnalashtirmoq)." },
+                        { q: "Qaysi bastakor Germaniyada tug'ilgan?", options: ["Ludwig van Beethoven", "Wolfgang Amadeus Mozart", "Frédéric Chopin", "Antonio Vivaldi"], answer: 0, explanation: "Lyudvig van Betxoven Bonnda (Germaniya) tavallud topgan." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — San'at turlari",
+                    type: "image",
+                    questions: [
+                        { q: "Bu san'at maskani nima?", image: emojiImage("🎭"), imageAlt: "Teatr", options: ["das Theater", "das Kino", "das Stadion", "die Schule"], answer: 0, explanation: "'das Theater' = teatr." },
+                        { q: "Bu musiqa janri nima?", image: emojiImage("🎻🎼"), imageAlt: "Klassik musiqa", options: ["die klassische Musik", "der Pop", "der Rock", "der Jazz"], answer: 0, explanation: "'die klassische Musik' = klassik musiqa." },
+                        { q: "Bu tasviriy san'at turi nima?", image: emojiImage("🎨🖌️"), imageAlt: "Rassomlik", options: ["die Malerei / bildende Kunst", "die Bildhauerei", "die Architektur", "die Literatur"], answer: 0, explanation: "'die Malerei' = rangtasvir, rassomchilik." },
+                        { q: "Bu me'moriy inshoot nima?", image: emojiImage("🏰"), imageAlt: "Qasr / Qal'a", options: ["das Schloss / die Burg", "die Hütte", "das Hochhaus", "die Brücke"], answer: 0, explanation: "'das Schloss' / 'die Burg' = qasr, qal'a." },
+                        { q: "Bu qanday madaniy maskan?", image: emojiImage("🏛️🖼️"), imageAlt: "Muzey", options: ["das Museum / die Galerie", "die Bibliothek", "die Werkstatt", "das Kaufhaus"], answer: 0, explanation: "'das Museum' / 'die Galerie' = muzey, san'at galereyasi." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== B2 — TO'PLAM 8 (Siyosat va huquq) =====
+    b2_t8: {
+        title: "B2 — 8-to'plam (Siyosat va huquq)",
+        level: "B2",
+        testNo: 8,
+        parts: [{
+            partNum: 1,
+            name: "B2 — 8-to'plam",
+            icon: "🏔️",
+            sections: [
+                {
+                    name: "📝 Davlat boshqaruvi va qonun",
+                    type: "text",
+                    questions: [
+                        { q: "Germaniya parlamenti qanday ataladi?", options: ["Der Bundestag", "Der Bundesrat", "Das Bundeskanzleramt", "Der Landtag"], answer: 0, explanation: "'Der Bundestag' = Germaniya parlamenti (quyi palatasi)." },
+                        { q: "'Ein Gesetz verabschieden' nima degani?", options: ["Qonunni qabul qilmoq", "Qonunni bekor qilmoq", "Qonunni buzmoq", "Qonunni e'tiborsiz qoldirmoq"], answer: 0, explanation: "'ein Gesetz verabschieden' = qonun qabul qilmoq." },
+                        { q: "Germaniya hukumati rahbari kim hisoblanadi?", options: ["Der Bundeskanzler / Die Bundeskanzlerin", "Der Bundespräsident", "Der Minister", "Der Bürgermeister"], answer: 0, explanation: "Hukumat rahbari — Bundeskanzler (Federal kansler)." },
+                        { q: "'Die Gewaltenteilung' qaysi uch tarmoqqa bo'linadi?", options: ["Legislative, Exekutive, Judikative", "Polizei, Militär, Justiz", "Staat, Kirche, Medien", "Kanzler, Präsident, Minister"], answer: 0, explanation: "Hokimiyatlar bo'linishi: Qonun chiqaruvchi, Ijro etuvchi va Sud hokimiyati." },
+                        { q: "'Das Wahlrecht' tushunchasi nimani anglatadi?", options: ["Ovoz berish / saylash huquqi", "Mehnat qilish huquqi", "Ta'lim olish huquqi", "Mulk huquqi"], answer: 0, explanation: "'das Wahlrecht' = saylov huquqi." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Demokratiya",
+                    type: "image",
+                    questions: [
+                        { q: "Bu siyosiy jarayon nima?", image: emojiImage("🗳️"), imageAlt: "Saylov", options: ["die Wahl / die Stimmabgabe", "die Demonstration", "der Streik", "die Versammlung"], answer: 0, explanation: "'die Wahl' = saylov; 'abstimmen' = ovoz bermoq." },
+                        { q: "Germaniya parlamenti joylashgan tarixiy bino qaysi?", image: emojiImage("🏛️🇩🇪"), imageAlt: "Reyxstag", options: ["das Reichstagsgebäude", "das Brandenburger Tor", "das Schloss Bellevue", "der Berliner Dom"], answer: 0, explanation: "'das Reichstagsgebäude' = Reyxstag binosi." },
+                        { q: "Adolat va qonun ustuvorligi ramzi nima?", image: emojiImage("⚖️"), imageAlt: "Adolat tarozisi", options: ["die Gerechtigkeit / die Justiz", "die Wirtschaft", "die Freiheit", "der Frieden"], answer: 0, explanation: "'die Gerechtigkeit' = adolat; 'die Justiz' = adliya." },
+                        { q: "Tinchlik ramzi qaysi belgi hisoblanadi?", image: emojiImage("🕊️"), imageAlt: "Tinchlik kaptari", options: ["die Friedenstaube / der Frieden", "der Krieg", "der Konflikt", "die Grenze"], answer: 0, explanation: "'der Frieden' = tinchlik." },
+                        { q: "Inson huquqlari nemis tilida nima deyiladi?", image: emojiImage("📜🤝"), imageAlt: "Inson huquqlari", options: ["die Menschenrechte", "die Pflichten", "die Gesetze", "die Verträge"], answer: 0, explanation: "'die Menschenrechte' = inson huquqlari." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== B2 — TO'PLAM 9 (Psixologiya va munosabatlar) =====
+    b2_t9: {
+        title: "B2 — 9-to'plam (Psixologiya va munosabatlar)",
+        level: "B2",
+        testNo: 9,
+        parts: [{
+            partNum: 1,
+            name: "B2 — 9-to'plam",
+            icon: "🏔️",
+            sections: [
+                {
+                    name: "📝 Hissiyotlar va insoniy munosabatlar",
+                    type: "text",
+                    questions: [
+                        { q: "'Die Empathie' so'zining ma'nosi nima?", options: ["Boshqalarning his-tuyg'ularini tushunish (hamdardlik)", "Qaysarlik", "G'azab", "Beparvolik"], answer: 0, explanation: "'die Empathie' / 'das Einfühlungsvermögen' = empatiya, his qilish qobiliyati." },
+                        { q: "'Einen Konflikt bewältigen / lösen' nimani bildiradi?", options: ["Kelishmovchilikni bartaraf etmoq / hal qilmoq", "Yangi nizo boshlamoq", "Munozaradan qochmoq", "Janjallashmoq"], answer: 0, explanation: "'einen Konflikt lösen' = ziddiyatni tinch yo'l bilan hal qilmoq." },
+                        { q: "'Das Selbstbewusstsein' nimani anglatadi?", options: ["O'ziga bo'lgan ishonch", "Boshqalarga hasad qilish", "Qo'rquv", "G'amginlik"], answer: 0, explanation: "'das Selbstbewusstsein' = o'ziga ishonch, o'z qadrini bilish." },
+                        { q: "Predlogli fe'l: 'Rücksicht nehmen ___ + Akkusativ' = ?", options: ["auf (e'tiborli bo'lmoq, hisoblashmoq)", "an", "für", "über"], answer: 0, explanation: "'Rücksicht nehmen auf' = boshqalarni hisobga olmoq, hurmat qilmoq." },
+                        { q: "'Vorurteile abbauen' iborasi nimani bildiradi?", options: ["Qotib qolgan noto'g'ri fikrlar (stereotiplar)ni bartaraf etish", "Yangi qonunlar qabul qilish", "Do'stlar orttirish", "Xotirani kuchaytirish"], answer: 0, explanation: "'das Vorurteil' = noto'g'ri qarash/stereotip; 'abbauen' = yo'qotmoq." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — Hissiyotlar",
+                    type: "image",
+                    questions: [
+                        { q: "Bu insoniy his-tuyg'u qanday ataladi?", image: emojiImage("🧘"), imageAlt: "Xotirjamlik", options: ["die Gelassenheit / innere Ruhe", "der Stress", "die Wut", "die Trauer"], answer: 0, explanation: "'die Gelassenheit' = xotirjamlik, bosiqlik." },
+                        { q: "Bu ruhiy holat nima?", image: emojiImage("🧠💡"), imageAlt: "Kreativ fikrlash", options: ["die Kreativität / Inspiration", "die Müdigkeit", "die Einsamkeit", "die Furcht"], answer: 0, explanation: "'die Kreativität' = ijodiy tafakkur." },
+                        { q: "Bu muloqot turi nima deb ataladi?", image: emojiImage("🗣️💬"), imageAlt: "Muloqot", options: ["die Kommunikation / der Dialog", "das Schweigen", "der Streit", "der Vorwurf"], answer: 0, explanation: "'die Kommunikation' = muloqot, o'zaro suhbat." },
+                        { q: "Bu samimiy do'stona munosabat nima?", image: emojiImage("🤗"), imageAlt: "Do'stona qo'llab-quvvatlash", options: ["die Unterstützung / Hilfsbereitschaft", "der Neid", "die Kälte", "der Egoismus"], answer: 0, explanation: "'die Hilfsbereitschaft' = yordamga tayyorlik, samimiyat." },
+                        { q: "Stress holati nemis tilida nima deyiladi?", image: emojiImage("🤯"), imageAlt: "Stress", options: ["die Überlastung / der Stress", "die Entspannung", "die Freude", "der Schlaf"], answer: 0, explanation: "'der Stress' / 'die Überlastung' = ortiqcha zo'riqish, stress." }
+                    ]
+                }
+            ]
+        }]
+    },
+
+    // ===== B2 — TO'PLAM 10 (B2 Daraja Sinovi) =====
+    b2_t10: {
+        title: "B2 — 10-to'plam (B2 Goethe Keng qamrovli test)",
+        level: "B2",
+        testNo: 10,
+        parts: [{
+            partNum: 1,
+            name: "B2 — 10-to'plam",
+            icon: "🏔️",
+            sections: [
+                {
+                    name: "📝 B2 Yakuniy sinov",
+                    type: "text",
+                    questions: [
+                        { q: "Nominalizatsiya: 'Weil die Nachfrage gestiegen ist' -> 'Wegen des ___ der Nachfrage'.", options: ["Anstiegs", "Ansteigen", "Steigens", "Gestiegenes"], answer: 0, explanation: "'der Anstieg' (Genitiv: des Anstiegs) = o'sish, ko'tarilish." },
+                        { q: "Partizipialkonstruktion: 'Die von der Regierung ___ Maßnahmen' (qabul qilingan)?", options: ["beschlossenen", "beschlossene", "beschließen", "beschlossen"], answer: 0, explanation: "Partizip II sifat o'rnida: die beschlossenen Maßnahmen (Akkusativ ko'plik)." },
+                        { q: "'Es steht außer Frage, dass ...' iborasi nimani bildiradi?", options: ["Shubhasizki / aniqki", "Savol berish taqiqlanadi", "Hech kim bilmaydi", "Bu mumkin emas"], answer: 0, explanation: "'außer Frage stehen' = zweifellos sein (shubhasiz bo'lmoq)." },
+                        { q: "Subjektive Bedeutung der Modalverben: 'Er soll sehr reich sein.'", options: ["Aytishlaricha, u juda boy emish (boshqalar fikri)", "U boy bo'lishi shart", "U boy bo'lishni xohlaydi", "U boy bo'la oladi"], answer: 0, explanation: "'sollen' subyektiv ma'noda birovdan eshitilgan xabarni (rumor) bildiradi." },
+                        { q: "Konjunktiv I: Der Minister betont, die Reform ___ notwendig.", options: ["sei", "wäre", "ist", "war"], answer: 0, explanation: "Rasmiy bayonotlarda Konjunktiv I: 'sei' (sein fe'lidan)." }
+                    ]
+                },
+                {
+                    name: "🖼️ Rasmli — B2 Xulosa",
+                    type: "image",
+                    questions: [
+                        { q: "Bu xalqaro diplom nimani ifodalaydi?", image: emojiImage("🎓📜"), imageAlt: "Oliy ta'lim diplomi", options: ["der Hochschulabschluss / das Diplom", "der Pass", "das Visum", "die Rechnung"], answer: 0, explanation: "'der Hochschulabschluss' = oliy ma'lumot diplomi." },
+                        { q: "Bu global hamkorlik nima deb ataladi?", image: emojiImage("🌐🤝"), imageAlt: "Xalqaro hamkorlik", options: ["die internationale Zusammenarbeit", "der Alleingang", "der Boykott", "die Isolation"], answer: 0, explanation: "'die internationale Zusammenarbeit' = xalqaro hamkorlik." },
+                        { q: "Bu nutq so'zlash jarayoni nima?", image: emojiImage("🎙️👥"), imageAlt: "Katta anjumanda nutq", options: ["die Rede / der Vortrag vor Publikum", "das Selbstgespräch", "das Flüstern", "die Pause"], answer: 0, explanation: "'die Rede vor Publikum' = omma oldidagi nutq." },
+                        { q: "Germaniya konstitutsiyasi qanday ataladi?", image: emojiImage("📖⚖️"), imageAlt: "Asosiy qonun", options: ["das Grundgesetz (GG)", "das Strafgesetzbuch", "die Hausordnung", "das Lexikon"], answer: 0, explanation: "'das Grundgesetz' = Germaniya Federativ Respublikasi Konstitutsiyasi." },
+                        { q: "B2 darajasiga erishgan o'quvchi timsoli nima?", image: emojiImage("🌟🏆"), imageAlt: "G'alaba va bilim", options: ["der Sprachbeherrschungserfolg (B2 Meister)", "der Anfänger", "der Verlierer", "der Zweifler"], answer: 0, explanation: "B2 darajasini to'liq egallash — nemis tilida ravon erkin muloqot cho'qqisi!" }
+                    ]
+                }
+            ]
+        }]
+    }
 };

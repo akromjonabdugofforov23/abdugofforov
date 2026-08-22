@@ -15,12 +15,279 @@ function getCategoryIcon(category, type) {
     if (type === 'image') return '🖼️';
     return '📝';
 }
+
+function escapeHTML(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag] || tag)
+    );
+}
+
+// ============================================================
+// IN-MEMORY SEARCH ENGINE & FUZZY MATCHER (Abdugofforov Engine)
+// ============================================================
+const SearchEngine = {
+    index: {
+        posts: [],
+        tests: [],
+        flashcards: []
+    },
+
+    normalize(str) {
+        if (!str || typeof str !== 'string') return '';
+        return str
+            .toLowerCase()
+            .replace(/[äàáâã]/g, 'a')
+            .replace(/[öòóôõ]/g, 'o')
+            .replace(/[üùúû]/g, 'u')
+            .replace(/ß/g, 'ss')
+            .replace(/[ʻʼ'`’‘]/g, '')
+            .replace(/[^a-z0-9\s]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    },
+
+    tokenize(str) {
+        const norm = this.normalize(str);
+        return norm ? norm.split(' ').filter(t => t.length > 0) : [];
+    },
+
+    levenshtein(a, b) {
+        if (a === b) return 0;
+        const la = a.length, lb = b.length;
+        if (la === 0) return lb;
+        if (lb === 0) return la;
+        if (Math.abs(la - lb) > 2) return 999;
+
+        let prev = new Array(lb + 1);
+        let curr = new Array(lb + 1);
+        for (let j = 0; j <= lb; j++) prev[j] = j;
+
+        for (let i = 1; i <= la; i++) {
+            curr[0] = i;
+            const ca = a.charCodeAt(i - 1);
+            for (let j = 1; j <= lb; j++) {
+                const cb = b.charCodeAt(j - 1);
+                const cost = (ca === cb) ? 0 : 1;
+                curr[j] = Math.min(
+                    prev[j] + 1,
+                    curr[j - 1] + 1,
+                    prev[j - 1] + cost
+                );
+            }
+            const tmp = prev;
+            prev = curr;
+            curr = tmp;
+        }
+        return prev[lb];
+    },
+
+    isWordMatch(qToken, tToken) {
+        if (!qToken || !tToken) return { match: false, score: 0 };
+        if (tToken === qToken) return { match: true, score: 100 };
+        if (tToken.startsWith(qToken)) return { match: true, score: 85 };
+        if (tToken.includes(qToken)) return { match: true, score: 70 };
+        if (qToken.includes(tToken) && tToken.length >= 3) return { match: true, score: 60 };
+
+        // Fuzzy match: max distance 1 for 3-4 chars, 2 for 5+ chars
+        if (qToken.length >= 3) {
+            const prefix = tToken.slice(0, qToken.length + 1);
+            const dPrefix = this.levenshtein(qToken, prefix);
+            if (dPrefix <= (qToken.length <= 4 ? 1 : 2)) {
+                return { match: true, score: 65 - dPrefix * 15 };
+            }
+            const dist = this.levenshtein(qToken, tToken);
+            if (dist <= (qToken.length <= 4 ? 1 : 2)) {
+                return { match: true, score: 55 - dist * 15 };
+            }
+        }
+        return { match: false, score: 0 };
+    },
+
+    rebuildIndex() {
+        // Posts
+        this.index.posts = (typeof posts !== 'undefined' && Array.isArray(posts) ? posts : []).map(p => {
+            const rawText = `${p.title || ''} ${p.excerpt || ''} ${p.category || ''} ${p.content || ''} ${p.artist || ''} ${p.author || ''} ${(p.tags || []).join(' ')}`;
+            return {
+                id: p.id,
+                type: 'post',
+                category: p.category || 'Kundalik Blog',
+                title: p.title || '',
+                excerpt: p.excerpt || '',
+                normText: this.normalize(rawText),
+                tokens: this.tokenize(rawText),
+                raw: p
+            };
+        });
+
+        // Tests
+        this.index.tests = [];
+        if (typeof deutschTests !== 'undefined') {
+            for (let testId in deutschTests) {
+                const t = deutschTests[testId];
+                const rawText = `${t.title || ''} ${t.level || ''} ${t.note || ''} nemis tili test deutsch goethe`;
+                this.index.tests.push({
+                    id: testId,
+                    type: 'test',
+                    category: `Nemis tili testi (${t.level || 'A1'})`,
+                    title: t.title || `Goethe ${t.level || 'A1'} Test`,
+                    excerpt: t.note || `${t.level || 'A1'} darajali Goethe nemis tili interaktiv test to'plami.`,
+                    level: t.level || 'A1',
+                    normText: this.normalize(rawText),
+                    tokens: this.tokenize(rawText),
+                    raw: t
+                });
+            }
+        } else if (typeof DEUTSCH_LEVELS_DATA !== 'undefined') {
+            DEUTSCH_LEVELS_DATA.forEach(lv => {
+                lv.tests.forEach(t => {
+                    const rawText = `${t.name || ''} ${t.note || ''} ${lv.label || ''} ${lv.sub || ''} ${lv.key || ''} nemis tili test deutsch goethe`;
+                    this.index.tests.push({
+                        id: t.id,
+                        type: 'test',
+                        category: `Nemis tili (${lv.key})`,
+                        title: `Goethe ${lv.key} - ${t.name}`,
+                        excerpt: t.note,
+                        level: lv.key,
+                        normText: this.normalize(rawText),
+                        tokens: this.tokenize(rawText),
+                        raw: t
+                    });
+                });
+            });
+        }
+
+        // Flashcards
+        this.index.flashcards = [];
+        if (typeof flashcardDecks !== 'undefined') {
+            const deckNames = {
+                de_uz: "Nemischa → O'zbekcha",
+                uz_de: "O'zbekcha → Nemischa",
+                grammar: "Grammatika",
+                sentences: "Gaplar va iboralar",
+                quotes: "Iqtiboslar & hikmatlar",
+                ueber_mich: "O'zim haqimda"
+            };
+            for (let deckKey in flashcardDecks) {
+                const deckArr = flashcardDecks[deckKey] || [];
+                const deckLabel = deckNames[deckKey] || deckKey;
+                deckArr.forEach((c, idx) => {
+                    const rawText = `${c.front || ''} ${c.back || ''} ${deckLabel} flashcard kartochka nemis tili`;
+                    this.index.flashcards.push({
+                        id: `${deckKey}_${idx}`,
+                        deckKey: deckKey,
+                        cardIndex: idx,
+                        type: 'flashcard',
+                        category: `Kartochka (${deckLabel})`,
+                        title: c.front || '',
+                        excerpt: c.back || '',
+                        front: c.front || '',
+                        back: c.back || '',
+                        normText: this.normalize(rawText),
+                        tokens: this.tokenize(rawText),
+                        raw: c
+                    });
+                });
+            }
+        }
+    },
+
+    search(query, typeFilter = 'all') {
+        const qNorm = this.normalize(query);
+        if (!qNorm) return [];
+        const qTokens = this.tokenize(query);
+        if (qTokens.length === 0) return [];
+
+        if (this.index.posts.length === 0 && posts.length > 0) {
+            this.rebuildIndex();
+        }
+
+        let candidates = [];
+        if (typeFilter === 'all' || typeFilter === 'posts') candidates = candidates.concat(this.index.posts);
+        if (typeFilter === 'all' || typeFilter === 'tests') candidates = candidates.concat(this.index.tests);
+        if (typeFilter === 'all' || typeFilter === 'flashcards') candidates = candidates.concat(this.index.flashcards);
+
+        const results = [];
+
+        for (let i = 0; i < candidates.length; i++) {
+            const item = candidates[i];
+            let totalScore = 0;
+            let matchedTokens = 0;
+
+            if (item.normText.includes(qNorm)) {
+                totalScore += 100;
+            }
+
+            const titleNorm = this.normalize(item.title || item.front || '');
+            if (titleNorm.includes(qNorm)) {
+                totalScore += titleNorm.startsWith(qNorm) ? 120 : 80;
+            }
+
+            for (let q = 0; q < qTokens.length; q++) {
+                const qToken = qTokens[q];
+                let bestScore = 0;
+                for (let t = 0; t < item.tokens.length; t++) {
+                    const res = this.isWordMatch(qToken, item.tokens[t]);
+                    if (res.match && res.score > bestScore) {
+                        bestScore = res.score;
+                    }
+                }
+                if (bestScore > 0) {
+                    matchedTokens++;
+                    totalScore += bestScore;
+                }
+            }
+
+            if (totalScore >= 45 && (matchedTokens >= Math.min(1, qTokens.length) || item.normText.includes(qNorm))) {
+                results.push({
+                    item: item,
+                    score: totalScore,
+                    tokens: qTokens
+                });
+            }
+        }
+
+        results.sort((a, b) => b.score - a.score);
+        return results;
+    },
+
+    highlight(text, query) {
+        if (!text || typeof text !== 'string') return '';
+        if (!query || typeof query !== 'string' || !query.trim()) return escapeHTML(text);
+
+        const qTokens = this.tokenize(query);
+        if (qTokens.length === 0) return escapeHTML(text);
+
+        const escaped = escapeHTML(text);
+        const sortedTokens = [...qTokens].filter(t => t.length >= 2).sort((a, b) => b.length - a.length);
+        if (sortedTokens.length === 0) return escaped;
+
+        const regexPattern = sortedTokens.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+        if (!regexPattern) return escaped;
+
+        try {
+            const regex = new RegExp(`(${regexPattern})`, 'gi');
+            return escaped.replace(regex, '<mark class="search-highlight">$1</mark>');
+        } catch (e) {
+            return escaped;
+        }
+    }
+};
+window.SearchEngine = SearchEngine;
+
 // State (Holat) - Abdugofforov rebrending kalitlari bilan boshlash
-// posts endi IndexedDB (Store) orqali yuklanadi Ã¢â‚¬â€ bootstrap() ichida hydrate qilinadi.
+// posts endi IndexedDB (Store) orqali yuklanadi Ã¢â‚¬â€  bootstrap() ichida hydrate qilinadi.
 let posts = [];
 let currentTab = 'home'; 
 let filterType = 'Kundalik Blog'; 
 let searchQuery = '';
+let searchCategoryTab = 'all'; 
 let editingPostId = null;
 let isAdmin = sessionStorage.getItem('kay_admin') === 'true';
 
@@ -319,86 +586,219 @@ function updateHeroContent() {
         heroSection.classList.add('animate-fade-in');
     }
     if (heroSub) {
-        heroSub.textContent = (currentTab === 'projects')
-            ? i18n.t('hero.subtitle.projects')
-            : i18n.t('hero.subtitle');
-    }
+        heroSub.textContent = (currentTab === 'prfunction setSearchCategoryTab(tab) {
+    searchCategoryTab = tab;
+    renderPosts(true);
 }
 
 // 8. Postlarni filtrlash va render qilish
 let _renderTimer = null;
 function renderPosts(instant) {
-    // Avvalgi kutilayotgan renderni bekor qilamiz (qidiruvda har bosishda chaqiriladi — 
-    // bu skeletonlar ustma-ust tushib miltillashining oldini oladi)
     if (_renderTimer) { clearTimeout(_renderTimer); _renderTimer = null; }
 
-    const currentHeight = blogGrid.offsetHeight;
-    if (currentHeight > 0) blogGrid.style.minHeight = currentHeight + 'px';
+    const currentHeight = blogGrid ? blogGrid.offsetHeight : 0;
+    if (currentHeight > 0 && blogGrid) blogGrid.style.minHeight = currentHeight + 'px';
 
     const doRender = () => {
         _renderTimer = null;
+        if (!blogGrid) return;
         blogGrid.innerHTML = '';
         blogGrid.classList.remove('animate-fade-in');
         void blogGrid.offsetWidth;
         blogGrid.classList.add('animate-fade-in');
 
-        const filtered = posts.filter(post => {
-            // QIDIRUV REJIMI: matn kiritilgan bo'lsa, kategoriya/tab cheklovini
-            // e'tiborsiz qoldirib, BARCHA postlar ichidan qidiramiz
-            if (searchQuery) {
-                const q = searchQuery.toLowerCase();
-                const fields = [post.title, post.excerpt, post.category, post.content, post.artist, post.author];
-                return fields.some(f => typeof f === 'string' && f.toLowerCase().includes(q));
+        // ==========================================
+        // 1. QIDIRUV REJIMI (Instant Search Engine)
+        // ==========================================
+        if (searchQuery) {
+            SearchEngine.rebuildIndex();
+            const allHits = SearchEngine.search(searchQuery, 'all');
+            const counts = {
+                all: allHits.length,
+                posts: allHits.filter(h => h.item.type === 'post').length,
+                tests: allHits.filter(h => h.item.type === 'test').length,
+                flashcards: allHits.filter(h => h.item.type === 'flashcard').length
+            };
+
+            const filteredHits = searchCategoryTab === 'all'
+                ? allHits
+                : allHits.filter(h => h.item.type === (searchCategoryTab === 'tests' ? 'test' : (searchCategoryTab === 'flashcards' ? 'flashcard' : 'post')));
+
+            // Search Results Summary & Filter Pills Header
+            const searchHeader = document.createElement('div');
+            searchHeader.className = 'search-results-header';
+            searchHeader.style.gridColumn = '1 / -1';
+            searchHeader.innerHTML = `
+                <div class="search-results-meta">
+                    <div class="search-query-info">
+                        🔍 <strong>"${escapeHTML(searchQuery)}"</strong> bo'yicha <b>${counts.all}</b> ta natija topildi
+                    </div>
+                    <div class="search-filter-pills">
+                        <button class="search-filter-pill ${searchCategoryTab === 'all' ? 'active' : ''}" onclick="setSearchCategoryTab('all')">✨ Barchasi (${counts.all})</button>
+                        <button class="search-filter-pill ${searchCategoryTab === 'posts' ? 'active' : ''}" onclick="setSearchCategoryTab('posts')">📝 Maqolalar (${counts.posts})</button>
+                        <button class="search-filter-pill ${searchCategoryTab === 'tests' ? 'active' : ''}" onclick="setSearchCategoryTab('tests')">🇩🇪 Testlar (${counts.tests})</button>
+                        <button class="search-filter-pill ${searchCategoryTab === 'flashcards' ? 'active' : ''}" onclick="setSearchCategoryTab('flashcards')">🃏 Kartochkalar (${counts.flashcards})</button>
+                    </div>
+                </div>
+            `;
+            blogGrid.appendChild(searchHeader);
+
+            if (filteredHits.length === 0) {
+                const emptyCard = document.createElement('div');
+                emptyCard.className = 'empty-state';
+                emptyCard.innerHTML = `
+                    <span class="empty-state-icon">🔍</span>
+                    <p class="empty-state-text">"${escapeHTML(searchQuery)}" bo'yicha bu toifada hech narsa topilmadi.</p>
+                `;
+                blogGrid.appendChild(emptyCard);
+                setTimeout(() => { if (blogGrid) blogGrid.style.minHeight = ''; }, 100);
+                return;
             }
 
-            // Qidiruv yo'q — oddiy kategoriya/tab filtri
-            // Default holat: hech narsa ko'rsatmaslik
-            if (filterType === 'none') return false;
+            filteredHits.forEach(hit => {
+                const item = hit.item;
+                
+                // POST ITEM
+                if (item.type === 'post') {
+                    const post = item.raw;
+                    const card = document.createElement('article');
+                    card.className = 'post-card';
+                    const highlightedTitle = SearchEngine.highlight(post.title, searchQuery);
+                    const highlightedExcerpt = SearchEngine.highlight(post.excerpt, searchQuery);
+                    const highlightedCat = SearchEngine.highlight(post.category, searchQuery);
 
-            // Tab navigatsiyasi
+                    card.innerHTML = `
+                        <div class="post-image-wrapper">
+                            <div class="post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600')}');"></div>
+                        </div>
+                        <div class="post-content">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <span class="post-meta" style="margin-bottom:0;">${getCategoryIcon(post.category, post.type)} ${highlightedCat}</span>
+                                <span class="search-type-badge badge-type-post">Maqola</span>
+                            </div>
+                            <h2 class="post-title">${highlightedTitle}</h2>
+                            <p class="post-excerpt">${highlightedExcerpt}</p>
+                            <div class="post-footer">
+                                <span class="post-date">${formatDate(post.date)} - ⏳ ${readingTime(post)}</span>
+                                <div class="post-stats">
+                                    <div class="post-stat like-btn" data-id="${post.id}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                        <span>${post.likes || 0}</span>
+                                    </div>
+                                    <div class="post-stat">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                        <span>${(post.comments || []).length}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('.like-btn')) {
+                            handleLike(post.id);
+                        } else if (post.type === 'music') {
+                            playMusic(post);
+                        } else {
+                            openPostDetail(post.id);
+                        }
+                    });
+
+                    blogGrid.appendChild(card);
+                    observeReveal(card);
+                } 
+                // TEST ITEM
+                else if (item.type === 'test') {
+                    const card = document.createElement('div');
+                    card.className = 'test-card post-card';
+                    card.style.padding = '22px';
+                    const highlightedTitle = SearchEngine.highlight(item.title, searchQuery);
+                    const highlightedExcerpt = SearchEngine.highlight(item.excerpt, searchQuery);
+
+                    card.innerHTML = `
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <span class="search-type-badge badge-type-test">🇩🇪 Goethe Test (${item.level})</span>
+                                <span class="test-card-badge">10 savol</span>
+                            </div>
+                            <h3 class="post-title" style="font-size:18px; margin-bottom:8px;">${highlightedTitle}</h3>
+                            <p class="test-card-note" style="font-size:13.5px; line-height:1.5;">${highlightedExcerpt}</p>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:1px solid var(--glass-border); padding-top:12px;">
+                            <span style="font-size:12px; color:var(--text-muted);">Goethe Imtihoni formati</span>
+                            <div class="test-card-cta">Testni boshlash &rarr;</div>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', () => {
+                        if (typeof openDeutschView === 'function') openDeutschView();
+                        if (typeof startTest === 'function') startTest(item.id);
+                    });
+
+                    blogGrid.appendChild(card);
+                    observeReveal(card);
+                } 
+                // FLASHCARD ITEM
+                else if (item.type === 'flashcard') {
+                    const card = document.createElement('div');
+                    card.className = 'fc-search-card post-card';
+                    const highlightedFront = SearchEngine.highlight(item.front, searchQuery);
+                    const highlightedBack = SearchEngine.highlight(item.back, searchQuery);
+
+                    card.innerHTML = `
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <span class="search-type-badge badge-type-fc">${escapeHTML(item.category)}</span>
+                                <button class="btn-icon fc-audio-btn" style="width:30px; height:30px; font-size:14px;" title="Talaffuz" onclick="speakGermanText('${escapeHTML(item.deckKey === 'uz_de' ? item.back : item.front).replace(/'/g, "\\'")}', event)">🔊</button>
+                            </div>
+                            <div class="fc-search-front" style="margin-bottom:8px;">${highlightedFront}</div>
+                            <div class="fc-search-back">${highlightedBack}</div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--accent-color); font-weight:600; border-top:1px dashed var(--border-color); padding-top:10px;">
+                            <span>🃏 Kartochkalarda mashq qilish</span>
+                            <span>Ochish &rarr;</span>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('.fc-audio-btn')) return;
+                        if (typeof openFlashcardsView === 'function') openFlashcardsView();
+                        if (typeof startFlashcardAt === 'function') startFlashcardAt(item.deckKey, item.cardIndex);
+                        else if (typeof startFlashcards === 'function') startFlashcards(item.deckKey);
+                    });
+
+                    blogGrid.appendChild(card);
+                    observeReveal(card);
+                }
+            });
+
+            setTimeout(() => { if (blogGrid) blogGrid.style.minHeight = ''; }, 100);
+            return;
+        }
+
+        // ==========================================
+        // 2. ODDIY POSTLAR REJIMI (Category Filters)
+        // ==========================================
+        const filtered = posts.filter(post => {
+            if (filterType === 'none') return false;
             if (currentTab === 'projects' && post.type !== 'project') return false;
 
-            // Toolbar filtr tugmalari
             if (filterType !== 'all') {
                 const postCat = (post && post.category ? post.category : '').toLowerCase().replace(/[^a-z0-9]/g, '');
                 const targetCat = (filterType || '').toLowerCase().replace(/[^a-z0-9]/g, '');
                 if (postCat !== targetCat) return false;
             }
-
             return true;
         });
-
-        // Butun sayt bo'ylab qidiruv (Testlarni ham qidirish)
-        if (searchQuery && typeof deutschTests !== 'undefined') {
-            const q = searchQuery.toLowerCase();
-            for (let testId in deutschTests) {
-                const t = deutschTests[testId];
-                const fields = [t.title, t.level, 'nemis tili', 'test', 'deutsch'];
-                if (fields.some(f => typeof f === 'string' && f.toLowerCase().includes(q))) {
-                    filtered.push({
-                        id: testId,
-                        type: 'test',
-                        title: t.title,
-                        category: "Nemis tili testi (" + t.level + ")",
-                        excerpt: "Nemis tili bo'yicha maxsus test to'plami. Bilimingizni sinab ko'ring!",
-                        image: '', // Default rasm olinadi
-                        date: new Date().toISOString(),
-                        likes: 0,
-                        comments: [],
-                        isTest: true
-                    });
-                }
-            }
-        }
 
         if (filtered.length === 0) {
             blogGrid.innerHTML = `
                 <div class="empty-state">
-                    <span class="empty-state-icon">${searchQuery ? '🔍' : '📭'}</span>
-                    <p class="empty-state-text">${searchQuery ? ('"' + escapeHTML(searchQuery) + '" bo\'yicha hech narsa topilmadi.') : "Hech qanday maqola yoki ma'lumot topilmadi."}</p>
+                    <span class="empty-state-icon">📭</span>
+                    <p class="empty-state-text">Hech qanday maqola yoki ma'lumot topilmadi.</p>
                 </div>
             `;
-            setTimeout(() => { blogGrid.style.minHeight = ''; }, 100);
+            setTimeout(() => { if (blogGrid) blogGrid.style.minHeight = ''; }, 100);
             return;
         }
 
@@ -428,12 +828,12 @@ function renderPosts(instant) {
                             <span class="post-date">${formatDate(post.date)} - ⏳ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                    <span>${post.likes}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                    <span>${post.likes || 0}</span>
                                 </div>
                                 <div class="post-stat">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                                    <span>${post.comments.length}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                    <span>${(post.comments || []).length}</span>
                                 </div>
                             </div>
                         </div>
@@ -453,12 +853,12 @@ function renderPosts(instant) {
                             <span class="post-date">${formatDate(post.date)} - ⏳ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                    <span>${post.likes}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                    <span>${post.likes || 0}</span>
                                 </div>
                                 <div class="post-stat">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                                    <span>${post.comments.length}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                    <span>${(post.comments || []).length}</span>
                                 </div>
                             </div>
                         </div>
@@ -483,12 +883,12 @@ function renderPosts(instant) {
                             <span class="post-date">${formatDate(post.date)} - ⏳ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                    <span>${post.likes}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                    <span>${post.likes || 0}</span>
                                 </div>
                                 <div class="post-stat">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                                    <span>${post.comments.length}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                    <span>${(post.comments || []).length}</span>
                                 </div>
                             </div>
                         </div>
@@ -507,12 +907,12 @@ function renderPosts(instant) {
                             <span class="post-date">${formatDate(post.date)} - ⏳ ${readingTime(post)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                    <span>${post.likes}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                    <span>${post.likes || 0}</span>
                                 </div>
                                 <div class="post-stat">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                                    <span>${post.comments.length}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                    <span>${(post.comments || []).length}</span>
                                 </div>
                             </div>
                         </div>
@@ -527,14 +927,10 @@ function renderPosts(instant) {
                     const z = e.target.closest('.zoomable-bg');
                     openLightbox(z.getAttribute('data-zoom-src'));
                 } else if (e.target.closest('.music-open-btn')) {
-                    // Havola yangi oynada ochiladi Ã¢â‚¬â€ batafsil oyna ochilmasin
                     e.stopPropagation();
                 } else if (e.target.closest('.music-play-btn')) {
                     e.stopPropagation();
                     playMusic(post);
-                } else if (post.isTest) {
-                    if (typeof openDeutschView === 'function') openDeutschView();
-                    if (typeof startTest === 'function') startTest(post.id);
                 } else {
                     openPostDetail(post.id);
                 }
@@ -544,11 +940,16 @@ function renderPosts(instant) {
             observeReveal(card);
         });
 
-        setTimeout(() => { blogGrid.style.minHeight = ''; }, 100);
+        setTimeout(() => { if (blogGrid) blogGrid.style.minHeight = ''; }, 100);
     };
 
-    // Qidiruvda darhol (skeletonsiz) ko'rsatamiz; aks holda yengil skeleton animatsiyasi
     if (instant) {
+        doRender();
+    } else {
+        showSkeletons(3);
+        _renderTimer = setTimeout(doRender, 150);
+    }
+}    if (instant) {
         doRender();
     } else {
         showSkeletons(3);
@@ -559,7 +960,7 @@ function renderPosts(instant) {
 // Ko'rinishlarni almashtirish yordamchilari
 // (asosiy <-> deutsch <-> kartochka <-> turnir)
 function hideAuxViews() {
-    ['deutsch-view', 'flashcards-view', 'tournament-view'].forEach(id => {
+    ['deutsch-view', 'flashcards-view', 'tournament-view', 'verb-trainer-view'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = 'none';
     });
@@ -587,6 +988,8 @@ function applyAppRoute(route) {
         if (typeof openHorrorHome === 'function') openHorrorHome(true);
     } else if (cleanRoute.includes('nemistili') || cleanRoute.includes('deutsch')) {
         openDeutschView(false);
+    } else if (cleanRoute.includes('verb')) {
+        openVerbTrainerView(false);
     } else if (cleanRoute.includes('flashcards')) {
         openFlashcardsView(false);
     } else if (cleanRoute.includes('tournament')) {
@@ -624,6 +1027,20 @@ function openDeutschView(pushHistory = true) {
     if (pushHistory) setAppRoute('#nemistili', true);
 }
 
+function openVerbTrainerView(pushHistory = true) {
+    document.body.classList.remove('horror-theme');
+    if (mainContent) mainContent.style.display = 'none';
+    const hero = document.querySelector('.hero');
+    if (hero) hero.style.display = 'none';
+    hideAuxViews();
+    const vView = document.getElementById('verb-trainer-view');
+    if (vView) vView.style.display = 'block';
+    if (window.verbTrainerApp && typeof window.verbTrainerApp.init === 'function') {
+        window.verbTrainerApp.init();
+    }
+    if (pushHistory) setAppRoute('#verbs', true);
+}
+
 function openFlashcardsView(pushHistory = true) {
     document.body.classList.remove('horror-theme');
     if (mainContent) mainContent.style.display = 'none';
@@ -634,6 +1051,18 @@ function openFlashcardsView(pushHistory = true) {
     if (flashView) flashView.style.display = 'block';
     renderFlashcardsHome();
     if (pushHistory) setAppRoute('#flashcards', true);
+}
+
+function openGamesView(pushHistory = true) {
+    document.body.classList.remove('horror-theme');
+    if (mainContent) mainContent.style.display = 'none';
+    const hero = document.querySelector('.hero');
+    if (hero) hero.style.display = 'none';
+    hideAuxViews();
+    const flashView = document.getElementById('flashcards-view');
+    if (flashView) flashView.style.display = 'block';
+    if (typeof showMatchingHome === 'function') showMatchingHome();
+    if (pushHistory) setAppRoute('#games', true);
 }
 
 function openTournamentView(pushHistory = true) {
@@ -666,6 +1095,11 @@ if (mainNav) {
         if (link.id === 'nav-deutsch-link' || link.getAttribute('data-page') === 'deutsch') {
             openDeutschView();
             syncActiveNavState('deutsch');
+            return;
+        }
+        if (link.id === 'nav-verbs-link' || link.getAttribute('data-page') === 'verbs') {
+            openVerbTrainerView();
+            syncActiveNavState('verbs');
             return;
         }
         if (link.id === 'nav-flashcards-link' || link.getAttribute('data-page') === 'flashcards') {
@@ -749,6 +1183,11 @@ if (desktopDock) {
             syncActiveNavState('deutsch');
             return;
         }
+        if (link.id === 'dock-verbs' || link.getAttribute('data-page') === 'verbs') {
+            openVerbTrainerView();
+            syncActiveNavState('verbs');
+            return;
+        }
         if (link.getAttribute('data-page') === 'flashcards') {
             openFlashcardsView();
             syncActiveNavState('flashcards');
@@ -826,6 +1265,10 @@ if (toolbarEl) toolbarEl.addEventListener('click', (e) => {
 
     if (btn.id === 'main-deutsch-btn') {
         openDeutschView();
+        return;
+    }
+    if (btn.id === 'main-verbs-btn') {
+        openVerbTrainerView();
         return;
     }
 
