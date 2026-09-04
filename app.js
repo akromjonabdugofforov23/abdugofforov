@@ -3314,7 +3314,7 @@ if (closeMyresultsModal && myresultsModal) {
                 setTimeout(() => location.reload(), 600);
             } else {
                 // Xatolik xabari
-                const errMsg = (result && result.error) ? result.error : "Xatolik yuz berdi. Qayta urinib ko'ring.";
+                const errMsg = (result && result.message) ? result.message : "Xatolik yuz berdi. Qayta urinib ko'ring.";
                 if (errorEl) { errorEl.textContent = errMsg; errorEl.style.display = 'block'; }
             }
         } catch (networkErr) {
