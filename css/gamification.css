@@ -1,6 +1,9 @@
 /* ===== GAMIFICATION, FORTUNE QUOTE & GERMANY MAP STYLES ===== */
 
 /* 1. STREAK & XP BADGE IN NAVBAR */
+#user-gamification-wrap, .user-streak-chip, .user-xp-badge {
+    display: none !important;
+}
 .user-streak-chip {
     display: inline-flex;
     align-items: center;

@@ -50,27 +50,8 @@
     }
 
     function renderGamificationPill(data) {
-        const navRight = document.getElementById('nav-right');
-        if (!navRight) return;
-
-        let container = document.getElementById('user-gamification-wrap');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'user-gamification-wrap';
-            container.style.cssText = 'display:inline-flex; align-items:center; gap:8px; margin-right:8px;';
-            navRight.insertBefore(container, navRight.firstChild);
-        }
-
-        const info = getLevelInfo(data.xp);
-
-        container.innerHTML = `
-            <div class="user-streak-chip" title="Har kuni kirganingiz uchun ketma-ket alanga!">
-                🔥 ${data.count} Kun
-            </div>
-            <div class="user-xp-badge" title="To'plangan XP: ${data.xp}">
-                ${info.level}
-            </div>
-        `;
+        const container = document.getElementById('user-gamification-wrap');
+        if (container) container.remove();
     }
 
     // Module Export
