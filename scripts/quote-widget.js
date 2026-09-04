@@ -4,25 +4,52 @@
 
     const QUOTES_DB = {
         uz: [
-            { quote: "Mag'lubiyat to'xtaganingda sodir bo'ladi. Har kuni kichik bo'lsa ham qadam tashla!", author: "Stoyatsizm Hikmati", de: "Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhältst." },
-            { quote: "Nolish variant emas, harakat variant! Bugungi intizoming ertangi erkinligingdir.", author: "Marcus Aurelius", de: "Disziplin heute ist Freiheit morgen." },
-            { quote: "Qiyinchilik kelganda chekinma, bu seni kuchliroq bo'lishing uchun imkoniyatdir!", author: "Friedrich Nietzsche", de: "Was mich nicht umbringt, macht mich stärker." },
-            { quote: "Chegara faqat hayolingda. Har kuni o'zingdan 1% yaxshiroq bo'l!", author: "Kaizen Falsafasi", de: "Jeden Tag 1% besser als gestern." }
+            { quote: "Muvaffaqiyat — bu har kungi kichik intilishlarning yig'indisidir.", author: "Robert Collier", de: "Erfolg ist die Summe kleiner Anstrengungen, die Tag für Tag wiederholt werden." },
+            { quote: "Katta maqsadlarga erishish uchun nafaqat harakat qilish, balki orzu qilish va qat'iy ishonish ham kerak.", author: "Anatole France", de: "Um große Dinge zu erreichen, müssen wir nicht nur handeln, sondern auch träumen und glauben." },
+            { quote: "Kelajak bugun nima qilayotganingizga bog'liq, ertaga nima qilmoqchi ekanligingizga emas.", author: "Mahatma Gandhi", de: "Die Zukunft hängt davon ab, was wir heute tun." },
+            { quote: "Qiyinchiliklar insonni sindirish uchun emas, uning ichki qudratini uyg'otish uchun keladi.", author: "Johann Wolfgang von Goethe", de: "Schwierigkeiten sind da, um überwunden zu werden und den Charakter zu stärken." },
+            { quote: "Bilim olishga kiritilgan sarmoya doimo eng yuqori foyda keltiradi.", author: "Benjamin Franklin", de: "Eine Investition in Wissen bringt immer noch die besten Zinsen." },
+            { quote: "O'zgarishni boshqalardan kutma, dunyoda ko'rmoqchi bo'lgan o'zgarishing o'zing bo'l.", author: "Mahatma Gandhi", de: "Sei du selbst die Veränderung, die du dir wünschst für diese Welt." },
+            { quote: "Yiqilishdan qo'rqma, qayta turmaslikdan qo'rq. Haqiqiy kuch har yiqilganda qayta ko'tarilishdadir.", author: "Konfutsiy", de: "Der größte Ruhm im Leben liegt darin, jedes Mal wieder aufzustehen." },
+            { quote: "Vaqtingiz cheklangan, shuning uchun uni boshqalarning hayotini yashashga sarflamang.", author: "Steve Jobs", de: "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben." },
+            { quote: "Intizom — bu xohishing bilan erishmoqchi bo'lgan maqsading o'rtasidagi ko'prikdir.", author: "Jim Rohn", de: "Disziplin ist die Brücke zwischen deinen Zielen und ihren Erfolgen." },
+            { quote: "Muvaffaqiyatli inson bo'lishga emas, balki qadrli va foydali inson bo'lishga intil.", author: "Albert Einstein", de: "Versuche nicht, ein erfolgreicher, sondern ein wertvoller Mensch zu sein." }
         ],
         ru: [
-            { quote: "Поражение происходит только тогда, когда ты останавливаешься. Иди вперёд каждый день!", author: "Мудрость Стоиков", de: "Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhältst." },
-            { quote: "Жалобы — это не вариант, только действия имеют значение!", author: "Марк Аврелий", de: "Disziplin heute ist Freiheit morgen." },
-            { quote: "Что нас не убивает, то делает нас сильнее. Преодолевай любые препятствия!", author: "Фридрих Ницше", de: "Was mich nicht umbringt, macht mich stärker." }
+            { quote: "Успех — это сумма маленьких усилий, повторяющихся изо дня в день.", author: "Роберт Кольер", de: "Erfolg ist die Summe kleiner Anstrengungen, die Tag für Tag wiederholt werden." },
+            { quote: "Будущее зависит от того, что вы делаете сегодня.", author: "Махатма Ганди", de: "Die Zukunft hängt davon ab, was wir heute tun." },
+            { quote: "Трудности существуют, чтобы закалять наш дух и делать нас сильнее.", author: "Иоганн Вольфганг фон Гёте", de: "Schwierigkeiten sind da, um überwunden zu werden und den Charakter zu stärken." },
+            { quote: "Инвестиции в знания всегда приносят наибольший доход.", author: "Бенджамин Франклин", de: "Eine Investition in Wissen bringt immer noch die besten Zinsen." },
+            { quote: "Будьте тем изменением, которое вы хотите видеть в этом мире.", author: "Махатма Ганди", de: "Sei du selbst die Veränderung, die du dir wünschst für diese Welt." },
+            { quote: "Не бойся падать, бойся не подняться. Сила в том, чтобы вставать каждый раз.", author: "Конфуций", de: "Der größte Ruhm im Leben liegt darin, jedes Mal wieder aufzustehen." },
+            { quote: "Ваше время ограничено, не тратьте его, живя чужой жизнью.", author: "Стив Джобс", de: "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben." },
+            { quote: "Дисциплина — это мост между целями и достижениями.", author: "Джим Рон", de: "Disziplin ist die Brücke zwischen deinen Zielen und ihren Erfolgen." },
+            { quote: "Чтобы достичь великих целей, нужно не только действовать, но и мечтать.", author: "Анатоль Франс", de: "Um große Dinge zu erreichen, müssen wir nicht nur handeln, sondern auch träumen." },
+            { quote: "Стремись не к успеху, а к тому, чтобы твоя жизнь имела смысл и ценность.", author: "Альберт Эйнштейн", de: "Versuche nicht, ein erfolgreicher, sondern ein wertvoller Mensch zu sein." }
         ],
         de: [
-            { quote: "Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhältst.", author: "Konfuzius", de: "Stärke kommt nicht aus körperlicher Kraft, sondern aus unbeugsamem Willen." },
-            { quote: "Was mich nicht umbringt, macht mich stärker. Gib niemals auf!", author: "Friedrich Nietzsche", de: "Wer ein Warum zum Leben hat, erträgt fast jedes Wie." },
-            { quote: "Disziplin heute bedeutet Freiheit morgen. Handle jetzt!", author: "Stoiker Weisheit", de: "Der Weg ist das Ziel." }
+            { quote: "Erfolg ist die Summe kleiner Anstrengungen, die Tag für Tag wiederholt werden.", author: "Robert Collier", de: "Erfolg ist die Summe kleiner Anstrengungen, die Tag für Tag wiederholt werden." },
+            { quote: "Die Zukunft hängt davon ab, was wir heute tun.", author: "Mahatma Gandhi", de: "Die Zukunft hängt davon ab, was wir heute tun." },
+            { quote: "Schwierigkeiten sind da, um überwunden zu werden und den Charakter zu stärken.", author: "Johann Wolfgang von Goethe", de: "Schwierigkeiten sind da, um überwunden zu werden und den Charakter zu stärken." },
+            { quote: "Eine Investition in Wissen bringt immer noch die besten Zinsen.", author: "Benjamin Franklin", de: "Eine Investition in Wissen bringt immer noch die besten Zinsen." },
+            { quote: "Sei du selbst die Veränderung, die du dir wünschst für diese Welt.", author: "Mahatma Gandhi", de: "Sei du selbst die Veränderung, die du dir wünschst für diese Welt." },
+            { quote: "Der größte Ruhm im Leben liegt darin, jedes Mal wieder aufzustehen.", author: "Konfuzius", de: "Der größte Ruhm im Leben liegt darin, jedes Mal wieder aufzustehen." },
+            { quote: "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.", author: "Steve Jobs", de: "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben." },
+            { quote: "Disziplin ist die Brücke zwischen deinen Zielen und ihren Erfolgen.", author: "Jim Rohn", de: "Disziplin ist die Brücke zwischen deinen Zielen und ihren Erfolgen." },
+            { quote: "Um große Dinge zu erreichen, müssen wir träumen sowie handeln.", author: "Anatole France", de: "Um große Dinge zu erreichen, müssen wir träumen sowie handeln." },
+            { quote: "Versuche nicht, ein erfolgreicher, sondern ein wertvoller Mensch zu sein.", author: "Albert Einstein", de: "Versuche nicht, ein erfolgreicher, sondern ein wertvoller Mensch zu sein." }
         ],
         en: [
-            { quote: "It does not matter how slowly you go as long as you do not stop. Keep pushing!", author: "Stoic Wisdom", de: "Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhältst." },
-            { quote: "Complaining is not a strategy. Action is the only antidote to fear!", author: "Marcus Aurelius", de: "Disziplin heute ist Freiheit morgen." },
-            { quote: "What doesn't kill you makes you stronger. Overcome every challenge!", author: "Friedrich Nietzsche", de: "Was mich nicht umbringt, macht mich stärker." }
+            { quote: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier", de: "Erfolg ist die Summe kleiner Anstrengungen, die Tag für Tag wiederholt werden." },
+            { quote: "The future depends on what you do today.", author: "Mahatma Gandhi", de: "Die Zukunft hängt davon ab, was wir heute tun." },
+            { quote: "Difficulties are meant to rouse, not discourage. The human spirit is to grow strong by conflict.", author: "Johann Wolfgang von Goethe", de: "Schwierigkeiten sind da, um überwunden zu werden und den Charakter zu stärken." },
+            { quote: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin", de: "Eine Investition in Wissen bringt immer noch die besten Zinsen." },
+            { quote: "Be the change that you wish to see in the world.", author: "Mahatma Gandhi", de: "Sei du selbst die Veränderung, die du dir wünschst für diese Welt." },
+            { quote: "Our greatest glory is not in never falling, but in rising every time we fall.", author: "Confucius", de: "Der größte Ruhm im Leben liegt darin, jedes Mal wieder aufzustehen." },
+            { quote: "Your time is limited, so don't waste it living someone else's life.", author: "Steve Jobs", de: "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben." },
+            { quote: "Discipline is the bridge between goals and accomplishment.", author: "Jim Rohn", de: "Disziplin ist die Brücke zwischen deinen Zielen und ihren Erfolgen." },
+            { quote: "To accomplish great things, we must not only act, but also dream; not only plan, but also believe.", author: "Anatole France", de: "Um große Dinge zu erreichen, müssen wir träumen sowie handeln." },
+            { quote: "Try not to become a person of success, but rather try to become a person of value.", author: "Albert Einstein", de: "Versuche nicht, ein erfolgreicher, sondern ein wertvoller Mensch zu sein." }
         ]
     };
 
