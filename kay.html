@@ -600,6 +600,31 @@
         </div><!-- /glz-main -->
     </div><!-- /admin-screen -->
 
+    <!-- Reset Password Modal -->
+    <div id="reset-password-modal" class="glz-modal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999;align-items:center;justify-content:center;padding:16px;">
+        <div style="background:#0b192c;border:1px solid rgba(45,212,191,0.25);border-radius:16px;width:100%;max-width:400px;padding:24px;box-shadow:0 20px 40px rgba(0,0,0,0.6);position:relative;">
+            <button type="button" onclick="closeResetPasswordModal()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:#9aa;font-size:22px;cursor:pointer;line-height:1;">&times;</button>
+            <div style="font-size:18px;font-weight:700;color:#f1f5f9;margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+                <span>🔑</span> Parolni o'zgartirish
+            </div>
+            <p style="font-size:13px;color:#9aa;margin-bottom:18px;">
+                Foydalanuvchi: <strong id="reset-modal-username" style="color:#2dd4bf;">@username</strong> (<span id="reset-modal-name">Ism</span>)
+            </p>
+            <form id="reset-password-form" onsubmit="handleResetPasswordSubmit(event)">
+                <input type="hidden" id="reset-target-username">
+                <div style="margin-bottom:14px;">
+                    <label for="reset-new-password" style="display:block;font-size:12px;color:#94a3b8;margin-bottom:6px;">Yangi parol (kamida 6 ta belgi):</label>
+                    <input type="text" id="reset-new-password" class="form-input" placeholder="Yangi parolni kiriting..." minlength="6" required style="width:100%;box-sizing:border-box;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#fff;border-radius:8px;padding:10px 12px;font-size:14px;">
+                </div>
+                <div id="reset-modal-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:8px 10px;border-radius:6px;"></div>
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button type="button" onclick="closeResetPasswordModal()" class="btn-secondary" style="padding:9px 16px;font-size:13px;">Bekor qilish</button>
+                    <button type="submit" id="reset-modal-submit-btn" class="btn-primary" style="padding:9px 18px;font-size:13px;">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Desktop Bottom Dock (Glassmorphism - Admin) -->
     <nav class="desktop-dock" id="admin-desktop-dock">
         <button class="dock-item admin-tab active" data-tab="dashboard" aria-label="Dashboard" title="Dashboard">
@@ -999,8 +1024,8 @@ document.getElementById('logout-btn').addEventListener('click', () => {
 });
 
 // ===== O'QUVCHILAR VA NATIJALAR =====
-function _adminHeaders() {
-    const h = {};
+function _adminHeaders(extra) {
+    const h = Object.assign({}, extra || {});
     const token = sessionStorage.getItem('kay_admin_token');
     const pin = sessionStorage.getItem('kay_admin_pin');
     if (token) h['x-admin-token'] = token;
@@ -1021,10 +1046,17 @@ async function loadStudents() {
             document.getElementById('students-count').textContent = data.count || data.users.length;
             usersBox.innerHTML = data.users.length ? `<table style="width:100%;border-collapse:collapse;font-size:14px;">
                 <thead><tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
-                    <th style="padding:8px 10px;">Ism</th><th style="padding:8px 10px;">Username</th><th style="padding:8px 10px;">Ro'yxatdan o'tgan</th>
+                    <th style="padding:8px 10px;">Ism</th><th style="padding:8px 10px;">Username</th><th style="padding:8px 10px;">Ro'yxatdan o'tgan</th><th style="padding:8px 10px;text-align:right;">Amallar</th>
                 </tr></thead><tbody>${data.users.map(u => {
                     const d = u.createdAt ? new Date(u.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
-                    return `<tr><td style="padding:8px 10px;font-weight:600;">${_esc(u.name)}</td><td style="padding:8px 10px;color:#9aa;">@${_esc(u.username)}</td><td style="padding:8px 10px;color:#9aa;font-size:12px;">${d}</td></tr>`;
+                    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                        <td style="padding:8px 10px;font-weight:600;">${_esc(u.name)}</td>
+                        <td style="padding:8px 10px;color:#2dd4bf;font-weight:500;">@${_esc(u.username)}</td>
+                        <td style="padding:8px 10px;color:#9aa;font-size:12px;">${d}</td>
+                        <td style="padding:8px 10px;text-align:right;">
+                            <button type="button" class="btn-secondary" onclick="openResetPasswordModal('${_esc(u.username)}', '${_esc(u.name)}')" style="padding:4px 10px;font-size:12px;border-radius:6px;border-color:rgba(45,212,191,0.3);color:#2dd4bf;">🔑 Parol o'zgartirish</button>
+                        </td>
+                    </tr>`;
                 }).join('')}</tbody></table>` : '<p style="color:#9aa;font-size:13px;">Hali hech kim ro\'yxatdan o\'tmagan.</p>';
         } else {
             usersBox.innerHTML = '<p style="color:#f87171;font-size:13px;">' + _esc(data.message || 'Yuklab bo\'lmadi (admin kerak)') + '</p>';
@@ -1048,6 +1080,95 @@ async function loadStudents() {
             resultsBox.innerHTML = '<p style="color:#f87171;font-size:13px;">' + _esc(data.message || 'Yuklab bo\'lmadi') + '</p>';
         }
     } catch (e) { resultsBox.innerHTML = '<p style="color:#f87171;font-size:13px;">Serverga ulanib bo\'lmadi</p>'; }
+}
+
+// ===== PAROLNI O'ZGARTIRISH (ADMIN) =====
+function openResetPasswordModal(username, name) {
+    const modal = document.getElementById('reset-password-modal');
+    const userSpan = document.getElementById('reset-modal-username');
+    const nameSpan = document.getElementById('reset-modal-name');
+    const targetInput = document.getElementById('reset-target-username');
+    const passInput = document.getElementById('reset-new-password');
+    const msgEl = document.getElementById('reset-modal-msg');
+
+    if (userSpan) userSpan.textContent = '@' + username;
+    if (nameSpan) nameSpan.textContent = name || username;
+    if (targetInput) targetInput.value = username;
+    if (passInput) passInput.value = '';
+    if (msgEl) { msgEl.style.display = 'none'; msgEl.textContent = ''; }
+
+    if (modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => passInput?.focus(), 100);
+    }
+}
+
+function closeResetPasswordModal() {
+    const modal = document.getElementById('reset-password-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+async function handleResetPasswordSubmit(e) {
+    e.preventDefault();
+    const targetUsername = document.getElementById('reset-target-username')?.value;
+    const newPassword = document.getElementById('reset-new-password')?.value;
+    const submitBtn = document.getElementById('reset-modal-submit-btn');
+    const msgEl = document.getElementById('reset-modal-msg');
+
+    if (!targetUsername || !newPassword || newPassword.length < 6) {
+        if (msgEl) {
+            msgEl.textContent = "Parol kamida 6 ta belgidan iborat bo'lishi kerak";
+            msgEl.style.color = '#f87171';
+            msgEl.style.background = 'rgba(248,113,113,0.1)';
+            msgEl.style.display = 'block';
+        }
+        return;
+    }
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saqlanmoqda...';
+    }
+
+    try {
+        const res = await fetch('/admin/reset-password', {
+            method: 'POST',
+            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ username: targetUsername, newPassword })
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (data.ok) {
+            if (msgEl) {
+                msgEl.textContent = '✅ ' + (data.message || 'Parol muvaffaqiyatli o\'zgartirildi');
+                msgEl.style.color = '#34d399';
+                msgEl.style.background = 'rgba(52,211,153,0.1)';
+                msgEl.style.display = 'block';
+            }
+            setTimeout(() => {
+                closeResetPasswordModal();
+            }, 1200);
+        } else {
+            if (msgEl) {
+                msgEl.textContent = '❌ ' + (data.message || 'Xatolik yuz berdi');
+                msgEl.style.color = '#f87171';
+                msgEl.style.background = 'rgba(248,113,113,0.1)';
+                msgEl.style.display = 'block';
+            }
+        }
+    } catch (err) {
+        if (msgEl) {
+            msgEl.textContent = '❌ Server bilan bog\'lanishda xatolik';
+            msgEl.style.color = '#f87171';
+            msgEl.style.background = 'rgba(248,113,113,0.1)';
+            msgEl.style.display = 'block';
+        }
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Saqlash';
+        }
+    }
 }
 
 // ===== SIDEBAR NAV / TABLAR =====
