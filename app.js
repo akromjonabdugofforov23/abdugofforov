@@ -586,7 +586,13 @@ function updateHeroContent() {
         heroSection.classList.add('animate-fade-in');
     }
     if (heroSub) {
-        heroSub.textContent = (currentTab === 'prfunction setSearchCategoryTab(tab) {
+        heroSub.textContent = (currentTab === 'projects')
+            ? (window.i18n ? window.i18n.t('hero.subtitle.projects') : 'Ijodiy Loyihalar')
+            : (window.i18n ? window.i18n.t('hero.subtitle') : 'Shaxsiy blog & rivojlanish uchun');
+    }
+}
+
+function setSearchCategoryTab(tab) {
     searchCategoryTab = tab;
     renderPosts(true);
 }
@@ -949,12 +955,6 @@ function renderPosts(instant) {
         showSkeletons(3);
         _renderTimer = setTimeout(doRender, 150);
     }
-}    if (instant) {
-        doRender();
-    } else {
-        showSkeletons(3);
-        _renderTimer = setTimeout(doRender, 400);
-    }
 } // <-- renderPosts funksiyasi shu yerda yopildi
 
 // Ko'rinishlarni almashtirish yordamchilari
@@ -1086,10 +1086,7 @@ if (mainNav) {
         e.preventDefault();
 
         if (link.id === 'nav-contact-link' || link.getAttribute('href') === '#contact') {
-            showMainView();
-            syncActiveNavState('contact');
-            const contactSec = document.getElementById('contact');
-            if (contactSec) contactSec.scrollIntoView({ behavior: 'smooth' });
+            openContactModal();
             return;
         }
         if (link.id === 'nav-deutsch-link' || link.getAttribute('data-page') === 'deutsch') {
@@ -1167,10 +1164,7 @@ if (desktopDock) {
 
         // Maxsus tugmalar
         if (link.id === 'dock-contact' || link.getAttribute('href') === '#contact') {
-            showMainView();
-            syncActiveNavState('contact');
-            const contactSec = document.getElementById('contact');
-            if (contactSec) contactSec.scrollIntoView({ behavior: 'smooth' });
+            openContactModal();
             return;
         }
         if (link.id === 'dock-theme') {
