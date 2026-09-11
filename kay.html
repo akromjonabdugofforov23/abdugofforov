@@ -212,6 +212,27 @@
 
         .glz-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 
+        
+        /* task filters & badges */
+        .task-filter-btn {
+            padding: 6px 14px; font-size: 12px; border-radius: 20px;
+            border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary); cursor: pointer; transition: all 0.2s;
+        }
+        .task-filter-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+        .task-filter-btn.active {
+            background: var(--accent-color); color: #04222a; font-weight: 600; border-color: var(--accent-color);
+        }
+        .task-status-badge {
+            display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
+            border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;
+            border: 1px solid transparent; transition: transform 0.15s, opacity 0.15s;
+        }
+        .task-status-badge:hover { transform: scale(1.05); }
+        .task-status-badge.todo { background: rgba(248, 113, 113, 0.18); color: #fca5a5; border-color: rgba(248, 113, 113, 0.35); }
+        .task-status-badge.progress { background: rgba(251, 191, 36, 0.18); color: #fde047; border-color: rgba(251, 191, 36, 0.35); }
+        .task-status-badge.done { background: rgba(52, 211, 153, 0.18); color: #6ee7b7; border-color: rgba(52, 211, 153, 0.35); }
+        .task-title-done { text-decoration: line-through; opacity: 0.6; }
         /* mini list (dashboard recent) */
         .glz-mini-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
         .glz-mini-row:last-child { border-bottom: none; }
@@ -353,17 +374,15 @@
             </div>
 
             <div class="glz-side-stats">
-                <div><div class="v" id="side-posts">0</div><div class="l">Post</div></div>
-                <div><div class="v" id="side-likes">0</div><div class="l">Like</div></div>
+                <div><div class="v" id="side-students">0</div><div class="l">O'quvchi</div></div>
+                <div><div class="v" id="side-tests">0</div><div class="l">Testlar</div></div>
                 <div><div class="v" id="side-tasks">0</div><div class="l">Reja</div></div>
             </div>
 
             <nav class="glz-nav">
                 <button class="glz-nav-item admin-tab active" data-tab="dashboard" data-title="Boshqaruv paneli"><span class="ico">🏠</span> Dashboard</button>
-                <button class="glz-nav-item admin-tab" data-tab="posts" data-title="Postlar"><span class="ico">📝</span> Postlar</button>
-                <button class="glz-nav-item admin-tab" data-tab="students" data-title="O'quvchilar va natijalar"><span class="ico">👥</span> O'quvchilar</button>
+                <button class="glz-nav-item admin-tab" data-tab="students" data-title="O'quvchilar va natijalar"><span class="ico">👥</span> O'quvchilar & Testlar</button>
                 <button class="glz-nav-item admin-tab" data-tab="tasks" data-title="Rejalar"><span class="ico">📋</span> Rejalar</button>
-                <button class="glz-nav-item admin-tab" data-tab="portfolio" data-title="Portfolio"><span class="ico">💼</span> Portfolio</button>
                 <button class="glz-nav-item admin-tab" data-tab="security" data-title="Xavfsizlik"><span class="ico">🔐</span> Xavfsizlik</button>
                 <button class="glz-nav-item admin-tab" data-tab="settings" data-title="Sozlamalar"><span class="ico">⚙️</span> Sozlamalar</button>
             </nav>
@@ -379,7 +398,7 @@
             <header class="glz-topbar">
                 <button class="glz-menu-toggle" id="glz-menu-toggle" aria-label="Menyu">☰</button>
                 <div class="glz-search">
-                    <input type="text" id="admin-search" placeholder="Postlardan qidirish...">
+                    <input type="text" id="admin-search" placeholder="Qidirish (o'quvchi, test yoki reja)...">
                 </div>
                 <div class="glz-brand">Kay<span>.</span> <span class="glz-live">Live</span></div>
             </header>
@@ -397,52 +416,50 @@
                 <div class="tab-content active" id="tab-dashboard">
                     <div class="glz-resume">
                         <h2>Kun xulosasi</h2>
-                        <p>Saytingiz faolligi va asosiy ko'rsatkichlar. Quyidagi bo'limlardan postlar, rejalar va sozlamalarni boshqaring.</p>
+                        <p>O'quvchilar faolligi, test natijalari va kundalik rejalaringizni real vaqtda kuzatib boring.</p>
                     </div>
 
                     <div class="glz-stats-row">
                         <div class="glz-stat">
-                            <div class="num-circle" style="--ring-c:#60a5fa"><span id="stat-posts">0</span></div>
-                            <div class="glz-stat-lbl">Jami postlar</div>
+                            <div class="num-circle" style="--ring-c:#38bdf8"><span id="stat-students">0</span></div>
+                            <div class="glz-stat-lbl">Jami o'quvchilar</div>
                         </div>
                         <div class="glz-stat">
-                            <div class="num-circle" style="--ring-c:#34d399"><span id="stat-likes">0</span></div>
-                            <div class="glz-stat-lbl">Jami likelar</div>
+                            <div class="num-circle" style="--ring-c:#60a5fa"><span id="stat-tests">0</span></div>
+                            <div class="glz-stat-lbl">Ishlangan testlar</div>
+                        </div>
+                        <div class="glz-stat">
+                            <div class="num-circle" style="--ring-c:#34d399"><span id="stat-avg-score">0%</span></div>
+                            <div class="glz-stat-lbl">O'rtacha natija</div>
                         </div>
                         <div class="glz-stat">
                             <div class="num-circle" style="--ring-c:#fbbf24"><span id="stat-tasks">0</span></div>
                             <div class="glz-stat-lbl">Faol rejalar</div>
                         </div>
-                        <div class="glz-stat">
-                            <div class="num-circle" style="--ring-c:#f472b6"><span id="stat-days">0</span></div>
-                            <div class="glz-stat-lbl">Kun yozildi</div>
-                        </div>
                     </div>
 
                     <div class="glz-grid-2">
                         <div class="glz-card">
-                            <div class="glz-card-title">📰 So'nggi postlar</div>
-                            <div id="dash-recent"><div class="glz-empty">Yuklanmoqda...</div></div>
+                            <div class="glz-card-title">
+                                <span>📊 So'nggi test natijalari</span>
+                                <button type="button" class="btn-secondary" data-action="goto-tab" data-tab="students" style="font-size:11px;padding:4px 10px;border-radius:6px;">Barchasi →</button>
+                            </div>
+                            <div id="dash-recent-results"><div class="glz-empty">Yuklanmoqda...</div></div>
                         </div>
                         <div class="glz-card">
-                            <div class="glz-card-title">🛡️ Tizim holati</div>
-                            <div class="glz-status-row"><span>🔒 HTTPS</span><span class="glz-ok">Faol</span></div>
-                            <div class="glz-status-row"><span>🛡️ PIN himoya</span><span class="glz-ok">Faol</span></div>
-                            <div class="glz-status-row"><span>🤖 robots.txt</span><span class="glz-ok">Faol</span></div>
-                            <div class="glz-status-row"><span>⏱️ Brute-force himoya</span><span class="glz-ok">Faol</span></div>
-                            <div class="glz-status-row"><span>☁️ Cloudflare WAF</span><span class="glz-warn">Tekshiring</span></div>
+                            <div class="glz-card-title">🛡️ Tizim va Server holati</div>
+                            <div class="glz-status-row"><span>🔒 HTTPS & SSL</span><span class="glz-ok">Faol</span></div>
+                            <div class="glz-status-row"><span>🛡️ PIN & 2FA Himoya</span><span class="glz-ok">Faol</span></div>
+                            <div class="glz-status-row"><span>👥 O'quvchilar bazasi</span><span id="dash-status-db" class="glz-ok">Ulangan</span></div>
+                            <div class="glz-status-row"><span>📝 Testlar tizimi</span><span id="dash-status-tests" class="glz-ok">Faol</span></div>
+                            <div class="glz-status-row"><span>🏆 Turnir tizimi</span><span id="dash-status-tournament" class="glz-ok">Faol</span></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- POSTLAR TAB -->
-                <div class="tab-content" id="tab-posts">
-                    <div id="admin-posts-list" class="glz-list"></div>
-                </div>
-
                 <!-- O'QUVCHILAR VA NATIJALAR TAB -->
                 <div class="tab-content" id="tab-students">
-                    <div class="glz-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+                    <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:14px;margin-bottom:18px;">
                         <div class="glz-card" style="margin:0;">
                             <div class="glz-card-title">👥 Ro'yxatdan o'tganlar</div>
                             <div id="students-count" style="font-size:32px;font-weight:700;color:#2dd4bf;">0</div>
@@ -450,12 +467,20 @@
                         </div>
                         <div class="glz-card" style="margin:0;">
                             <div class="glz-card-title">📊 Test natijalari</div>
-                            <div id="results-count" style="font-size:32px;font-weight:700;color:#2dd4bf;">0</div>
+                            <div id="results-count" style="font-size:32px;font-weight:700;color:#38bdf8;">0</div>
                             <div style="font-size:12px;color:#9aa;">jami ishlangan test</div>
+                        </div>
+                        <div class="glz-card" style="margin:0;">
+                            <div class="glz-card-title">🎯 O'rtacha o'zlashtirish</div>
+                            <div id="students-avg-score" style="font-size:32px;font-weight:700;color:#34d399;">0%</div>
+                            <div style="font-size:12px;color:#9aa;">barcha testlar bo'yicha</div>
                         </div>
                     </div>
                     <div class="glz-card" style="margin-bottom:18px;">
-                        <div class="glz-card-title">👥 Foydalanuvchilar</div>
+                        <div class="glz-card-title">
+                            <span>👥 Ro'yxatdan o'tgan o'quvchilar</span>
+                            <button type="button" class="btn-secondary" data-action="refresh-data" style="font-size:12px;padding:4px 10px;border-radius:6px;">🔄 Yangilash</button>
+                        </div>
                         <div id="students-list" style="overflow-x:auto;"><p style="color:#9aa;font-size:13px;">Yuklanmoqda...</p></div>
                     </div>
                     <div class="glz-card">
@@ -469,21 +494,21 @@
                 <div class="tab-content" id="tab-tasks">
                     <div class="glz-grid-2" style="margin-bottom:18px;">
                         <form id="admin-task-form" class="glz-card" style="margin:0;">
-                            <div class="glz-card-title">➕ Yangi Reja</div>
+                            <div class="glz-card-title">➕ Yangi Reja / Vazifa</div>
                             <input type="hidden" id="task-edit-id">
                             <div class="form-group" style="margin-bottom:12px;">
-                                <label>Vazifa nomi</label>
-                                <input type="text" id="task-title-input" class="form-input" placeholder="Masalan: B1 imtihoni" required>
+                                <label style="display:block;font-size:12px;color:#94a3b8;margin-bottom:4px;">Vazifa nomi</label>
+                                <input type="text" id="task-title-input" class="form-input" placeholder="Masalan: B1 imtihoni uchun yangi test qo'shish" required style="width:100%;box-sizing:border-box;">
                             </div>
                             <div class="form-group" style="margin-bottom:16px;">
-                                <label>Holati</label>
-                                <select id="task-status-input" class="form-input">
-                                    <option value="todo">Bajariladigan</option>
-                                    <option value="progress">Bajarilayotgan</option>
-                                    <option value="done">Bajarilgan</option>
+                                <label style="display:block;font-size:12px;color:#94a3b8;margin-bottom:4px;">Holati</label>
+                                <select id="task-status-input" class="form-input" style="width:100%;box-sizing:border-box;">
+                                    <option value="todo">🔴 Bajariladigan</option>
+                                    <option value="progress">🟡 Jarayonda</option>
+                                    <option value="done">🟢 Bajarildi</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Saqlash</button>
+                            <button type="submit" class="btn-primary" id="task-save-btn" style="width:100%;justify-content:center;">➕ Rejani saqlash</button>
                         </form>
 
                         <div class="glz-card" style="margin:0;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;">
@@ -496,59 +521,23 @@
                                 <span id="chart-percentage-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:700;">0%</span>
                             </div>
                             <div style="display:flex;gap:16px;font-size:12px;margin-top:16px;">
-                                <div>🔴 <span id="count-todo">0</span></div>
-                                <div>🟡 <span id="count-progress">0</span></div>
-                                <div>🟢 <span id="count-done">0</span></div>
+                                <div>🔴 Bajariladigan: <span id="count-todo" style="font-weight:700;">0</span></div>
+                                <div>🟡 Jarayonda: <span id="count-progress" style="font-weight:700;">0</span></div>
+                                <div>🟢 Bajarildi: <span id="count-done" style="font-weight:700;">0</span></div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Vazifalar filtrlari -->
+                    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+                        <span style="font-size:13px;color:var(--text-muted);margin-right:4px;">Filter:</span>
+                        <button type="button" class="task-filter-btn active" data-action="filter-task" data-filter="all">Barchasi</button>
+                        <button type="button" class="task-filter-btn" data-action="filter-task" data-filter="todo">🔴 Bajariladigan</button>
+                        <button type="button" class="task-filter-btn" data-action="filter-task" data-filter="progress">🟡 Jarayonda</button>
+                        <button type="button" class="task-filter-btn" data-action="filter-task" data-filter="done">🟢 Bajarilgan</button>
+                    </div>
+
                     <div id="admin-task-list" class="glz-list"></div>
-                </div>
-
-                <!-- PORTFOLIO TAB -->
-                <div class="tab-content" id="tab-portfolio">
-                    <div class="settings-section">
-                        <div class="settings-title">Portfolio Ma'lumotlari</div>
-                        <form id="admin-port-settings-form">
-                            <div class="form-row" style="margin-bottom:15px;">
-                                <div class="form-group">
-                                    <label>F.I.SH</label>
-                                    <input type="text" id="port-name-input" class="form-input" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Kasb / Mutaxassislik</label>
-                                    <input type="text" id="port-title-input" class="form-input" required>
-                                </div>
-                            </div>
-                            <div class="form-group" style="margin-bottom:15px;">
-                                <label>Bio</label>
-                                <textarea id="port-bio-input" class="form-textarea" required></textarea>
-                            </div>
-                            <div class="form-row" style="margin-bottom:15px;">
-                                <div class="form-group">
-                                    <label>Ko'nikmalar (vergul bilan)</label>
-                                    <input type="text" id="port-skills-input" class="form-input">
-                                </div>
-                                <div class="form-group">
-                                    <label>Tajriba</label>
-                                    <input type="text" id="port-experience-input" class="form-input" placeholder="Kompaniya (Yil); ...">
-                                </div>
-                            </div>
-                            <button type="submit" class="btn-primary">Saqlash</button>
-                        </form>
-                    </div>
-
-                    <div class="settings-section">
-                        <div class="settings-title">Bir martalik kirish havolasi</div>
-                        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:15px;">Portfolio sahifasini boshqalarga ko'rsatish uchun vaqtinchalik havola.</p>
-                        <button class="btn-primary" id="generate-token-btn">Havola yaratish</button>
-                        <div id="generated-link-box" style="margin-top:15px;background:var(--tag-bg);padding:15px;border-radius:8px;display:none;">
-                            <div style="display:flex;gap:10px;align-items:center;">
-                                <input type="text" id="generated-link-input" class="form-input" style="font-size:13px;" readonly>
-                                <button class="btn-primary" id="copy-link-btn" style="flex-shrink:0;padding:10px 15px;">Nusxa</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- XAVFSIZLIK TAB -->
@@ -592,7 +581,7 @@
 
                     <div class="settings-section">
                         <div class="settings-title" style="color:#f87171;">Xavfli zona</div>
-                        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:15px;">Barcha postlar, rejalar va ma'lumotlarni o'chirish. Bu amalni qaytarib bo'lmaydi.</p>
+                        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:15px;">Barcha mahalliy rejalar, keshlar va loglarni tozalash.</p>
                         <button class="btn-secondary" id="reset-all-btn" style="color:#f87171;border-color:rgba(248,113,113,0.3);">Hammasini tozalash</button>
                     </div>
                 </div>
@@ -632,17 +621,17 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
             <span class="dock-label">Dashboard</span>
         </button>
-        <button class="dock-item admin-tab" data-tab="posts" aria-label="Postlar" title="Postlar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            <span class="dock-label">Postlar</span>
+        <button class="dock-item admin-tab" data-tab="students" aria-label="O'quvchilar" title="O'quvchilar & Testlar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span class="dock-label">O'quvchilar</span>
         </button>
         <button class="dock-item admin-tab" data-tab="tasks" aria-label="Rejalar" title="Rejalar">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
             <span class="dock-label">Rejalar</span>
         </button>
-        <button class="dock-item admin-tab" data-tab="portfolio" aria-label="Portfolio" title="Portfolio">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-            <span class="dock-label">Portfolio</span>
+        <button class="dock-item admin-tab" data-tab="security" aria-label="Xavfsizlik" title="Xavfsizlik">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span class="dock-label">Xavfsizlik</span>
         </button>
         <button class="dock-item admin-tab" data-tab="settings" aria-label="Sozlamalar" title="Sozlamalar">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>

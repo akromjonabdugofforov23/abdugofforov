@@ -1,60 +1,18 @@
 // ===== KAY ADMIN PANEL =====
 // XAVFSIZLIK: PIN endi MIJOZDA tekshirilmaydi. PIN to'g'riligini faqat
 // SERVER (/admin/request-code yoki /check-pin) hal qiladi. Shu sababli
-// PIN hashi bu yerda saqlanmaydi (avval oshkor bo'lgan hash olib tashlandi).
+// PIN hashi bu yerda saqlanmaydi.
 
-// Postlarni IndexedDB orqali o'qish/yozish (katta rasm/audio sig'imi uchun)
-function getPosts() {
-    if (window.Store && Store.ready) return Store.get('abdu_posts') || [];
-    return JSON.parse(localStorage.getItem('abdu_posts') || '[]');
-}
+// Global keshlar
+let cachedUsers = [];
+let cachedResults = [];
+let currentTaskFilter = 'all';
 
-// Postlarni saqlash — HAM lokal (IndexedDB), HAM server (Cloudflare KV).
-// KV ga yozilmasa, o'zgarish faqat shu brauzerda qoladi va mehmonlar
-// eski holatni ko'rishda davom etadi. Shuning uchun KV sinxronlash shart.
-async function setPosts(arr) {
-    if (window.Store && Store.ready) Store.set('abdu_posts', arr);
-    else localStorage.setItem('abdu_posts', JSON.stringify(arr));
-
-    // Serverga (KV) yuborish — admin token yoki PIN bilan
-    if (window.Sync) {
-        const token = sessionStorage.getItem('kay_admin_token');
-        const pin = sessionStorage.getItem('kay_admin_pin');
-        try {
-            const res = await Sync.pushPosts(arr, { token, pin });
-            if (res && res.ok) {
-                addLog('success', 'Postlar serverga sinxronlandi (hammaga ko\'rinadi)');
-            } else if (res && res.reason === 'not_configured') {
-                addLog('fail', 'Server ombori (KV) sozlanmagan — faqat shu qurilmada');
-            } else if (res && res.reason === 'unauthorized') {
-                addLog('fail', 'Sessiya tugagan — qayta kiring (server yangilanmadi)');
-            } else {
-                addLog('fail', 'Serverga yuborilmadi: ' + ((res && res.message) || 'xato'));
-            }
-        } catch (e) {
-            addLog('fail', 'Serverga ulanib bo\'lmadi');
-        }
+// Sahifa yuklanishida admin holatini tekshiramiz
+(function initKay() {
+    if (sessionStorage.getItem('kay_admin') === 'true') {
+        showAdminPanel();
     }
-}
-
-// Sahifa yuklanishida: avval server (KV) dan eng so'nggi postlarni olamiz,
-// keyin admin holatini tekshiramiz. Shunda admin panelda KV bilan bir xil
-// ro'yxat ko'rinadi va o'chirish/tahrir KV ga to'g'ri yoziladi.
-(async function initKay() {
-    if (window.Store) {
-        try { await Store.init(['abdu_posts']); } catch (e) { console.warn('Store init:', e); }
-    }
-    // Serverdan (KV) postlarni yuklab, lokalga keshlaymiz
-    if (window.Sync) {
-        try {
-            const serverPosts = await Sync.fetchPosts();
-            if (serverPosts && Array.isArray(serverPosts)) {
-                if (window.Store && Store.ready) Store.set('abdu_posts', serverPosts);
-                else localStorage.setItem('abdu_posts', JSON.stringify(serverPosts));
-            }
-        } catch (e) { console.warn('KV fetch:', e); }
-    }
-    if (sessionStorage.getItem('kay_admin') === 'true') showAdminPanel();
 })();
 
 // ===== PIN LOGIKASI =====
@@ -77,7 +35,7 @@ async function tryLogin() {
     const submitBtn = document.getElementById('pin-submit-btn');
     if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Tekshirilmoqda...'; }
 
-    // Noto'g'ri PIN holatini ishlovchi (urinish/blok hisoblagichi — faqat UX uchun)
+    // Noto'g'ri PIN holatini ishlovchi
     function registerWrongPin(msg) {
         const attempts = parseInt(localStorage.getItem('kay_attempts') || '0') + 1;
         localStorage.setItem('kay_attempts', attempts);
@@ -155,13 +113,13 @@ async function tryLogin() {
         return;
     }
 
-    // 3) PIN noto'g'ri (401) → urinish/blok hisoblagichi (server ham rate-limit qiladi)
+    // 3) PIN noto'g'ri (401)
     if (res.status === 401) {
         registerWrongPin(data.message);
         return;
     }
 
-    // 4) Boshqa server xatosi (KV yo'q, 429 — juda ko'p urinish, va h.k.)
+    // 4) Boshqa server xatosi
     pinError.textContent = data.message || 'Server xatosi';
     pinError.style.display = 'block';
     pinInput.value = '';
@@ -178,6 +136,7 @@ function showPinScreen() {
     pinError.style.display = 'none';
     pinInput.focus();
 }
+
 function showTgScreen() {
     document.getElementById('pin-screen').style.display = 'none';
     document.getElementById('tg-screen').style.display = 'block';
@@ -242,10 +201,9 @@ async function verifyTgCode() {
         const data = await res.json().catch(() => ({}));
 
         if (data.ok && data.token) {
-            // Muvaffaqiyatli kirish — token saqlaymiz va admin panelga o'tamiz
             sessionStorage.setItem('kay_admin', 'true');
             sessionStorage.setItem('kay_admin_token', data.token);
-            sessionStorage.setItem('kay_admin_pin', window.__authSession.pin); // backward compat fallback
+            sessionStorage.setItem('kay_admin_pin', window.__authSession.pin);
             window.__authSession = null;
             if (tgCountdownTimer) clearInterval(tgCountdownTimer);
             addLog('success', 'Telegram tasdiqlandi — admin panel ochildi');
@@ -257,7 +215,6 @@ async function verifyTgCode() {
             tgInput.focus();
             addLog('fail', "Telegram kod noto'g'ri");
             if (res.status === 429 || /eskirgan|topilmadi/i.test(data.message || '')) {
-                // Sessiya tugagan — PIN ekraniga qaytamiz
                 setTimeout(showPinScreen, 1800);
             }
         }
@@ -309,7 +266,6 @@ document.getElementById('tg-submit-btn').addEventListener('click', verifyTgCode)
 document.getElementById('tg-code-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') verifyTgCode();
 });
-// Faqat raqam kiritish
 document.getElementById('tg-code-input').addEventListener('input', e => {
     e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
 });
@@ -332,10 +288,9 @@ function checkLock() {
 }
 checkLock();
 
-// ===== ADMIN PANEL =====
+// ===== ADMIN PANEL ASOSIY EKRANI =====
 function showAdminPanel() {
     document.getElementById('pin-screen').style.display = 'none';
-    // Telegram 2FA ekranini ham yopamiz (aks holda dashboard ustida qolib ketadi)
     const tg = document.getElementById('tg-screen');
     if (tg) tg.style.display = 'none';
     if (typeof tgCountdownTimer !== 'undefined' && tgCountdownTimer) {
@@ -349,12 +304,12 @@ function showAdminPanel() {
     document.getElementById('admin-greeting').textContent = `${greeting}, Akromjon 👋`;
 
     const dateEl = document.getElementById('glz-date');
-    if (dateEl) dateEl.textContent = new Date().toLocaleDateString('uz-UZ', { day: 'numeric', month: 'long', year: 'numeric' });
+    if (dateEl) {
+        dateEl.textContent = new Date().toLocaleDateString('uz-UZ', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
 
-    loadStats();
-    loadPosts();
+    loadDashboardAndRealData();
     loadTasks();
-    loadPortfolioForm();
     loadSecurityLog();
 }
 
@@ -368,7 +323,7 @@ document.getElementById('logout-btn').addEventListener('click', () => {
     pinError.style.display = 'none';
 });
 
-// ===== O'QUVCHILAR VA NATIJALAR =====
+// ===== REAL DATA & DASHBOARD STATISTIKA =====
 function _adminHeaders(extra) {
     const h = Object.assign({}, extra || {});
     const token = sessionStorage.getItem('kay_admin_token');
@@ -377,54 +332,208 @@ function _adminHeaders(extra) {
     if (pin) h['x-admin-pin'] = pin;
     return h;
 }
+
 function _esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
-async function loadStudents() {
-    const usersBox = document.getElementById('students-list');
-    const resultsBox = document.getElementById('results-table');
-    if (!usersBox || !resultsBox) return;
-    try {
-        const res = await fetch('/admin/users', { headers: _adminHeaders() });
-        const data = await res.json().catch(() => ({}));
-        if (data.ok && Array.isArray(data.users)) {
-            document.getElementById('students-count').textContent = data.count || data.users.length;
-            usersBox.innerHTML = data.users.length ? `<table style="width:100%;border-collapse:collapse;font-size:14px;">
-                <thead><tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
-                    <th style="padding:8px 10px;">Ism</th><th style="padding:8px 10px;">Username</th><th style="padding:8px 10px;">Ro'yxatdan o'tgan</th><th style="padding:8px 10px;text-align:right;">Amallar</th>
-                </tr></thead><tbody>${data.users.map(u => {
-                    const d = u.createdAt ? new Date(u.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
-                    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-                        <td style="padding:8px 10px;font-weight:600;">${_esc(u.name)}</td>
-                        <td style="padding:8px 10px;color:#2dd4bf;font-weight:500;">@${_esc(u.username)}</td>
-                        <td style="padding:8px 10px;color:#9aa;font-size:12px;">${d}</td>
-                        <td style="padding:8px 10px;text-align:right;">
-                            <button type="button" class="btn-secondary" data-action="open-reset-password" data-username="${_esc(u.username)}" data-name="${_esc(u.name)}" style="padding:4px 10px;font-size:12px;border-radius:6px;border-color:rgba(45,212,191,0.3);color:#2dd4bf;">🔑 Parol o'zgartirish</button>
-                        </td>
-                    </tr>`;
-                }).join('')}</tbody></table>` : '<p style="color:#9aa;font-size:13px;">Hali hech kim ro\'yxatdan o\'tmagan.</p>';
-        } else {
-            usersBox.innerHTML = '<p style="color:#f87171;font-size:13px;">' + _esc(data.message || 'Yuklab bo\'lmadi (admin kerak)') + '</p>';
-        }
-    } catch (e) { usersBox.innerHTML = '<p style="color:#f87171;font-size:13px;">Serverga ulanib bo\'lmadi</p>'; }
+
+async function loadDashboardAndRealData(forceRefresh = false) {
+    const recentBox = document.getElementById('dash-recent-results');
+    const dbStatusEl = document.getElementById('dash-status-db');
+    const testsStatusEl = document.getElementById('dash-status-tests');
 
     try {
-        const res = await fetch('/results', { headers: _adminHeaders() });
-        const data = await res.json().catch(() => ({}));
-        if (data.ok && Array.isArray(data.results)) {
-            document.getElementById('results-count').textContent = data.count || data.results.length;
-            resultsBox.innerHTML = data.results.length ? `<table style="width:100%;border-collapse:collapse;font-size:14px;min-width:560px;">
-                <thead><tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
-                    <th style="padding:8px 10px;">O'quvchi</th><th style="padding:8px 10px;">Username</th><th style="padding:8px 10px;">Test</th><th style="padding:8px 10px;">To'g'ri</th><th style="padding:8px 10px;">Xato</th><th style="padding:8px 10px;">Foiz</th><th style="padding:8px 10px;">Sana</th>
-                </tr></thead><tbody>${data.results.map(r => {
-                    const d = new Date(r.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-                    const color = r.pct >= 80 ? '#34d399' : r.pct >= 60 ? '#fbbf24' : '#f87171';
-                    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.06);"><td style="padding:8px 10px;font-weight:600;">${_esc(r.name)}</td><td style="padding:8px 10px;color:#9aa;">@${_esc(r.username)}</td><td style="padding:8px 10px;">${_esc(r.testTitle || r.testId)}</td><td style="padding:8px 10px;color:#34d399;font-weight:600;">${r.score}</td><td style="padding:8px 10px;color:#f87171;font-weight:600;">${r.wrong}</td><td style="padding:8px 10px;color:${color};font-weight:700;">${r.pct}%</td><td style="padding:8px 10px;color:#9aa;font-size:12px;white-space:nowrap;">${d}</td></tr>`;
-                }).join('')}</tbody></table>` : '<p style="color:#9aa;font-size:13px;">Hali test ishlanmagan.</p>';
-        } else {
-            resultsBox.innerHTML = '<p style="color:#f87171;font-size:13px;">' + _esc(data.message || 'Yuklab bo\'lmadi') + '</p>';
+        // Parallel so'rov: Foydalanuvchilar va Test natijalari
+        const [usersRes, resultsRes] = await Promise.all([
+            fetch('/admin/users', { headers: _adminHeaders() }).catch(() => null),
+            fetch('/results', { headers: _adminHeaders() }).catch(() => null)
+        ]);
+
+        if (usersRes && usersRes.ok) {
+            const uData = await usersRes.json().catch(() => ({}));
+            if (uData.ok && Array.isArray(uData.users)) {
+                cachedUsers = uData.users;
+                if (dbStatusEl) { dbStatusEl.textContent = 'Ulangan'; dbStatusEl.className = 'glz-ok'; }
+            }
         }
-    } catch (e) { resultsBox.innerHTML = '<p style="color:#f87171;font-size:13px;">Serverga ulanib bo\'lmadi</p>'; }
+
+        if (resultsRes && resultsRes.ok) {
+            const rData = await resultsRes.json().catch(() => ({}));
+            if (rData.ok && Array.isArray(rData.results)) {
+                cachedResults = rData.results;
+                if (testsStatusEl) { testsStatusEl.textContent = 'Faol'; testsStatusEl.className = 'glz-ok'; }
+            }
+        }
+
+        renderRealDataMetrics();
+    } catch (e) {
+        console.warn('Dashboard real data yuklashda xato:', e);
+        if (recentBox) {
+            recentBox.innerHTML = '<div class="glz-empty" style="color:#f87171;">Serverga ulanishda xatolik yuz berdi</div>';
+        }
+    }
+}
+
+function renderRealDataMetrics() {
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+    const totalStudents = cachedUsers.length;
+    const totalTests = cachedResults.length;
+    const avgScore = totalTests ? Math.round(cachedResults.reduce((s, r) => s + (r.pct || 0), 0) / totalTests) : 0;
+
+    // Sidebar ko'rsatkichlari
+    set('side-students', totalStudents);
+    set('side-tests', totalTests);
+
+    // Dashboard 4 ta karta
+    set('stat-students', totalStudents);
+    set('stat-tests', totalTests);
+    set('stat-avg-score', `${avgScore}%`);
+
+    // O'quvchilar sahifasi kartalari
+    set('students-count', totalStudents);
+    set('results-count', totalTests);
+    set('students-avg-score', `${avgScore}%`);
+
+    // Dashboard — So'nggi test natijalari (jonli oqim)
+    const recentBox = document.getElementById('dash-recent-results');
+    if (recentBox) {
+        if (!cachedResults.length) {
+            recentBox.innerHTML = '<div class="glz-empty">Hali test topshirilmagan</div>';
+        } else {
+            const top5 = cachedResults.slice(0, 5);
+            recentBox.innerHTML = top5.map(r => {
+                const d = new Date(r.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+                const isGreat = r.pct >= 80;
+                const isMedium = r.pct >= 60;
+                const color = isGreat ? '#34d399' : (isMedium ? '#fbbf24' : '#f87171');
+                const bg = isGreat ? 'rgba(52,211,153,0.15)' : (isMedium ? 'rgba(251,191,36,0.15)' : 'rgba(248,113,113,0.15)');
+
+                return `
+                <div class="glz-mini-row" style="padding:10px 0;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;">
+                    <div style="min-width:0;flex:1;margin-right:12px;">
+                        <strong style="font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            ${_esc(r.name)} <span style="font-size:11px;color:var(--text-muted);font-weight:400;">(@${_esc(r.username)})</span>
+                        </strong>
+                        <small style="color:var(--text-secondary);font-size:11px;">${_esc(r.testTitle || r.testId)} • ${d}</small>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;">
+                        <span style="display:inline-block;padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700;color:${color};background:${bg};">
+                            ${r.pct}% (${r.score}/${(r.score || 0) + (r.wrong || 0)})
+                        </span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+    }
+
+    // Jadval va ro'yxatlarni to'ldirish
+    renderStudentsList();
+    renderResultsTable();
+}
+
+function renderStudentsList(filterQuery = '') {
+    const usersBox = document.getElementById('students-list');
+    if (!usersBox) return;
+
+    let users = cachedUsers;
+    const q = (filterQuery || '').trim().toLowerCase();
+    if (q) {
+        users = users.filter(u =>
+            (u.name || '').toLowerCase().includes(q) ||
+            (u.username || '').toLowerCase().includes(q)
+        );
+    }
+
+    if (!users.length) {
+        usersBox.innerHTML = `<p style="color:#9aa;font-size:13px;padding:12px 0;">${q ? 'Qidiruv bo\'yicha foydalanuvchi topilmadi.' : 'Hali hech kim ro\'yxatdan o\'tmagan.'}</p>`;
+        return;
+    }
+
+    usersBox.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:14px;min-width:520px;">
+        <thead>
+            <tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
+                <th style="padding:10px 8px;">Ism</th>
+                <th style="padding:10px 8px;">Username</th>
+                <th style="padding:10px 8px;">Ro'yxatdan o'tgan</th>
+                <th style="padding:10px 8px;text-align:right;">Amallar</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${users.map(u => {
+                const d = u.createdAt ? new Date(u.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+                return `
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                    <td style="padding:10px 8px;font-weight:600;">${_esc(u.name)}</td>
+                    <td style="padding:10px 8px;color:#2dd4bf;font-weight:500;">@${_esc(u.username)}</td>
+                    <td style="padding:10px 8px;color:#9aa;font-size:12px;">${d}</td>
+                    <td style="padding:10px 8px;text-align:right;">
+                        <button type="button" class="btn-secondary" data-action="open-reset-password" data-username="${_esc(u.username)}" data-name="${_esc(u.name)}" style="padding:4px 10px;font-size:12px;border-radius:6px;border-color:rgba(45,212,191,0.3);color:#2dd4bf;cursor:pointer;">
+                            🔑 Parol o'zgartirish
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('')}
+        </tbody>
+    </table>`;
+}
+
+function renderResultsTable(filterQuery = '') {
+    const resultsBox = document.getElementById('results-table');
+    if (!resultsBox) return;
+
+    let results = cachedResults;
+    const q = (filterQuery || '').trim().toLowerCase();
+    if (q) {
+        results = results.filter(r =>
+            (r.name || '').toLowerCase().includes(q) ||
+            (r.username || '').toLowerCase().includes(q) ||
+            (r.testTitle || r.testId || '').toLowerCase().includes(q)
+        );
+    }
+
+    if (!results.length) {
+        resultsBox.innerHTML = `<p style="color:#9aa;font-size:13px;padding:12px 0;">${q ? 'Qidiruv bo\'yicha natijalar topilmadi.' : 'Hali test ishlanmagan.'}</p>`;
+        return;
+    }
+
+    resultsBox.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:14px;min-width:640px;">
+        <thead>
+            <tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
+                <th style="padding:10px 8px;">O'quvchi</th>
+                <th style="padding:10px 8px;">Username</th>
+                <th style="padding:10px 8px;">Test</th>
+                <th style="padding:10px 8px;text-align:center;">To'g'ri</th>
+                <th style="padding:10px 8px;text-align:center;">Xato</th>
+                <th style="padding:10px 8px;text-align:center;">Natija</th>
+                <th style="padding:10px 8px;text-align:right;">Sana</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${results.map(r => {
+                const d = new Date(r.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+                const isGreat = r.pct >= 80;
+                const isMed = r.pct >= 60;
+                const color = isGreat ? '#34d399' : (isMed ? '#fbbf24' : '#f87171');
+                const bg = isGreat ? 'rgba(52,211,153,0.12)' : (isMed ? 'rgba(251,191,36,0.12)' : 'rgba(248,113,113,0.12)');
+
+                return `
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <td style="padding:10px 8px;font-weight:600;">${_esc(r.name)}</td>
+                    <td style="padding:10px 8px;color:#9aa;">@${_esc(r.username)}</td>
+                    <td style="padding:10px 8px;font-weight:500;">${_esc(r.testTitle || r.testId)}</td>
+                    <td style="padding:10px 8px;color:#34d399;font-weight:700;text-align:center;">${r.score}</td>
+                    <td style="padding:10px 8px;color:#f87171;font-weight:700;text-align:center;">${r.wrong}</td>
+                    <td style="padding:10px 8px;text-align:center;">
+                        <span style="display:inline-block;padding:2px 8px;border-radius:10px;font-weight:700;font-size:12px;color:${color};background:${bg};">
+                            ${r.pct}%
+                        </span>
+                    </td>
+                    <td style="padding:10px 8px;color:#9aa;font-size:12px;white-space:nowrap;text-align:right;">${d}</td>
+                </tr>`;
+            }).join('')}
+        </tbody>
+    </table>`;
 }
 
 // ===== PAROLNI O'ZGARTIRISH (ADMIN) =====
@@ -490,6 +599,7 @@ async function handleResetPasswordSubmit(e) {
                 msgEl.style.background = 'rgba(52,211,153,0.1)';
                 msgEl.style.display = 'block';
             }
+            addLog('success', `@${targetUsername} foydalanuvchi paroli o'zgartirildi`);
             setTimeout(() => {
                 closeResetPasswordModal();
             }, 1200);
@@ -516,216 +626,260 @@ async function handleResetPasswordSubmit(e) {
     }
 }
 
-// ===== SIDEBAR NAV / TABLAR =====
-document.querySelectorAll('.admin-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        const targetTab = tab.dataset.tab;
-        
-        // Barcha admin-tab lardan active classni olib tashlash
-        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
-        // Sidebar va Dock dagi barcha mos tablarni active qilish
-        document.querySelectorAll(`.admin-tab[data-tab="${targetTab}"]`).forEach(t => t.classList.add('active'));
-        
-        // Contentni ochish
-        const contentEl = document.getElementById('tab-' + targetTab);
-        if (contentEl) contentEl.classList.add('active');
-        
-        if (targetTab === 'students') loadStudents();
-        const titleEl = document.getElementById('glz-page-title');
-        
-        // Agar tabda o'zining title'i bo'lsa uni oladi, bo'lmasa matnini
-        const titleText = tab.dataset.title || tab.querySelector('.dock-label')?.textContent || tab.textContent.replace(/[^\w\s]/g,'').trim();
-        if (titleEl && titleText) titleEl.textContent = titleText;
-        
-        // mobil sidebarni yopish
-        const sidebar = document.getElementById('glz-sidebar');
-        if (sidebar) sidebar.classList.remove('open');
-        const overlay = document.getElementById('glz-overlay');
-        if (overlay) overlay.classList.remove('show');
-    });
-});
-
-// Mobil sidebar toggle
-document.getElementById('glz-menu-toggle').addEventListener('click', () => {
-    document.getElementById('glz-sidebar').classList.toggle('open');
-    document.getElementById('glz-overlay').classList.toggle('show');
-});
-document.getElementById('glz-overlay').addEventListener('click', () => {
-    document.getElementById('glz-sidebar').classList.remove('open');
-    document.getElementById('glz-overlay').classList.remove('show');
-});
-
-// Qidiruv (postlar bo'yicha)
-document.getElementById('admin-search').addEventListener('input', () => loadPosts());
-
-// ===== STATISTIKA =====
-function loadStats() {
-    const posts = getPosts();
-    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
-    const totalLikes = posts.reduce((s, p) => s + (p.likes || 0), 0);
-    const activeTasks = tasks.filter(t => t.status !== 'done').length;
-    const uniqueDays = new Set(posts.map(p => p.date)).size;
-
-    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    set('stat-posts', posts.length);
-    set('stat-likes', totalLikes);
-    set('stat-tasks', activeTasks);
-    set('stat-days', uniqueDays);
-    set('side-posts', posts.length);
-    set('side-likes', totalLikes);
-    set('side-tasks', activeTasks);
-}
-
-// ===== POSTLAR =====
-function loadPosts() {
-    let posts = getPosts();
-    const q = (document.getElementById('admin-search')?.value || '').trim().toLowerCase();
-    if (q) posts = posts.filter(p => (p.title || '').toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q));
-
-    const list = document.getElementById('admin-posts-list');
-    if (!posts.length) {
-        list.innerHTML = '<div class="glz-empty">' + (q ? 'Hech narsa topilmadi' : 'Hali post yo\'q') + '</div>';
-    } else {
-        list.innerHTML = posts.map(p => `
-            <div class="glz-row">
-                <img src="${p.image||''}">
-                <div class="info">
-                    <div class="t">${_esc(p.title)}</div>
-                    <div class="m">${_esc(p.category)} - ${p.date} - ❤️ ${p.likes||0}</div>
-                </div>
-                <div class="acts">
-                    <button class="icon-btn" data-action="edit-post" data-id="${p.id}" title="Tahrirlash">✏️</button>
-                    <button class="icon-btn danger" data-action="delete-post" data-id="${p.id}" title="O'chirish">🗑️</button>
-                </div>
-            </div>
-        `).join('');
+// ===== INTERAKTIV REJALAR (TASKS) =====
+function getTasks() {
+    const raw = localStorage.getItem('abdu_tasks');
+    if (raw) {
+        try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length) return parsed;
+        } catch (e) {
+            // parse error
+        }
     }
 
-    // Dashboard — so'nggi postlar
-    const recent = document.getElementById('dash-recent');
-    if (recent) {
-        const all = getPosts();
-        recent.innerHTML = all.length
-            ? all.slice(0, 4).map(p => `
-                <div class="glz-mini-row">
-                    <img src="${p.image||''}">
-                    <div><strong>${_esc(p.title)}</strong><small>${_esc(p.category)} - ❤️ ${p.likes||0}</small></div>
-                </div>`).join('')
-            : '<div class="glz-empty">Hali post yo\'q</div>';
-    }
+    // Dastlabki namunaviy rejalar
+    const defaultTasks = [
+        { id: 1, title: 'B1 darajasi uchun yangi nemis tili testlari kiritish', status: 'progress', createdAt: Date.now() - 86400000 },
+        { id: 2, title: "O'quvchilar o'rtasida haftalik grammatika turnirini boshlash", status: 'todo', createdAt: Date.now() - 43200000 },
+        { id: 3, title: 'Sayt xavfsizligini A+ darajasiga chiqarish va CSP ni sozlash', status: 'done', createdAt: Date.now() - 172800000 }
+    ];
+    localStorage.setItem('abdu_tasks', JSON.stringify(defaultTasks));
+    return defaultTasks;
 }
 
-function deletePost(id) {
-    if (!confirm('O\'chirasizmi?')) return;
-    const posts = getPosts();
-    setPosts(posts.filter(p => p.id !== id));
-    loadPosts(); loadStats();
+function saveTasks(tasks) {
+    localStorage.setItem('abdu_tasks', JSON.stringify(tasks));
 }
 
-function editPost(id) {
-    sessionStorage.setItem('kay_edit_post', id);
-    window.location.href = '/';
-}
-
-// ===== REJALAR =====
 function loadTasks() {
-    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
+    const tasks = getTasks();
     const list = document.getElementById('admin-task-list');
 
     const todo = tasks.filter(t => t.status === 'todo').length;
     const progress = tasks.filter(t => t.status === 'progress').length;
     const done = tasks.filter(t => t.status === 'done').length;
+    const activeTasks = todo + progress;
     const total = tasks.length;
     const pct = total ? Math.round((done / total) * 100) : 0;
 
-    document.getElementById('count-todo').textContent = todo;
-    document.getElementById('count-progress').textContent = progress;
-    document.getElementById('count-done').textContent = done;
-    document.getElementById('chart-percentage-text').textContent = pct + '%';
-    const circle = document.getElementById('progress-ring-circle');
-    if (circle) circle.style.strokeDashoffset = 314.16 - (314.16 * pct / 100);
+    // Hisoblagichlarni yangilash
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('count-todo', todo);
+    set('count-progress', progress);
+    set('count-done', done);
+    set('stat-tasks', activeTasks);
+    set('side-tasks', activeTasks);
+    set('chart-percentage-text', `${pct}%`);
 
-    if (!tasks.length) {
-        list.innerHTML = '<div class="glz-empty">Reja yo\'q</div>';
+    const circle = document.getElementById('progress-ring-circle');
+    if (circle) {
+        circle.style.strokeDashoffset = 314.16 - (314.16 * pct / 100);
+    }
+
+    if (!list) return;
+
+    // Filtrlash
+    let filtered = tasks;
+    if (currentTaskFilter !== 'all') {
+        filtered = filtered.filter(t => t.status === currentTaskFilter);
+    }
+
+    const q = (document.getElementById('admin-search')?.value || '').trim().toLowerCase();
+    if (q) {
+        filtered = filtered.filter(t => (t.title || '').toLowerCase().includes(q));
+    }
+
+    if (!filtered.length) {
+        list.innerHTML = `<div class="glz-empty">${q ? 'Qidiruv bo\'yicha reja topilmadi' : (currentTaskFilter === 'all' ? 'Hozircha reja yo\'q. Yangi reja qo\'shing!' : 'Ushbu bo\'limda reja yo\'q.')}</div>`;
         return;
     }
-    const icons = { todo: '🔴', progress: '🟡', done: '🟢' };
-    list.innerHTML = tasks.map(t => `
-        <div class="glz-row">
-            <span style="font-size:18px;">${icons[t.status]||'⚪'}</span>
-            <span class="info" style="font-size:14px;">${_esc(t.title)}</span>
-            <div class="acts"><button class="icon-btn danger" data-action="delete-task" data-id="${t.id}">✕</button></div>
-        </div>
-    `).join('');
+
+    const badgeData = {
+        todo: { cls: 'todo', label: '🔴 Bajariladigan', next: 'progress' },
+        progress: { cls: 'progress', label: '🟡 Jarayonda', next: 'done' },
+        done: { cls: 'done', label: '🟢 Bajarildi', next: 'todo' }
+    };
+
+    list.innerHTML = filtered.map(t => {
+        const b = badgeData[t.status] || badgeData.todo;
+        const isDone = t.status === 'done';
+        const dStr = t.createdAt ? new Date(t.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short' }) : '';
+
+        return `
+        <div class="glz-row" style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-radius:12px;">
+            <button type="button" class="task-status-badge ${b.cls}" data-action="cycle-task-status" data-id="${t.id}" title="Holatni o'zgartirish uchun bosing">
+                ${b.label}
+            </button>
+            <div class="info" style="flex:1;min-width:0;">
+                <span class="${isDone ? 'task-title-done' : ''}" style="font-size:14px;font-weight:500;display:block;word-break:break-word;">
+                    ${_esc(t.title)}
+                </span>
+                ${dStr ? `<span style="font-size:11px;color:var(--text-muted);">${dStr} qo'shildi</span>` : ''}
+            </div>
+            <div class="acts" style="display:flex;gap:6px;flex-shrink:0;">
+                <button type="button" class="icon-btn" data-action="edit-task" data-id="${t.id}" title="Tahrirlash">✏️</button>
+                <button type="button" class="icon-btn danger" data-action="delete-task" data-id="${t.id}" title="O'chirish">🗑️</button>
+            </div>
+        </div>`;
+    }).join('');
 }
 
-document.getElementById('admin-task-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const title = document.getElementById('task-title-input').value.trim();
-    const status = document.getElementById('task-status-input').value;
-    if (!title) return;
-    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
-    tasks.push({ id: Date.now(), title, status });
-    localStorage.setItem('abdu_tasks', JSON.stringify(tasks));
-    document.getElementById('task-title-input').value = '';
-    loadTasks(); loadStats();
-});
+function cycleTaskStatus(id) {
+    const tasks = getTasks();
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+
+    const cycleOrder = { todo: 'progress', progress: 'done', done: 'todo' };
+    task.status = cycleOrder[task.status] || 'todo';
+    saveTasks(tasks);
+    addLog('info', `Reja holati o'zgartirildi: "${task.title.slice(0, 30)}..." -> ${task.status}`);
+    loadTasks();
+}
 
 function deleteTask(id) {
-    const tasks = JSON.parse(localStorage.getItem('abdu_tasks') || '[]');
-    localStorage.setItem('abdu_tasks', JSON.stringify(tasks.filter(t => t.id !== id)));
-    loadTasks(); loadStats();
-}
+    const tasks = getTasks();
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
 
-// ===== PORTFOLIO =====
-function loadPortfolioForm() {
-    const info = JSON.parse(localStorage.getItem('abdu_portfolio') || '{}');
-    if (info.name) document.getElementById('port-name-input').value = info.name;
-    if (info.title) document.getElementById('port-title-input').value = info.title;
-    if (info.bio) document.getElementById('port-bio-input').value = info.bio;
-    if (info.skills) document.getElementById('port-skills-input').value = info.skills;
-    if (info.experience) document.getElementById('port-experience-input').value = info.experience;
-}
-
-document.getElementById('admin-port-settings-form').addEventListener('submit', e => {
-    e.preventDefault();
-    localStorage.setItem('abdu_portfolio', JSON.stringify({
-        name: document.getElementById('port-name-input').value,
-        title: document.getElementById('port-title-input').value,
-        bio: document.getElementById('port-bio-input').value,
-        skills: document.getElementById('port-skills-input').value,
-        experience: document.getElementById('port-experience-input').value,
-    }));
-    alert('Portfolio saqlandi ✅');
-});
-
-document.getElementById('generate-token-btn').addEventListener('click', () => {
-    const pData = localStorage.getItem('abdu_portfolio');
-    if (!pData) {
-        alert("Oldin portfolioni saqlang!");
-        return;
+    if (confirm(`"${task.title}" rejasini o'chirishni tasdiqlaysizmi?`)) {
+        saveTasks(tasks.filter(t => t.id !== id));
+        addLog('info', `Reja o'chirildi: "${task.title.slice(0, 30)}..."`);
+        loadTasks();
     }
-    const payload = JSON.stringify({
-        data: JSON.parse(pData),
-        exp: Date.now() + 24 * 60 * 60 * 1000 // 24 soat
-    });
-    const token = btoa(encodeURIComponent(payload));
-    const link = `${window.location.origin}/?p=${token}`;
-    document.getElementById('generated-link-input').value = link;
-    document.getElementById('generated-link-box').style.display = 'block';
+}
+
+function editTask(id) {
+    const tasks = getTasks();
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+
+    const titleInput = document.getElementById('task-title-input');
+    const statusInput = document.getElementById('task-status-input');
+    const editIdInput = document.getElementById('task-edit-id');
+    const saveBtn = document.getElementById('task-save-btn');
+
+    if (titleInput) titleInput.value = task.title;
+    if (statusInput) statusInput.value = task.status;
+    if (editIdInput) editIdInput.value = task.id;
+    if (saveBtn) saveBtn.textContent = '💾 O\'zgarishni saqlash';
+
+    titleInput?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    titleInput?.focus();
+}
+
+// Yangi reja kiritish yoki tahrirlash formasi
+document.getElementById('admin-task-form')?.addEventListener('submit', e => {
+    e.preventDefault();
+    const titleInput = document.getElementById('task-title-input');
+    const statusInput = document.getElementById('task-status-input');
+    const editIdInput = document.getElementById('task-edit-id');
+    const saveBtn = document.getElementById('task-save-btn');
+
+    const title = (titleInput?.value || '').trim();
+    const status = statusInput?.value || 'todo';
+    const editId = editIdInput?.value ? Number(editIdInput.value) : null;
+
+    if (!title) return;
+
+    const tasks = getTasks();
+
+    if (editId) {
+        // Tahrirlash
+        const existing = tasks.find(t => t.id === editId);
+        if (existing) {
+            existing.title = title;
+            existing.status = status;
+            addLog('info', `Reja tahrirlandi: "${title.slice(0, 30)}..."`);
+        }
+    } else {
+        // Yangi qo'shish
+        tasks.unshift({
+            id: Date.now(),
+            title,
+            status,
+            createdAt: Date.now()
+        });
+        addLog('info', `Yangi reja kiritildi: "${title.slice(0, 30)}..."`);
+    }
+
+    saveTasks(tasks);
+
+    // Formani tozalash
+    if (titleInput) titleInput.value = '';
+    if (editIdInput) editIdInput.value = '';
+    if (statusInput) statusInput.value = 'todo';
+    if (saveBtn) saveBtn.textContent = '➕ Rejani saqlash';
+
+    loadTasks();
 });
 
-document.getElementById('copy-link-btn').addEventListener('click', () => {
-    const input = document.getElementById('generated-link-input');
-    navigator.clipboard.writeText(input.value).then(() => {
-        document.getElementById('copy-link-btn').textContent = 'Nusxalandi ✅';
-        setTimeout(() => document.getElementById('copy-link-btn').textContent = 'Nusxa', 2000);
-    });
+// ===== TABLAR VA NAVIGATSIYA =====
+function switchTab(targetTab) {
+    if (!targetTab) return;
+
+    // Barcha tab tugmalaridan active classni olib tashlash
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+    // Sidebar va Dock dagi mos tablarni active qilish
+    document.querySelectorAll(`.admin-tab[data-tab="${targetTab}"]`).forEach(t => t.classList.add('active'));
+
+    // Contentni ochish
+    const contentEl = document.getElementById('tab-' + targetTab);
+    if (contentEl) contentEl.classList.add('active');
+
+    // Tabga xos ma'lumotlarni yangilash
+    if (targetTab === 'students') {
+        renderStudentsList();
+        renderResultsTable();
+    } else if (targetTab === 'tasks') {
+        loadTasks();
+    } else if (targetTab === 'dashboard') {
+        renderRealDataMetrics();
+    }
+
+    const titleEl = document.getElementById('glz-page-title');
+    const activeBtn = document.querySelector(`.admin-tab[data-tab="${targetTab}"]`);
+    if (titleEl && activeBtn) {
+        titleEl.textContent = activeBtn.dataset.title || activeBtn.querySelector('.dock-label')?.textContent || 'Boshqaruv paneli';
+    }
+
+    // Mobil sidebarni yopish
+    const sidebar = document.getElementById('glz-sidebar');
+    if (sidebar) sidebar.classList.remove('open');
+    const overlay = document.getElementById('glz-overlay');
+    if (overlay) overlay.classList.remove('show');
+}
+
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
 });
 
-// ===== XAVFSIZLIK LOG =====
+// Mobil sidebar toggle
+document.getElementById('glz-menu-toggle')?.addEventListener('click', () => {
+    document.getElementById('glz-sidebar')?.classList.toggle('open');
+    document.getElementById('glz-overlay')?.classList.toggle('show');
+});
+document.getElementById('glz-overlay')?.addEventListener('click', () => {
+    document.getElementById('glz-sidebar')?.classList.remove('open');
+    document.getElementById('glz-overlay')?.classList.remove('show');
+});
+
+// Qidiruv (Universal filter)
+document.getElementById('admin-search')?.addEventListener('input', e => {
+    const q = e.target.value.trim();
+    // Qaysi tab faolligiga qarab qidiradi
+    const activeTab = document.querySelector('.tab-content.active')?.id;
+    if (activeTab === 'tab-students') {
+        renderStudentsList(q);
+        renderResultsTable(q);
+    } else if (activeTab === 'tab-tasks') {
+        loadTasks();
+    }
+});
+
+// ===== XAVFSIZLIK LOGLARI =====
 function addLog(type, message) {
     const logs = JSON.parse(localStorage.getItem('kay_logs') || '[]');
     logs.unshift({ type, message, time: new Date().toLocaleString('uz-UZ') });
@@ -735,70 +889,72 @@ function addLog(type, message) {
 function loadSecurityLog() {
     const logs = JSON.parse(localStorage.getItem('kay_logs') || '[]');
     const list = document.getElementById('security-log-list');
+    if (!list) return;
+
     if (!logs.length) {
-        list.innerHTML = '<div class="log-item" style="color:var(--text-secondary);justify-content:center;">Hali log yo\'q</div>';
+        list.innerHTML = '<div class="log-item" style="color:var(--text-secondary);justify-content:center;">Hali log mavjud emas</div>';
         return;
     }
     list.innerHTML = logs.map(l => `
         <div class="log-item">
-            <div class="log-dot ${l.type === 'success' ? 'ok' : 'fail'}"></div>
-            <span>${l.message}</span>
+            <div class="log-dot ${l.type === 'success' ? 'ok' : (l.type === 'fail' ? 'fail' : 'ok')}"></div>
+            <span>${_esc(l.message)}</span>
             <span class="log-time">${l.time}</span>
         </div>
     `).join('');
 }
 
-document.getElementById('clear-log-btn').addEventListener('click', () => {
-    if (!confirm('Loglarni tozalash?')) return;
+document.getElementById('clear-log-btn')?.addEventListener('click', () => {
+    if (!confirm('Barcha loglarni tozalashni xohlaysizmi?')) return;
     localStorage.removeItem('kay_logs');
     loadSecurityLog();
 });
 
 // ===== SOZLAMALAR =====
-document.getElementById('save-settings-btn').addEventListener('click', () => {
-    localStorage.setItem('kay_site_name', document.getElementById('setting-site-name').value);
-    localStorage.setItem('kay_site_desc', document.getElementById('setting-site-desc').value);
+document.getElementById('save-settings-btn')?.addEventListener('click', () => {
+    const siteName = document.getElementById('setting-site-name')?.value;
+    const siteDesc = document.getElementById('setting-site-desc')?.value;
+    if (siteName) localStorage.setItem('kay_site_name', siteName);
+    if (siteDesc) localStorage.setItem('kay_site_desc', siteDesc);
+    addLog('info', 'Sayt sozlamalari yangilandi');
     alert('Sozlamalar saqlandi ✅');
 });
 
-document.getElementById('reset-all-btn').addEventListener('click', async () => {
-    if (!confirm('BARCHA ma\'lumotlar o\'chadi! Ishonchingiz komilmi?')) return;
-    if (!confirm('Bu amalni qaytarib bo\'lmaydi. Davom etasizmi?')) return;
-    if (window.Store) Store.remove('abdu_posts');
-    ['abdu_posts','abdu_tasks','abdu_portfolio','abdu_portfolio_tokens','kay_logs'].forEach(k => localStorage.removeItem(k));
-    // Serverni (KV) ham tozalaymiz — aks holda mehmonlar eski postlarni
-    // ko'rishda davom etadi
-    if (window.Sync) {
-        const token = sessionStorage.getItem('kay_admin_token');
-        const pin = sessionStorage.getItem('kay_admin_pin');
-        try {
-            const res = await Sync.pushPosts([], { token, pin });
-            if (res && res.ok) {
-                alert('Tozalandi (server ham yangilandi — postlar hammadan o\'chdi)');
-            } else {
-                alert('Lokal tozalandi, lekin serverga yetib bormadi: ' + ((res && res.message) || 'xato') + '\nQayta kirib urinib ko\'ring.');
-            }
-        } catch (e) {
-            alert('Lokal tozalandi, lekin serverga ulanib bo\'lmadi.');
-        }
-    } else {
-        alert('Tozalandi');
-    }
-    loadStats(); loadPosts(); loadTasks();
+document.getElementById('reset-all-btn')?.addEventListener('click', () => {
+    if (!confirm('Barcha lokal ma\'lumotlar (rejalar, keshlar va loglar) o\'chadi! Davom etasizmi?')) return;
+    localStorage.removeItem('abdu_tasks');
+    localStorage.removeItem('kay_logs');
+    localStorage.removeItem('abdu_posts');
+    localStorage.removeItem('abdu_portfolio');
+    alert('Barcha mahalliy ma\'lumotlar tozalandi ✅');
+    loadTasks();
+    loadSecurityLog();
 });
-
 
 // ===== GLOBAL EVENT DELEGATION FOR CSP COMPLIANCE =====
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
     const action = btn.dataset.action;
-    if (action === 'delete-post') {
-        deletePost(Number(btn.dataset.id));
-    } else if (action === 'edit-post') {
-        editPost(Number(btn.dataset.id));
+
+    if (action === 'cycle-task-status') {
+        cycleTaskStatus(Number(btn.dataset.id));
+    } else if (action === 'edit-task') {
+        editTask(Number(btn.dataset.id));
     } else if (action === 'delete-task') {
         deleteTask(Number(btn.dataset.id));
+    } else if (action === 'filter-task') {
+        currentTaskFilter = btn.dataset.filter || 'all';
+        document.querySelectorAll('.task-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadTasks();
+    } else if (action === 'goto-tab') {
+        switchTab(btn.dataset.tab);
+    } else if (action === 'refresh-data') {
+        btn.textContent = 'Yuklanmoqda...';
+        loadDashboardAndRealData(true).finally(() => {
+            btn.textContent = '🔄 Yangilash';
+        });
     } else if (action === 'open-reset-password') {
         openResetPasswordModal(btn.dataset.username, btn.dataset.name);
     } else if (action === 'close-reset-password') {
@@ -806,7 +962,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Global image error handler (replaces inline onerror)
+// Global image error handler
 document.addEventListener('error', (e) => {
     if (e.target && e.target.tagName === 'IMG') {
         e.target.style.display = 'none';
