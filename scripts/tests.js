@@ -135,7 +135,7 @@ function renderDeutschLevelsHTML() {
         const cards = matchingCards.map(t => {
             const qCount = countTestQuestions(t.id);
             return `
-                <button class="test-card" onclick="startTest('${t.id}')">
+                <button class="test-card" data-click="startTest('${t.id}')">
                     <div class="test-card-head">
                         <span class="test-card-name">${hl(t.name)}</span>
                         <span class="test-card-badge">${qCount} savol</span>
@@ -201,31 +201,31 @@ function renderDeutschHome() {
             <p class="deutsch-sub">${t('de.subtitle', "A1 - B2 Darajalar &middot; Interaktiv O'rganish Hub'i")}</p>
 
             <div class="deutsch-mode-nav" style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 18px; margin-top: 24px; width: 100%;">
-                <div class="deutsch-mode-card mode-tests active" onclick="window.scrollTo({top: 350, behavior: 'smooth'})" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(59, 130, 246, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.18);">
+                <div class="deutsch-mode-card mode-tests active" data-action="scroll-to-tests" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(59, 130, 246, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.18);">
                     <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">📝</span>
                     <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">${t('de.mode.tests', 'Mavzuli Testlar')}</div>
                     <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.tests_sub', 'A1-B2 Goethe (40 ta to\'plam)')}</div>
                 </div>
 
-                <div class="deutsch-mode-card mode-flashcards" onclick="openFlashcardsView()" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(139, 92, 246, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(139, 92, 246, 0.18);">
+                <div class="deutsch-mode-card mode-flashcards" data-action="open-flashcards" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(139, 92, 246, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(139, 92, 246, 0.18);">
                     <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">🎴</span>
                     <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">${t('de.mode.flashcards', "So'z Kartochkalari")}</div>
                     <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.flashcards_sub', 'Ovozli Leitner')}</div>
                 </div>
 
-                <div class="deutsch-mode-card mode-tournament" onclick="openTournamentView()" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(245, 158, 11, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.18);">
+                <div class="deutsch-mode-card mode-tournament" data-action="open-tournament" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(245, 158, 11, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.18);">
                     <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">⚔️</span>
                     <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">${t('de.mode.tournament', 'Deutsch Turnir')}</div>
                     <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.tournament_sub', 'Jonli musobaqa')}</div>
                 </div>
 
-                <div class="deutsch-mode-card mode-verbs" onclick="openVerbTrainerView()" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(168, 85, 247, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(168, 85, 247, 0.18);">
+                <div class="deutsch-mode-card mode-verbs" data-action="open-verb-trainer" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(168, 85, 247, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(168, 85, 247, 0.18);">
                     <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">🔤</span>
                     <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">Fe'llar Trenajyori</div>
                     <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">Präsens &bull; Präteritum &bull; Perfekt</div>
                 </div>
 
-                <div class="deutsch-mode-card mode-horror" onclick="openHorrorHome()" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(239, 68, 68, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25);">
+                <div class="deutsch-mode-card mode-horror" data-action="open-horror" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(239, 68, 68, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25);">
                     <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">💀</span>
                     <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ef4444; margin-bottom: 4px;">HORROR DEUTSCH</div>
                     <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.horror_sub', 'Adrenalin omon qolish')}</div>
@@ -239,11 +239,11 @@ function renderDeutschHome() {
         </div>
 
         <div class="deutsch-level-filters" id="deutsch-level-filters">
-            <button class="filter-tag ${deutschLevelFilter === 'all' ? 'active' : ''}" data-level="all" onclick="setDeutschLevelFilter('all')">✨ Barchasi (40 ta test)</button>
-            <button class="filter-tag ${deutschLevelFilter === 'A1' ? 'active' : ''}" data-level="A1" onclick="setDeutschLevelFilter('A1')">🌱 A1 (Boshlang'ich)</button>
-            <button class="filter-tag ${deutschLevelFilter === 'A2' ? 'active' : ''}" data-level="A2" onclick="setDeutschLevelFilter('A2')">🌿 A2 (Asosiy)</button>
-            <button class="filter-tag ${deutschLevelFilter === 'B1' ? 'active' : ''}" data-level="B1" onclick="setDeutschLevelFilter('B1')">🌳 B1 (O'rta)</button>
-            <button class="filter-tag ${deutschLevelFilter === 'B2' ? 'active' : ''}" data-level="B2" onclick="setDeutschLevelFilter('B2')">🏔️ B2 (Yuqori)</button>
+            <button class="filter-tag ${deutschLevelFilter === 'all' ? 'active' : ''}" data-level="all" data-action="set-deutsch-filter" data-level="all">✨ Barchasi (40 ta test)</button>
+            <button class="filter-tag ${deutschLevelFilter === 'A1' ? 'active' : ''}" data-level="A1" data-action="set-deutsch-filter" data-level="A1">🌱 A1 (Boshlang'ich)</button>
+            <button class="filter-tag ${deutschLevelFilter === 'A2' ? 'active' : ''}" data-level="A2" data-action="set-deutsch-filter" data-level="A2">🌿 A2 (Asosiy)</button>
+            <button class="filter-tag ${deutschLevelFilter === 'B1' ? 'active' : ''}" data-level="B1" data-action="set-deutsch-filter" data-level="B1">🌳 B1 (O'rta)</button>
+            <button class="filter-tag ${deutschLevelFilter === 'B2' ? 'active' : ''}" data-level="B2" data-action="set-deutsch-filter" data-level="B2">🏔️ B2 (Yuqori)</button>
         </div>
 
         <div class="levels-stack" id="deutsch-levels-container">
@@ -293,7 +293,7 @@ function renderPartIntro() {
         + '<h2 style="font-family:\'Playfair Display\',serif; font-size:24px; margin-bottom:8px;">' + part.name + '</h2>'
         + '<p style="color:var(--text-secondary); margin-bottom:8px;">' + totalQ + ' ta savol</p>'
         + audioNote
-        + '<button onclick="startPart()" class="btn-primary" style="padding:14px 32px; font-size:16px;">Boshlash &rarr;</button>'
+        + '<button data-action="start-part" class="btn-primary" style="padding:14px 32px; font-size:16px;">Boshlash &rarr;</button>'
         + '</div>';
 }
 
@@ -347,7 +347,7 @@ function renderQuestion() {
                     <div style="font-size:22px; font-weight:700; color:var(--text-primary); margin-bottom:16px; font-family:'Playfair Display',serif;">
                         ${q.displayWord}
                     </div>
-                    <button onclick="speakText('${q.audio}', '${q.audioLang}')"
+                    <button data-action="speak-text" data-audio="${q.audio}" data-lang="${q.audioLang}"
                         style="background:var(--accent-color); color:#000; border:none; border-radius:50px;
                         padding:12px 28px; font-size:15px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
                         🔊 Eshitish
@@ -367,7 +367,7 @@ function renderQuestion() {
 
     const nextLabel = isLast ? "Natijani ko'rish 🏁" : 'Keyingi savol \u2192';
     const optionsHTML = q.options.map((opt, i) =>
-        `<button onclick="checkAnswer(${i})" id="opt-${i}"
+        `<button data-action="check-answer" data-index="${i}" id="opt-${i}"
             style="text-align:left; padding:14px 18px; border-radius:12px; border:1px solid var(--border-color);
             background:var(--card-bg); color:var(--text-primary); cursor:pointer; font-size:15px;
             transition:all 0.2s; display:flex; align-items:center; gap:12px;">
@@ -396,7 +396,7 @@ function renderQuestion() {
             </div>
             <div id="explanation-box" style="display:none;"></div>
             <div id="next-btn-wrap" style="display:none; text-align:right; margin-top:16px;">
-                <button onclick="nextQuestion()" class="btn-primary">${nextLabel}</button>
+                <button data-action="next-question" class="btn-primary">${nextLabel}</button>
             </div>
         </div>
     `;
@@ -535,8 +535,8 @@ function renderTestResult() {
             ${mistakesHTML}
 
             <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:24px;">
-                <button onclick="startTest('${currentLevel}')" class="btn-primary">🔄 Qayta boshlash</button>
-                <button onclick="renderDeutschHome()" class="btn-secondary">← Testlar</button>
+                <button data-action="start-test" data-level="${currentLevel}" class="btn-primary">🔄 Qayta boshlash</button>
+                <button data-action="render-deutsch-home" class="btn-secondary">← Testlar</button>
             </div>
         </div>
         ${renderTestHistory()}
@@ -616,14 +616,14 @@ function renderTournamentHome() {
                <span class="t-avatar">${escapeHTML(initial)}</span>
                <div><strong>${escapeHTML(name)}</strong><br><small style="color:var(--text-muted);">@${escapeHTML(Auth.user.username)}</small></div>
            </div>
-           <button class="btn-primary t-start-btn" onclick="startTournamentGame()" style="margin-top:16px;">🏆 Turnirni boshlash</button>`
+           <button class="btn-primary t-start-btn" data-action="start-tournament" style="margin-top:16px;">🏆 Turnirni boshlash</button>`
         : `<div class="form-group" style="max-width:320px;margin:0 auto 14px;">
                <label for="t-name-input">Ismingiz (mehmon sifatida)</label>
                <input type="text" id="t-name-input" class="form-input" placeholder="Masalan: Ism" maxlength="40">
            </div>
-           <button class="btn-primary t-start-btn" onclick="startTournamentGame()">🏆 Turnirni boshlash</button>
+           <button class="btn-primary t-start-btn" data-action="start-tournament">🏆 Turnirni boshlash</button>
            <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">Ro'yxatdan o'tsangiz — ism va avataringiz bilan, qayta yozmasdan qatnashasiz.
-               <a href="#" onclick="openAuthModal('register');return false;" style="color:var(--color-purple-light);">Ro'yxatdan o'tish</a></p>`;
+               <a href="#" data-action="open-auth" data-mode="register" style="color:var(--color-purple-light);">Ro'yxatdan o'tish</a></p>`;
 
     view.innerHTML = `
         <div class="t-hero">
@@ -706,7 +706,7 @@ function renderTournamentQ() {
     const pct = Math.round((tState.idx / total) * 100);
 
     const optionsHTML = q.options.map((opt, i) =>
-        `<button class="t-opt" id="t-opt-${i}" onclick="tournamentAnswer(${i})">
+        `<button class="t-opt" id="t-opt-${i}" data-action="tournament-answer" data-index="${i}">
             <span class="t-opt-letter">${['A', 'B', 'C', 'D', 'E'][i] || (i + 1)}</span>
             <span>${escapeHTML(opt)}</span>
         </button>`
@@ -729,7 +729,7 @@ function renderTournamentQ() {
                 ${optionsHTML}
             </div>
             <div id="t-next-wrap" style="display:none;text-align:right;margin-top:16px;">
-                <button class="btn-primary" onclick="tournamentNext()">${num >= total ? "Natija 🏁" : 'Keyingi →'}</button>
+                <button class="btn-primary" data-action="tournament-next">${num >= total ? "Natija 🏁" : 'Keyingi →'}</button>
             </div>
         </div>
     `;
@@ -782,8 +782,8 @@ async function renderTournamentResult() {
                 <div id="t-rank-info" style="margin-top:14px;font-size:14px;color:var(--text-muted);">Reytingga yozilmoqda...</div>
             </div>
             <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-                <button class="btn-primary" onclick="startTournamentGame()">🔄 Qayta</button>
-                <button class="btn-secondary" onclick="renderTournamentHome()">📊 Reyting</button>
+                <button class="btn-primary" data-action="start-tournament">🔄 Qayta</button>
+                <button class="btn-secondary" data-action="render-tournament-home">📊 Reyting</button>
             </div>
         </div>
     `;
@@ -982,7 +982,7 @@ function openMyResults(tab) {
             let detailsBlock = '';
             if (h.details && h.details.length) {
                 const detailsId = `hist-details-${idx}`;
-                detailsBtn = `<button type="button" onclick="document.getElementById('${detailsId}').style.display = document.getElementById('${detailsId}').style.display === 'none' ? 'block' : 'none'" style="background:transparent;border:none;color:var(--color-purple-light);font-size:12px;cursor:pointer;padding:4px 0;text-decoration:underline;">🔍 Xatolar va to'g'ri javoblarni ko'rish (${h.details.length} ta)</button>`;
+                detailsBtn = `<button type="button" data-action="toggle-details" data-target="${detailsId}" style="background:transparent;border:none;color:var(--color-purple-light);font-size:12px;cursor:pointer;padding:4px 0;text-decoration:underline;">🔍 Xatolar va to'g'ri javoblarni ko'rish (${h.details.length} ta)</button>`;
                 
                 detailsBlock = `
                     <div id="${detailsId}" style="display:none;margin-top:10px;padding:12px;background:var(--tag-bg);border-radius:10px;border-left:3px solid #ef4444;font-size:12px;text-align:left;">
@@ -1025,7 +1025,7 @@ function openMyResults(tab) {
             <div style="flex:1;min-width:180px;">
                 <div style="display:flex;align-items:center;gap:8px;">
                     <h3 style="font-family:'Playfair Display',serif;font-size:20px;margin:0;color:var(--text-primary);">${escapeHTML(user.name || user.username || 'Foydalanuvchi')}</h3>
-                    <button type="button" onclick="toggleEditProfileForm()" style="background:none;border:none;cursor:pointer;font-size:15px;" title="Profilni tahrirlash">✏️</button>
+                    <button type="button" data-action="toggle-edit-profile" style="background:none;border:none;cursor:pointer;font-size:15px;" title="Profilni tahrirlash">✏️</button>
                 </div>
                 <p style="color:var(--text-secondary);font-size:13px;margin:2px 0 0 0;">@${escapeHTML(user.username || 'user')}</p>
                 <div style="display:flex;gap:10px;margin-top:8px;font-size:12px;">
@@ -1038,7 +1038,7 @@ function openMyResults(tab) {
         <!-- Inline Profile Edit Form (Hidden by default) -->
         <div id="profile-edit-section" style="display:${tab === 'edit' ? 'block' : 'none'};padding:16px;background:rgba(0,136,204,0.06);border:1px solid rgba(0,136,204,0.2);border-radius:14px;margin-bottom:20px;text-align:left;">
             <h4 style="margin:0 0 12px 0;font-size:15px;color:var(--text-primary);">✏️ Nickname va Avatarni Tahrirlash</h4>
-            <form onsubmit="saveProfileChanges(event)">
+            <form id="edit-profile-form">
                 <div style="margin-bottom:12px;">
                     <label for="edit-profile-name" style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Ismingiz yoki Nickname:</label>
                     <input type="text" id="edit-profile-name" class="form-input" value="${escapeHTML(user.name || '')}" placeholder="Ismingizni kiriting" style="width:100%;">
@@ -1047,13 +1047,13 @@ function openMyResults(tab) {
                     <label for="edit-profile-photo" style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Avatar emoji tanlang yoki Rasm havolasini kiriting (URL):</label>
                     <div style="display:flex;gap:6px;margin-bottom:8px;">
                         ${['👨‍💻', '🎓', '🦁', '🚀', '⭐', '⚡', '👑', '🔥'].map(emoji => `
-                            <button type="button" onclick="document.getElementById('edit-profile-photo').value='${emoji}'" style="padding:6px 10px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:8px;cursor:pointer;font-size:18px;">${emoji}</button>
+                            <button type="button" data-action="select-profile-photo" data-emoji="${emoji}" style="padding:6px 10px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:8px;cursor:pointer;font-size:18px;">${emoji}</button>
                         `).join('')}
                     </div>
                     <input type="text" id="edit-profile-photo" class="form-input" value="${escapeHTML(user.photo || '')}" placeholder="Masalan: 👨‍💻 yoki https://..." style="width:100%;">
                 </div>
                 <div style="display:flex;gap:8px;justify-content:flex-end;">
-                    <button type="button" onclick="toggleEditProfileForm()" class="btn-secondary" style="padding:8px 14px;font-size:13px;">Bekor qilish</button>
+                    <button type="button" data-action="toggle-edit-profile" class="btn-secondary" style="padding:8px 14px;font-size:13px;">Bekor qilish</button>
                     <button type="submit" class="btn-primary" style="padding:8px 16px;background:#0088cc;border:none;font-size:13px;">Saqlash</button>
                 </div>
             </form>

@@ -140,10 +140,10 @@
                 </div>
 
                 <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
-                    <button class="fortune-action-btn" onclick="speakCurrentQuote('${item.de.replace(/'/g, "\\'")}')">
+                    <button class="fortune-action-btn" data-click="speakCurrentQuote('${item.de.replace(/'/g, "\\'")}')">
                         🔊 Nemischa Audio Eshitish
                     </button>
-                    <button class="fortune-action-btn" style="background:linear-gradient(90deg, #3b82f6, #10b981);" onclick="nextIndividualQuote()">
+                    <button class="fortune-action-btn" style="background:linear-gradient(90deg, #3b82f6, #10b981);" data-click="nextIndividualQuote()">
                         🎲 Menga Boshqa Iqtibos Tanlash
                     </button>
                 </div>

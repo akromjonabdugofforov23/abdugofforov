@@ -727,10 +727,10 @@
                         Bugungi (${todayStr}) barcha 5 ta maxsus fe'l topshiriqlarini muvaffaqiyatli yakunladingiz. Ertaga yangi vazifalar sizni kutadi!
                     </p>
                     <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-                        <button class="verb-btn-primary" onclick="window.verbTrainerApp.setMode('quiz')">
+                        <button class="verb-btn-primary" data-action="verb-set-quiz">
                             Tezkor testga o'tish
                         </button>
-                        <button class="verb-btn-secondary" onclick="window.verbTrainerApp.resetDaily()">
+                        <button class="verb-btn-secondary" data-action="verb-reset-daily">
                             🔄 Qayta yechish
                         </button>
                     </div>

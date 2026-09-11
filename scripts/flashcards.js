@@ -68,10 +68,10 @@ function renderFlashcardsGridHTML() {
             </div>
             <div class="fc-result-grid">
                 ${matchedCards.map(c => `
-                    <div class="fc-search-card" onclick="startFlashcardAt('${c.deckKey}', ${c.cardIndex})">
+                    <div class="fc-search-card" data-click="startFlashcardAt('${c.deckKey}', ${c.cardIndex})">
                         <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
                             <span class="search-type-badge badge-type-fc">${escapeHTML(c.deckName)}</span>
-                            <button class="btn-icon" style="width: 28px; height: 28px; font-size: 13px;" title="Ovozli eshitish" onclick="speakGermanText('${escapeHTML(c.deckKey === 'uz_de' ? c.back : c.front).replace(/'/g, "\\'")}', event)">🔊</button>
+                            <button class="btn-icon" style="width: 28px; height: 28px; font-size: 13px;" title="Ovozli eshitish" data-click="speakGermanText('${escapeHTML(c.deckKey === 'uz_de' ? c.back : c.front).replace(/'/g, "\\'")}', event)">🔊</button>
                         </div>
                         <div class="fc-search-front">${hl(c.front)}</div>
                         <div class="fc-search-back">${hl(c.back)}</div>
@@ -90,7 +90,7 @@ function renderFlashcardsGridHTML() {
     return `
         <div class="fc-deck-grid">
             ${filteredDecks.map(d => `
-                <div class="post-card fc-deck-card" onclick="startFlashcards('${d.key}')" style="animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+                <div class="post-card fc-deck-card" data-click="startFlashcards('${d.key}')" style="animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
                     <div class="fc-deck-emoji">${i18n.t(d.i).split(' ')[0]}</div>
                     <h3>${i18n.t(d.i)}</h3>
                     <span class="fc-deck-count">${fcMasteredCount(d.key)} / ${flashcardDecks[d.key] ? flashcardDecks[d.key].length : 0}</span>
@@ -153,13 +153,13 @@ function renderFlashcardsHome() {
         </div>
 
         <div class="fc-deck-filters" id="fc-deck-filters">
-            <button class="filter-tag ${fcDeckFilter === 'all' ? 'active' : ''}" data-deck="all" onclick="setFcDeckFilter('all')">✨ Barchasi</button>
-            <button class="filter-tag ${fcDeckFilter === 'de_uz' ? 'active' : ''}" data-deck="de_uz" onclick="setFcDeckFilter('de_uz')">🇩🇪→🇺🇿 Nemischa-O'zbekcha</button>
-            <button class="filter-tag ${fcDeckFilter === 'uz_de' ? 'active' : ''}" data-deck="uz_de" onclick="setFcDeckFilter('uz_de')">🇺🇿→🇩🇪 O'zbekcha-Nemischa</button>
-            <button class="filter-tag ${fcDeckFilter === 'grammar' ? 'active' : ''}" data-deck="grammar" onclick="setFcDeckFilter('grammar')">📐 Grammatika</button>
-            <button class="filter-tag ${fcDeckFilter === 'sentences' ? 'active' : ''}" data-deck="sentences" onclick="setFcDeckFilter('sentences')">💬 Gaplar</button>
-            <button class="filter-tag ${fcDeckFilter === 'quotes' ? 'active' : ''}" data-deck="quotes" onclick="setFcDeckFilter('quotes')">🏛️ Iqtiboslar</button>
-            <button class="filter-tag ${fcDeckFilter === 'ueber_mich' ? 'active' : ''}" data-deck="ueber_mich" onclick="setFcDeckFilter('ueber_mich')">🙋‍♂️ O'zim haqimda</button>
+            <button class="filter-tag ${fcDeckFilter === 'all' ? 'active' : ''}" data-deck="all" data-click="setFcDeckFilter('all')">✨ Barchasi</button>
+            <button class="filter-tag ${fcDeckFilter === 'de_uz' ? 'active' : ''}" data-deck="de_uz" data-click="setFcDeckFilter('de_uz')">🇩🇪→🇺🇿 Nemischa-O'zbekcha</button>
+            <button class="filter-tag ${fcDeckFilter === 'uz_de' ? 'active' : ''}" data-deck="uz_de" data-click="setFcDeckFilter('uz_de')">🇺🇿→🇩🇪 O'zbekcha-Nemischa</button>
+            <button class="filter-tag ${fcDeckFilter === 'grammar' ? 'active' : ''}" data-deck="grammar" data-click="setFcDeckFilter('grammar')">📐 Grammatika</button>
+            <button class="filter-tag ${fcDeckFilter === 'sentences' ? 'active' : ''}" data-deck="sentences" data-click="setFcDeckFilter('sentences')">💬 Gaplar</button>
+            <button class="filter-tag ${fcDeckFilter === 'quotes' ? 'active' : ''}" data-deck="quotes" data-click="setFcDeckFilter('quotes')">🏛️ Iqtiboslar</button>
+            <button class="filter-tag ${fcDeckFilter === 'ueber_mich' ? 'active' : ''}" data-deck="ueber_mich" data-click="setFcDeckFilter('ueber_mich')">🙋‍♂️ O'zim haqimda</button>
         </div>
 
         <div id="fc-grid-container">
@@ -221,31 +221,31 @@ function renderFlashcard() {
     view.innerHTML = `
         <div style="max-width:560px; margin:0 auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:10px;">
-                <button class="btn-secondary btn-sm" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
+                <button class="btn-secondary btn-sm" data-click="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
                 <span style="color:var(--text-muted); font-size:13px;">🔥 ${getFcStreak()} &nbsp;-&nbsp; ${fcIndex + 1} / ${deck.length}</span>
-                <button class="btn-secondary btn-sm" onclick="shuffleFlashcards()">${i18n.t('fc.shuffle')}</button>
+                <button class="btn-secondary btn-sm" data-click="shuffleFlashcards()">${i18n.t('fc.shuffle')}</button>
             </div>
             <div class="flashcard" id="flashcard">
                 <div class="flashcard-inner">
                     <div class="flashcard-face flashcard-front">
-                        <button class="fc-audio-btn" title="Talaffuzni eshitish" onclick="speakGermanText('${escapeHTML(card.front).replace(/'/g, "\\'")}', event)">🔊</button>
+                        <button class="fc-audio-btn" title="Talaffuzni eshitish" data-click="speakGermanText('${escapeHTML(card.front).replace(/'/g, "\\'")}', event)">🔊</button>
                         <div class="fc-text">${escapeHTML(card.front)}</div>
                         <span class="fc-hint">${i18n.t('fc.tapHint')}</span>
                     </div>
                     <div class="flashcard-face flashcard-back">
-                        <button class="fc-audio-btn" title="Talaffuzni eshitish" onclick="speakGermanText('${escapeHTML(card.back).replace(/'/g, "\\'")}', event)">🔊</button>
+                        <button class="fc-audio-btn" title="Talaffuzni eshitish" data-click="speakGermanText('${escapeHTML(card.back).replace(/'/g, "\\'")}', event)">🔊</button>
                         <div class="fc-text">${escapeHTML(card.back)}</div>
                     </div>
                 </div>
             </div>
             <div style="display:flex; justify-content:space-between; gap:12px; margin-top:18px;">
-                <button class="btn-secondary" onclick="prevFlashcard()">${i18n.t('fc.prev')}</button>
-                <button class="btn-primary" onclick="flipFlashcard()">${i18n.t('fc.flip')}</button>
-                <button class="btn-secondary" onclick="nextFlashcard()">${i18n.t('fc.next')}</button>
+                <button class="btn-secondary" data-click="prevFlashcard()">${i18n.t('fc.prev')}</button>
+                <button class="btn-primary" data-click="flipFlashcard()">${i18n.t('fc.flip')}</button>
+                <button class="btn-secondary" data-click="nextFlashcard()">${i18n.t('fc.next')}</button>
             </div>
             <div style="display:flex; gap:12px; margin-top:12px;">
-                <button class="btn-secondary" style="flex:1; border-color:rgba(248,113,113,0.4); color:#ef4444;" onclick="fcAnswer(false)">✗ Bilmayman</button>
-                <button class="btn-primary" style="flex:1; background:#22c55e; border-color:#22c55e; color:#fff;" onclick="fcAnswer(true)">✓ Bilaman</button>
+                <button class="btn-secondary" style="flex:1; border-color:rgba(248,113,113,0.4); color:#ef4444;" data-click="fcAnswer(false)">✗ Bilmayman</button>
+                <button class="btn-primary" style="flex:1; background:#22c55e; border-color:#22c55e; color:#fff;" data-click="fcAnswer(true)">✓ Bilaman</button>
             </div>
         </div>
     `;

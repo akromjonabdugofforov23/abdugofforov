@@ -640,10 +640,10 @@ function renderPosts(instant) {
                         🔍 <strong>"${escapeHTML(searchQuery)}"</strong> bo'yicha <b>${counts.all}</b> ta natija topildi
                     </div>
                     <div class="search-filter-pills">
-                        <button class="search-filter-pill ${searchCategoryTab === 'all' ? 'active' : ''}" onclick="setSearchCategoryTab('all')">✨ Barchasi (${counts.all})</button>
-                        <button class="search-filter-pill ${searchCategoryTab === 'posts' ? 'active' : ''}" onclick="setSearchCategoryTab('posts')">📝 Maqolalar (${counts.posts})</button>
-                        <button class="search-filter-pill ${searchCategoryTab === 'tests' ? 'active' : ''}" onclick="setSearchCategoryTab('tests')">🇩🇪 Testlar (${counts.tests})</button>
-                        <button class="search-filter-pill ${searchCategoryTab === 'flashcards' ? 'active' : ''}" onclick="setSearchCategoryTab('flashcards')">🃏 Kartochkalar (${counts.flashcards})</button>
+                        <button class="search-filter-pill ${searchCategoryTab === 'all' ? 'active' : ''}" data-action="set-search-tab" data-tab="all">✨ Barchasi (${counts.all})</button>
+                        <button class="search-filter-pill ${searchCategoryTab === 'posts' ? 'active' : ''}" data-action="set-search-tab" data-tab="posts">📝 Maqolalar (${counts.posts})</button>
+                        <button class="search-filter-pill ${searchCategoryTab === 'tests' ? 'active' : ''}" data-action="set-search-tab" data-tab="tests">🇩🇪 Testlar (${counts.tests})</button>
+                        <button class="search-filter-pill ${searchCategoryTab === 'flashcards' ? 'active' : ''}" data-action="set-search-tab" data-tab="flashcards">🃏 Kartochkalar (${counts.flashcards})</button>
                     </div>
                 </div>
             `;
@@ -755,7 +755,7 @@ function renderPosts(instant) {
                         <div>
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                                 <span class="search-type-badge badge-type-fc">${escapeHTML(item.category)}</span>
-                                <button class="btn-icon fc-audio-btn" style="width:30px; height:30px; font-size:14px;" title="Talaffuz" onclick="speakGermanText('${escapeHTML(item.deckKey === 'uz_de' ? item.back : item.front).replace(/'/g, "\\'")}', event)">🔊</button>
+                                <button class="btn-icon fc-audio-btn" style="width:30px; height:30px; font-size:14px;" title="Talaffuz" data-click="speakGermanText('${escapeHTML(item.deckKey === 'uz_de' ? item.back : item.front).replace(/'/g, "\\'")}', event)">🔊</button>
                             </div>
                             <div class="fc-search-front" style="margin-bottom:8px;">${highlightedFront}</div>
                             <div class="fc-search-back">${highlightedBack}</div>
@@ -1407,7 +1407,7 @@ function openPostDetail(postId) {
             </form>` : `
             <div style="text-align:center; padding:20px; border:1px dashed var(--glass-border); border-radius:12px; margin-top:16px;">
                 <p style="color:var(--text-secondary); margin-bottom:12px; font-size:14px;">Izoh qoldirish uchun tizimga kiring</p>
-                <button class="btn-primary" type="button" onclick="openAuthModal('login')" style="margin:0 auto;">Kirish / Ro'yxatdan o'tish</button>
+                <button class="btn-primary" type="button" data-action="open-auth" data-mode="login" style="margin:0 auto;">Kirish / Ro'yxatdan o'tish</button>
             </div>`}
         </div>
     `;
@@ -1543,7 +1543,7 @@ function renderComments(commentsList) {
                     </div>
                     <p class="comment-text">${escapeHTML(comment.reply.text)}</p>
                 </div>` : ''}
-            ${isAdmin && !comment.reply ? `<button class="btn-secondary btn-sm comment-reply-btn" onclick="replyToComment(${comment.id})" style="margin-top:8px;">↳ Javob berish</button>` : ''}
+            ${isAdmin && !comment.reply ? `<button class="btn-secondary btn-sm comment-reply-btn" data-action="reply-comment" data-id="${comment.id}" style="margin-top:8px;">↳ Javob berish</button>` : ''}
         </div>
     `).join('');
 }
@@ -2044,8 +2044,8 @@ function renderTasks() {
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span class="task-badge ${badgeClass}">${badgeText}</span>
                 <div class="admin-task-actions">
-                    <button type="button" class="btn-icon" onclick="editTask(${task.id})" style="font-size:12px; padding: 4px;">✏️</button>
-                    <button type="button" class="btn-icon" onclick="deleteTask(${task.id})" style="font-size:12px; padding: 4px; color:#ff4d4d;">🗑️</button>
+                    <button type="button" class="btn-icon" data-action="edit-task" data-id="${task.id}" style="font-size:12px; padding: 4px;">✏️</button>
+                    <button type="button" class="btn-icon" data-action="delete-task" data-id="${task.id}" style="font-size:12px; padding: 4px; color:#ff4d4d;">🗑️</button>
                 </div>
             </div>
         `;
@@ -2244,7 +2244,7 @@ function checkPortfolioAccess() {
                     <span style="font-size: 64px; display: block; margin-bottom: 20px;">🔒</span>
                     <h2 style="color:#ff4d4d; font-family:'Playfair Display', serif;">Ushbu kirish havolasi eskirgan yoki noto'g'ri!</h2>
                     <p style="color:#626a7f;">Xavfsizlik maqsadida ushbu portfolio havolasi faqat cheklangan vaqt yoki bir martalik foydalanish uchun mo'ljallangan.</p>
-                    <button class="btn-primary" onclick="window.location.href = window.location.pathname" style="margin-top: 25px; border-color:#00ff88; color:#00ff88; background:transparent;">Bosh sahifaga o'tish</button>
+                    <button class="btn-primary" data-action="go-home" style="margin-top: 25px; border-color:#00ff88; color:#00ff88; background:transparent;">Bosh sahifaga o'tish</button>
                 </div>
             `;
             portfolioView.style.display = 'block';
@@ -2604,7 +2604,7 @@ function readingTime(post) {
 function renderTags(post) {
     if (!post.tags || !post.tags.length) return '';
     return `<div class="post-tags">${post.tags.map(t =>
-        `<button class="tag-pill" onclick="filterByTag('${escapeAttr(t)}')">#${escapeHTML(t)}</button>`
+        `<button class="tag-pill" data-action="filter-by-tag" data-tag="${escapeAttr(t)}">#${escapeHTML(t)}</button>`
     ).join('')}</div>`;
 }
 
@@ -2724,8 +2724,8 @@ function renderFlashcardDone() {
             <h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:8px;">To'plam yakunlandi!</h2>
             <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;-&nbsp; 🔥 Streak: <b>${getFcStreak()} kun</b></p>
             <div style="display:flex;gap:12px;justify-content:center;">
-                <button class="btn-primary" onclick="startFlashcards('${fcDeckKey}')">🔄 Qayta</button>
-                <button class="btn-secondary" onclick="renderFlashcardsHome()">${i18n.t('fc.back')}</button>
+                <button class="btn-primary" data-action="start-flashcards" data-deck="${fcDeckKey}">🔄 Qayta</button>
+                <button class="btn-secondary" data-action="render-flashcards-home">${i18n.t('fc.back')}</button>
             </div>
         </div>`;
 }
@@ -3705,4 +3705,163 @@ if (document.readyState === 'loading') {
 }
 
 
+
+
+
+// ===== GLOBAL EVENT DELEGATION (CSP COMPLIANT) =====
+document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const action = el.dataset.action;
+
+    switch (action) {
+        case 'scroll-to-tests':
+            window.scrollTo({ top: 350, behavior: 'smooth' });
+            break;
+        case 'open-flashcards':
+            if (typeof openFlashcardsView === 'function') openFlashcardsView();
+            break;
+        case 'open-tournament':
+            if (typeof openTournamentView === 'function') openTournamentView();
+            break;
+        case 'open-verb-trainer':
+            if (typeof openVerbTrainerView === 'function') openVerbTrainerView();
+            break;
+        case 'open-horror':
+            if (typeof openHorrorHome === 'function') openHorrorHome();
+            break;
+        case 'go-home':
+            window.location.href = window.location.pathname;
+            break;
+        case 'set-deutsch-filter':
+            if (typeof setDeutschLevelFilter === 'function') setDeutschLevelFilter(el.dataset.level);
+            break;
+        case 'start-part':
+            if (typeof startPart === 'function') startPart();
+            break;
+        case 'speak-text':
+            if (typeof speakText === 'function') speakText(el.dataset.audio, el.dataset.lang);
+            break;
+        case 'check-answer':
+            if (typeof checkAnswer === 'function') checkAnswer(Number(el.dataset.index));
+            break;
+        case 'next-question':
+            if (typeof nextQuestion === 'function') nextQuestion();
+            break;
+        case 'start-test':
+            if (typeof startTest === 'function') startTest(el.dataset.level);
+            break;
+        case 'render-deutsch-home':
+            if (typeof renderDeutschHome === 'function') renderDeutschHome();
+            break;
+        case 'start-tournament':
+            if (typeof startTournamentGame === 'function') startTournamentGame();
+            break;
+        case 'tournament-answer':
+            if (typeof tournamentAnswer === 'function') tournamentAnswer(Number(el.dataset.index));
+            break;
+        case 'tournament-next':
+            if (typeof tournamentNext === 'function') tournamentNext();
+            break;
+        case 'render-tournament-home':
+            if (typeof renderTournamentHome === 'function') renderTournamentHome();
+            break;
+        case 'toggle-details': {
+            const target = document.getElementById(el.dataset.target);
+            if (target) target.style.display = target.style.display === 'none' ? 'block' : 'none';
+            break;
+        }
+        case 'toggle-edit-profile':
+            if (typeof toggleEditProfileForm === 'function') toggleEditProfileForm();
+            break;
+        case 'select-profile-photo': {
+            const input = document.getElementById('edit-profile-photo');
+            if (input) input.value = el.dataset.emoji;
+            break;
+        }
+        case 'set-search-tab':
+            if (typeof setSearchCategoryTab === 'function') setSearchCategoryTab(el.dataset.tab);
+            break;
+        case 'speak-german':
+            if (typeof speakGermanText === 'function') speakGermanText(el.dataset.text, e);
+            break;
+        case 'open-auth':
+            if (typeof openAuthModal === 'function') openAuthModal(el.dataset.mode);
+            break;
+        case 'reply-comment':
+            if (typeof replyToComment === 'function') replyToComment(Number(el.dataset.id));
+            break;
+        case 'edit-task':
+            if (typeof editTask === 'function') editTask(Number(el.dataset.id));
+            break;
+        case 'delete-task':
+            if (typeof deleteTask === 'function') deleteTask(Number(el.dataset.id));
+            break;
+        case 'filter-by-tag':
+            if (typeof filterByTag === 'function') filterByTag(el.dataset.tag);
+            break;
+        case 'start-flashcards':
+            if (typeof startFlashcards === 'function') startFlashcards(el.dataset.deck);
+            break;
+        case 'render-flashcards-home':
+            if (typeof renderFlashcardsHome === 'function') renderFlashcardsHome();
+            break;
+        case 'verb-set-quiz':
+            if (window.verbTrainerApp) window.verbTrainerApp.setMode('quiz');
+            break;
+        case 'verb-reset-daily':
+            if (window.verbTrainerApp) window.verbTrainerApp.resetDaily();
+            break;
+    }
+});
+
+// Profile edit form submission
+document.addEventListener('submit', (e) => {
+    if (e.target && e.target.id === 'edit-profile-form') {
+        e.preventDefault();
+        if (typeof saveProfileChanges === 'function') saveProfileChanges(e);
+    }
+});
+
+
+// ===== SAFE DATA-CLICK DISPATCHER (CSP COMPLIANT - ZERO EVAL) =====
+function runDataClickAction(expr, event) {
+    if (!expr) return;
+    const m = expr.match(/^([a-zA-Z0-9_$]+(?:\.[a-zA-Z0-9_$]+)?)\s*\(([\s\S]*)\)\s*;?$/);
+    if (!m) return;
+    const path = m[1].split('.');
+    let fn = window;
+    let ctx = window;
+    for (let i = 0; i < path.length; i++) {
+        ctx = fn;
+        fn = fn[path[i]];
+        if (!fn) return;
+    }
+    if (typeof fn !== 'function') return;
+
+    const argsStr = m[2].trim();
+    if (!argsStr) {
+        fn.call(ctx);
+        return;
+    }
+    const args = [];
+    const argRegex = /'([^']*)'|"([^"]*)"|(-?\d+(?:\.\d+)?)|(true|false)|(null|undefined)|(event)/g;
+    let am;
+    while ((am = argRegex.exec(argsStr)) !== null) {
+        if (am[1] !== undefined) args.push(am[1]);
+        else if (am[2] !== undefined) args.push(am[2]);
+        else if (am[3] !== undefined) args.push(Number(am[3]));
+        else if (am[4] !== undefined) args.push(am[4] === 'true');
+        else if (am[5] !== undefined) args.push(am[5] === 'null' ? null : undefined);
+        else if (am[6] !== undefined) args.push(event);
+    }
+    fn.apply(ctx, args);
+}
+
+document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-click]');
+    if (el) {
+        runDataClickAction(el.getAttribute('data-click'), e);
+    }
+});
 

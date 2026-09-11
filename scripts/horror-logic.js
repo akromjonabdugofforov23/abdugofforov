@@ -218,8 +218,8 @@
         view.innerHTML = `
             <div class="horror-container">
                 <div style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
-                    <button class="btn-secondary btn-sm" onclick="closeHorrorMode()">← Oddiy Testlarga Qaytish</button>
-                    <button class="horror-sound-toggle" onclick="toggleHorrorSound()">
+                    <button class="btn-secondary btn-sm" data-click="closeHorrorMode()">← Oddiy Testlarga Qaytish</button>
+                    <button class="horror-sound-toggle" data-click="toggleHorrorSound()">
                         ${soundEnabled ? '🔊 Ovoz Yoniq' : '🔇 Ovoz O\'chiq'}
                     </button>
                 </div>
@@ -232,13 +232,13 @@
                     <div style="margin-top:16px;">
                         <h4 style="color:#fff; font-size:14px; margin-bottom:10px;">🦸‍♂️ Personajingizni Tanlang:</h4>
                         <div class="character-picker">
-                            <div class="character-card ${selectedHero === 'boy' ? 'selected' : ''}" onclick="selectHorrorHero('boy')">
+                            <div class="character-card ${selectedHero === 'boy' ? 'selected' : ''}" data-click="selectHorrorHero('boy')">
                                 <div style="font-size:36px; margin-bottom:4px;">👦</div>
                                 <div style="font-weight:700; color:#fff; font-size:14px;">Kay</div>
                                 <div style="font-size:11px; color:#9ca3af;">Qasr tadqiqotchisi</div>
                             </div>
 
-                            <div class="character-card ${selectedHero === 'girl' ? 'selected' : ''}" onclick="selectHorrorHero('girl')">
+                            <div class="character-card ${selectedHero === 'girl' ? 'selected' : ''}" data-click="selectHorrorHero('girl')">
                                 <div style="font-size:36px; margin-bottom:4px;">👧</div>
                                 <div style="font-weight:700; color:#fff; font-size:14px;">Gerda</div>
                                 <div style="font-size:11px; color:#9ca3af;">Jasur sayyoh</div>
@@ -247,7 +247,7 @@
                     </div>
                     
                     <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:20px;">
-                        <button class="btn-primary" style="background:#ef4444; border-color:#ef4444; padding:12px 24px; font-weight:700;" onclick="startSurvivalMode()">
+                        <button class="btn-primary" style="background:#ef4444; border-color:#ef4444; padding:12px 24px; font-weight:700;" data-click="startSurvivalMode()">
                             ⚡ 10-Second Survival (Vaqtga qarshi)
                         </button>
                     </div>
@@ -258,25 +258,25 @@
                 </h3>
 
                 <div class="horror-level-grid">
-                    <div class="horror-level-card" onclick="startHorrorEscape('a1')">
+                    <div class="horror-level-card" data-click="startHorrorEscape('a1')">
                         <span class="horror-level-badge">🌱 A1 Boshlang'ich</span>
                         <div class="horror-level-name">🏰 Das Geisterschloss</div>
                         <div class="horror-level-desc">Ruhlar qasridan 5 ta eshik paroli va artikllar yordamida qutuling.</div>
                     </div>
 
-                    <div class="horror-level-card" onclick="startHorrorEscape('a2')">
+                    <div class="horror-level-card" data-click="startHorrorEscape('a2')">
                         <span class="horror-level-badge">🌿 A2 Asosiy</span>
                         <div class="horror-level-name">🌲 Der Dunkle Wald</div>
                         <div class="horror-level-desc">Schwarzwald o'rmonidagi sharpalardan Perfekt va modal fe'llar bilan qoching.</div>
                     </div>
 
-                    <div class="horror-level-card" onclick="startHorrorEscape('b1')">
+                    <div class="horror-level-card" data-click="startHorrorEscape('b1')">
                         <span class="horror-level-badge">🌳 B1 O'rta</span>
                         <div class="horror-level-name">🏥 Die Verlassene Anstalt</div>
                         <div class="horror-level-desc">Tashlab ketilgan sirli shifoxonadan Konjunktiv va Passiv grammatikasi orqali chiqing.</div>
                     </div>
 
-                    <div class="horror-level-card" onclick="startHorrorEscape('b2')">
+                    <div class="horror-level-card" data-click="startHorrorEscape('b2')">
                         <span class="horror-level-badge" style="background:rgba(168,85,247,0.2); color:#a855f7;">🏔️ B2 Nightmare</span>
                         <div class="horror-level-name">🌋 Waldfeld Halokati</div>
                         <div class="horror-level-desc">Mistik qal'a buzilmoqda! Akademik so'zlar va o'ta tezkor logika sinovi.</div>
@@ -329,7 +329,7 @@
         view.innerHTML = `
             <div class="horror-container">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <button class="btn-secondary btn-sm" onclick="openHorrorHome()">← Qochishni to'xtatish</button>
+                    <button class="btn-secondary btn-sm" data-click="openHorrorHome()">← Qochishni to'xtatish</button>
                     <div style="font-size:14px; font-weight:700; color:#ef4444;">Hayot: ${hearts}</div>
                 </div>
 
@@ -369,7 +369,7 @@
 
                     <div style="display:flex; flex-direction:column; gap:10px;" id="horror-options">
                         ${room.options.map((opt, i) => `
-                            <button onclick="checkHorrorEscapeAns(${i})" class="btn-secondary" style="text-align:left; padding:14px; border-color:var(--horror-border); background:rgba(0,0,0,0.5); color:#fff;">
+                            <button data-click="checkHorrorEscapeAns(${i})" class="btn-secondary" style="text-align:left; padding:14px; border-color:var(--horror-border); background:rgba(0,0,0,0.5); color:#fff;">
                                 <b>${['A','B','C','D'][i]}.</b> ${opt}
                             </button>
                         `).join('')}
@@ -425,7 +425,7 @@
                     <b>🔓 Parol to'g'ri! Eshik qulfi ochildi.</b>
                     <p style="font-size:13px; color:#d1d5db; margin-top:4px;">💡 ${room.explanation}</p>
                 </div>
-                <button onclick="nextEscapeRoom()" class="btn-primary" style="margin-top:12px; width:100%; background:#22c55e; border-color:#22c55e;">🚶‍♂️ Keyingi Xonaga O'tish →</button>
+                <button data-click="nextEscapeRoom()" class="btn-primary" style="margin-top:12px; width:100%; background:#22c55e; border-color:#22c55e;">🚶‍♂️ Keyingi Xonaga O'tish →</button>
             `;
         } else {
             hp--;
@@ -447,7 +447,7 @@
                     <b>😱 Noto'g'ri parol! Qasr ruhi yaqinlashdi (-1 🩸 Hayot).</b>
                     <p style="font-size:13px; color:#d1d5db; margin-top:4px;">💡 ${room.explanation}</p>
                 </div>
-                <button onclick="nextEscapeRoom()" class="btn-primary" style="margin-top:12px; width:100%; background:#ef4444; border-color:#ef4444;">🏃 Qochishda Davom Etish →</button>
+                <button data-click="nextEscapeRoom()" class="btn-primary" style="margin-top:12px; width:100%; background:#ef4444; border-color:#ef4444;">🏃 Qochishda Davom Etish →</button>
             `;
         }
     };
@@ -485,7 +485,7 @@
         view.innerHTML = `
             <div class="horror-container">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <button class="btn-secondary btn-sm" onclick="openHorrorHome()">← Survivalni to'xtatish</button>
+                    <button class="btn-secondary btn-sm" data-click="openHorrorHome()">← Survivalni to'xtatish</button>
                     <div style="font-size:13px; color:#9ca3af;">Savol ${currentRoomIndex + 1} / ${pool.length}</div>
                     <div style="font-size:14px; font-weight:700; color:#ef4444;">Hayot: ${hearts}</div>
                 </div>
@@ -500,7 +500,7 @@
 
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;" id="survival-opts">
                         ${q.options.map((opt, i) => `
-                            <button onclick="checkSurvivalAns(${i})" class="btn-secondary" style="padding:16px; font-size:15px; border-color:var(--horror-border); background:rgba(0,0,0,0.6); color:#fff;">
+                            <button data-click="checkSurvivalAns(${i})" class="btn-secondary" style="padding:16px; font-size:15px; border-color:var(--horror-border); background:rgba(0,0,0,0.6); color:#fff;">
                                 ${opt}
                             </button>
                         `).join('')}
@@ -614,7 +614,7 @@
                     <h1 class="horror-title" style="color:#ef4444;">GAME OVER</h1>
                     <p class="horror-subtitle" style="font-size:16px;">Siz qasrdan qutula olmadingiz... Qasr ruhi sizni asir oldi!</p>
                     <div style="margin-top:24px; display:flex; justify-content:center; gap:12px;">
-                        <button class="btn-primary" style="background:#ef4444; border-color:#ef4444;" onclick="startSurvivalMode()">🔄 Qayta Sinash</button>
+                        <button class="btn-primary" style="background:#ef4444; border-color:#ef4444;" data-click="startSurvivalMode()">🔄 Qayta Sinash</button>
                     </div>
                 </div>
             </div>
@@ -641,8 +641,8 @@
                     </div>
 
                     <div style="margin-top:24px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-                        <button class="btn-primary" style="background:#22c55e; border-color:#22c55e; font-weight:700;" onclick="startSurvivalMode()">🔄 Qayta O'ynash</button>
-                        <button class="btn-secondary" onclick="openHorrorHome()">🏰 Bosh Rejimlar</button>
+                        <button class="btn-primary" style="background:#22c55e; border-color:#22c55e; font-weight:700;" data-click="startSurvivalMode()">🔄 Qayta O'ynash</button>
+                        <button class="btn-secondary" data-click="openHorrorHome()">🏰 Bosh Rejimlar</button>
                     </div>
                 </div>
             </div>
@@ -658,7 +658,7 @@
                     <h1 class="horror-title" style="color:#22c55e;">QASRDAN QUTULDINGIZ!</h1>
                     <p class="horror-subtitle" style="font-size:16px;">Tabriklaymiz! Barcha nemischa parollarni to'g'ri topib, omon qoldingiz!</p>
                     <div style="margin-top:24px; display:flex; justify-content:center; gap:12px;">
-                        <button class="btn-primary" style="background:#22c55e; border-color:#22c55e;" onclick="openHorrorHome()">🏰 Boshqa Darajani O'ynash</button>
+                        <button class="btn-primary" style="background:#22c55e; border-color:#22c55e;" data-click="openHorrorHome()">🏰 Boshqa Darajani O'ynash</button>
                     </div>
                 </div>
             </div>

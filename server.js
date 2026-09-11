@@ -15,14 +15,25 @@ const PORT = process.env.PORT || 8000;
 // Body-parser qo'shildi (JSON o'qish uchun)
 app.use(express.json());
 
-// CORS xavfsizligi
+// CORS xavfsizligi — Wildcard (*) emas, faqat same-origin va ruxsat etilgan domenlar
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    const origin = req.headers.origin;
+    const allowed = [req.headers.host ? `${req.protocol}://${req.headers.host}` : ''];
+    if (process.env.ALLOWED_ORIGINS) {
+        process.env.ALLOWED_ORIGINS.split(',').forEach(o => {
+            const t = o.trim();
+            if (t) allowed.push(t);
+        });
+    }
+    if (origin && (allowed.includes(origin) || allowed.includes(origin.replace(/\/$/, '')))) {
+        res.header("Access-Control-Allow-Origin", origin);
+        res.header("Vary", "Origin");
+    }
     res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, x-user-token");
-    res.header("X-XSS-Protection", "1; mode=block");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, x-user-token, x-admin-token, x-admin-pin");
+    res.header("X-Content-Type-Options", "nosniff");
     if ('OPTIONS' === req.method) {
-        res.sendStatus(200);
+        res.sendStatus(204);
     } else {
         next();
     }

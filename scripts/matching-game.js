@@ -192,8 +192,8 @@ const MatchingGame = {
                     </div>
                 </div>
                 <div class="matching-actions">
-                    <button class="btn-primary" onclick="MatchingGame.start('${this.currentDeck}')">🔄 Qayta o'ynash</button>
-                    <button class="btn-secondary" onclick="showMatchingHome()">📋 Boshqa to'plam</button>
+                    <button class="btn-primary" data-click="MatchingGame.start('${this.currentDeck}')">🔄 Qayta o'ynash</button>
+                    <button class="btn-secondary" data-click="showMatchingHome()">📋 Boshqa to'plam</button>
                 </div>
             </div>
         `;
@@ -209,7 +209,7 @@ const MatchingGame = {
         view.innerHTML = `
             <div class="matching-container">
                 <div class="matching-header">
-                    <button class="btn-secondary btn-sm" onclick="showMatchingHome()">⬅ Orqaga</button>
+                    <button class="btn-secondary btn-sm" data-click="showMatchingHome()">⬅ Orqaga</button>
                     <div class="matching-info">
                         <span>🔄 Urinishlar: <b id="matching-moves">0</b></span>
                         <span>⏱️ <b id="matching-timer">00:00</b></span>
@@ -220,7 +220,7 @@ const MatchingGame = {
                     ${this.cards.map(card => `
                         <div class="match-card ${this.matched.includes(card.id) ? 'matched flipped' : ''}"
                              id="match-card-${card.id}"
-                             onclick="MatchingGame.selectCard(${card.id})">
+                             data-click="MatchingGame.selectCard(${card.id})">
                             <div class="match-card-front">❓</div>
                             <div class="match-card-back">${this.matched.includes(card.id) ? escapeHTML(card.text) : ''}</div>
                         </div>
@@ -411,8 +411,8 @@ const SpeedQuiz = {
                     </div>
                 </div>
                 <div class="matching-actions">
-                    <button class="btn-primary" onclick="SpeedQuiz.start('${this.currentDeck}')">⚡ Qayta o'ynash</button>
-                    <button class="btn-secondary" onclick="showMatchingHome()">📋 Boshqa rejim</button>
+                    <button class="btn-primary" data-click="SpeedQuiz.start('${this.currentDeck}')">⚡ Qayta o'ynash</button>
+                    <button class="btn-secondary" data-click="showMatchingHome()">📋 Boshqa rejim</button>
                 </div>
             </div>
         `;
@@ -431,7 +431,7 @@ const SpeedQuiz = {
                 <div class="sq-question-text">${escapeHTML(q.question)}</div>
                 <div class="sq-options">
                     ${q.options.map((opt, i) => `
-                        <button class="sq-option" onclick="SpeedQuiz.answer(${i})">
+                        <button class="sq-option" data-click="SpeedQuiz.answer(${i})">
                             <span class="sq-option-key">${String.fromCharCode(65 + i)}</span>
                             ${escapeHTML(opt.text)}
                         </button>
@@ -448,7 +448,7 @@ const SpeedQuiz = {
         view.innerHTML = `
             <div class="sq-container">
                 <div class="sq-header">
-                    <button class="btn-secondary btn-sm" onclick="showMatchingHome()">⬅ Orqaga</button>
+                    <button class="btn-secondary btn-sm" data-click="showMatchingHome()">⬅ Orqaga</button>
                     <div class="sq-stats">
                         <span>🏆 <b id="sq-score">0</b></span>
                         <span id="sq-streak"></span>
@@ -500,7 +500,7 @@ function showMatchingHome() {
                 <div class="game-mode-decks">
                     <span class="game-mode-label">To'plamni tanlang:</span>
                     ${FC_ALL_DECKS.filter(d => flashcardDecks[d.key] && flashcardDecks[d.key].length >= 8).map(d => `
-                        <button class="btn-secondary btn-sm" onclick="MatchingGame.start('${d.key}')">
+                        <button class="btn-secondary btn-sm" data-click="MatchingGame.start('${d.key}')">
                             ${window.i18n ? i18n.t(d.i) : d.key}
                         </button>
                     `).join('')}
@@ -513,7 +513,7 @@ function showMatchingHome() {
                 <div class="game-mode-decks">
                     <span class="game-mode-label">To'plamni tanlang:</span>
                     ${FC_ALL_DECKS.filter(d => flashcardDecks[d.key] && flashcardDecks[d.key].length >= 4).map(d => `
-                        <button class="btn-secondary btn-sm" onclick="SpeedQuiz.start('${d.key}')">
+                        <button class="btn-secondary btn-sm" data-click="SpeedQuiz.start('${d.key}')">
                             ${window.i18n ? i18n.t(d.i) : d.key}
                         </button>
                     `).join('')}
@@ -522,7 +522,7 @@ function showMatchingHome() {
         </div>
 
         <div style="text-align:center; margin-top:24px;">
-            <button class="btn-secondary" onclick="renderFlashcardsHome()">🃏 Kartochkalarga qaytish</button>
+            <button class="btn-secondary" data-click="renderFlashcardsHome()">🃏 Kartochkalarga qaytish</button>
         </div>
     `;
 }
