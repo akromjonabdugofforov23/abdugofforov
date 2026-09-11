@@ -99,6 +99,12 @@
             const u = new SpeechSynthesisUtterance(text);
             u.lang = 'de-DE';
             u.rate = 0.9;
+            const audioBtn = document.getElementById('quote-audio-btn');
+            if (audioBtn) {
+                u.onstart = () => audioBtn.classList.add('playing');
+                u.onend = () => audioBtn.classList.remove('playing');
+                u.onerror = () => audioBtn.classList.remove('playing');
+            }
             window.speechSynthesis.speak(u);
         } catch(e) {}
     }
@@ -129,25 +135,47 @@
         const pool = QUOTES_DB[lang] || QUOTES_DB.uz;
         const { item } = getPinnedQuote(pool);
 
+        const cleanQuote = (item.quote || '').replace(/^["“”„]+|["“”„]+$/g, '');
+        const cleanDe = (item.de || '').replace(/^["“”„]+|["“”„]+$/g, '');
+
         wrap.innerHTML = `
-            <div class="fortune-card-3d" id="fortune-card">
-                <span class="fortune-quote-badge">💡 SHAXSIY KUN IQTIBOSI</span>
-                <div class="fortune-quote-text">"${item.quote}"</div>
-                <div class="fortune-quote-author">— ${item.author}</div>
-                
-                <div style="font-size:13px; color:#a7f3d0; margin-bottom:14px; background:rgba(0,0,0,0.3); padding:8px 14px; border-radius:10px; display:inline-block;">
-                    🇩🇪 Nemischa Variant: <b>"${item.de}"</b>
+            <article class="fortune-card-3d atelier-quote-card" id="fortune-card">
+                <header class="atelier-card-header">
+                    <span class="fortune-quote-badge atelier-tag" id="quote-category-badge">✦ KUN HIKMATI · FILOSOFIYA</span>
+                    <span class="atelier-edition-label">KAY KUNDALIGI · ATELIER</span>
+                </header>
+
+                <div class="atelier-quote-body">
+                    <blockquote class="fortune-quote-text atelier-quote-text" id="quote-text">“${cleanQuote}”</blockquote>
+                    <cite class="fortune-quote-author atelier-quote-author" id="quote-author">${item.author || ''}</cite>
                 </div>
 
-                <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
-                    <button class="fortune-action-btn" data-click="speakCurrentQuote('${item.de.replace(/'/g, "\\'")}')">
-                        🔊 Nemischa Audio Eshitish
-                    </button>
-                    <button class="fortune-action-btn" style="background:linear-gradient(90deg, #3b82f6, #10b981);" data-click="nextIndividualQuote()">
-                        🎲 Menga Boshqa Iqtibos Tanlash
-                    </button>
+                <div class="atelier-german-folio" id="quote-de-wrap">
+                    <div class="atelier-german-header">
+                        <span class="atelier-flag-badge">🇩🇪 DE · PARALLEL</span>
+                        <span>Nemischa Asl Nusxa / Tarjima</span>
+                    </div>
+                    <p class="atelier-german-text" id="quote-de-text">„${cleanDe}“</p>
                 </div>
-            </div>
+
+                <footer class="atelier-actions-bar">
+                    <button class="fortune-action-btn atelier-audio-player" id="quote-audio-btn" type="button" aria-label="Nemischa talaffuzni eshitish" data-click="speakCurrentQuote('${cleanDe.replace(/'/g, "\\'")}')">
+                        <span class="atelier-play-disc" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                        </span>
+                        <span class="atelier-soundwave" aria-hidden="true">
+                            <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                        </span>
+                        <span class="atelier-audio-label">Talaffuzni eshitish</span>
+                    </button>
+                    <button class="atelier-btn-secondary" id="quote-next-btn" type="button" aria-label="Boshqa iqtibos tanlash" data-click="nextIndividualQuote()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                        </svg>
+                        <span>Boshqa hikmat</span>
+                    </button>
+                </footer>
+            </article>
         `;
     }
 

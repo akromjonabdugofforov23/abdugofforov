@@ -29,9 +29,9 @@ const HTML_FILES = ['index.html', 'kay.html'];
 // Statik fayllar (o'zgartirilmasdan ko'chiriladi)
 const COPY_FILES = [
   '_headers', 'robots.txt', 'sitemap.xml', 'manifest.webmanifest',
-  'icon.svg', 'og-image.svg',
+  'icon.svg', 'og-image.svg', 'animations.css', 'style.min.css',
 ];
-const COPY_DIRS = ['images'];
+const COPY_DIRS = ['images', 'scripts', 'css'];
 
 // terser sozlamalari: toplevel=false => global (top-level) nomlar SAQLANADI.
 // Bu fayllararo global funksiyalar (escapeHTML, i18n, ...) va kay.html'dagi
@@ -43,11 +43,19 @@ const TERSER_OPTS = {
 };
 
 async function copyFile(name) {
-  await fs.copyFile(path.join(ROOT, name), path.join(OUT, name));
+  const src = path.join(ROOT, name);
+  try {
+    await fs.access(src);
+    await fs.copyFile(src, path.join(OUT, name));
+  } catch {}
 }
 
 async function copyDir(name) {
-  await fs.cp(path.join(ROOT, name), path.join(OUT, name), { recursive: true });
+  const src = path.join(ROOT, name);
+  try {
+    await fs.access(src);
+    await fs.cp(src, path.join(OUT, name), { recursive: true });
+  } catch {}
 }
 
 async function buildJs(name) {
@@ -63,6 +71,8 @@ async function buildCss(name) {
   const out = new CleanCSS({ level: 2 }).minify(code);
   if (out.errors && out.errors.length) throw new Error(out.errors.join('; '));
   await fs.writeFile(path.join(OUT, name), out.styles, 'utf8');
+  await fs.writeFile(path.join(OUT, 'style.min.css'), out.styles, 'utf8');
+  await fs.writeFile(path.join(ROOT, 'style.min.css'), out.styles, 'utf8');
   return { name, before: code.length, after: out.styles.length };
 }
 

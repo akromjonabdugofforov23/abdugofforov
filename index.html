@@ -219,35 +219,61 @@
         <div class="carousel-dots" id="carousel-dots"></div>
     </section>
 
-    <!-- 3D Kun Iqtibosi Widget (Fortune Quote) -->
-    <div class="fortune-widget-wrap" id="fortune-widget-wrap">
-        <div class="fortune-card-3d" id="fortune-card">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
-                <span class="fortune-quote-badge">💡 SHAXSIY KUN IQTIBOSI</span>
-                <span class="fortune-quote-badge" id="quote-category-badge" style="background: rgba(59, 130, 246, 0.18); color: #3b82f6;">🎯 STOYATSIZM</span>
+    <!-- Bespoke Kun Iqtibosi Widget (Atelier Quote) -->
+    <div class="fortune-widget-wrap atelier-quote-wrap container" id="fortune-widget-wrap">
+        <article class="fortune-card-3d atelier-quote-card" id="fortune-card">
+            <header class="atelier-card-header">
+                <span class="fortune-quote-badge atelier-tag" id="quote-category-badge">✦ KUN HIKMATI · FILOSOFIYA</span>
+                <span class="atelier-edition-label">KAY KUNDALIGI · ATELIER</span>
+            </header>
+            <div class="atelier-quote-body">
+                <blockquote class="fortune-quote-text atelier-quote-text" id="quote-text">“Mag'lubiyat to'xtaganingda sodir bo'ladi. Har kuni kichik bo'lsa ham qadam tashla!”</blockquote>
+                <cite class="fortune-quote-author atelier-quote-author" id="quote-author">Stoyatsizm Hikmati</cite>
             </div>
-            <p class="fortune-quote-text" id="quote-text">"Mag'lubiyat to'xtaganingda sodir bo'ladi. Har kuni kichik bo'lsa ham qadam tashla!"</p>
-            <p class="fortune-quote-author" id="quote-author">— Stoyatsizm Hikmati</p>
-            <div id="quote-de-wrap" style="margin-bottom: 20px; font-size: 13px; color: #a7bace; background: rgba(0,0,0,0.25); padding: 12px 16px; border-radius: 14px; border-left: 3px solid #8b5cf6; text-align: left;">
-                <strong style="color: #a855f7;">🇩🇪 Nemischa Variant:</strong> <span id="quote-de-text">"Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhältst."</span>
+            <div class="atelier-german-folio" id="quote-de-wrap">
+                <div class="atelier-german-header">
+                    <span class="atelier-flag-badge">🇩🇪 DE · PARALLEL</span>
+                    <span>Nemischa Asl Nusxa / Tarjima</span>
+                </div>
+                <p class="atelier-german-text" id="quote-de-text">„Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhältst.“</p>
             </div>
-            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                <button class="fortune-action-btn" id="quote-audio-btn" type="button">🔊 Audio Eshitish</button>
-                <button class="fortune-action-btn" id="quote-next-btn" type="button" style="background: linear-gradient(90deg, #3b82f6, #8b5cf6);">🎲 Yangi Iqtibos</button>
-            </div>
-        </div>
+            <footer class="atelier-actions-bar">
+                <button class="fortune-action-btn atelier-audio-player" id="quote-audio-btn" type="button" aria-label="Nemischa audioni eshitish">
+                    <span class="atelier-play-disc" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                    </span>
+                    <span class="atelier-soundwave" aria-hidden="true">
+                        <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                    </span>
+                    <span class="atelier-audio-label">Talaffuzni eshitish</span>
+                </button>
+                <button class="atelier-btn-secondary" id="quote-next-btn" type="button" aria-label="Boshqa hikmat tanlash">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                    <span>Boshqa hikmat</span>
+                </button>
+            </footer>
+        </article>
     </div>
 
-    <!-- Functional Row: Search + Small Clock -->
-    <div class="container functional-row" id="functional-row">
-        <div class="functional-search">
-            <input type="text" class="search-input" id="search-input" placeholder="🔍 Qidirish..." data-i18n-placeholder="search.placeholder">
+    <!-- Functional Row: Atelier Command Search + Swiss Chronometer Clock -->
+    <div class="container functional-row atelier-functional-strip" id="functional-row">
+        <div class="functional-search atelier-command-bar">
+            <svg class="atelier-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" class="search-input atelier-command-input" id="search-input" placeholder="Maqolalar, nemis tili qoidalari yoki hikmatlar..." data-i18n-placeholder="search.placeholder" autocomplete="off" spellcheck="false">
+            <kbd class="atelier-kbd" title="Qidiruv tezkor tugmasi">⌘K</kbd>
         </div>
-        <div class="functional-clock" id="functional-clock" aria-label="Hozirgi vaqt">
-            <span class="fc-time">
-                <span class="clock-digits" data-clock="h">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon">:</span><span class="clock-digits" data-clock="s">00</span>
-            </span>
-            <span class="fc-date" id="widget-date">--.--.----</span>
+        <div class="functional-clock atelier-clock" id="functional-clock" aria-label="Hozirgi vaqt">
+            <div class="fc-time atelier-clock-time">
+                <span class="clock-digits" data-clock="h">00</span><span class="clock-colon colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon colon">:</span><span class="clock-digits" data-clock="s">00</span>
+            </div>
+            <div class="fc-date atelier-clock-meta">
+                <span id="widget-date">--.--.----</span>
+            </div>
         </div>
     </div>
 

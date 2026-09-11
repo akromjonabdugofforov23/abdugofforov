@@ -31,6 +31,30 @@
     --grad-primary: linear-gradient(135deg, #6366f1, #ec4899); /* Indigo to Pink */
     --grad-primary-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.15));
     --grad-text: linear-gradient(135deg, #a78bfa, #38bdf8);
+
+    /* ============================================================
+       BESPOKE EDITORIAL ATELIER DESIGN TOKENS (Dark Mode)
+       Warm Basalt, Archival Slate & Champagne Bronze
+       ============================================================ */
+    --atelier-bg: #0d0e12;
+    --atelier-surface: rgba(19, 21, 28, 0.75);
+    --atelier-surface-raised: rgba(26, 29, 39, 0.90);
+    --atelier-surface-inset: rgba(12, 13, 18, 0.60);
+    --atelier-ink-primary: #f5f5f7;
+    --atelier-ink-secondary: #a1a1aa;
+    --atelier-ink-muted: #71717a;
+    --atelier-ink-quote: #fafafa;
+    --atelier-accent: #c5a059;
+    --atelier-accent-hover: #d4af37;
+    --atelier-accent-glow: rgba(197, 160, 89, 0.20);
+    --atelier-accent-tint: rgba(197, 160, 89, 0.09);
+    --atelier-border: rgba(255, 255, 255, 0.08);
+    --atelier-border-subtle: rgba(255, 255, 255, 0.04);
+    --atelier-border-highlight: rgba(197, 160, 89, 0.35);
+    --atelier-shadow-ambient: 0 16px 48px -12px rgba(0, 0, 0, 0.55);
+    --atelier-shadow-tactile: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --atelier-glass-blur: blur(20px);
+    --atelier-quote-watermark: rgba(255, 255, 255, 0.045);
 }
 
 /* ============================================================
@@ -88,6 +112,30 @@
     --modal-bg: rgba(255, 255, 255, 0.96);
     --transition-speed: 0.3s;
     --container-pad: 20px;
+
+    /* ============================================================
+       BESPOKE EDITORIAL ATELIER DESIGN TOKENS (Light Mode)
+       Warm Archival Paper & Antique Bronze
+       ============================================================ */
+    --atelier-bg: #fcfbf9;
+    --atelier-surface: rgba(255, 255, 255, 0.92);
+    --atelier-surface-raised: #ffffff;
+    --atelier-surface-inset: rgba(247, 245, 240, 0.90);
+    --atelier-ink-primary: #18181b;
+    --atelier-ink-secondary: #52525b;
+    --atelier-ink-muted: #8b8b94;
+    --atelier-ink-quote: #121316;
+    --atelier-accent: #966f33;
+    --atelier-accent-hover: #7c5824;
+    --atelier-accent-glow: rgba(150, 111, 51, 0.15);
+    --atelier-accent-tint: rgba(150, 111, 51, 0.07);
+    --atelier-border: rgba(24, 24, 27, 0.08);
+    --atelier-border-subtle: rgba(24, 24, 27, 0.04);
+    --atelier-border-highlight: rgba(150, 111, 51, 0.30);
+    --atelier-shadow-ambient: 0 16px 40px -12px rgba(24, 24, 27, 0.08);
+    --atelier-shadow-tactile: 0 2px 6px rgba(24, 24, 27, 0.04), inset 0 1px 0 #ffffff;
+    --atelier-glass-blur: blur(20px);
+    --atelier-quote-watermark: rgba(24, 24, 27, 0.04);
 }
 
 /* Base Settings */

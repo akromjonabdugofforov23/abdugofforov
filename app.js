@@ -651,10 +651,21 @@ function renderPosts(instant) {
 
             if (filteredHits.length === 0) {
                 const emptyCard = document.createElement('div');
-                emptyCard.className = 'empty-state';
+                emptyCard.className = 'empty-state atelier-empty-state';
                 emptyCard.innerHTML = `
-                    <span class="empty-state-icon">🔍</span>
-                    <p class="empty-state-text">"${escapeHTML(searchQuery)}" bo'yicha bu toifada hech narsa topilmadi.</p>
+                    <div class="atelier-empty-icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                    <h3 class="atelier-empty-title">Hech qanday natija topilmadi</h3>
+                    <p class="atelier-empty-desc">“${escapeHTML(searchQuery)}” so'zi bo'yicha bu toifada hech qanday ma'lumot chiqmadi.</p>
+                    <div class="atelier-suggestions-label">Tavsiya etilgan toifalar</div>
+                    <div class="atelier-suggestion-chips">
+                        <button type="button" class="atelier-chip" data-action="set-search-tab" data-tab="all">✦ Barcha natijalar</button>
+                        <button type="button" class="atelier-chip" data-action="clear-search">✕ Qidiruvni tozalash</button>
+                    </div>
                 `;
                 blogGrid.appendChild(emptyCard);
                 setTimeout(() => { if (blogGrid) blogGrid.style.minHeight = ''; }, 100);
@@ -799,9 +810,21 @@ function renderPosts(instant) {
 
         if (filtered.length === 0) {
             blogGrid.innerHTML = `
-                <div class="empty-state">
-                    <span class="empty-state-icon">📭</span>
-                    <p class="empty-state-text">Hech qanday maqola yoki ma'lumot topilmadi.</p>
+                <div class="empty-state atelier-empty-state">
+                    <div class="atelier-empty-icon-wrap" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="atelier-empty-title">Hozircha maqolalar mavjud emas</h3>
+                    <p class="atelier-empty-desc">Ushbu rukn bo'yicha yozuvlar tez orada joylanadi. Nemis tili testlari yoki so'z kartochkalarini sinab ko'ring.</p>
+                    <div class="atelier-suggestions-label">Tezkor bo'limlar</div>
+                    <div class="atelier-suggestion-chips">
+                        <button type="button" class="atelier-chip" onclick="openDeutschView()">🇩🇪 Nemis Tili Testlari</button>
+                        <button type="button" class="atelier-chip" onclick="openFlashcardsView()">🃏 So'z Kartochkalari</button>
+                        <button type="button" class="atelier-chip" onclick="openVerbTrainerView()">📖 Fe'llar Trenajyori</button>
+                    </div>
                 </div>
             `;
             setTimeout(() => { if (blogGrid) blogGrid.style.minHeight = ''; }, 100);
@@ -3529,10 +3552,12 @@ function initFortuneQuotes() {
         card.style.transform = 'perspective(1000px) rotateX(15deg) translateY(10px)';
 
         setTimeout(() => {
-            if (badge) badge.textContent = item.category || '💡 HIKMAT';
-            qText.textContent = `"${item.quote}"`;
-            qAuthor.textContent = item.author;
-            if (deText) deText.textContent = `"${item.de || ''}"`;
+            if (badge) badge.textContent = item.category ? `✦ ${item.category.toUpperCase()}` : '✦ KUN HIKMATI · FILOSOFIYA';
+            const cleanQuote = (item.quote || '').replace(/^["“”„]+|["“”„]+$/g, '');
+            const cleanDe = (item.de || '').replace(/^["“”„]+|["“”„]+$/g, '');
+            qText.textContent = `“${cleanQuote}”`;
+            qAuthor.textContent = item.author || '';
+            if (deText) deText.textContent = `„${cleanDe}“`;
 
             card.style.opacity = '1';
             card.style.transform = 'perspective(1000px) rotateX(0deg) translateY(0deg)';
@@ -3561,11 +3586,10 @@ function initFortuneQuotes() {
             const utter = new SpeechSynthesisUtterance(textToSpeak);
             utter.lang = langCode;
             utter.rate = 0.9;
+            utter.onstart = () => { audioBtn.classList.add('playing'); };
+            utter.onend = () => { audioBtn.classList.remove('playing'); };
+            utter.onerror = () => { audioBtn.classList.remove('playing'); };
             window.speechSynthesis.speak(utter);
-            
-            audioBtn.textContent = '🔊 Ovoz berilmoqda...';
-            utter.onend = () => { audioBtn.textContent = '🔊 Audio Eshitish'; };
-            utter.onerror = () => { audioBtn.textContent = '🔊 Audio Eshitish'; };
         });
     }
 }
@@ -3782,6 +3806,15 @@ document.addEventListener('click', (e) => {
         case 'set-search-tab':
             if (typeof setSearchCategoryTab === 'function') setSearchCategoryTab(el.dataset.tab);
             break;
+        case 'clear-search': {
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                searchInput.focus();
+            }
+            break;
+        }
         case 'speak-german':
             if (typeof speakGermanText === 'function') speakGermanText(el.dataset.text, e);
             break;
@@ -3862,6 +3895,18 @@ document.addEventListener('click', (e) => {
     const el = e.target.closest('[data-click]');
     if (el) {
         runDataClickAction(el.getAttribute('data-click'), e);
+    }
+});
+
+// Cmd/Ctrl + K shortcut to focus command bar search input
+document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+        }
     }
 });
 
