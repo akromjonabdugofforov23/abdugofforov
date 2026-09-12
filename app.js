@@ -617,6 +617,7 @@ function renderPosts(instant) {
         // 1. QIDIRUV REJIMI (Instant Search Engine)
         // ==========================================
         if (searchQuery) {
+            blogGrid.style.display = '';
             SearchEngine.rebuildIndex();
             const allHits = SearchEngine.search(searchQuery, 'all');
             const counts = {
@@ -809,27 +810,13 @@ function renderPosts(instant) {
         });
 
         if (filtered.length === 0) {
-            blogGrid.innerHTML = `
-                <div class="empty-state atelier-empty-state">
-                    <div class="atelier-empty-icon-wrap" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="atelier-empty-title">Hozircha maqolalar mavjud emas</h3>
-                    <p class="atelier-empty-desc">Ushbu rukn bo'yicha yozuvlar tez orada joylanadi. Nemis tili testlari yoki so'z kartochkalarini sinab ko'ring.</p>
-                    <div class="atelier-suggestions-label">Tezkor bo'limlar</div>
-                    <div class="atelier-suggestion-chips">
-                        <button type="button" class="atelier-chip" onclick="openDeutschView()">🇩🇪 Nemis Tili Testlari</button>
-                        <button type="button" class="atelier-chip" onclick="openFlashcardsView()">🃏 So'z Kartochkalari</button>
-                        <button type="button" class="atelier-chip" onclick="openVerbTrainerView()">📖 Fe'llar Trenajyori</button>
-                    </div>
-                </div>
-            `;
-            setTimeout(() => { if (blogGrid) blogGrid.style.minHeight = ''; }, 100);
+            blogGrid.innerHTML = '';
+            blogGrid.style.display = 'none';
+            blogGrid.style.minHeight = '';
             return;
         }
+
+        blogGrid.style.display = '';
 
         filtered.forEach(post => {
             const card = document.createElement('article');
