@@ -978,6 +978,61 @@ function hideAuxViews() {
     if (fortune) fortune.style.display = 'none';
 }
 
+// ===== LAZY LOAD AUXILIARY SCRIPTS (Tests, Flashcards, Games, Verbs, Horror) =====
+let auxScriptsLoaded = false;
+let auxScriptsLoading = false;
+const auxScriptUrls = [
+    'data-flashcards.js',
+    'data-tests.js',
+    'scripts/verb-trainer-data.js',
+    'scripts/flashcards.js',
+    'scripts/matching-game.js',
+    'scripts/tests.js',
+    'scripts/verb-trainer.js',
+    'scripts/horror-data.js',
+    'scripts/horror-logic.js'
+];
+
+function loadAuxScripts(cb) {
+    if (auxScriptsLoaded || (window.deutschTests && window.flashcardDecks && window.verbTrainerApp)) {
+        auxScriptsLoaded = true;
+        if (cb) cb();
+        return;
+    }
+    if (auxScriptsLoading) {
+        if (cb) window.addEventListener('aux-scripts-loaded', cb, { once: true });
+        return;
+    }
+    auxScriptsLoading = true;
+    let loaded = 0;
+    const onDone = () => {
+        loaded++;
+        if (loaded >= auxScriptUrls.length) {
+            auxScriptsLoaded = true;
+            auxScriptsLoading = false;
+            window.dispatchEvent(new CustomEvent('aux-scripts-loaded'));
+            if (cb) cb();
+        }
+    };
+    auxScriptUrls.forEach(src => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.async = false;
+        s.onload = onDone;
+        s.onerror = onDone;
+        document.body.appendChild(s);
+    });
+}
+
+// Idle loader after initial page load
+if (typeof window !== 'undefined') {
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(() => { setTimeout(loadAuxScripts, 2000); });
+    } else {
+        window.addEventListener('load', () => { setTimeout(loadAuxScripts, 2500); });
+    }
+}
+
 // ===== SPA ROUTER & HISTORY STATE MANAGEMENT =====
 function setAppRoute(route, push = true) {
     if (push && window.location.hash !== route) {
@@ -989,13 +1044,15 @@ function applyAppRoute(route) {
     const cleanRoute = (route || window.location.hash || '#home').toLowerCase();
 
     if (cleanRoute.includes('horror-deutsch')) {
-        if (mainContent) mainContent.style.display = 'none';
-        const hero = document.querySelector('.hero');
-        if (hero) hero.style.display = 'none';
-        hideAuxViews();
-        const deutschView = document.getElementById('deutsch-view');
-        if (deutschView) deutschView.style.display = 'block';
-        if (typeof openHorrorHome === 'function') openHorrorHome(true);
+        loadAuxScripts(() => {
+            if (mainContent) mainContent.style.display = 'none';
+            const hero = document.querySelector('.hero');
+            if (hero) hero.style.display = 'none';
+            hideAuxViews();
+            const deutschView = document.getElementById('deutsch-view');
+            if (deutschView) deutschView.style.display = 'block';
+            if (typeof openHorrorHome === 'function') openHorrorHome(true);
+        });
     } else if (cleanRoute.includes('nemistili') || cleanRoute.includes('deutsch')) {
         openDeutschView(false);
     } else if (cleanRoute.includes('verb')) {
@@ -1004,6 +1061,8 @@ function applyAppRoute(route) {
         openFlashcardsView(false);
     } else if (cleanRoute.includes('tournament')) {
         openTournamentView(false);
+    } else if (cleanRoute.includes('game')) {
+        openGamesView(false);
     } else {
         showMainView(false);
     }
@@ -1026,65 +1085,75 @@ function showMainView(pushHistory = true) {
 }
 
 function openDeutschView(pushHistory = true) {
-    document.body.classList.remove('horror-theme');
-    if (mainContent) mainContent.style.display = 'none';
-    const hero = document.querySelector('.hero');
-    if (hero) hero.style.display = 'none';
-    hideAuxViews();
-    const deutschView = document.getElementById('deutsch-view');
-    if (deutschView) deutschView.style.display = 'block';
-    renderDeutschHome();
-    if (pushHistory) setAppRoute('#nemistili', true);
+    loadAuxScripts(() => {
+        document.body.classList.remove('horror-theme');
+        if (mainContent) mainContent.style.display = 'none';
+        const hero = document.querySelector('.hero');
+        if (hero) hero.style.display = 'none';
+        hideAuxViews();
+        const deutschView = document.getElementById('deutsch-view');
+        if (deutschView) deutschView.style.display = 'block';
+        if (typeof renderDeutschHome === 'function') renderDeutschHome();
+        if (pushHistory) setAppRoute('#nemistili', true);
+    });
 }
 
 function openVerbTrainerView(pushHistory = true) {
-    document.body.classList.remove('horror-theme');
-    if (mainContent) mainContent.style.display = 'none';
-    const hero = document.querySelector('.hero');
-    if (hero) hero.style.display = 'none';
-    hideAuxViews();
-    const vView = document.getElementById('verb-trainer-view');
-    if (vView) vView.style.display = 'block';
-    if (window.verbTrainerApp && typeof window.verbTrainerApp.init === 'function') {
-        window.verbTrainerApp.init();
-    }
-    if (pushHistory) setAppRoute('#verbs', true);
+    loadAuxScripts(() => {
+        document.body.classList.remove('horror-theme');
+        if (mainContent) mainContent.style.display = 'none';
+        const hero = document.querySelector('.hero');
+        if (hero) hero.style.display = 'none';
+        hideAuxViews();
+        const vView = document.getElementById('verb-trainer-view');
+        if (vView) vView.style.display = 'block';
+        if (window.verbTrainerApp && typeof window.verbTrainerApp.init === 'function') {
+            window.verbTrainerApp.init();
+        }
+        if (pushHistory) setAppRoute('#verbs', true);
+    });
 }
 
 function openFlashcardsView(pushHistory = true) {
-    document.body.classList.remove('horror-theme');
-    if (mainContent) mainContent.style.display = 'none';
-    const hero = document.querySelector('.hero');
-    if (hero) hero.style.display = 'none';
-    hideAuxViews();
-    const flashView = document.getElementById('flashcards-view');
-    if (flashView) flashView.style.display = 'block';
-    renderFlashcardsHome();
-    if (pushHistory) setAppRoute('#flashcards', true);
+    loadAuxScripts(() => {
+        document.body.classList.remove('horror-theme');
+        if (mainContent) mainContent.style.display = 'none';
+        const hero = document.querySelector('.hero');
+        if (hero) hero.style.display = 'none';
+        hideAuxViews();
+        const flashView = document.getElementById('flashcards-view');
+        if (flashView) flashView.style.display = 'block';
+        if (typeof renderFlashcardsHome === 'function') renderFlashcardsHome();
+        if (pushHistory) setAppRoute('#flashcards', true);
+    });
 }
 
 function openGamesView(pushHistory = true) {
-    document.body.classList.remove('horror-theme');
-    if (mainContent) mainContent.style.display = 'none';
-    const hero = document.querySelector('.hero');
-    if (hero) hero.style.display = 'none';
-    hideAuxViews();
-    const flashView = document.getElementById('flashcards-view');
-    if (flashView) flashView.style.display = 'block';
-    if (typeof showMatchingHome === 'function') showMatchingHome();
-    if (pushHistory) setAppRoute('#games', true);
+    loadAuxScripts(() => {
+        document.body.classList.remove('horror-theme');
+        if (mainContent) mainContent.style.display = 'none';
+        const hero = document.querySelector('.hero');
+        if (hero) hero.style.display = 'none';
+        hideAuxViews();
+        const flashView = document.getElementById('flashcards-view');
+        if (flashView) flashView.style.display = 'block';
+        if (typeof showMatchingHome === 'function') showMatchingHome();
+        if (pushHistory) setAppRoute('#games', true);
+    });
 }
 
 function openTournamentView(pushHistory = true) {
-    document.body.classList.remove('horror-theme');
-    if (mainContent) mainContent.style.display = 'none';
-    const hero = document.querySelector('.hero');
-    if (hero) hero.style.display = 'none';
-    hideAuxViews();
-    const tView = document.getElementById('tournament-view');
-    if (tView) tView.style.display = 'block';
-    renderTournamentHome();
-    if (pushHistory) setAppRoute('#tournament', true);
+    loadAuxScripts(() => {
+        document.body.classList.remove('horror-theme');
+        if (mainContent) mainContent.style.display = 'none';
+        const hero = document.querySelector('.hero');
+        if (hero) hero.style.display = 'none';
+        hideAuxViews();
+        const tView = document.getElementById('tournament-view');
+        if (tView) tView.style.display = 'block';
+        if (typeof renderTournamentHome === 'function') renderTournamentHome();
+        if (pushHistory) setAppRoute('#tournament', true);
+    });
 }
 
 // 9. SPA Routing Navigation
@@ -1195,6 +1264,12 @@ if (desktopDock) {
         if (link.getAttribute('data-page') === 'flashcards') {
             openFlashcardsView();
             syncActiveNavState('flashcards');
+            return;
+        }
+        if (link.id === 'dock-games' || link.getAttribute('data-page') === 'games') {
+            if (typeof openFlashcardsView === 'function') openFlashcardsView();
+            if (typeof showMatchingHome === 'function') showMatchingHome();
+            syncActiveNavState('games');
             return;
         }
         if (link.getAttribute('data-page') === 'tournament') {
@@ -2280,12 +2355,43 @@ function escapeHTML(str) {
     );
 }
 
+function loadMarkedIfNeeded(cb) {
+    if (window.marked) {
+        if (cb) cb();
+        return;
+    }
+    if (document.getElementById('marked-script')) {
+        if (cb) {
+            const existing = document.getElementById('marked-script');
+            existing.addEventListener('load', cb);
+        }
+        return;
+    }
+    const s = document.createElement('script');
+    s.id = 'marked-script';
+    s.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+    s.async = true;
+    if (cb) s.onload = cb;
+    document.head.appendChild(s);
+}
+
 function renderMarkdown(str) {
     if (!str) return '';
-    if (window.marked) {
+    if (window.marked && typeof window.marked.parse === 'function') {
         return window.marked.parse(str);
     }
-    return escapeHTML(str);
+    loadMarkedIfNeeded();
+    let text = escapeHTML(str);
+    text = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    text = text.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    text = text.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    text = text.replace(/\n\n+/g, '</p><p>');
+    text = text.replace(/\n/g, '<br>');
+    return '<p>' + text + '</p>';
 }
 
 function formatDate(dateStr) {
@@ -2777,6 +2883,34 @@ function initCarousel() {
     if (prevBtn) prevBtn.addEventListener('click', function() { prev(); resetAuto(); });
     if (nextBtn) nextBtn.addEventListener('click', function() { next(); resetAuto(); });
 
+    // Touch swipe gestures for mobile smartphones
+    let touchStartX = 0;
+    let touchStartY = 0;
+    track.addEventListener('touchstart', function(e) {
+        if (!e.changedTouches || e.changedTouches.length === 0) return;
+        touchStartX = e.changedTouches[0].clientX;
+        touchStartY = e.changedTouches[0].clientY;
+        stopAuto();
+    }, { passive: true });
+
+    track.addEventListener('touchend', function(e) {
+        if (!e.changedTouches || e.changedTouches.length === 0) return;
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+
+        // Check if movement is primarily horizontal and exceeds 40px threshold
+        if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+            if (diffX < 0) {
+                next(); // swiped left -> next slide
+            } else {
+                prev(); // swiped right -> previous slide
+            }
+        }
+        resetAuto();
+    }, { passive: true });
+
     // Auto-play: 15 seconds interval
     function startAuto() {
         autoSlideInterval = setInterval(next, 15000);
@@ -2810,41 +2944,6 @@ function initCarousel() {
             };
         }
     });
-
-    // Touch/swipe support via pointer events
-    var pointerStartX = 0;
-    var pointerDown = false;
-
-    track.addEventListener('pointerdown', function(e) {
-        pointerStartX = e.clientX;
-        pointerDown = true;
-        track.setPointerCapture(e.pointerId);
-    });
-
-    track.addEventListener('pointerup', function(e) {
-        if (!pointerDown) return;
-        pointerDown = false;
-        var diff = pointerStartX - e.clientX;
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) { next(); } else { prev(); }
-            resetAuto();
-        }
-    });
-
-    track.addEventListener('pointercancel', function() {
-        pointerDown = false;
-    });
-
-    // Also support touch events for older mobile browsers
-    var touchStartX = 0;
-    track.addEventListener('touchstart', function(e) { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-    track.addEventListener('touchend', function(e) {
-        var diff = touchStartX - e.changedTouches[0].screenX;
-        if (Math.abs(diff) > 50) {
-            if (diff > 0) next(); else prev();
-            resetAuto();
-        }
-    }, { passive: true });
 }
 
 // ===== HERO TYPEWRITER =====
@@ -3128,17 +3227,52 @@ setTimeout(typeEffect, 500);
 
 
 
-// --- Missing Button Handlers Added ---
+// --- Mobile Off-Canvas Drawer & Hamburger Menu ---
 const hamburgerBtn = document.getElementById('hamburger-btn');
 const hamburgerMenu = document.getElementById('hamburger-menu');
+const drawerBackdrop = document.getElementById('drawer-backdrop');
+const drawerCloseBtn = document.getElementById('drawer-close-btn');
+
+function openMobileDrawer() {
+    if (hamburgerMenu) hamburgerMenu.classList.add('active');
+    if (drawerBackdrop) drawerBackdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMobileDrawer() {
+    if (hamburgerMenu) hamburgerMenu.classList.remove('active');
+    if (drawerBackdrop) drawerBackdrop.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
 if (hamburgerBtn && hamburgerMenu) {
     hamburgerBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        hamburgerMenu.classList.toggle('active');
+        if (hamburgerMenu.classList.contains('active')) {
+            closeMobileDrawer();
+        } else {
+            openMobileDrawer();
+        }
     });
+
+    if (drawerBackdrop) {
+        drawerBackdrop.addEventListener('click', closeMobileDrawer);
+    }
+    if (drawerCloseBtn) {
+        drawerCloseBtn.addEventListener('click', closeMobileDrawer);
+    }
+
     document.addEventListener('click', (e) => {
-        if (!hamburgerMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
-            hamburgerMenu.classList.remove('active');
+        if (hamburgerMenu.classList.contains('active') &&
+            !hamburgerMenu.contains(e.target) &&
+            !hamburgerBtn.contains(e.target)) {
+            closeMobileDrawer();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && hamburgerMenu.classList.contains('active')) {
+            closeMobileDrawer();
         }
     });
 }
@@ -3148,6 +3282,7 @@ const authModal = document.getElementById('auth-modal');
 const closeAuthModalBtn = document.getElementById('close-auth-modal');
 
 window.openAuthModal = function(tab) {
+    if (typeof closeMobileDrawer === 'function') closeMobileDrawer();
     if (authModal) {
         authModal.classList.add('active');
         document.body.style.overflow = 'hidden';

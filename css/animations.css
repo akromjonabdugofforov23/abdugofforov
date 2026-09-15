@@ -142,90 +142,88 @@
 .desktop-dock .dock-item.active::after {
     content: '';
     position: absolute;
-    bottom: -4px;
+    bottom: 4px;
     left: 50%;
     transform: translateX(-50%);
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background: var(--accent-color);
-    box-shadow: 0 0 8px var(--accent-color);
+    background: #38bdf8;
+    box-shadow: 0 0 8px #38bdf8;
 }
 
 .desktop-dock .dock-label {
     position: absolute;
-    top: -36px;
-    background: rgba(15, 23, 42, 0.9);
+    top: -34px;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(15, 23, 42, 0.95);
     color: #fff;
-    font-size: 12px;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transform: translateY(10px);
-    transition: all 0.2s;
-    white-space: nowrap;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .desktop-dock .dock-item:hover .dock-label {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
 }
 
-@media (max-width: 768px) {
-    .hamburger-btn { display: block; }
-    
-    /* Hide top nav on mobile, but keep dock visible! */
-    .nav-links { display: none; }
-    
-    /* Hamburger Menu Overlay (Mobil uchun) */
-    .hamburger-overlay {
-        display: none;
-        position: fixed;
-        top: 60px;
-        right: 20px;
-        background: var(--glass-bg);
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        padding: 20px;
-        flex-direction: column;
-        gap: 15px;
-        box-shadow: var(--shadow-lg);
-        z-index: 1000;
-        animation: slideDown 0.3s ease;
-    }
-    .hamburger-overlay.active { display: flex; }
-    
-    @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Adjust dock for mobile */
-    .desktop-dock {
-        width: 90%;
-        justify-content: space-around;
-        padding: 8px;
-        gap: 0;
-        bottom: 10px;
-        border-radius: 20px;
-    }
-    .desktop-dock .dock-item {
-        width: 44px;
-        height: 44px;
-    }
-    .desktop-dock .dock-item:hover {
-        transform: none; /* Mobilda hover kerak emas */
-        box-shadow: none;
-    }
-    .desktop-dock .dock-item:hover .dock-label {
-        display: none;
-    }
+/* Mobil menyu parda (Backdrop) va Drawer asosiy stillari */
+.drawer-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
-/* ===== QUICK COMPOSE UI ===== */
+.drawer-backdrop.active {
+    display: block;
+    opacity: 1;
+}
+
+.drawer-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+.drawer-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-primary);
+}
+.drawer-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+.drawer-close-btn:hover {
+    color: var(--text-primary);
+}
+
 .compose-modal {
     padding: 0;
     max-width: 500px;
@@ -327,203 +325,6 @@
     align-items: center;
     justify-content: center;
 }
-
-.desktop-dock .dock-item.active {
-    color: #fff;
-    background: rgba(56, 189, 248, 0.2); /* Soft accent bg */
-    border: 1px solid rgba(56, 189, 248, 0.3);
-}
-
-.desktop-dock .dock-item.active::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    box-shadow: 0 0 8px var(--accent-color);
-}
-
-.desktop-dock .dock-label {
-    position: absolute;
-    top: -36px;
-    background: rgba(15, 23, 42, 0.9);
-    color: #fff;
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.1);
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(10px);
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-
-.desktop-dock .dock-item:hover .dock-label {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-@media (max-width: 768px) {
-    .hamburger-btn { display: block; }
-    
-    /* Hide top nav on mobile, but keep dock visible! */
-    .nav-links { display: none; }
-    
-    /* Hamburger Menu Overlay (Mobil uchun) */
-    .hamburger-overlay {
-        display: none;
-        position: fixed;
-        top: 60px;
-        right: 20px;
-        background: var(--glass-bg);
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        padding: 20px;
-        flex-direction: column;
-        gap: 15px;
-        box-shadow: var(--shadow-lg);
-        z-index: 1000;
-        animation: slideDown 0.3s ease;
-    }
-    .hamburger-overlay.active { display: flex; }
-    
-    @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Adjust dock for mobile */
-    .desktop-dock {
-        width: 90%;
-        justify-content: space-around;
-        padding: 8px;
-        gap: 0;
-        bottom: 10px;
-        border-radius: 20px;
-    }
-    .desktop-dock .dock-item {
-        width: 44px;
-        height: 44px;
-    }
-    .desktop-dock .dock-item:hover {
-        transform: none; /* Mobilda hover kerak emas */
-        box-shadow: none;
-    }
-    .desktop-dock .dock-item:hover .dock-label {
-        display: none;
-    }
-}
-/* ===== QUICK COMPOSE UI ===== */
-.compose-modal {
-    padding: 0;
-    max-width: 500px;
-    border-radius: 16px;
-    overflow: hidden;
-    background: var(--bg-color);
-}
-.compose-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--card-bg);
-}
-.compose-user-info strong {
-    font-size: 16px;
-    font-weight: 600;
-}
-.compose-body {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.compose-title {
-    font-size: 18px;
-    font-weight: 600;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: var(--text-color);
-    width: 100%;
-}
-.compose-title::placeholder {
-    color: var(--text-muted);
-}
-.compose-textarea {
-    font-size: 16px;
-    border: none;
-    outline: none;
-    resize: none;
-    min-height: 120px;
-    background: transparent;
-    color: var(--text-color);
-    width: 100%;
-    font-family: inherit;
-}
-.compose-textarea::placeholder {
-    color: var(--text-muted);
-}
-.compose-footer {
-    padding: 12px 16px;
-    border-top: 1px solid var(--border-color);
-    background: var(--card-bg);
-}
-.compose-actions {
-    display: flex;
-    gap: 16px;
-}
-.compose-action-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--accent-color);
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 14px;
-    padding: 8px 12px;
-    border-radius: 20px;
-    background: rgba(139, 92, 246, 0.1);
-    transition: background 0.2s;
-}
-.compose-action-btn:hover {
-    background: rgba(139, 92, 246, 0.2);
-}
-.compose-previews {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.media-preview-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-}
-.preview-remove {
-    background: rgba(255, 77, 77, 0.1);
-    color: #ff4d4d;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
 
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
@@ -592,9 +393,191 @@
 
 /* Hamburger overlay */
 [data-theme="light"] .hamburger-overlay {
-    background: rgba(255, 255, 255, 0.85);
-    border-color: rgba(124, 58, 237, 0.10);
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(124, 58, 237, 0.15);
 }
 [data-theme="light"] .hamburger-btn {
     color: #7C3AED;
+}
+
+/* ============================================================
+   RESPONSIVE MOBIL SMARTFONLAR (<= 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+    /* Sahifalar pastida App Bar ustiga chiqib ketmasligi uchun xavfsiz masofa */
+    body {
+        padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    /* Asosiy ko'rinishlar uchun pastki bo'shliq */
+    #deutsch-view,
+    #flashcards-view,
+    #matching-view,
+    #verb-trainer-view,
+    #tournament-view,
+    #profile-view,
+    #horror-view {
+        padding-bottom: calc(44px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .hamburger-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    /* Off-Canvas Drawer Mobil Menyu */
+    .drawer-header {
+        display: flex;
+    }
+
+    .hamburger-overlay {
+        display: flex;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(300px, 84vw);
+        height: 100vh;
+        height: 100dvh;
+        background: var(--card-bg, #0f172a);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: none;
+        border-left: 1px solid var(--border-color);
+        border-radius: 0;
+        padding: 20px 18px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.45);
+        z-index: 1000;
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow-y: auto;
+    }
+
+    .hamburger-overlay.active {
+        transform: translateX(0);
+    }
+
+    /* To'liq qulay Mobil App Bar (Pastki navigatsiya) */
+    .desktop-dock {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 20px 20px 0 0;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)) 4px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 2px;
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+        background: rgba(15, 23, 42, 0.88);
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        z-index: 990;
+    }
+
+    [data-theme="light"] .desktop-dock {
+        background: rgba(255, 255, 255, 0.94);
+        border-top-color: rgba(124, 58, 237, 0.15);
+        box-shadow: 0 -8px 24px rgba(124, 58, 237, 0.12);
+    }
+
+    .desktop-dock .dock-item {
+        flex: 1;
+        min-width: 0;
+        max-width: 58px;
+        height: 48px;
+        padding: 4px 2px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        color: rgba(255, 255, 255, 0.65);
+        position: relative;
+    }
+
+    [data-theme="light"] .desktop-dock .dock-item {
+        color: #64748b;
+    }
+
+    .desktop-dock .dock-item svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+    }
+
+    .desktop-dock .dock-item:hover {
+        transform: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .desktop-dock .dock-item.active {
+        color: #38bdf8;
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    [data-theme="light"] .desktop-dock .dock-item.active {
+        color: #7c3aed;
+        background: rgba(124, 58, 237, 0.1);
+        border-color: rgba(124, 58, 237, 0.2);
+    }
+
+    .desktop-dock .dock-item.active svg {
+        transform: translateY(-1px);
+    }
+
+    .desktop-dock .dock-item.active::after {
+        display: none;
+    }
+
+    /* Mobil App Bar ostidagi mikro-yozuvlar */
+    .desktop-dock .dock-label {
+        display: block !important;
+        position: static !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: none !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        font-size: 9px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+        color: inherit !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 100% !important;
+        text-align: center !important;
+    }
+
+    /* FAB tugmachasi pastki App Bar ustida joylashishi uchun */
+    .fab {
+        bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+        right: 16px !important;
+        width: 50px !important;
+        height: 50px !important;
+    }
 }

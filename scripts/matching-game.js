@@ -1,8 +1,36 @@
-// ===== MATCHING PAIRS & SPEED QUIZ — Interactive Game Modules =====
-// Abdugofforov Platform — Nemis tili o'rganish uchun 2 ta yangi rejim
+// ===== MATCHING PAIRS & SPEED QUIZ — 3D Vision Interactive Game Modules =====
+// Abdugofforov Platform — Apple VisionOS & Spatial UI uslubidagi interaktiv o'yinlar
+
+// 3D Tilt va yorug'lik aksini kuzatuvchi funksiya
+function initVision3DTilt(containerSelector) {
+    const sel = containerSelector || '.match-card:not(.matched), .game-mode-card, .sq-option';
+    const cards = document.querySelectorAll(sel);
+    cards.forEach(card => {
+        if (card._visionTiltBound) return;
+        card._visionTiltBound = true;
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            const rx = ((y - cy) / cy) * -10;
+            const ry = ((x - cx) / cx) * 10;
+
+            card.style.transform = `perspective(1000px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateZ(10px)`;
+            card.style.setProperty('--glare-x', `${((x / rect.width) * 100).toFixed(1)}%`);
+            card.style.setProperty('--glare-y', `${((y / rect.height) * 100).toFixed(1)}%`);
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+}
 
 // ============================================================
-// 1. MATCHING PAIRS (So'zlarni juftlash mini-o'yini)
+// 1. MATCHING PAIRS (3D Vision So'zlarni juftlash mini-o'yini)
 // ============================================================
 const MatchingGame = {
     cards: [],
@@ -75,27 +103,31 @@ const MatchingGame = {
 
         this.selected.push(card);
 
-        // Kartani ochish animatsiyasi
+        // Kartani ochish 3D animatsiyasi
         const el = document.getElementById(`match-card-${cardId}`);
         if (el) {
             el.classList.add('flipped');
-            el.querySelector('.match-card-back').textContent = card.text;
+            const back = el.querySelector('.match-card-back');
+            if (back) back.textContent = card.text;
         }
 
         if (this.selected.length === 2) {
             this.moves++;
             this.updateMoves();
-            setTimeout(() => this.checkMatch(), 700);
+            setTimeout(() => this.checkMatch(), 650);
         }
     },
 
     checkMatch() {
         const [a, b] = this.selected;
+        if (!a || !b) return;
+
+        const elA = document.getElementById(`match-card-${a.id}`);
+        const elB = document.getElementById(`match-card-${b.id}`);
+
         if (a.pairId === b.pairId && a.type !== b.type) {
             // To'g'ri juftlik topildi!
             this.matched.push(a.id, b.id);
-            const elA = document.getElementById(`match-card-${a.id}`);
-            const elB = document.getElementById(`match-card-${b.id}`);
             if (elA) elA.classList.add('matched');
             if (elB) elB.classList.add('matched');
 
@@ -105,17 +137,22 @@ const MatchingGame = {
             // Barcha juftliklar topildimi?
             if (this.matched.length === this.cards.length) {
                 clearInterval(this.timerInterval);
-                setTimeout(() => this.showResults(), 500);
+                setTimeout(() => this.showResults(), 600);
             }
         } else {
-            // Noto'g'ri — kartalarni yopish
+            // Noto'g'ri — kartalarni 3D silkiniw bilan yopish
             this.playSound('wrong');
+            if (elA) elA.classList.add('shake-wrong');
+            if (elB) elB.classList.add('shake-wrong');
+
             setTimeout(() => {
-                const elA = document.getElementById(`match-card-${a.id}`);
-                const elB = document.getElementById(`match-card-${b.id}`);
-                if (elA) elA.classList.remove('flipped');
-                if (elB) elB.classList.remove('flipped');
-            }, 400);
+                if (elA) {
+                    elA.classList.remove('flipped', 'shake-wrong');
+                }
+                if (elB) {
+                    elB.classList.remove('flipped', 'shake-wrong');
+                }
+            }, 600);
         }
         this.selected = [];
     },
@@ -130,21 +167,23 @@ const MatchingGame = {
             gain.gain.value = 0.15;
 
             if (type === 'correct') {
-                osc.frequency.value = 523;
+                osc.frequency.value = 587.33; // D5
                 osc.type = 'sine';
-                gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.18, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
                 osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.3);
+                osc.stop(ctx.currentTime + 0.35);
             } else {
-                osc.frequency.value = 200;
-                osc.type = 'square';
-                gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+                osc.frequency.value = 180;
+                osc.type = 'sawtooth';
+                gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
                 osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.2);
+                osc.stop(ctx.currentTime + 0.25);
             }
-        } catch (e) { /* Audio not supported */ }
+        } catch (e) {
+            // Audio context brauzer cheklovi bo'lsa xatosiz o'tadi
+        }
     },
 
     updateMoves() {
@@ -156,44 +195,51 @@ const MatchingGame = {
         const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
         const min = Math.floor(elapsed / 60);
         const sec = elapsed % 60;
-        const stars = this.moves <= this.pairCount + 2 ? '⭐⭐⭐' :
-                      this.moves <= this.pairCount + 6 ? '⭐⭐' : '⭐';
-        const xp = this.moves <= this.pairCount + 2 ? 50 :
-                   this.moves <= this.pairCount + 6 ? 30 : 15;
+        const timeStr = min > 0 ? `${min} daqiqa ${sec} soniya` : `${sec} soniya`;
 
-        // XP saqlash
+        // Ball va XP hisoblash
+        let stars = 3;
+        if (this.moves > 14) stars = 2;
+        if (this.moves > 20) stars = 1;
+
+        const baseXP = 30;
+        const movesBonus = Math.max(0, (16 - this.moves) * 2);
+        const timeBonus = Math.max(0, (60 - elapsed));
+        const totalXP = baseXP + movesBonus + timeBonus;
+
+        // Saqlash
         const savedXP = parseInt(localStorage.getItem('matching_total_xp') || '0');
-        localStorage.setItem('matching_total_xp', savedXP + xp);
+        localStorage.setItem('matching_total_xp', savedXP + totalXP);
 
-        const container = document.getElementById('matching-game-area');
-        if (!container) return;
+        const view = document.getElementById('flashcards-content') || document.getElementById('matching-game-area');
+        if (!view) return;
 
-        container.innerHTML = `
-            <div class="matching-results">
-                <div class="matching-results-icon">🎉</div>
-                <h3>Tabriklaymiz!</h3>
-                <p>Barcha juftliklarni topdingiz!</p>
+        view.innerHTML = `
+            <div class="matching-results vision-scene">
+                <div class="matching-results-icon">${stars === 3 ? '🏆' : stars === 2 ? '⭐' : '👍'}</div>
+                <h3 style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px;">${stars === 3 ? 'Ajoyib natija!' : "G'alaba!"}</h3>
+                <p style="color:var(--text-secondary); margin-bottom:20px;">Barcha 8 ta juftlikni muvaffaqiyatli topdingiz!</p>
                 <div class="matching-stats-grid">
-                    <div class="matching-stat">
-                        <span class="stat-value">${min > 0 ? min + ' daq ' : ''}${sec} sek</span>
-                        <span class="stat-label">⏱️ Vaqt</span>
-                    </div>
                     <div class="matching-stat">
                         <span class="stat-value">${this.moves}</span>
                         <span class="stat-label">🔄 Urinishlar</span>
                     </div>
                     <div class="matching-stat">
-                        <span class="stat-value">${stars}</span>
-                        <span class="stat-label">Baho</span>
+                        <span class="stat-value">${elapsed}s</span>
+                        <span class="stat-label">⏱️ Vaqt</span>
                     </div>
                     <div class="matching-stat">
-                        <span class="stat-value">+${xp} XP</span>
-                        <span class="stat-label">🏆 Ball</span>
+                        <span class="stat-value">+${totalXP}</span>
+                        <span class="stat-label">✨ Olingan XP</span>
+                    </div>
+                    <div class="matching-stat">
+                        <span class="stat-value">${'⭐'.repeat(stars)}</span>
+                        <span class="stat-label">Reyting</span>
                     </div>
                 </div>
                 <div class="matching-actions">
-                    <button class="btn-primary" data-click="MatchingGame.start('${this.currentDeck}')">🔄 Qayta o'ynash</button>
-                    <button class="btn-secondary" data-click="showMatchingHome()">📋 Boshqa to'plam</button>
+                    <button class="btn-primary vision-btn" data-click="MatchingGame.start('${this.currentDeck}')">🔄 Qayta o'ynash</button>
+                    <button class="btn-secondary vision-btn" data-click="showMatchingHome()">📋 Boshqa to'plam</button>
                 </div>
             </div>
         `;
@@ -203,24 +249,25 @@ const MatchingGame = {
         const view = document.getElementById('flashcards-content') || document.getElementById('matching-game-area');
         if (!view) return;
 
-        const deckInfo = FC_ALL_DECKS.find(d => d.key === this.currentDeck);
+        const deckInfo = (typeof FC_ALL_DECKS !== 'undefined' ? FC_ALL_DECKS : []).find(d => d.key === this.currentDeck);
         const deckName = deckInfo && window.i18n ? i18n.t(deckInfo.i) : this.currentDeck;
 
         view.innerHTML = `
-            <div class="matching-container">
-                <div class="matching-header">
-                    <button class="btn-secondary btn-sm" data-click="showMatchingHome()">⬅ Orqaga</button>
+            <div class="matching-container vision-scene">
+                <div class="matching-header vision-card">
+                    <button class="btn-secondary btn-sm vision-btn" data-click="showMatchingHome()">⬅ Orqaga</button>
                     <div class="matching-info">
-                        <span>🔄 Urinishlar: <b id="matching-moves">0</b></span>
-                        <span>⏱️ <b id="matching-timer">00:00</b></span>
-                        <span>📦 ${escapeHTML(deckName)}</span>
+                        <span class="matching-info-item">🔄 Urinishlar: <b id="matching-moves">0</b></span>
+                        <span class="matching-info-item">⏱️ <b id="matching-timer">00:00</b></span>
+                        <span class="matching-info-item">📦 ${escapeHTML(deckName)}</span>
                     </div>
                 </div>
                 <div class="matching-grid" id="matching-game-area">
                     ${this.cards.map(card => `
-                        <div class="match-card ${this.matched.includes(card.id) ? 'matched flipped' : ''}"
+                        <div class="match-card match-card-3d ${this.matched.includes(card.id) ? 'matched flipped' : ''}"
                              id="match-card-${card.id}"
                              data-click="MatchingGame.selectCard(${card.id})">
+                            <div class="vision-glare"></div>
                             <div class="match-card-front">❓</div>
                             <div class="match-card-back">${this.matched.includes(card.id) ? escapeHTML(card.text) : ''}</div>
                         </div>
@@ -228,11 +275,13 @@ const MatchingGame = {
                 </div>
             </div>
         `;
+
+        setTimeout(() => initVision3DTilt('.match-card:not(.matched)'), 60);
     }
 };
 
 // ============================================================
-// 2. SPEED QUIZ (Tezkor Test — Time Attack rejimi)
+// 2. SPEED QUIZ (3D Cyber-HUD Tezkor Test — Time Attack)
 // ============================================================
 const SpeedQuiz = {
     questions: [],
@@ -310,7 +359,7 @@ const SpeedQuiz = {
         const isCorrect = q.options[idx].correct;
         this.totalAnswered++;
 
-        // Animatsiya
+        // 3D Animatsiya
         const btns = document.querySelectorAll('.sq-option');
         btns.forEach((btn, i) => {
             btn.disabled = true;
@@ -340,20 +389,17 @@ const SpeedQuiz = {
             } else {
                 this.renderQuestion();
             }
-        }, 600);
+        }, 550);
     },
 
     updateTimerUI() {
         const el = document.getElementById('sq-timer');
+        const orb = document.getElementById('sq-timer-orb');
         if (el) {
             el.textContent = this.timeLeft;
-            el.className = 'sq-timer-value' + (this.timeLeft <= 10 ? ' sq-timer-danger' : '');
-        }
-        // Timer bar
-        const bar = document.getElementById('sq-timer-bar');
-        if (bar) {
-            bar.style.width = `${(this.timeLeft / 60) * 100}%`;
-            if (this.timeLeft <= 10) bar.classList.add('danger');
+            if (orb) {
+                orb.classList.toggle('danger', this.timeLeft <= 10);
+            }
         }
     },
 
@@ -362,7 +408,8 @@ const SpeedQuiz = {
         const streakEl = document.getElementById('sq-streak');
         if (scoreEl) scoreEl.textContent = this.score;
         if (streakEl) {
-            streakEl.textContent = this.streak > 0 ? `🔥 ${this.streak}x` : '';
+            streakEl.innerHTML = this.streak > 1 ?
+                `<span class="sq-streak-badge">🔥 ${this.streak}x COMBO</span>` : '';
         }
     },
 
@@ -370,11 +417,7 @@ const SpeedQuiz = {
         this.isRunning = false;
         clearInterval(this.timerInterval);
 
-        const accuracy = this.totalAnswered > 0 ?
-            Math.round((this.score / (this.totalAnswered * 12)) * 100) : 0;
         const xp = this.score;
-
-        // XP saqlash
         const savedXP = parseInt(localStorage.getItem('speedquiz_total_xp') || '0');
         const bestScore = parseInt(localStorage.getItem('speedquiz_best_score') || '0');
         localStorage.setItem('speedquiz_total_xp', savedXP + xp);
@@ -388,10 +431,10 @@ const SpeedQuiz = {
         const isNewBest = this.score > bestScore;
 
         view.innerHTML = `
-            <div class="sq-results">
+            <div class="sq-results vision-scene">
                 <div class="sq-results-icon">${isNewBest ? '🏆' : '🎯'}</div>
-                <h3>${isNewBest ? 'Yangi Rekord!' : 'Vaqt tugadi!'}</h3>
-                ${isNewBest ? '<p style="color: #f59e0b; font-weight: 600;">🎉 Tabriklaymiz! Yangi eng yaxshi natija!</p>' : ''}
+                <h3 style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px;">${isNewBest ? 'Yangi Rekord!' : 'Vaqt tugadi!'}</h3>
+                ${isNewBest ? '<p style="color: #f59e0b; font-weight: 600;">🎉 Tabriklaymiz! Yangi eng yuqori natija!</p>' : ''}
                 <div class="matching-stats-grid">
                     <div class="matching-stat">
                         <span class="stat-value">${this.score}</span>
@@ -411,8 +454,8 @@ const SpeedQuiz = {
                     </div>
                 </div>
                 <div class="matching-actions">
-                    <button class="btn-primary" data-click="SpeedQuiz.start('${this.currentDeck}')">⚡ Qayta o'ynash</button>
-                    <button class="btn-secondary" data-click="showMatchingHome()">📋 Boshqa rejim</button>
+                    <button class="btn-primary vision-btn" data-click="SpeedQuiz.start('${this.currentDeck}')">⚡ Qayta o'ynash</button>
+                    <button class="btn-secondary vision-btn" data-click="showMatchingHome()">📋 Boshqa rejim</button>
                 </div>
             </div>
         `;
@@ -426,19 +469,21 @@ const SpeedQuiz = {
         if (!area) return;
 
         area.innerHTML = `
-            <div class="sq-question-area">
-                <div class="sq-question-number">${this.currentIdx + 1} / ${this.questions.length}</div>
-                <div class="sq-question-text">${escapeHTML(q.question)}</div>
+            <div class="sq-question-area vision-scene">
+                <div class="sq-question-number">SAVOL ${this.currentIdx + 1} / ${this.questions.length}</div>
+                <div class="sq-question-text vision-card">${escapeHTML(q.question)}</div>
                 <div class="sq-options">
                     ${q.options.map((opt, i) => `
-                        <button class="sq-option" data-click="SpeedQuiz.answer(${i})">
+                        <button class="sq-option vision-btn" data-click="SpeedQuiz.answer(${i})">
                             <span class="sq-option-key">${String.fromCharCode(65 + i)}</span>
-                            ${escapeHTML(opt.text)}
+                            <span>${escapeHTML(opt.text)}</span>
                         </button>
                     `).join('')}
                 </div>
             </div>
         `;
+
+        setTimeout(() => initVision3DTilt('.sq-option'), 60);
     },
 
     render() {
@@ -446,18 +491,16 @@ const SpeedQuiz = {
         if (!view) return;
 
         view.innerHTML = `
-            <div class="sq-container">
-                <div class="sq-header">
-                    <button class="btn-secondary btn-sm" data-click="showMatchingHome()">⬅ Orqaga</button>
+            <div class="sq-container vision-scene">
+                <div class="sq-header vision-card">
+                    <button class="btn-secondary btn-sm vision-btn" data-click="showMatchingHome()">⬅ Orqaga</button>
                     <div class="sq-stats">
-                        <span>🏆 <b id="sq-score">0</b></span>
+                        <span class="vision-badge">🏆 <b id="sq-score">0</b> XP</span>
                         <span id="sq-streak"></span>
                     </div>
-                    <div class="sq-timer">
-                        <div class="sq-timer-bar-bg">
-                            <div class="sq-timer-bar" id="sq-timer-bar" style="width:100%"></div>
-                        </div>
-                        <span id="sq-timer" class="sq-timer-value">${this.timeLeft}</span>s
+                    <div class="vision-timer-orb" id="sq-timer-orb">
+                        <span id="sq-timer" class="sq-timer-value">${this.timeLeft}</span>
+                        <small style="font-size:8px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.5px;">SEK</small>
                     </div>
                 </div>
                 <div id="speed-quiz-content"></div>
@@ -468,7 +511,7 @@ const SpeedQuiz = {
 };
 
 // ============================================================
-// MATCHING HOME (Rejimlar menyusi)
+// 3. 3D VISION GAME HUB (Rejimlar Portali)
 // ============================================================
 function showMatchingHome() {
     if (MatchingGame.timerInterval) clearInterval(MatchingGame.timerInterval);
@@ -481,48 +524,82 @@ function showMatchingHome() {
     const matchXP = parseInt(localStorage.getItem('matching_total_xp') || '0');
     const speedXP = parseInt(localStorage.getItem('speedquiz_total_xp') || '0');
     const bestScore = parseInt(localStorage.getItem('speedquiz_best_score') || '0');
+    const decks = typeof FC_ALL_DECKS !== 'undefined' ? FC_ALL_DECKS : [];
 
     view.innerHTML = `
-        <div style="text-align:center; margin-bottom:28px;">
-            <div style="font-size:48px; margin-bottom:12px;">🎮</div>
-            <h2 style="font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px;">Interaktiv O'yinlar</h2>
-            <p style="color:var(--text-secondary);">Nemis tilini o'yin orqali o'rganing — Matching Pairs va Speed Quiz!</p>
-            <div style="margin-top:14px; display:inline-flex; gap:16px; align-items:center; background:var(--tag-bg); padding:10px 20px; border-radius:30px; font-size:13px;">
-                🏆 Matching: <b>${matchXP} XP</b> &nbsp;|&nbsp; ⚡ Speed: <b>${speedXP} XP</b> (Rekord: ${bestScore})
+        <div style="text-align:center; margin-bottom:32px;" class="vision-scene">
+            <div style="font-size:52px; margin-bottom:12px; filter:drop-shadow(0 8px 20px rgba(56,189,248,0.4));">🎮</div>
+            <h2 style="font-family:'Playfair Display',serif; font-size:32px; margin-bottom:8px; color:var(--text-primary);">3D Vision O'yinlar</h2>
+            <p style="color:var(--text-secondary); max-width:540px; margin:0 auto;">Nemis tilini fazoviy shisha UI va immersiv interaktiv o'yinlar orqali o'rganing!</p>
+            <div style="margin-top:16px; display:inline-flex; gap:16px; align-items:center; background:var(--vision-glass-bg); border:1px solid var(--vision-glass-border); padding:10px 22px; border-radius:30px; font-size:13px; box-shadow:0 6px 20px rgba(0,0,0,0.25);">
+                🏆 Matching: <b style="color:#38bdf8;">${matchXP} XP</b> &nbsp;|&nbsp; ⚡ Speed: <b style="color:#f59e0b;">${speedXP} XP</b> (Rekord: ${bestScore})
             </div>
         </div>
 
-        <div class="game-mode-grid">
-            <div class="game-mode-card matching-mode">
+        <div class="game-mode-grid vision-scene">
+            <!-- 1. Matching Pairs -->
+            <div class="game-mode-card matching-mode vision-card">
+                <div class="vision-glare"></div>
                 <div class="game-mode-icon">🧩</div>
                 <h3>Matching Pairs</h3>
-                <p>So'zlarni juftlash — xotirani mustahkamlash uchun 16 ta kartochkani juftlab toping!</p>
+                <p>So'zlarni juftlash — xotirani mustahkamlash uchun 16 ta 3D shisha kartochkani juftlab oching!</p>
                 <div class="game-mode-decks">
                     <span class="game-mode-label">To'plamni tanlang:</span>
-                    ${FC_ALL_DECKS.filter(d => flashcardDecks[d.key] && flashcardDecks[d.key].length >= 8).map(d => `
-                        <button class="btn-secondary btn-sm" data-click="MatchingGame.start('${d.key}')">
+                    ${decks.filter(d => flashcardDecks[d.key] && flashcardDecks[d.key].length >= 8).map(d => `
+                        <button class="btn-secondary btn-sm vision-btn" data-click="MatchingGame.start('${d.key}')">
                             ${window.i18n ? i18n.t(d.i) : d.key}
                         </button>
                     `).join('')}
                 </div>
             </div>
-            <div class="game-mode-card speed-mode">
+
+            <!-- 2. Speed Quiz -->
+            <div class="game-mode-card speed-mode vision-card">
+                <div class="vision-glare"></div>
                 <div class="game-mode-icon">⚡</div>
                 <h3>Speed Quiz</h3>
-                <p>60 soniya ichida imkon qadar ko'proq to'g'ri javob bering! Streak bonuslari + vaqt bonuslari!</p>
+                <p>60 soniya ichida imkon qadar ko'proq to'g'ri javob bering! 3D Cyber-HUD va combo bonuslari!</p>
                 <div class="game-mode-decks">
                     <span class="game-mode-label">To'plamni tanlang:</span>
-                    ${FC_ALL_DECKS.filter(d => flashcardDecks[d.key] && flashcardDecks[d.key].length >= 4).map(d => `
-                        <button class="btn-secondary btn-sm" data-click="SpeedQuiz.start('${d.key}')">
+                    ${decks.filter(d => flashcardDecks[d.key] && flashcardDecks[d.key].length >= 4).map(d => `
+                        <button class="btn-secondary btn-sm vision-btn" data-click="SpeedQuiz.start('${d.key}')">
                             ${window.i18n ? i18n.t(d.i) : d.key}
                         </button>
                     `).join('')}
+                </div>
+            </div>
+
+            <!-- 3. Horror Deutsch -->
+            <div class="game-mode-card horror-mode vision-card">
+                <div class="vision-glare"></div>
+                <div class="game-mode-icon">🩸</div>
+                <h3 style="color:#ef4444;">Horror Deutsch</h3>
+                <p>Qorong'u gotik qal'ada omon qolish va nemis tili testlaridan xatosiz o'tish kvesti!</p>
+                <div class="game-mode-decks">
+                    <button class="btn-primary vision-btn" style="background:#dc2626; border-color:#ef4444;" data-click="if(typeof openHorrorHome==='function'){openHorrorHome();}else{alert('Horror rejim yuklanmoqda...');}">
+                        🏰 Qal'aga kirish
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4. Fe'llar Trenajyori -->
+            <div class="game-mode-card verbs-mode vision-card">
+                <div class="vision-glare"></div>
+                <div class="game-mode-icon">🧪</div>
+                <h3 style="color:#a855f7;">Fe'llar Trenajyori</h3>
+                <p>Kuchli va noto'g'ri fe'llarning 3 ta shaklini (Infinitiv, Präteritum, Partizip II) yodlash!</p>
+                <div class="game-mode-decks">
+                    <button class="btn-primary vision-btn" style="background:#7c3aed; border-color:#a855f7;" data-click="if(typeof openVerbTrainerView==='function'){openVerbTrainerView();}else{alert('Fe\'llar trenajyori ochilmoqda...');}">
+                        ⚡ Mashg'ulotni boshlash
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div style="text-align:center; margin-top:24px;">
-            <button class="btn-secondary" data-click="renderFlashcardsHome()">🃏 Kartochkalarga qaytish</button>
+        <div style="text-align:center; margin-top:32px;">
+            <button class="btn-secondary vision-btn" data-click="renderFlashcardsHome()">🃏 Kartochkalarga qaytish</button>
         </div>
     `;
+
+    setTimeout(() => initVision3DTilt('.game-mode-card'), 60);
 }

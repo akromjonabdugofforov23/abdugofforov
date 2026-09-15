@@ -11,7 +11,7 @@
     --card-bg: rgba(18, 18, 26, 0.65);
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
-    --text-muted: #475569;
+    --text-muted: #94a3b8;
     --accent-color: #6366f1; /* Indigo */
     --accent-hover: #8b5cf6; /* Violet */
     --border-color: rgba(99, 102, 241, 0.2);
@@ -42,7 +42,7 @@
     --atelier-surface-inset: rgba(12, 13, 18, 0.60);
     --atelier-ink-primary: #f5f5f7;
     --atelier-ink-secondary: #a1a1aa;
-    --atelier-ink-muted: #71717a;
+    --atelier-ink-muted: #a1a1aa;
     --atelier-ink-quote: #fafafa;
     --atelier-accent: #c5a059;
     --atelier-accent-hover: #d4af37;
@@ -68,7 +68,7 @@
     --card-bg: rgba(255, 255, 255, 0.82);
     --text-primary: #1E1B4B;
     --text-secondary: #4338CA;
-    --text-muted: #6366F1;
+    --text-muted: #4338CA;
     --accent-color: #7C3AED;
     --accent-hover: #A855F7;
     --border-color: rgba(124, 58, 237, 0.18);
@@ -95,7 +95,7 @@
     --color-blue-light: #7DD3FC;
     --color-silver: #4338CA;
     --color-silver-bright: #1E1B4B;
-    --color-silver-dim: #6366F1;
+    --color-silver-dim: #4338CA;
 
     /* Yorqin gradientlar — binafsha → qizil → och ko'k */
     --grad-primary: linear-gradient(135deg, #7C3AED, #EF4444, #38BDF8);
@@ -123,7 +123,7 @@
     --atelier-surface-inset: rgba(247, 245, 240, 0.90);
     --atelier-ink-primary: #18181b;
     --atelier-ink-secondary: #52525b;
-    --atelier-ink-muted: #8b8b94;
+    --atelier-ink-muted: #52525b;
     --atelier-ink-quote: #121316;
     --atelier-accent: #966f33;
     --atelier-accent-hover: #7c5824;

@@ -225,32 +225,79 @@ function renderFlashcard() {
                 <span style="color:var(--text-muted); font-size:13px;">🔥 ${getFcStreak()} &nbsp;-&nbsp; ${fcIndex + 1} / ${deck.length}</span>
                 <button class="btn-secondary btn-sm" data-click="shuffleFlashcards()">${i18n.t('fc.shuffle')}</button>
             </div>
-            <div class="flashcard" id="flashcard">
+            <div class="flashcard vision-card" id="flashcard">
                 <div class="flashcard-inner">
                     <div class="flashcard-face flashcard-front">
+                        <div class="vision-glare"></div>
                         <button class="fc-audio-btn" title="Talaffuzni eshitish" data-click="speakGermanText('${escapeHTML(card.front).replace(/'/g, "\\'")}', event)">🔊</button>
                         <div class="fc-text">${escapeHTML(card.front)}</div>
                         <span class="fc-hint">${i18n.t('fc.tapHint')}</span>
                     </div>
                     <div class="flashcard-face flashcard-back">
+                        <div class="vision-glare"></div>
                         <button class="fc-audio-btn" title="Talaffuzni eshitish" data-click="speakGermanText('${escapeHTML(card.back).replace(/'/g, "\\'")}', event)">🔊</button>
                         <div class="fc-text">${escapeHTML(card.back)}</div>
                     </div>
                 </div>
             </div>
             <div style="display:flex; justify-content:space-between; gap:12px; margin-top:18px;">
-                <button class="btn-secondary" data-click="prevFlashcard()">${i18n.t('fc.prev')}</button>
-                <button class="btn-primary" data-click="flipFlashcard()">${i18n.t('fc.flip')}</button>
-                <button class="btn-secondary" data-click="nextFlashcard()">${i18n.t('fc.next')}</button>
+                <button class="btn-secondary vision-btn" data-click="prevFlashcard()">${i18n.t('fc.prev')}</button>
+                <button class="btn-primary vision-btn" data-click="flipFlashcard()">${i18n.t('fc.flip')}</button>
+                <button class="btn-secondary vision-btn" data-click="nextFlashcard()">${i18n.t('fc.next')}</button>
             </div>
             <div style="display:flex; gap:12px; margin-top:12px;">
-                <button class="btn-secondary" style="flex:1; border-color:rgba(248,113,113,0.4); color:#ef4444;" data-click="fcAnswer(false)">✗ Bilmayman</button>
-                <button class="btn-primary" style="flex:1; background:#22c55e; border-color:#22c55e; color:#fff;" data-click="fcAnswer(true)">✓ Bilaman</button>
+                <button class="btn-secondary vision-btn" style="flex:1; border-color:rgba(248,113,113,0.4); color:#ef4444;" data-click="fcAnswer(false)">✗ Bilmayman</button>
+                <button class="btn-primary vision-btn" style="flex:1; background:#22c55e; border-color:#22c55e; color:#fff;" data-click="fcAnswer(true)">✓ Bilaman</button>
             </div>
         </div>
     `;
     const fcEl = document.getElementById('flashcard');
-    if (fcEl) fcEl.addEventListener('click', flipFlashcard);
+    if (fcEl) {
+        fcEl.addEventListener('click', flipFlashcard);
+
+        // 3D Tilt va yorug'lik aksini harakatlantirish
+        fcEl.addEventListener('mousemove', (e) => {
+            const rect = fcEl.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            const rx = ((y - cy) / cy) * -8;
+            const ry = ((x - cx) / cx) * 8;
+            fcEl.style.transform = `perspective(1000px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+            fcEl.style.setProperty('--glare-x', `${((x / rect.width) * 100).toFixed(1)}%`);
+            fcEl.style.setProperty('--glare-y', `${((y / rect.height) * 100).toFixed(1)}%`);
+        });
+
+        fcEl.addEventListener('mouseleave', () => {
+            fcEl.style.transform = '';
+        });
+
+        // Mobil qurilmalarda kartani chapga/o'ngga surish (swipe)
+        let touchStartX = 0;
+        let touchStartY = 0;
+        fcEl.addEventListener('touchstart', (e) => {
+            if (!e.changedTouches || e.changedTouches.length === 0) return;
+            touchStartX = e.changedTouches[0].clientX;
+            touchStartY = e.changedTouches[0].clientY;
+        }, { passive: true });
+
+        fcEl.addEventListener('touchend', (e) => {
+            if (!e.changedTouches || e.changedTouches.length === 0) return;
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+
+            if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX < 0) {
+                    nextFlashcard(); // Chapga surilsa: keyingi karta
+                } else {
+                    prevFlashcard(); // O'ngga surilsa: oldingi karta
+                }
+            }
+        }, { passive: true });
+    }
 }
 
 function flipFlashcard() {

@@ -1,0 +1,241 @@
+/* ============================================================
+   3D VISION (SPATIAL UI & HOLOGRAPHIC GLASS) — GAME STYLES
+   Inspired by Apple VisionOS spatial cards, dynamic depth, & neon HUD
+   ============================================================ */
+
+:root {
+    --vision-glass-bg: rgba(15, 23, 42, 0.68);
+    --vision-glass-border: rgba(255, 255, 255, 0.16);
+    --vision-glass-shine: rgba(255, 255, 255, 0.4);
+    --vision-glow-cyan: #06b6d4;
+    --vision-glow-purple: #8b5cf6;
+    --vision-glow-green: #10b981;
+    --vision-glow-gold: #f59e0b;
+}
+
+[data-theme="light"] {
+    --vision-glass-bg: rgba(255, 255, 255, 0.72);
+    --vision-glass-border: rgba(124, 58, 237, 0.18);
+    --vision-glass-shine: rgba(255, 255, 255, 0.85);
+}
+
+/* 3D Perspective Root */
+.vision-scene {
+    perspective: 1200px;
+    perspective-origin: center center;
+}
+
+/* VisionOS Glass Base Plate */
+.vision-card {
+    position: relative;
+    background: var(--vision-glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--vision-glass-border);
+    border-radius: 20px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35),
+                inset 0 1px 0 var(--vision-glass-shine),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    transform-style: preserve-3d;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.25s ease,
+                border-color 0.25s ease;
+    overflow: hidden;
+}
+
+/* Glare Layer — Dinamik yorug'lik qaytishi */
+.vision-glare {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%),
+                rgba(255, 255, 255, 0.22) 0%,
+                rgba(255, 255, 255, 0.05) 40%,
+                transparent 70%);
+    opacity: 0;
+    mix-blend-mode: overlay;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+    z-index: 5;
+}
+
+.vision-card:hover .vision-glare {
+    opacity: 1;
+}
+
+/* Floating 3D Layers inside Vision Cards */
+.vision-layer-elevated {
+    transform: translateZ(28px);
+    transform-style: preserve-3d;
+}
+
+.vision-layer-deep {
+    transform: translateZ(48px);
+    transform-style: preserve-3d;
+}
+
+/* Holographic Edge Shine */
+.vision-hologram-border {
+    position: relative;
+}
+.vision-hologram-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg,
+        rgba(56, 189, 248, 0.5),
+        rgba(139, 92, 246, 0.5),
+        rgba(236, 72, 153, 0.3),
+        transparent 60%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 6;
+}
+
+/* 3D Floating Badges */
+.vision-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    transform: translateZ(20px);
+}
+
+[data-theme="light"] .vision-badge {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(124, 58, 237, 0.2);
+    color: #1e1b4b;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.15);
+}
+
+/* Cyber Orb Timer for Speed Quiz */
+.vision-timer-orb {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(56, 189, 248, 0.3), rgba(15, 23, 42, 0.85));
+    border: 2px solid rgba(56, 189, 248, 0.5);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.4), inset 0 0 15px rgba(56, 189, 248, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: translateZ(30px);
+    animation: orbPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes orbPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.4), inset 0 0 15px rgba(56, 189, 248, 0.3);
+        border-color: rgba(56, 189, 248, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 32px rgba(139, 92, 246, 0.7), inset 0 0 22px rgba(139, 92, 246, 0.4);
+        border-color: rgba(139, 92, 246, 0.8);
+    }
+}
+
+.vision-timer-orb.danger {
+    border-color: #ef4444 !important;
+    background: radial-gradient(circle at 35% 35%, rgba(239, 68, 68, 0.35), rgba(15, 23, 42, 0.85));
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.7), inset 0 0 18px rgba(239, 68, 68, 0.4);
+    animation: orbDanger 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes orbDanger {
+    from { transform: translateZ(30px) scale(0.96); }
+    to { transform: translateZ(30px) scale(1.06); }
+}
+
+/* 3D Button Spatial Effect */
+.vision-btn {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.vision-btn:hover {
+    transform: translateY(-2px) translateZ(15px);
+    box-shadow: 0 12px 28px rgba(139, 92, 246, 0.4);
+    filter: brightness(1.08);
+}
+
+.vision-btn:active {
+    transform: translateY(1px) translateZ(4px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}
+
+/* Matching Card 3D Spatial Enhancements */
+.match-card-3d {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.match-card-3d:hover:not(.matched) {
+    transform: translateY(-4px) scale(1.03) translateZ(10px);
+}
+
+/* 3D Card Thickness Rim effect */
+.match-card-3d .match-card-front,
+.match-card-3d .match-card-back {
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.35),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Juftlik topilganda 3D nurlanish */
+.match-card.matched {
+    animation: matchVictoryPulse 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes matchVictoryPulse {
+    0% {
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(1.12) translateZ(30px);
+        box-shadow: 0 0 35px rgba(34, 197, 94, 0.8), inset 0 0 15px rgba(34, 197, 94, 0.5);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 18px rgba(34, 197, 94, 0.4);
+    }
+}
+
+/* Noto'g'ri bo'lganda 3D Silkiniw */
+.match-card.shake-wrong {
+    animation: matchWrongShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes matchWrongShake {
+    10%, 90% { transform: translate3d(-2px, 0, 0) rotateZ(-2deg); }
+    20%, 80% { transform: translate3d(3px, 0, 0) rotateZ(3deg); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0) rotateZ(-3deg); }
+    40%, 60% { transform: translate3d(4px, 0, 0) rotateZ(3deg); }
+}
+
+/* Particle Sparkle Canvas */
+.vision-sparkle-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+    border-radius: inherit;
+}

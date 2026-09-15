@@ -112,12 +112,10 @@
     0% {
         transform: translateY(0) rotate(0deg);
         opacity: 1;
-        border-radius: 0;
     }
     100% {
         transform: translateY(-1000px) rotate(720deg);
         opacity: 0;
-        border-radius: 50%;
     }
 }
 
@@ -148,4 +146,21 @@
 
 .fc-audio-btn:active {
     transform: scale(0.95);
+}
+
+/* ===== MOBIL SMARTFONLAR UCHUN YENGILLASHTIRISH (PERFORMANCE OPTIMIZATION) ===== */
+@media (max-width: 768px) {
+    /* Ortiqcha aylanuvchi shakllarni yashirib, protsessor/batareyani tejaymiz */
+    .bg-shapes .shape:nth-child(n+4) {
+        display: none !important;
+    }
+    .bg-shapes .shape {
+        animation-duration: 35s !important;
+        will-change: transform;
+    }
+    /* Sensorli ekranlarda tap kechikishini bartaraf qilish */
+    button, a, .fc-audio-btn, .filter-tag, .test-card, .t-opt, .match-card {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
 }

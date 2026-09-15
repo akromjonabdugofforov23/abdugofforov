@@ -361,3 +361,42 @@
     }
 }
 
+/* ===== MOBIL SMARTFONLAR MOSLASHUVI (<= 600px) ===== */
+@media (max-width: 600px) {
+    .horror-container {
+        padding: 16px 10px;
+    }
+    .horror-hero-card {
+        padding: 24px 14px;
+        border-radius: 16px;
+    }
+    .horror-title {
+        font-size: 24px;
+    }
+    .horror-subtitle {
+        font-size: 13px;
+        margin-bottom: 18px;
+    }
+    .horror-level-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .horror-level-card {
+        padding: 16px 14px;
+        border-radius: 14px;
+    }
+    .horror-question-card {
+        padding: 20px 14px;
+        border-radius: 16px;
+    }
+    .horror-option-btn {
+        padding: 12px 14px;
+        font-size: 14px;
+        min-height: 48px;
+        border-radius: 12px;
+    }
+    .horror-scary-overlay .scary-corner {
+        font-size: 28px;
+    }
+}
+
