@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Deutsch Akademiyasi | Goethe Nemis Tili Testlari & Trenajyor</title>
+    <meta name="description" content="Goethe A1, A2, B1 nemis tili testlari, ovozli so'z kartochkalari, fe'llar trenajyori va haftalik turnirlar platformasi.">
+    <meta name="keywords" content="nemis tili, Deutsch, Goethe, A1, A2, B1, testlar, so'z kartochkalari, verb trainer">
+    <meta name="theme-color" content="#8B5CF6">
+    <link rel="canonical" href="https://deutsch.abdugofforov.uz/">
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.svg">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.min.css?v=4">
+    <link rel="preload" as="image" href="images/neuschwanstein.webp" type="image/webp" fetchpriority="high">
+
+    <!-- Fonts: Asynchronous & Non-blocking -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+    </noscript>
+</head>
+<body>
+
+    <!-- Navigatsiya -->
+    <nav class="navbar" id="main-nav">
+        <div class="container navbar-row">
+            <a href="#tests" class="logo" id="nav-logo" style="display:flex; align-items:center; gap:8px;">
+                <span>🇩🇪</span> Deutsch<span>.</span>
+            </a>
+
+            <div class="nav-links" id="top-nav-links">
+                <a href="#tests" class="active">Testlar (A1-B1)</a>
+                <a href="#flashcards">Kartochkalar</a>
+                <a href="#verbs">Fe'llar</a>
+                <a href="#tournament">Turnir</a>
+            </div>
+
+            <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
+                <a href="https://abdugofforov.uz/" class="btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:6px; font-size:12px;" title="Akromjon Abdug'afforov shaxsiy blogi">
+                    <span>🏠 Shaxsiy Blog</span>
+                </a>
+
+                <button class="btn-icon theme-toggle" id="theme-btn" type="button" aria-label="Mavzuni o'zgartirish" title="Mavzuni o'zgartirish">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Germany Carousel -->
+    <section class="germany-carousel" id="germany-carousel" style="margin-top: 18px;">
+        <div class="carousel-track" id="carousel-track">
+            <div class="carousel-slide">
+                <img class="zoomable" src="images/neuschwanstein.webp" alt="Neuschwanstein Castle" width="900" height="320" fetchpriority="high">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">🏰 Neuschwanstein - "Ertak qala" - Bavaria</div>
+            </div>
+            <div class="carousel-slide">
+                <img class="zoomable" src="images/rheintal.webp" alt="Rheintal" width="900" height="320" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">🍇 Rheintal - "Uzum dalalar va qalalar" - Rhineland</div>
+            </div>
+            <div class="carousel-slide">
+                <img class="zoomable" src="images/munich-marienplatz.webp" alt="München" width="900" height="320" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">🍻 München - "Bayerische Gemütlichkeit" - Bayern</div>
+            </div>
+            <div class="carousel-slide">
+                <img class="zoomable" src="images/koelner-dom.webp" alt="Kölner Dom" width="900" height="320" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">⛪ Kölner Dom - "800 yillik mojiza" - Köln</div>
+            </div>
+            <div class="carousel-slide">
+                <img class="zoomable" src="images/rothenburg.webp" alt="Rothenburg ob der Tauber" width="900" height="320" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">🕰️ Rothenburg - "Vaqt toxtaghan joy" - Franken</div>
+            </div>
+            <div class="carousel-slide">
+                <img class="zoomable" src="images/hamburg.webp" alt="Hamburg Hafen" width="900" height="320" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">⚓ Hamburg - "Shimol darvozasi" - Norddeutschland</div>
+            </div>
+            <div class="carousel-slide">
+                <img class="zoomable" src="images/zugspitze.webp" alt="Zugspitze" width="900" height="320" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">⛰️ Zugspitze - "Germaniyaning choqqisi" - Alpen</div>
+            </div>
+            <div class="carousel-slide">
+                <img class="zoomable" src="images/heidelberg_hq.webp" alt="Heidelberg" width="900" height="320" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">💖 Heidelberg - "Romantikaning poytaxti" - Baden</div>
+            </div>
+            <div class="carousel-slide">
+                <img class="zoomable" src="images/schwarzwald.webp" alt="Schwarzwald" width="900" height="320" loading="lazy">
+                <div class="carousel-overlay"></div>
+                <div class="carousel-caption">🌲 Schwarzwald - "Sirli yollar" - Baden-Württemberg</div>
+            </div>
+        </div>
+        <button class="carousel-btn carousel-btn-prev" id="carousel-prev" aria-label="Oldingi">&#10094;</button>
+        <button class="carousel-btn carousel-btn-next" id="carousel-next" aria-label="Keyingi">&#10095;</button>
+        <div class="carousel-dots" id="carousel-dots"></div>
+    </section>
+
+    <!-- Content Views -->
+    <main class="container" style="padding: 30px 0 100px 0;">
+        <div class="animate-fade-in" id="deutsch-view">
+            <div id="deutsch-content"></div>
+        </div>
+
+        <div class="animate-fade-in" id="flashcards-view" style="display:none;">
+            <div id="flashcards-content"></div>
+        </div>
+
+        <div class="animate-fade-in" id="verb-trainer-view" style="display:none;">
+            <div id="verb-trainer-content"></div>
+        </div>
+
+        <div class="animate-fade-in" id="tournament-view" style="display:none;">
+            <div id="tournament-content"></div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" style="margin-top: 40px;">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2026 Deutsch Akademiyasi &bull; <a href="https://abdugofforov.uz/" style="color: var(--accent-color);">Akromjon Abdug'afforov</a> tomonidan yaratilgan.</p>
+            <div class="footer-socials" style="margin-top: 10px;">
+                <a href="https://t.me/Abdugofforov_kundaligi" target="_blank" rel="noopener noreferrer">Telegram Kanal</a>
+                <a href="https://abdugofforov.uz/">Shaxsiy Blog</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mac OS Dock Navigation Bar -->
+    <nav class="desktop-dock" id="desktop-dock" aria-label="Tezkor navigatsiya">
+        <a href="#tests" class="dock-item active" data-page="tests" title="Nemis tili testlari">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            <span class="dock-label">Testlar</span>
+        </a>
+        <a href="#flashcards" class="dock-item" data-page="flashcards" title="So'z kartochkalari">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <span class="dock-label">Kartochkalar</span>
+        </a>
+        <a href="#games" class="dock-item" data-page="games" title="Interaktiv o'yinlar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><line x1="6" y1="12" x2="10" y2="12"></line><line x1="8" y1="10" x2="8" y2="14"></line><circle cx="15" cy="11" r="1"></circle><circle cx="18" cy="13" r="1"></circle></svg>
+            <span class="dock-label">O'yinlar</span>
+        </a>
+        <a href="#verbs" class="dock-item" data-page="verbs" title="Nemis tili fe'llar trenajyori">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+            <span class="dock-label">Fe'llar</span>
+        </a>
+        <a href="#tournament" class="dock-item" data-page="tournament" title="Nemis tili turniri">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path></svg>
+            <span class="dock-label">Turnir</span>
+        </a>
+        <a href="https://abdugofforov.uz/" class="dock-item" title="Akromjon Abdug'afforov blogiga qaytish">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span class="dock-label">Blog ↗</span>
+        </a>
+    </nav>
+
+    <!-- Modallar -->
+    <div class="modal-overlay" id="myresults-modal">
+        <div class="modal-container" style="max-width: 640px; width: 95%;">
+            <button class="modal-close" id="close-myresults-modal" aria-label="Yopish">&times;</button>
+            <div class="modal-body" style="padding: 24px;">
+                <div id="myresults-content">
+                    <p style="color:var(--text-secondary); text-align:center;">Yuklanmoqda...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skriptlar -->
+    <script src="storage.js?v=2"></script>
+    <script src="i18n.js?v=2"></script>
+    <script src="auth.js?v=2"></script>
+    <script src="data-flashcards.js"></script>
+    <script src="data-tests.js"></script>
+    <script src="scripts/verb-trainer-data.js"></script>
+    <script src="scripts/flashcards.js"></script>
+    <script src="scripts/matching-game.js"></script>
+    <script src="scripts/tests.js"></script>
+    <script src="scripts/verb-trainer.js"></script>
+    <script src="scripts/horror-data.js"></script>
+    <script src="scripts/horror-logic.js"></script>
+    <script src="scripts/gamification.js"></script>
+    <script src="deutsch.js"></script>
+</body>
+</html>

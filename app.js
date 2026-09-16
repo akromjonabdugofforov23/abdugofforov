@@ -285,7 +285,7 @@ window.SearchEngine = SearchEngine;
 // posts endi IndexedDB (Store) orqali yuklanadi Ã¢â‚¬â€  bootstrap() ichida hydrate qilinadi.
 let posts = [];
 let currentTab = 'home'; 
-let filterType = 'Kundalik Blog'; 
+let filterType = 'all'; 
 let searchQuery = '';
 let searchCategoryTab = 'all'; 
 let editingPostId = null;
@@ -1043,26 +1043,20 @@ function setAppRoute(route, push = true) {
 function applyAppRoute(route) {
     const cleanRoute = (route || window.location.hash || '#home').toLowerCase();
 
-    if (cleanRoute.includes('horror-deutsch')) {
-        loadAuxScripts(() => {
-            if (mainContent) mainContent.style.display = 'none';
-            const hero = document.querySelector('.hero');
-            if (hero) hero.style.display = 'none';
-            hideAuxViews();
-            const deutschView = document.getElementById('deutsch-view');
-            if (deutschView) deutschView.style.display = 'block';
-            if (typeof openHorrorHome === 'function') openHorrorHome(true);
-        });
-    } else if (cleanRoute.includes('nemistili') || cleanRoute.includes('deutsch')) {
-        openDeutschView(false);
-    } else if (cleanRoute.includes('verb')) {
-        openVerbTrainerView(false);
-    } else if (cleanRoute.includes('flashcards')) {
-        openFlashcardsView(false);
-    } else if (cleanRoute.includes('tournament')) {
-        openTournamentView(false);
-    } else if (cleanRoute.includes('game')) {
-        openGamesView(false);
+    if (cleanRoute.includes('horror-deutsch') || cleanRoute.includes('nemistili') || cleanRoute.includes('deutsch') || cleanRoute.includes('verb') || cleanRoute.includes('flashcards') || cleanRoute.includes('tournament') || cleanRoute.includes('game')) {
+        let dest = 'https://deutsch.abdugofforov.uz/';
+        if (!window.location.hostname.includes('abdugofforov.uz')) {
+            dest = 'deutsch.html';
+        }
+        if (cleanRoute.includes('verb')) dest += '#verbs';
+        else if (cleanRoute.includes('flashcards')) dest += '#flashcards';
+        else if (cleanRoute.includes('tournament')) dest += '#tournament';
+        else if (cleanRoute.includes('game')) dest += '#games';
+        else if (cleanRoute.includes('horror')) dest += '#horror';
+        else dest += '#tests';
+
+        window.location.href = dest;
+        return;
     } else {
         showMainView(false);
     }
@@ -1162,6 +1156,10 @@ if (mainNav) {
     mainNav.addEventListener('click', (e) => {
         const link = e.target.closest('a');
         if (!link) return;
+        const href = link.getAttribute('href') || '';
+        if (href.startsWith('http://') || href.startsWith('https://') || link.getAttribute('target') === '_blank') {
+            return;
+        }
         e.preventDefault();
 
         if (link.id === 'nav-contact-link' || link.getAttribute('href') === '#contact') {
@@ -1239,10 +1237,14 @@ if (desktopDock) {
     desktopDock.addEventListener('click', (e) => {
         const link = e.target.closest('a');
         if (!link) return;
+        const href = link.getAttribute('href') || '';
+        if (href.startsWith('http://') || href.startsWith('https://') || link.getAttribute('target') === '_blank') {
+            return;
+        }
         e.preventDefault();
 
         // Maxsus tugmalar
-        if (link.id === 'dock-contact' || link.getAttribute('href') === '#contact') {
+        if (link.id === 'dock-contact' || href === '#contact') {
             openContactModal();
             return;
         }
@@ -1252,44 +1254,36 @@ if (desktopDock) {
             return;
         }
         if (link.id === 'dock-deutsch' || link.getAttribute('data-page') === 'deutsch') {
-            openDeutschView();
-            syncActiveNavState('deutsch');
+            let dest = 'https://deutsch.abdugofforov.uz/';
+            if (!window.location.hostname.includes('abdugofforov.uz')) dest = 'deutsch.html';
+            window.location.href = dest;
             return;
         }
-        if (link.id === 'dock-verbs' || link.getAttribute('data-page') === 'verbs') {
-            openVerbTrainerView();
-            syncActiveNavState('verbs');
-            return;
-        }
-        if (link.getAttribute('data-page') === 'flashcards') {
-            openFlashcardsView();
-            syncActiveNavState('flashcards');
-            return;
-        }
-        if (link.id === 'dock-games' || link.getAttribute('data-page') === 'games') {
-            if (typeof openFlashcardsView === 'function') openFlashcardsView();
-            if (typeof showMatchingHome === 'function') showMatchingHome();
-            syncActiveNavState('games');
-            return;
-        }
-        if (link.getAttribute('data-page') === 'tournament') {
-            openTournamentView();
-            syncActiveNavState('tournament');
-            return;
-        }
-        
-        let page = link.getAttribute('data-page') || 'home';
-        if (page === 'blog') page = 'home';
 
+        let page = link.getAttribute('data-page') || 'home';
         showMainView();
         syncActiveNavState(page);
         
         currentTab = page;
-        const activeTag = filterTags ? filterTags.querySelector('.filter-tag.active') : null;
-        filterType = (page === 'projects') ? 'project' : (activeTag && activeTag.getAttribute('data-filter') ? activeTag.getAttribute('data-filter') : 'Kundalik Blog');
+        if (page === 'blog') {
+            filterType = 'Kundalik Blog';
+        } else if (page === 'music') {
+            filterType = 'Musiqa';
+        } else if (page === 'projects') {
+            filterType = 'project';
+        } else {
+            filterType = 'all';
+        }
 
         if (filterTags) {
-            filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+            filterTags.querySelectorAll('.filter-tag').forEach(tag => {
+                const f = tag.getAttribute('data-filter');
+                if (f === filterType || (filterType === 'all' && f === 'all')) {
+                    tag.classList.add('active');
+                } else {
+                    tag.classList.remove('active');
+                }
+            });
         }
 
         if (typeof updateHeroContent === 'function') updateHeroContent();
@@ -1308,13 +1302,17 @@ function syncActiveNavState(page) {
     if (desktopDock) {
         desktopDock.querySelectorAll('a').forEach(a => a.classList.remove('active'));
         const dockLink = desktopDock.querySelector(`[data-page="${page}"]`);
-        if (dockLink) dockLink.classList.add('active');
-        else if (page === 'deutsch') {
-            const dLink = desktopDock.querySelector('#dock-deutsch');
-            if (dLink) dLink.classList.add('active');
-        } else if (page === 'home' || page === 'blog') {
-            const homeLink = desktopDock.querySelector('#dock-home') || desktopDock.querySelector('#dock-blog');
+        if (dockLink) {
+            dockLink.classList.add('active');
+        } else if (page === 'home' || page === 'all') {
+            const homeLink = desktopDock.querySelector('#dock-home');
             if (homeLink) homeLink.classList.add('active');
+        } else if (page === 'blog') {
+            const bLink = desktopDock.querySelector('#dock-blog');
+            if (bLink) bLink.classList.add('active');
+        } else if (page === 'music') {
+            const mLink = desktopDock.querySelector('#dock-music');
+            if (mLink) mLink.classList.add('active');
         }
     }
 }
