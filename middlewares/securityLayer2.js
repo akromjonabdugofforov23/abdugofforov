@@ -29,12 +29,17 @@ const securityLayer2 = helmet({
             ],
             connectSrc: [
                 "'self'",
+                "https://abdugofforov.uz",
+                "https://*.abdugofforov.uz",
+                "https://ipapi.co",
                 "https://api.open-meteo.com",
                 "https://cloudflareinsights.com"
-            ]
+            ],
+            upgradeInsecureRequests: []
         }
     },
-    crossOriginOpenerPolicy: { policy: "same-origin" }
+    crossOriginOpenerPolicy: { policy: "same-origin" },
+    crossOriginResourcePolicy: { policy: "same-site" }
 });
 
 module.exports = securityLayer2;

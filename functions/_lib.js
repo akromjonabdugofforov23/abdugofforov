@@ -18,6 +18,13 @@ export function isAllowedOrigin(request, env) {
   let allowed = [];
   // So'rovning o'z origini (same-origin) doim ruxsat etiladi
   try { allowed.push(new URL(request.url).origin); } catch (e) {}
+  // Asosiy domen va subdomainlar avtomatik ruxsat etiladi
+  try {
+    const originUrl = new URL(origin);
+    if (originUrl.hostname === 'abdugofforov.uz' || originUrl.hostname.endsWith('.abdugofforov.uz')) {
+      allowed.push(origin);
+    }
+  } catch (e) {}
   // Qo'shimcha ruxsat etilgan originlar (vergul bilan ajratilgan ENV)
   if (env && env.ALLOWED_ORIGINS) {
     for (const o of String(env.ALLOWED_ORIGINS).split(',')) {

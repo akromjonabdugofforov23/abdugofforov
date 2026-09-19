@@ -9,7 +9,8 @@
 // leaderboard'da har foydalanuvchining ENG YAXSHI natijasi ko'rsatiladi.
 
 import {
-  jsonResponse, corsHeaders, getSessionUsername, getUser, randomHex
+  jsonResponse, corsHeaders, getSessionUsername, getUser, randomHex,
+  rateLimit, tooManyRequests
 } from './_lib.js';
 
 const SCORES_KEY = 'tournament:scores';
@@ -22,12 +23,16 @@ export async function onRequestOptions(context) {
 export async function onRequestPost(context) {
   const { env, request } = context;
   if (!env.POSTS_KV) {
-    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request);
+    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
+
+  // IP bo'yicha rate-limit: daqiqada 20 ta turnir natijasi yuborish
+  const rl = await rateLimit(env, request, 'tournament-post', 20, 60);
+  if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
 
   let body;
   try { body = await request.json(); } catch (e) {
-    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request);
+    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request, env);
   }
 
   const total = Math.max(1, Math.min(200, parseInt(body.total, 10) || 0));
@@ -68,7 +73,7 @@ export async function onRequestPost(context) {
   try {
     await env.POSTS_KV.put(SCORES_KEY, JSON.stringify(list));
   } catch (e) {
-    return jsonResponse({ ok: false, message: "Saqlashda xato" }, 500, request);
+    return jsonResponse({ ok: false, message: "Saqlashda xato" }, 500, request, env);
   }
 
   // Reyting o'rnini hisoblaymiz (eng yaxshi natijalar bo'yicha)
@@ -78,13 +83,13 @@ export async function onRequestPost(context) {
     (!entry.username && e.name === entry.name && e.score === entry.score)
   );
 
-  return jsonResponse({ ok: true, saved: entry, rank: rank >= 0 ? rank + 1 : null, totalPlayers: leaderboard.length }, 200, request);
+  return jsonResponse({ ok: true, saved: entry, rank: rank >= 0 ? rank + 1 : null, totalPlayers: leaderboard.length }, 200, request, env);
 }
 
 export async function onRequestGet(context) {
   const { env, request } = context;
   if (!env.POSTS_KV) {
-    return jsonResponse({ ok: true, leaderboard: [], configured: false }, 200, request);
+    return jsonResponse({ ok: true, leaderboard: [], configured: false }, 200, request, env);
   }
 
   let list = [];
@@ -95,7 +100,7 @@ export async function onRequestGet(context) {
   } catch (e) { list = []; }
 
   const leaderboard = buildLeaderboard(list).slice(0, 50);
-  return jsonResponse({ ok: true, leaderboard, count: leaderboard.length }, 200, request);
+  return jsonResponse({ ok: true, leaderboard, count: leaderboard.length }, 200, request, env);
 }
 
 // Har bir o'yinchining ENG YAXSHI natijasini olib, reyting bo'yicha tartiblaydi

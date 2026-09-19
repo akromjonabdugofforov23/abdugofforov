@@ -13,12 +13,12 @@ export async function onRequestOptions(context) {
 export async function onRequestGet(context) {
   const { env, request } = context;
   if (!env.POSTS_KV) {
-    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request);
+    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
 
   const admin = await isAdmin(env, request);
   if (!admin) {
-    return jsonResponse({ ok: false, message: "Ruxsat berilmadi (admin kerak)" }, 401, request);
+    return jsonResponse({ ok: false, message: "Ruxsat berilmadi (admin kerak)" }, 401, request, env);
   }
 
   const usernames = await getUsersIndex(env);
@@ -30,5 +30,5 @@ export async function onRequestGet(context) {
   // Eng yangi ro'yxatdan o'tganlar birinchi
   users.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-  return jsonResponse({ ok: true, users, count: users.length }, 200, request);
+  return jsonResponse({ ok: true, users, count: users.length }, 200, request, env);
 }

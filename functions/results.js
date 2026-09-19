@@ -7,7 +7,8 @@
 // Oxirgi 2000 ta natija saqlanadi (eskilari avtomatik tushib qoladi).
 
 import {
-  jsonResponse, corsHeaders, getSessionUsername, getUser, isAdmin, randomHex
+  jsonResponse, corsHeaders, getSessionUsername, getUser, isAdmin, randomHex,
+  rateLimit, tooManyRequests
 } from './_lib.js';
 
 const RESULTS_KEY = 'results:all';
@@ -21,17 +22,21 @@ export async function onRequestOptions(context) {
 export async function onRequestPost(context) {
   const { env, request } = context;
   if (!env.POSTS_KV) {
-    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request);
+    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
+
+  // IP bo'yicha rate-limit: daqiqada 30 ta natija saqlash
+  const rl = await rateLimit(env, request, 'results-post', 30, 60);
+  if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
 
   const username = await getSessionUsername(env, request);
   if (!username) {
-    return jsonResponse({ ok: false, message: "Tizimga kiring (natija saqlanmadi)" }, 401, request);
+    return jsonResponse({ ok: false, message: "Tizimga kiring (natija saqlanmadi)" }, 401, request, env);
   }
 
   let body;
   try { body = await request.json(); } catch (e) {
-    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request);
+    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request, env);
   }
 
   const total = Math.max(0, Math.min(200, parseInt(body.total, 10) || 0));
@@ -65,22 +70,22 @@ export async function onRequestPost(context) {
   try {
     await env.POSTS_KV.put(RESULTS_KEY, JSON.stringify(list));
   } catch (e) {
-    return jsonResponse({ ok: false, message: "Saqlashda xato" }, 500, request);
+    return jsonResponse({ ok: false, message: "Saqlashda xato" }, 500, request, env);
   }
 
-  return jsonResponse({ ok: true, saved: entry }, 200, request);
+  return jsonResponse({ ok: true, saved: entry }, 200, request, env);
 }
 
 // Admin barcha natijalarni oladi
 export async function onRequestGet(context) {
   const { env, request } = context;
   if (!env.POSTS_KV) {
-    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request);
+    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
 
   const admin = await isAdmin(env, request);
   if (!admin) {
-    return jsonResponse({ ok: false, message: "Ruxsat berilmadi (admin kerak)" }, 401, request);
+    return jsonResponse({ ok: false, message: "Ruxsat berilmadi (admin kerak)" }, 401, request, env);
   }
 
   let list = [];
@@ -90,5 +95,5 @@ export async function onRequestGet(context) {
     if (!Array.isArray(list)) list = [];
   } catch (e) { list = []; }
 
-  return jsonResponse({ ok: true, results: list, count: list.length }, 200, request);
+  return jsonResponse({ ok: true, results: list, count: list.length }, 200, request, env);
 }

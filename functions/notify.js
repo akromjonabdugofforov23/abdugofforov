@@ -4,11 +4,7 @@
 //   TELEGRAM_CHAT_ID    — sizning Telegram chat ID raqamingiz
 // O'zgaruvchilar bo'lmasa, funksiya jimgina o'tkazib yuboradi (xato bermaydi).
 
-const JSON_HEADERS = {
-  'Content-Type': 'application/json',
-  'X-Content-Type-Options': 'nosniff',
-  'Cache-Control': 'no-store'
-};
+import { jsonResponse, corsHeaders } from './_lib.js';
 
 // IP bo'yicha oddiy rate-limit (KV asosida) — bu endpoint autentifikatsiyasiz
 // bo'lgani uchun spam/abuse'ning oldini olish kerak.
@@ -33,6 +29,10 @@ async function notifyRateLimit(env, request, max, windowSec) {
   return rec.count <= max;
 }
 
+export async function onRequestOptions(context) {
+  return new Response(null, { headers: corsHeaders(context.request, context.env) });
+}
+
 export async function onRequestPost(context) {
   const { request, env } = context;
 
@@ -41,16 +41,13 @@ export async function onRequestPost(context) {
 
   // Sozlanmagan bo'lsa — xavfsiz tarzda o'tkazib yuboramiz
   if (!token || !chatId) {
-    return new Response(JSON.stringify({ ok: false, configured: false }), { headers: JSON_HEADERS });
+    return jsonResponse({ ok: false, configured: false }, 200, request, env);
   }
 
   // Spam/abuse'ga qarshi: 10 daqiqada 10 ta xabar
   const allowed = await notifyRateLimit(env, request, 10, 600);
   if (!allowed) {
-    return new Response(JSON.stringify({ ok: false, message: 'rate_limited' }), {
-      status: 429,
-      headers: { ...JSON_HEADERS, 'Retry-After': '600' },
-    });
+    return jsonResponse({ ok: false, message: 'rate_limited' }, 429, request, env);
   }
 
   let payload = {};
@@ -70,8 +67,8 @@ export async function onRequestPost(context) {
       body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true })
     });
     const ok = tgRes.ok;
-    return new Response(JSON.stringify({ ok, configured: true }), { headers: JSON_HEADERS });
+    return jsonResponse({ ok, configured: true }, 200, request, env);
   } catch (e) {
-    return new Response(JSON.stringify({ ok: false, configured: true, error: 'send_failed' }), { headers: JSON_HEADERS });
+    return jsonResponse({ ok: false, configured: true, error: 'send_failed' }, 500, request, env);
   }
 }

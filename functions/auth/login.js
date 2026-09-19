@@ -26,26 +26,26 @@ export async function onRequestPost(context) {
 
   let body;
   try { body = await request.json(); } catch (e) {
-    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request);
+    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request, env);
   }
 
   const username = normUsername(body.username);
   const password = String(body.password || '');
 
   if (!username || !password) {
-    return jsonResponse({ ok: false, message: "Username va parol kerak" }, 400, request);
+    return jsonResponse({ ok: false, message: "Username va parol kerak" }, 400, request, env);
   }
 
   const user = await getUser(env, username);
   if (!user) {
-    return jsonResponse({ ok: false, message: "Username yoki parol noto'g'ri" }, 401, request);
+    return jsonResponse({ ok: false, message: "Username yoki parol noto'g'ri" }, 401, request, env);
   }
 
   const valid = await verifyPassword(password, user.salt, user.passHash);
   if (!valid) {
-    return jsonResponse({ ok: false, message: "Username yoki parol noto'g'ri" }, 401, request);
+    return jsonResponse({ ok: false, message: "Username yoki parol noto'g'ri" }, 401, request, env);
   }
 
   const token = await createSession(env, username);
-  return jsonResponse({ ok: true, token, user: publicUser(user) }, 200, request);
+  return jsonResponse({ ok: true, token, user: publicUser(user) }, 200, request, env);
 }

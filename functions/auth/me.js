@@ -13,18 +13,18 @@ export async function onRequestOptions(context) {
 export async function onRequestGet(context) {
   const { env, request } = context;
   if (!env.POSTS_KV) {
-    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request);
+    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
 
   const username = await getSessionUsername(env, request);
   if (!username) {
-    return jsonResponse({ ok: false, message: "Tizimga kirilmagan" }, 401, request);
+    return jsonResponse({ ok: false, message: "Tizimga kirilmagan" }, 401, request, env);
   }
 
   const user = await getUser(env, username);
   if (!user) {
-    return jsonResponse({ ok: false, message: "Foydalanuvchi topilmadi" }, 404, request);
+    return jsonResponse({ ok: false, message: "Foydalanuvchi topilmadi" }, 404, request, env);
   }
 
-  return jsonResponse({ ok: true, user: publicUser(user) }, 200, request);
+  return jsonResponse({ ok: true, user: publicUser(user) }, 200, request, env);
 }

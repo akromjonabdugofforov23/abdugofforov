@@ -26,7 +26,7 @@ export async function onRequestPost(context) {
 
   let body;
   try { body = await request.json(); } catch (e) {
-    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request);
+    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request, env);
   }
 
   const name = String(body.name || '').trim().slice(0, 50);
@@ -34,18 +34,18 @@ export async function onRequestPost(context) {
   const password = String(body.password || '');
 
   if (!name || name.length < 2) {
-    return jsonResponse({ ok: false, message: "Ism kamida 2 ta belgi bo'lishi kerak" }, 400, request);
+    return jsonResponse({ ok: false, message: "Ism kamida 2 ta belgi bo'lishi kerak" }, 400, request, env);
   }
   if (!validUsername(username)) {
-    return jsonResponse({ ok: false, message: "Username 3-20 ta belgi: faqat a-z, 0-9, _" }, 400, request);
+    return jsonResponse({ ok: false, message: "Username 3-20 ta belgi: faqat a-z, 0-9, _" }, 400, request, env);
   }
   if (password.length < 6) {
-    return jsonResponse({ ok: false, message: "Parol kamida 6 ta belgi bo'lishi kerak" }, 400, request);
+    return jsonResponse({ ok: false, message: "Parol kamida 6 ta belgi bo'lishi kerak" }, 400, request, env);
   }
 
   const existing = await getUser(env, username);
   if (existing) {
-    return jsonResponse({ ok: false, message: "Bu username band. Boshqasini tanlang." }, 409, request);
+    return jsonResponse({ ok: false, message: "Bu username band. Boshqasini tanlang." }, 409, request, env);
   }
 
   const { hash, salt } = await hashPassword(password);
@@ -57,5 +57,5 @@ export async function onRequestPost(context) {
   await addUserToIndex(env, username);
 
   const token = await createSession(env, username);
-  return jsonResponse({ ok: true, token, user: publicUser(user) }, 200, request);
+  return jsonResponse({ ok: true, token, user: publicUser(user) }, 200, request, env);
 }
