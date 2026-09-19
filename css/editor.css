@@ -1,5 +1,5 @@
 /* ============================================================
-   ZEN CREATIVE WRITING STUDIO (NOTION / MEDIUM USLUBIDAGI EDITOR)
+   ZEN WRITING STUDIO — MODERN EDITORIAL WRITING INTERFACE
    ============================================================ */
 
 .zen-editor-overlay {
@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    animation: zenFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: zenFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 [data-theme="light"] .zen-editor-overlay {
@@ -33,41 +33,50 @@
 
 /* ---------- Top Navbar ---------- */
 .zen-navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 12px 28px;
-    background: rgba(10, 16, 26, 0.75);
+    height: 62px;
+    background: rgba(10, 16, 26, 0.8);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
     flex-shrink: 0;
-    z-index: 10;
+    z-index: 20;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
 }
 
 [data-theme="light"] .zen-navbar {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.9);
     border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.zen-nav-inner {
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
 }
 
 .zen-nav-left, .zen-nav-right {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
 .zen-btn-back {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     background: transparent;
     border: none;
     color: var(--text-secondary, #94a3b8);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    padding: 6px 12px;
+    padding: 6px 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
 }
@@ -144,6 +153,7 @@
     padding: 4px 10px;
     border-radius: 20px;
     background: rgba(255, 255, 255, 0.04);
+    white-space: nowrap;
 }
 
 .zen-publish-btn {
@@ -160,6 +170,7 @@
     cursor: pointer;
     box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .zen-publish-btn:hover {
@@ -176,39 +187,39 @@
 .zen-canvas {
     flex: 1;
     overflow-y: auto;
-    padding: 30px 20px 80px 20px;
+    padding: 36px 20px 100px;
     display: flex;
     justify-content: center;
 }
 
 .zen-content-wrap {
     width: 100%;
-    max-width: 780px;
+    max-width: 860px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
 /* ---------- Cover Image Zone ---------- */
 .zen-cover-zone {
     position: relative;
-    border-radius: 16px;
+    border-radius: 14px;
     overflow: hidden;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .zen-cover-empty {
-    padding: 6px 0;
+    padding: 4px 0;
 }
 
 .zen-add-cover-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 14px;
+    padding: 7px 14px;
     font-size: 13px;
     color: var(--text-secondary, #94a3b8);
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
     border: 1px dashed var(--border-color, rgba(255, 255, 255, 0.15));
     border-radius: 10px;
     cursor: pointer;
@@ -224,8 +235,8 @@
 .zen-cover-preview {
     position: relative;
     width: 100%;
-    height: 280px;
-    border-radius: 16px;
+    height: 260px;
+    border-radius: 14px;
     overflow: hidden;
     background: #09121a;
 }
@@ -239,13 +250,13 @@
 
 .zen-cover-actions {
     position: absolute;
-    bottom: 14px;
-    right: 14px;
+    bottom: 12px;
+    right: 12px;
     display: flex;
     gap: 8px;
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(8px);
-    padding: 6px;
+    padding: 5px;
     border-radius: 8px;
 }
 
@@ -254,7 +265,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #ffffff;
     font-size: 12px;
-    padding: 5px 10px;
+    padding: 4px 10px;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -272,8 +283,8 @@
 .zen-url-popover {
     display: flex;
     gap: 8px;
-    margin-top: 10px;
-    padding: 10px;
+    margin-top: 8px;
+    padding: 8px;
     background: rgba(15, 23, 42, 0.95);
     border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15));
     border-radius: 10px;
@@ -290,168 +301,61 @@
     outline: none;
 }
 
-/* ---------- Category Chips ---------- */
-.zen-category-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.zen-section-label {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-muted, #64748b);
-}
-
-.zen-chips {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.zen-chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 14px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-secondary, #94a3b8);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.zen-chip:hover {
-    color: var(--text-primary, #ffffff);
-    border-color: var(--accent-color, #8b5cf6);
-    background: rgba(139, 92, 246, 0.08);
-}
-
-.zen-chip.active {
-    color: #ffffff;
-    background: var(--accent-color, #8b5cf6);
-    border-color: var(--accent-color, #8b5cf6);
-    box-shadow: 0 2px 10px rgba(139, 92, 246, 0.35);
-}
-
-/* ---------- Media Boxes (Music / Video) ---------- */
-.zen-media-box {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
-    border-radius: 14px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-[data-theme="light"] .zen-media-box {
-    background: rgba(0, 0, 0, 0.02);
-}
-
-.zen-media-head {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent-color, #8b5cf6);
-}
-
-.zen-media-inputs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-@media (max-width: 600px) {
-    .zen-media-inputs { grid-template-columns: 1fr; }
-}
-
-.zen-field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.zen-field-group label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: var(--text-muted, #64748b);
-}
-
-.zen-field-group input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
-    color: var(--text-primary, #ffffff);
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 13px;
-    outline: none;
-}
-
-.zen-field-group input:focus {
-    border-color: var(--accent-color, #8b5cf6);
-}
-
-.zen-file-badge {
-    font-size: 11px;
-    color: #22c55e;
-    margin-top: 2px;
-}
-
-/* ---------- Title & Subtitle ---------- */
+/* ---------- Title & Subtitle Typography ---------- */
 .zen-title-input {
     width: 100%;
     background: transparent;
     border: none;
     outline: none;
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(30px, 4.5vw, 44px);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: clamp(24px, 3.2vw, 36px);
     font-weight: 700;
-    line-height: 1.25;
+    line-height: 1.35;
+    letter-spacing: -0.025em;
     color: var(--text-primary, #ffffff);
     resize: none;
     overflow: hidden;
-    padding: 4px 0;
-    margin-top: 10px;
+    padding: 6px 0;
+    margin: 0;
 }
 
 .zen-title-input::placeholder {
-    color: rgba(148, 163, 184, 0.4);
+    color: rgba(148, 163, 184, 0.35);
+    font-weight: 600;
 }
 
 .zen-subtitle-input {
     width: 100%;
     background: transparent;
     border: none;
-    border-bottom: 1px solid transparent;
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
     outline: none;
-    font-size: 16px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.6;
     color: var(--text-secondary, #94a3b8);
-    padding: 6px 0;
+    padding: 4px 0 10px 0;
     transition: border-color 0.2s ease;
 }
 
 .zen-subtitle-input:focus {
-    border-bottom-color: var(--border-color, rgba(255, 255, 255, 0.15));
+    border-bottom-color: var(--accent-color, #8b5cf6);
 }
 
 .zen-subtitle-input::placeholder {
-    color: rgba(148, 163, 184, 0.4);
-    font-style: italic;
+    color: rgba(148, 163, 184, 0.35);
 }
 
-/* ---------- Tags input ---------- */
+/* ---------- Tags Input ---------- */
 .zen-tags-input-wrap {
     display: flex;
     align-items: center;
-    gap: 6px;
-    color: var(--text-muted, #64748b);
-    font-size: 14px;
+    gap: 8px;
+    padding: 7px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+    border-radius: 9px;
+    font-size: 13.5px;
 }
 
 .zen-hash-icon {
@@ -469,41 +373,43 @@
 }
 
 .zen-tags-input::placeholder {
-    color: rgba(148, 163, 184, 0.4);
+    color: rgba(148, 163, 184, 0.35);
 }
 
 /* ---------- Sticky Formatting Toolbar ---------- */
 .zen-toolbar {
     position: sticky;
     top: 0;
-    z-index: 5;
+    z-index: 10;
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 6px 10px;
-    background: rgba(15, 23, 42, 0.85);
+    gap: 3px;
+    padding: 5px 8px;
+    background: rgba(15, 23, 42, 0.9);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
-    border-radius: 12px;
-    margin: 6px 0 14px 0;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    margin: 4px 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    max-width: 100%;
     overflow-x: auto;
 }
 
 [data-theme="light"] .zen-toolbar {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 .zen-toolbar button {
     background: transparent;
     border: none;
     color: var(--text-secondary, #94a3b8);
-    min-width: 32px;
-    height: 32px;
-    padding: 0 8px;
+    min-width: 30px;
+    height: 30px;
+    padding: 0 6px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -521,21 +427,21 @@
 
 .zen-tb-sep {
     width: 1px;
-    height: 18px;
+    height: 16px;
     background: var(--border-color, rgba(255, 255, 255, 0.12));
-    margin: 0 4px;
+    margin: 0 3px;
 }
 
 /* ---------- Editor Textarea Pane ---------- */
 .zen-textarea {
     width: 100%;
-    min-height: 480px;
+    min-height: 420px;
     background: transparent;
     border: none;
     outline: none;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 17px;
-    line-height: 1.85;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16.5px;
+    line-height: 1.8;
     color: var(--text-primary, #e2e8f0);
     resize: none;
     padding: 10px 0 60px 0;
@@ -552,36 +458,37 @@
 
 /* ---------- Live Preview Pane ---------- */
 .zen-preview-article {
-    min-height: 480px;
-    padding: 20px 0 60px 0;
+    min-height: 420px;
+    padding: 10px 0 60px 0;
     color: var(--text-primary, #e2e8f0);
-    font-size: 17px;
+    font-size: 16.5px;
     line-height: 1.85;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 .zen-preview-article h1,
 .zen-preview-article h2,
 .zen-preview-article h3 {
-    font-family: 'Playfair Display', serif;
     color: var(--text-primary, #ffffff);
-    margin: 1.6em 0 0.6em 0;
-    line-height: 1.3;
+    margin: 1.5em 0 0.5em 0;
+    line-height: 1.35;
+    font-weight: 700;
 }
 
-.zen-preview-article h1 { font-size: 32px; }
-.zen-preview-article h2 { font-size: 26px; }
-.zen-preview-article h3 { font-size: 21px; }
+.zen-preview-article h1 { font-size: 28px; }
+.zen-preview-article h2 { font-size: 23px; }
+.zen-preview-article h3 { font-size: 19px; }
 
 .zen-preview-article p {
-    margin-bottom: 1.4em;
+    margin-bottom: 1.3em;
 }
 
 .zen-preview-article blockquote {
-    margin: 1.6em 0;
-    padding: 14px 22px;
+    margin: 1.4em 0;
+    padding: 12px 18px;
     border-left: 3px solid var(--accent-color, #8b5cf6);
     background: rgba(139, 92, 246, 0.06);
-    border-radius: 0 12px 12px 0;
+    border-radius: 0 10px 10px 0;
     font-style: italic;
     color: var(--text-secondary, #cbd5e1);
 }
@@ -589,42 +496,63 @@
 .zen-preview-article ul,
 .zen-preview-article ol {
     margin: 1.2em 0;
-    padding-left: 28px;
+    padding-left: 26px;
 }
 
 .zen-preview-article li {
-    margin-bottom: 0.6em;
+    margin-bottom: 0.5em;
 }
 
 .zen-preview-article img {
     max-width: 100%;
     border-radius: 12px;
-    margin: 1.6em 0;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    margin: 1.5em 0;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
 }
 
 .zen-preview-article pre {
     background: #09121a;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    padding: 16px;
+    padding: 14px;
     overflow-x: auto;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    margin: 1.6em 0;
+    font-size: 13.5px;
+    margin: 1.5em 0;
 }
 
 .zen-preview-article code {
     background: rgba(255, 255, 255, 0.08);
-    padding: 2px 6px;
-    border-radius: 5px;
+    padding: 2px 5px;
+    border-radius: 4px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
+    font-size: 13.5px;
 }
 
 .zen-preview-article hr {
     border: none;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--border-color, rgba(255, 255, 255, 0.15)), transparent);
-    margin: 2.4em 0;
+    margin: 2em 0;
+}
+
+/* ---------- Mobile Responsive ---------- */
+@media (max-width: 768px) {
+    .zen-navbar {
+        padding: 0 12px;
+        height: 56px;
+    }
+    .zen-canvas {
+        padding: 20px 14px 80px;
+    }
+    .zen-stats-pill {
+        display: none;
+    }
+    .zen-btn-back span {
+        display: none;
+    }
+    .zen-publish-btn {
+        padding: 7px 14px;
+        font-size: 12.5px;
+    }
 }

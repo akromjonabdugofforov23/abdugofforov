@@ -1,19 +1,7 @@
-
-
-
 // Abdugofforov Blog & Portfolio - JavaScript Engine
 
 function getCategoryIcon(category, type) {
-    if (!category) return '📝';
-    if (category === 'Borishga arziydigan joylar') return '✈️';
-    if (category === 'Musiqa') return '🎵';
-    if (category === 'Video') return '🎥';
-    if (category === 'Loyiha') return '💼';
-    
-    if (type === 'music') return '🎵';
-    if (type === 'video') return '🎥';
-    if (type === 'image') return '🖼️';
-    return '📝';
+    return '✍️';
 }
 
 function escapeHTML(str) {
@@ -117,7 +105,7 @@ const SearchEngine = {
             return {
                 id: p.id,
                 type: 'post',
-                category: p.category || 'Kundalik Blog',
+                category: p.category || 'Maqola',
                 title: p.title || '',
                 excerpt: p.excerpt || '',
                 normText: this.normalize(rawText),
@@ -1196,7 +1184,7 @@ if (mainNav) {
             filterType = 'project';
         } else {
             const activeTag = filterTags ? filterTags.querySelector('.filter-tag.active') : null;
-            filterType = activeTag && activeTag.getAttribute('data-filter') ? activeTag.getAttribute('data-filter') : 'Kundalik Blog';
+            filterType = activeTag && activeTag.getAttribute('data-filter') ? activeTag.getAttribute('data-filter') : 'all';
         }
 
         if (filterTags) {
@@ -1266,9 +1254,7 @@ if (desktopDock) {
         
         currentTab = page;
         if (page === 'blog') {
-            filterType = 'Kundalik Blog';
-        } else if (page === 'music') {
-            filterType = 'Musiqa';
+            filterType = 'all';
         } else if (page === 'projects') {
             filterType = 'project';
         } else {
@@ -1386,7 +1372,7 @@ if (searchInput) searchInput.addEventListener('input', (e) => {
         } else {
             // Qidiruv tozalandi — kategoriya tanlanmagan bo'lsa, dastlabki holatga qaytamiz
             const activeBtn = filterTags.querySelector('.filter-tag.active');
-            if (!activeBtn) filterType = 'Kundalik Blog';
+            if (!activeBtn) filterType = 'all';
             renderPosts(true);
         }
     }, 120);
@@ -1646,28 +1632,13 @@ const zenCoverUrlInput = document.getElementById('zen-cover-url-input');
 const zenApplyUrlBtn = document.getElementById('zen-apply-url-btn');
 const zenCancelUrlBtn = document.getElementById('zen-cancel-url-btn');
 
-const zenCategoryChips = document.getElementById('zen-category-chips');
-const zenMusicBox = document.getElementById('zen-music-box');
-const zenVideoBox = document.getElementById('zen-video-box');
-const zenMusicArtist = document.getElementById('zen-music-artist');
-const zenMusicLink = document.getElementById('zen-music-link');
-const zenMusicFile = document.getElementById('zen-music-file');
-const zenMusicFileName = document.getElementById('zen-music-file-name');
-const zenVideoFile = document.getElementById('zen-video-file');
-const zenVideoFileName = document.getElementById('zen-video-file-name');
-
 const zenTitle = document.getElementById('zen-title');
 const zenExcerpt = document.getElementById('zen-excerpt');
 const zenTags = document.getElementById('zen-tags');
 const zenToolbar = document.getElementById('zen-toolbar');
 const zenContent = document.getElementById('zen-content');
 
-let zenSelectedCategory = 'Kundalik Blog';
 let pendingImageData = null;
-let pendingMusicData = null;
-let pendingMusicName = null;
-let pendingVideoData = null;
-let pendingVideoName = null;
 let zenDraftTimer = null;
 
 function compressImage(file, maxSize = 1920, quality = 0.9) {
@@ -1694,15 +1665,6 @@ function compressImage(file, maxSize = 1920, quality = 0.9) {
             img.onerror = reject;
             img.src = e.target.result;
         };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-    });
-}
-
-function readFileAsDataURL(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
         reader.onerror = reject;
         reader.readAsDataURL(file);
     });
@@ -1736,10 +1698,7 @@ function scheduleZenDraftSave() {
                 excerpt: zenExcerpt ? zenExcerpt.value : '',
                 content: zenContent ? zenContent.value : '',
                 tags: zenTags ? zenTags.value : '',
-                category: zenSelectedCategory,
                 image: pendingImageData,
-                artist: zenMusicArtist ? zenMusicArtist.value : '',
-                link: zenMusicLink ? zenMusicLink.value : '',
                 updatedAt: Date.now()
             };
             localStorage.setItem('zen_studio_draft', JSON.stringify(draft));
@@ -1764,17 +1723,6 @@ function setZenCover(dataUrl) {
     }
 }
 
-function selectZenCategory(cat) {
-    zenSelectedCategory = cat || 'Kundalik Blog';
-    if (zenCategoryChips) {
-        zenCategoryChips.querySelectorAll('.zen-chip').forEach(c => {
-            c.classList.toggle('active', c.getAttribute('data-cat') === zenSelectedCategory);
-        });
-    }
-    if (zenMusicBox) zenMusicBox.style.display = (zenSelectedCategory === 'Musiqa') ? 'flex' : 'none';
-    if (zenVideoBox) zenVideoBox.style.display = (zenSelectedCategory === 'Video') ? 'flex' : 'none';
-}
-
 function switchZenTab(mode) {
     if (mode === 'preview') {
         if (zenTabPreview) zenTabPreview.classList.add('active');
@@ -1789,10 +1737,9 @@ function switchZenTab(mode) {
             
             let html = '';
             if (pendingImageData) {
-                html += `<img src="${cssUrl(pendingImageData)}" style="width:100%;max-height:340px;object-fit:cover;border-radius:14px;margin-bottom:24px;">`;
+                html += `<img src="${cssUrl(pendingImageData)}" style="width:100%;max-height:320px;object-fit:cover;border-radius:14px;margin-bottom:24px;">`;
             }
-            html += `<div style="font-size:12px;font-weight:700;color:var(--accent-color);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">${escapeHTML(zenSelectedCategory)}</div>`;
-            html += `<h1 style="font-family:'Playfair Display',serif;font-size:32px;margin:0 0 16px 0;line-height:1.2;">${escapeHTML(rawTitle || 'Sarlavhasiz')}</h1>`;
+            html += `<h1 style="font-size:28px;font-weight:700;margin:0 0 12px 0;line-height:1.3;color:var(--text-primary);">${escapeHTML(rawTitle || 'Sarlavhasiz')}</h1>`;
             if (rawExcerpt) {
                 html += `<blockquote style="font-size:16px;color:var(--text-secondary);font-style:italic;margin-bottom:20px;">${escapeHTML(rawExcerpt)}</blockquote>`;
             }
@@ -1821,24 +1768,7 @@ function openZenEditor(postId = null) {
             if (zenExcerpt) zenExcerpt.value = post.excerpt || '';
             if (zenContent) zenContent.value = post.content || '';
             if (zenTags) zenTags.value = (post.tags || []).join(', ');
-            selectZenCategory(post.category || 'Kundalik Blog');
             setZenCover(post.image || null);
-
-            if (zenMusicArtist) zenMusicArtist.value = post.artist || '';
-            if (zenMusicLink) zenMusicLink.value = post.link || '';
-            pendingMusicData = post.musicData || null;
-            pendingMusicName = post.musicName || null;
-            if (zenMusicFileName) {
-                zenMusicFileName.textContent = post.musicName ? `🎵 ${post.musicName}` : '';
-                zenMusicFileName.style.display = post.musicName ? 'block' : 'none';
-            }
-
-            pendingVideoData = post.videoData || null;
-            pendingVideoName = post.videoName || null;
-            if (zenVideoFileName) {
-                zenVideoFileName.textContent = post.videoName ? `🎬 ${post.videoName}` : '';
-                zenVideoFileName.style.display = post.videoName ? 'block' : 'none';
-            }
         }
     } else {
         if (zenPublishLabel) zenPublishLabel.textContent = "Chop etish";
@@ -1851,25 +1781,13 @@ function openZenEditor(postId = null) {
             if (zenExcerpt) zenExcerpt.value = draft.excerpt || '';
             if (zenContent) zenContent.value = draft.content || '';
             if (zenTags) zenTags.value = draft.tags || '';
-            selectZenCategory(draft.category || 'Kundalik Blog');
             setZenCover(draft.image || null);
-            if (zenMusicArtist) zenMusicArtist.value = draft.artist || '';
-            if (zenMusicLink) zenMusicLink.value = draft.link || '';
         } else {
             if (zenTitle) zenTitle.value = '';
             if (zenExcerpt) zenExcerpt.value = '';
             if (zenContent) zenContent.value = '';
             if (zenTags) zenTags.value = '';
-            selectZenCategory('Kundalik Blog');
             setZenCover(null);
-            if (zenMusicArtist) zenMusicArtist.value = '';
-            if (zenMusicLink) zenMusicLink.value = '';
-            if (zenMusicFileName) zenMusicFileName.style.display = 'none';
-            if (zenVideoFileName) zenVideoFileName.style.display = 'none';
-            pendingMusicData = null;
-            pendingMusicName = null;
-            pendingVideoData = null;
-            pendingVideoName = null;
         }
     }
 
@@ -1919,7 +1837,7 @@ function insertFormatting(cmd) {
             newCursorPos = start + replacement.length;
             break;
         case 'quote':
-            replacement = selected ? `\n> ${selected}\n` : `\n> Iqtibos matni\n`;
+            replacement = selected ? `\n> ${selected}\n` : `\n> Iqtibos matni...\n`;
             newCursorPos = start + replacement.length;
             break;
         case 'ul':
@@ -1927,26 +1845,26 @@ function insertFormatting(cmd) {
             newCursorPos = start + replacement.length;
             break;
         case 'ol':
-            replacement = selected ? `\n1. ${selected}\n` : `\n1. Element 1\n2. Element 2\n`;
+            replacement = selected ? `\n1. ${selected}\n` : `\n1. Birinchi qadam\n2. Ikkinchi qadam\n`;
             newCursorPos = start + replacement.length;
             break;
         case 'code':
-            replacement = selected ? `\n\`\`\`javascript\n${selected}\n\`\`\`\n` : `\n\`\`\`javascript\n// kod bu yerda\n\`\`\`\n`;
+            replacement = selected ? `\n\`\`\`javascript\n${selected}\n\`\`\`\n` : `\n\`\`\`javascript\n// kod yozing\n\`\`\`\n`;
             newCursorPos = start + replacement.length;
             break;
         case 'link':
-            const url = prompt("Havolani kiriting (URL):", "https://");
+            const url = prompt("Havola (URL) manzilini kiriting:", "https://");
             if (url) {
-                replacement = `[${selected || 'havola matni'}](${url})`;
+                replacement = `[${selected || 'Havola matni'}](${url})`;
                 newCursorPos = start + replacement.length;
             } else {
                 return;
             }
             break;
         case 'img':
-            const imgUrl = prompt("Rasm havolasini kiriting (URL):", "https://");
+            const imgUrl = prompt("Rasm havolasini (URL) kiriting:", "https://");
             if (imgUrl) {
-                replacement = `\n![${selected || 'rasm'}](${imgUrl})\n`;
+                replacement = `\n![${selected || 'Rasm tavsifi'}](${imgUrl})\n`;
                 newCursorPos = start + replacement.length;
             } else {
                 return;
@@ -1992,16 +1910,6 @@ if (zenContent) {
     });
 }
 
-if (zenCategoryChips) {
-    zenCategoryChips.addEventListener('click', (e) => {
-        const chip = e.target.closest('.zen-chip');
-        if (chip) {
-            selectZenCategory(chip.getAttribute('data-cat'));
-            scheduleZenDraftSave();
-        }
-    });
-}
-
 // Cover image handlers
 if (zenTriggerCoverBtn) zenTriggerCoverBtn.addEventListener('click', () => zenCoverFile?.click());
 if (zenChangeCoverBtn) zenChangeCoverBtn.addEventListener('click', () => zenCoverFile?.click());
@@ -2041,41 +1949,6 @@ if (zenCancelUrlBtn) {
     });
 }
 
-// Music & Video files
-if (zenMusicFile) {
-    zenMusicFile.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        try {
-            pendingMusicData = await readFileAsDataURL(file);
-            pendingMusicName = file.name;
-            if (zenMusicFileName) {
-                zenMusicFileName.textContent = `🎵 ${file.name}`;
-                zenMusicFileName.style.display = 'block';
-            }
-        } catch (err) {
-            alert("Musiqa faylini o'qishda xatolik.");
-        }
-    });
-}
-
-if (zenVideoFile) {
-    zenVideoFile.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        try {
-            pendingVideoData = await readFileAsDataURL(file);
-            pendingVideoName = file.name;
-            if (zenVideoFileName) {
-                zenVideoFileName.textContent = `🎬 ${file.name}`;
-                zenVideoFileName.style.display = 'block';
-            }
-        } catch (err) {
-            alert("Video faylini o'qishda xatolik.");
-        }
-    });
-}
-
 if (zenToolbar) {
     zenToolbar.addEventListener('click', (e) => {
         const btn = e.target.closest('button[data-cmd]');
@@ -2104,25 +1977,8 @@ if (zenPublishBtn) {
 
         const tagsRaw = zenTags ? zenTags.value : '';
         const tags = tagsRaw.split(',').map(t => t.trim().replace(/^#/, '')).filter(Boolean).slice(0, 8);
-
-        // Type
-        let type = 'memory';
-        const artist = zenMusicArtist ? zenMusicArtist.value.trim() : '';
-        const link = zenMusicLink ? zenMusicLink.value.trim() : '';
-        if (zenSelectedCategory === 'Musiqa' || pendingMusicData || link) {
-            type = 'music';
-        } else if (zenSelectedCategory === 'Video' || pendingVideoData) {
-            type = 'video';
-        } else if (zenSelectedCategory === 'Loyiha') {
-            type = 'project';
-        }
-
-        let image = pendingImageData;
-        if (!image) {
-            if (type === 'music') image = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600';
-            else if (type === 'video') image = 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=600';
-            else image = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600';
-        }
+        const category = (tags && tags.length > 0) ? tags[0] : 'Maqola';
+        const image = pendingImageData || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600';
 
         if (editingPostId) {
             const postIndex = posts.findIndex(p => p.id === editingPostId);
@@ -2130,18 +1986,12 @@ if (zenPublishBtn) {
                 posts[postIndex] = {
                     ...posts[postIndex],
                     title,
-                    category: zenSelectedCategory,
-                    type,
+                    category,
+                    type: 'article',
                     image,
                     excerpt,
                     content,
-                    tags,
-                    artist: type === 'music' ? artist : (posts[postIndex].artist || null),
-                    link: type === 'music' ? link : (posts[postIndex].link || null),
-                    musicData: type === 'music' ? (pendingMusicData || posts[postIndex].musicData || null) : null,
-                    musicName: type === 'music' ? (pendingMusicName || posts[postIndex].musicName || null) : null,
-                    videoData: type === 'video' ? (pendingVideoData || posts[postIndex].videoData || null) : null,
-                    videoName: type === 'video' ? (pendingVideoName || posts[postIndex].videoName || null) : null
+                    tags
                 };
             }
             editingPostId = null;
@@ -2150,18 +2000,12 @@ if (zenPublishBtn) {
             const newPost = {
                 id: Date.now(),
                 title,
-                category: zenSelectedCategory,
-                type,
+                category,
+                type: 'article',
                 excerpt,
                 content,
                 image,
                 tags,
-                artist: type === 'music' ? artist : null,
-                link: type === 'music' ? link : null,
-                musicData: type === 'music' ? pendingMusicData : null,
-                musicName: type === 'music' ? pendingMusicName : null,
-                videoData: type === 'video' ? pendingVideoData : null,
-                videoName: type === 'video' ? pendingVideoName : null,
                 date: new Date().toISOString().split('T')[0],
                 likes: 0,
                 liked: false,
@@ -3275,9 +3119,9 @@ function getHighValueDefaultPosts() {
     return [
         {
             id: 'post_goethe_guide_1',
-            type: 'memory',
+            type: 'article',
             title: "🇩🇪 Goethe Zertifikat A1-B1 Imtihonini 1-Marta Topshirish Sirlari va Tayyorgarlik Rejasi",
-            category: "Kundalik Blog",
+            category: "Maqola",
             excerpt: "Nemis tili imtihonidan muvaffaqiyatli o'tish uchun Hören, Lesen, Schreiben va Sprechen bo'limlari bo'yicha amaliy maslahatlar va eng ko'p yo'l qo'yiladigan xatolar.",
             content: "## 🇩🇪 Goethe Zertifikat Imtihoniga Mukammal Tayyorgarlik\n\nNemis tili xalqaro sertifikatini (A1, A2, B1) birinchi urinishda topshirish uchun faqat so'z yodlash yetarli emas. Imtihon formatini va baholash mezonlarini to'g'ri tushunish o'ta muhimdir.\n\n---\n\n### 1. 🎧 Hören (Eshitib tushunish)\n- **Asosiy sir:** Savollarni audio boshlanishidan oldin berilgan 15-30 soniya ichida ko'zdan kechirib, kalit so'zlarga (Keywords) tagiga chizing.\n- Sonlar, vaqtlar va narxlarda (masalan, *14:30* yoki *40 Euro*) aldatuvchi variantlarga e'tibor bering.\n\n---\n\n### 2. 📖 Lesen (O'qib tushunish)\n- Har bir matnni so'zma-so'z tarjima qilish shart emas. Asosiy maqsad — savoldagi iboraning **sinonimini (Synonyme)** matndan topish.\n\n---\n\n### 3. ✍️ Schreiben (Yozma ish)\n- Xat yozishda 3 ta asosiy topshiriq (Punkte) beriladi. Ularning har biriga kamida **2-3 ta gap** bilan javob bering.\n- Standart kirish/chiqish iboralari (`Sehr geehrte Damen und Herren`, `Ich schreibe Ihnen, weil...`) ni xatosiz yoddan biling.\n\n---\n\n### 4. 🗣️ Sprechen (Og'zaki imtihon)\n- Sherigingiz bilan muloqotda adashib ketsangiz to'xtab qolmang: *\"Entschuldigung, ich meine...\"* deb qayta ayting.\n- Imtihon oluvchi balni grammatikadan ko'ra **erkin va ishonchli gapirishingizga** qarab qo'yadi!",
             image: "images/neuschwanstein.webp",
@@ -3289,9 +3133,9 @@ function getHighValueDefaultPosts() {
         },
         {
             id: 'post_roadmap_2026',
-            type: 'memory',
+            type: 'article',
             title: "💻 2026-Yilda Zamonaviy Web Dasturchi Bo'lish Yo'l Xaritasi (Roadmap)",
-            category: "Kundalik Blog",
+            category: "Maqola",
             excerpt: "Noldan boshlab zamonaviy web dasturlash, HTML5, CSS3, JavaScript ES6+ va Sun'iy Intellekt vositalari orqali haqiqiy loyihalar yaratish qo'llanmasi.",
             content: "## 💻 2026-Yilda Zamonaviy Dasturchi Yo'l Xaritasi\n\nZamonaviy dasturlashda faqat nazariya bilish yetarsiz. Bugungi kunda **sun'iy intellekt (AI Agentlar)** bilan birgalikda tez va sifatli kod yozish asosiy ko'nikmaga aylandi.\n\n---\n\n### 🚀 Bosqichma-Bosqich Qadamlar:\n\n1. **HTML5 & Vanilla CSS (Semantik va UI Dizayn):**\n   - Flexbox va CSS Grid bilan ishlash.\n   - Glassmorphism va Dark Mode ranglar palitrasini o'zlashtirish.\n\n2. **JavaScript (Core Logic & ES6+):**\n   - Async/Await, Promises va Fetch API orqali server bilan ishlash.\n   - SPA (Single Page Application) arxitekturasi va State Management.\n\n3. **AI Pair Programming:**\n   - Sun'iy intellekt vositalaridan to'g'ri va samarali foydalanish hamda koddagi xatolarni avtomatik tuzatish.\n\n---\n\n> 💡 **Oltin Qoida:** Kodni shunchaki nusxalamang, har bir satr nimaga javob berishini tushunib yeting!",
             image: "images/hamburg.webp",
@@ -3301,9 +3145,9 @@ function getHighValueDefaultPosts() {
         },
         {
             id: 'post_articles_grammar_3',
-            type: 'memory',
+            type: 'article',
             title: "🇩🇪 Nemis Tilidadagi Artikllar (Der, Die, Das) ni Oson Eslab Qolish Texnikasi",
-            category: "Kundalik Blog",
+            category: "Maqola",
             excerpt: "Artikllarni yodlashda qoidalarsiz mantiqiy usullar: otlarning qo'shimchasi (-ung, -heit, -keit, -chen, -ismus) orqali jinsini topish formulasi.",
             content: "## 🇩🇪 Artikllarni Yodlashning Oson Usuli\n\nNemis tilida har bir otning jinsi bor (*der*, *die*, *das*). Lekin ularning 80% qismini otning oxiridagi qo'shimchasiga (Suffix) qarab darhol aniqlash mumkin!\n\n---\n\n### 1. 🔴 DIE (Ayollar va Ko'plik):\nHar doim **DIE** artiklini oladigan qo'shimchalar:\n- **-ung** (die Wohnung, die Zeitung)\n- **-heit** (die Freiheit, die Gesundheit)\n- **-keit** (die Möglichkeit, die Einsamkeit)\n- **-schaft** (die Freundschaft, die Mannschaft)\n- **-tät** (die Universität, die Qualität)\n\n---\n\n### 2. 🔵 DER (Erkaklar Jinsi):\nHar doim **DER** artiklini oladigan qo'shimchalar:\n- **-ling** (der Schmetterling, der Lehrling)\n- **-ismus** (der Optimismus, der Realismus)\n- **-or** (der Motor, der Reaktor)\n\n---\n\n### 3. 🟢 DAS (Neutral Jins):\nHar doim **DAS** artiklini oladigan qo'shimchalar:\n- **-chen** (das Mädchen, das Brötchen)\n- **-lein** (das Fräulein)\n- **-ment** (das Dokument, das Instrument)",
             image: "images/koelner-dom.webp",
@@ -3313,9 +3157,9 @@ function getHighValueDefaultPosts() {
         },
         {
             id: 'post_travel_budget_4',
-            type: 'memory',
+            type: 'article',
             title: "✈️ O'zbekiston Fuqarolari Uchun Hamyonbop Sayohat va Vizasiz Maskanlar",
-            category: "Borishga arziydigan joylar",
+            category: "Maqola",
             excerpt: "Budjetni tejagan holda Qirg'iziston Issiqko'li, Gruziya Batumi qirg'oqlari va Turkiya tabiatiga maroqli sayohat uyushtirish sirlari.",
             content: "## ✈️ Hamyonbop va Vizasiz Tabiat Maskanlari\n\nKo'pchilik sayohat qilish uchun minglab dollar va qiyin viza hujjatlari kerak deb o'ylaydi. Aslida O'zbekiston fuqarolari uchun juda ko'p arzon va vizasiz ajoyib yo'nalishlar bor!\n\n---\n\n### 🏔️ 1. Issiqko'l (Qirg'iziston)\n- **Viza:** Vizasiz (Passport bilan).\n- **Transport:** Toshkentdan to'g'ridan-to'g'ri avtobus yoki poyezd.\n- **Nima uchun borish kerak:** Tien-Shan tog'lari bag'ridagi musaffo havo, shifobaxsh sho'r suv va arzon milliy taomlar.\n\n---\n\n### 🌴 2. Batumi va Ajariya (Gruziya)\n- **Viza:** 90 kun Vizasiz.\n- **Transport:** Arzon aviaparvozlar.\n- **Nima uchun borish kerak:** Qora dengiz sohili va Kavkaz tog'larining maftunkor tabiat manzaralari.",
             image: "images/schwarzwald.webp",
