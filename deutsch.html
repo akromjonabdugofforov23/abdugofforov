@@ -37,9 +37,10 @@
             </a>
 
             <div class="nav-links" id="top-nav-links">
-                <a href="#tests" class="active">Testlar (A1-B1)</a>
-                <a href="#flashcards">Kartochkalar</a>
-                <a href="#tournament">Turnir</a>
+                <a href="#a1" class="active" data-nav-lvl="A1">🌱 A1 Boshlang'ich</a>
+                <a href="#a2" data-nav-lvl="A2">🌿 A2 Asosiy</a>
+                <a href="#b1" data-nav-lvl="B1">🌳 B1 O'rta</a>
+                <a href="#b2" data-nav-lvl="B2">🏔️ B2 Yuqori</a>
             </div>
 
             <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
@@ -132,21 +133,21 @@
 
     <!-- Mac OS Dock Navigation Bar -->
     <nav class="desktop-dock" id="desktop-dock" aria-label="Tezkor navigatsiya">
-        <a href="#tests" class="dock-item active" data-page="tests" title="Nemis tili testlari">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-            <span class="dock-label">Testlar</span>
+        <a href="#a1" class="dock-item active" data-page="A1" title="A1 Boshlang'ich daraja">
+            <span style="font-size: 18px;">🌱</span>
+            <span class="dock-label">A1</span>
         </a>
-        <a href="#flashcards" class="dock-item" data-page="flashcards" title="So'z kartochkalari">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-            <span class="dock-label">Kartochkalar</span>
+        <a href="#a2" class="dock-item" data-page="A2" title="A2 Asosiy daraja">
+            <span style="font-size: 18px;">🌿</span>
+            <span class="dock-label">A2</span>
         </a>
-        <a href="#games" class="dock-item" data-page="games" title="Interaktiv o'yinlar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><line x1="6" y1="12" x2="10" y2="12"></line><line x1="8" y1="10" x2="8" y2="14"></line><circle cx="15" cy="11" r="1"></circle><circle cx="18" cy="13" r="1"></circle></svg>
-            <span class="dock-label">O'yinlar</span>
+        <a href="#b1" class="dock-item" data-page="B1" title="B1 O'rta daraja">
+            <span style="font-size: 18px;">🌳</span>
+            <span class="dock-label">B1</span>
         </a>
-        <a href="#tournament" class="dock-item" data-page="tournament" title="Nemis tili turniri">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path></svg>
-            <span class="dock-label">Turnir</span>
+        <a href="#b2" class="dock-item" data-page="B2" title="B2 Yuqori daraja">
+            <span style="font-size: 18px;">🏔️</span>
+            <span class="dock-label">B2</span>
         </a>
     </nav>
 
@@ -168,8 +169,13 @@
     <script src="auth.js?v=2"></script>
     <script src="data-flashcards.js"></script>
     <script src="data-tests.js"></script>
+    <script src="data/curriculum-a1.js"></script>
+    <script src="data/curriculum-a2.js"></script>
+    <script src="data/curriculum-b1.js"></script>
+    <script src="data/curriculum-b2.js"></script>
     <script src="scripts/flashcards.js"></script>
     <script src="scripts/matching-game.js"></script>
+    <script src="scripts/curriculum-engine.js"></script>
     <script src="scripts/tests.js"></script>
     <script src="scripts/horror-data.js"></script>
     <script src="scripts/horror-logic.js"></script>

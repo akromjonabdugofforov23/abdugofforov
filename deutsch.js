@@ -82,21 +82,38 @@
 
     function setActiveDock(page) {
         document.querySelectorAll('.dock-item').forEach(item => {
-            if (item.getAttribute('data-page') === page) {
+            const itemPage = (item.getAttribute('data-page') || '').toUpperCase();
+            if (itemPage === (page || '').toUpperCase()) {
                 item.classList.add('active');
             } else {
                 item.classList.remove('active');
             }
         });
+
+        // Top nav active class
+        document.querySelectorAll('#top-nav-links a').forEach(a => {
+            const navLvl = (a.getAttribute('data-nav-lvl') || '').toUpperCase();
+            if (navLvl === (page || '').toUpperCase()) {
+                a.classList.add('active');
+            } else {
+                a.classList.remove('active');
+            }
+        });
     }
 
-    window.openDeutschTests = function(pushHistory = true) {
+    window.openDeutschLevel = function(lvl = 'A1', pushHistory = true) {
         hideAllViews();
         const v = document.getElementById('deutsch-view');
         if (v) v.style.display = 'block';
-        setActiveDock('tests');
-        if (typeof renderDeutschHome === 'function') renderDeutschHome();
-        if (pushHistory) history.pushState({ page: 'tests' }, '', '#tests');
+        setActiveDock(lvl);
+        if (typeof renderDeutschCurriculum === 'function') {
+            renderDeutschCurriculum(lvl);
+        }
+        if (pushHistory) history.pushState({ level: lvl }, '', `#${lvl.toLowerCase()}`);
+    };
+
+    window.openDeutschTests = function(pushHistory = true) {
+        openDeutschLevel('A1', pushHistory);
     };
 
     window.openDeutschFlashcards = function(pushHistory = true) {
@@ -136,8 +153,16 @@
 
     // Routing
     function applyRoute() {
-        const hash = (window.location.hash || '#tests').toLowerCase();
-        if (hash.includes('flashcard')) {
+        const hash = (window.location.hash || '#a1').toLowerCase();
+        if (hash.includes('a1')) {
+            openDeutschLevel('A1', false);
+        } else if (hash.includes('a2')) {
+            openDeutschLevel('A2', false);
+        } else if (hash.includes('b1')) {
+            openDeutschLevel('B1', false);
+        } else if (hash.includes('b2')) {
+            openDeutschLevel('B2', false);
+        } else if (hash.includes('flashcard')) {
             openDeutschFlashcards(false);
         } else if (hash.includes('game') || hash.includes('match')) {
             openDeutschGames(false);
@@ -146,31 +171,38 @@
         } else if (hash.includes('horror')) {
             openDeutschHorror(false);
         } else {
-            openDeutschTests(false);
+            openDeutschLevel('A1', false);
         }
     }
 
     window.addEventListener('popstate', applyRoute);
 
-    // Event Delegations for Mode Cards
+    // Event Delegations
     document.addEventListener('click', (e) => {
+        // Top Nav Level havolalari
+        const navLink = e.target.closest('#top-nav-links a[data-nav-lvl]');
+        if (navLink) {
+            e.preventDefault();
+            const lvl = navLink.getAttribute('data-nav-lvl');
+            openDeutschLevel(lvl);
+            return;
+        }
+
         const modeCard = e.target.closest('.deutsch-mode-card');
         if (modeCard) {
             const action = modeCard.getAttribute('data-action');
             if (action === 'open-flashcards') openDeutschFlashcards();
             else if (action === 'open-tournament') openDeutschTournament();
             else if (action === 'open-horror') openDeutschHorror();
-            else if (action === 'scroll-to-tests') {
-                const levels = document.querySelector('.levels-stack');
-                if (levels) levels.scrollIntoView({ behavior: 'smooth' });
-            }
             return;
         }
 
         const dockItem = e.target.closest('.desktop-dock .dock-item');
         if (dockItem) {
             const page = dockItem.getAttribute('data-page');
-            if (page === 'tests') openDeutschTests();
+            if (['A1', 'A2', 'B1', 'B2'].includes(page)) {
+                openDeutschLevel(page);
+            } else if (page === 'tests') openDeutschTests();
             else if (page === 'flashcards') openDeutschFlashcards();
             else if (page === 'games') openDeutschGames();
             else if (page === 'tournament') openDeutschTournament();

@@ -31,7 +31,7 @@ const COPY_FILES = [
   '_headers', 'robots.txt', 'sitemap.xml', 'manifest.webmanifest',
   'icon.svg', 'og-image.svg', 'animations.css', 'style.min.css',
 ];
-const COPY_DIRS = ['images', 'css'];
+const COPY_DIRS = ['images', 'css', 'data'];
 
 // terser sozlamalari: toplevel=false => global (top-level) nomlar SAQLANADI.
 // Bu fayllararo global funksiyalar (escapeHTML, i18n, ...) va kay.html'dagi
