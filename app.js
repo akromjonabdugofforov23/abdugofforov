@@ -1500,55 +1500,8 @@ function openPostDetail(postId) {
 
     if (editBtn) {
         editBtn.addEventListener('click', () => {
-            editingPostId = post.id;
-            addPostModal.querySelector('.write-title').textContent = "Maqolani tahrirlash";
-            
-            document.getElementById('post-title-input').value = post.title;
-            const catInput = document.getElementById('post-category-input');
-            if (catInput) {
-                catInput.value = post.category || 'Kundalik Blog';
-                catInput.dispatchEvent(new Event('change'));
-            }
-            document.getElementById('post-type-input').value = post.type || 'memory';
-            document.getElementById('post-excerpt-input').value = post.excerpt || '';
-            document.getElementById('post-content-input').value = post.content || '';
-            const tagsInput = document.getElementById('post-tags-input');
-            if (tagsInput) tagsInput.value = (post.tags || []).join(', ');
-
-            // Mavjud rasmni saqlab qolish
-            pendingImageData = post.image || null;
-            if (postImageUrlInput) postImageUrlInput.value = (post.image && post.image.startsWith('http')) ? post.image : '';
-            if (postImageFileInput) postImageFileInput.value = '';
-            showImagePreview(post.image || null);
-
-            // Musiqa maydonlari (ijrochi + havola + lokal fayl)
-            if (postArtistInput) postArtistInput.value = post.artist || '';
-            if (postLinkInput) postLinkInput.value = post.link || '';
-            pendingMusicData = post.musicData || null;
-            pendingMusicName = post.musicName || null;
-            if (post.musicData && post.musicName && postMusicPreview && postMusicFilename) {
-                postMusicFilename.textContent = post.musicName;
-                postMusicPreview.style.display = 'block';
-            } else if (postMusicPreview) {
-                postMusicPreview.style.display = 'none';
-            }
-            if (postMusicFileInput) postMusicFileInput.value = '';
-
-            // Video maydonlari
-            pendingVideoData = post.videoData || null;
-            pendingVideoName = post.videoName || null;
-            if (post.videoData && postVideoPlayer && postVideoPreview) {
-                postVideoPlayer.src = post.videoData;
-                postVideoPreview.style.display = 'block';
-            } else if (postVideoPreview) {
-                postVideoPreview.style.display = 'none';
-                if (postVideoPlayer) postVideoPlayer.src = '';
-            }
-            if (postVideoFileInput) postVideoFileInput.value = '';
-            
             closePostDetailModal();
-            addPostModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            openZenEditor(post.id);
         });
     }
 
@@ -1663,72 +1616,60 @@ if (postCategoryInput) {
     });
 }
 
-// 11. Yangi Post Qo'shish / Tahrirlash Formasi
-if (addPostBtn) addPostBtn.addEventListener('click', () => {
-    editingPostId = null;
-    addPostModal.querySelector('.write-title').textContent = "Yangi sahifa yaratish";
-    newPostForm.reset();
-    if (postCategoryInput) {
-        postCategoryInput.value = 'Kundalik Blog';
-        postCategoryInput.dispatchEvent(new Event('change'));
-    }
-    pendingImageData = null;
-    pendingMusicData = null;
-    pendingMusicName = null;
-    pendingVideoData = null;
-    pendingVideoName = null;
-    showImagePreview(null);
-    if (postMusicPreview) postMusicPreview.style.display = 'none';
-    if (postVideoPreview) postVideoPreview.style.display = 'none';
-    if (postVideoPlayer) postVideoPlayer.src = '';
-    addPostModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-});
+// ============================================================
+// 11. ZEN CREATIVE WRITING STUDIO (NOTION / MEDIUM USLUBI)
+// ============================================================
+const zenEditor = document.getElementById('zen-editor');
+const zenCloseBtn = document.getElementById('zen-close-btn');
+const zenSaveStatus = document.getElementById('zen-save-status');
+const zenStatusText = document.getElementById('zen-status-text');
+const zenStatsPill = document.getElementById('zen-stats-pill');
+const zenPublishBtn = document.getElementById('zen-publish-btn');
+const zenPublishLabel = document.getElementById('zen-publish-label');
 
-function closeAddPostModal() {
-    addPostModal.classList.remove('active');
-    document.body.style.overflow = '';
-    newPostForm.reset();
-    pendingImageData = null;
-    pendingMusicData = null;
-    pendingMusicName = null;
-    pendingVideoData = null;
-    pendingVideoName = null;
-    showImagePreview(null);
-    if (postMusicPreview) postMusicPreview.style.display = 'none';
-    if (postVideoPreview) postVideoPreview.style.display = 'none';
-    if (postVideoPlayer) postVideoPlayer.src = '';
-}
+const zenTabWrite = document.getElementById('zen-tab-write');
+const zenTabPreview = document.getElementById('zen-tab-preview');
+const zenEditPane = document.getElementById('zen-edit-pane');
+const zenPreviewPane = document.getElementById('zen-preview-pane');
+const zenPreviewContent = document.getElementById('zen-preview-content');
 
-if (closeAddModal) closeAddModal.addEventListener('click', closeAddPostModal);
-if (cancelAddBtn) cancelAddBtn.addEventListener('click', closeAddPostModal);
-if (addPostModal) addPostModal.addEventListener('click', (e) => {
-    if (e.target === addPostModal) closeAddPostModal();
-});
+const zenCoverZone = document.getElementById('zen-cover-zone');
+const zenCoverEmpty = document.getElementById('zen-cover-empty');
+const zenCoverPreview = document.getElementById('zen-cover-preview');
+const zenCoverImg = document.getElementById('zen-cover-img');
+const zenTriggerCoverBtn = document.getElementById('zen-trigger-cover-btn');
+const zenChangeCoverBtn = document.getElementById('zen-change-cover-btn');
+const zenRemoveCoverBtn = document.getElementById('zen-remove-cover-btn');
+const zenCoverFile = document.getElementById('zen-cover-file');
+const zenUrlPopover = document.getElementById('zen-url-popover');
+const zenCoverUrlInput = document.getElementById('zen-cover-url-input');
+const zenApplyUrlBtn = document.getElementById('zen-apply-url-btn');
+const zenCancelUrlBtn = document.getElementById('zen-cancel-url-btn');
 
-// ===== FAYL YUKLASH: rasm + musiqa (lokal) + video (lokal) =====
-let pendingImageData = null; // data URL yoki tashqi havola
-let pendingMusicData = null; // data URL (lokal audio fayl)
-let pendingMusicName = null; // fayl nomi
-let pendingVideoData = null; // data URL (lokal video fayl)
-let pendingVideoName = null; // fayl nomi
+const zenCategoryChips = document.getElementById('zen-category-chips');
+const zenMusicBox = document.getElementById('zen-music-box');
+const zenVideoBox = document.getElementById('zen-video-box');
+const zenMusicArtist = document.getElementById('zen-music-artist');
+const zenMusicLink = document.getElementById('zen-music-link');
+const zenMusicFile = document.getElementById('zen-music-file');
+const zenMusicFileName = document.getElementById('zen-music-file-name');
+const zenVideoFile = document.getElementById('zen-video-file');
+const zenVideoFileName = document.getElementById('zen-video-file-name');
 
-const postImageFileInput = document.getElementById('post-image-file');
-const postImageUrlInput = document.getElementById('post-image-input');
-const postImagePreview = document.getElementById('post-image-preview');
-const postArtistInput = document.getElementById('post-artist-input');
-const postLinkInput = document.getElementById('post-link-input');
-const postTypeInput = document.getElementById('post-type-input');
-const postMusicFileInput = document.getElementById('post-music-file');
-const postMusicPreview = document.getElementById('post-music-preview');
-const postMusicFilename = document.getElementById('post-music-filename');
-const postMusicRemove = document.getElementById('post-music-remove');
-const postVideoFileInput = document.getElementById('post-video-file');
-const postVideoPreview = document.getElementById('post-video-preview');
-const postVideoPlayer = document.getElementById('post-video-player');
-const postVideoRemove = document.getElementById('post-video-remove');
+const zenTitle = document.getElementById('zen-title');
+const zenExcerpt = document.getElementById('zen-excerpt');
+const zenTags = document.getElementById('zen-tags');
+const zenToolbar = document.getElementById('zen-toolbar');
+const zenContent = document.getElementById('zen-content');
 
-// Rasmni canvas orqali kichraytirib JPEG data URL ga aylantirish (xotira tejaladi)
+let zenSelectedCategory = 'Kundalik Blog';
+let pendingImageData = null;
+let pendingMusicData = null;
+let pendingMusicName = null;
+let pendingVideoData = null;
+let pendingVideoName = null;
+let zenDraftTimer = null;
+
 function compressImage(file, maxSize = 1920, quality = 0.9) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -1767,193 +1708,486 @@ function readFileAsDataURL(file) {
     });
 }
 
-function showImagePreview(src) {
-    if (!postImagePreview) return;
-    if (src) {
-        postImagePreview.style.backgroundImage = `url('${src}')`;
-        postImagePreview.style.display = 'block';
+function autoResize(el) {
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+}
+
+function updateZenStats() {
+    if (!zenStatsPill) return;
+    const text = ((zenTitle ? zenTitle.value : '') + ' ' + (zenContent ? zenContent.value : '')).trim();
+    const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+    const minutes = Math.max(1, Math.round(words / 180));
+    zenStatsPill.textContent = `${words} ta so'z · ${minutes} daqiqa`;
+}
+
+function scheduleZenDraftSave() {
+    if (editingPostId) return;
+    if (zenSaveStatus) {
+        zenSaveStatus.classList.add('saving');
+        if (zenStatusText) zenStatusText.textContent = "Saqlanmoqda...";
+    }
+    clearTimeout(zenDraftTimer);
+    zenDraftTimer = setTimeout(() => {
+        try {
+            const draft = {
+                title: zenTitle ? zenTitle.value : '',
+                excerpt: zenExcerpt ? zenExcerpt.value : '',
+                content: zenContent ? zenContent.value : '',
+                tags: zenTags ? zenTags.value : '',
+                category: zenSelectedCategory,
+                image: pendingImageData,
+                artist: zenMusicArtist ? zenMusicArtist.value : '',
+                link: zenMusicLink ? zenMusicLink.value : '',
+                updatedAt: Date.now()
+            };
+            localStorage.setItem('zen_studio_draft', JSON.stringify(draft));
+            if (zenSaveStatus) {
+                zenSaveStatus.classList.remove('saving');
+                if (zenStatusText) zenStatusText.textContent = "Qoralama saqlandi";
+            }
+        } catch (e) {}
+    }, 600);
+}
+
+function setZenCover(dataUrl) {
+    pendingImageData = dataUrl;
+    if (dataUrl) {
+        if (zenCoverImg) zenCoverImg.src = dataUrl;
+        if (zenCoverPreview) zenCoverPreview.style.display = 'block';
+        if (zenCoverEmpty) zenCoverEmpty.style.display = 'none';
     } else {
-        postImagePreview.style.display = 'none';
-        postImagePreview.style.backgroundImage = '';
+        if (zenCoverPreview) zenCoverPreview.style.display = 'none';
+        if (zenCoverEmpty) zenCoverEmpty.style.display = 'block';
+        if (zenCoverImg) zenCoverImg.src = '';
     }
 }
 
-function toggleMusicGroup() {
-    // Musiqa bo'limi endi doim ko'rinadi, alohida type tanlash kerak emas
+function selectZenCategory(cat) {
+    zenSelectedCategory = cat || 'Kundalik Blog';
+    if (zenCategoryChips) {
+        zenCategoryChips.querySelectorAll('.zen-chip').forEach(c => {
+            c.classList.toggle('active', c.getAttribute('data-cat') === zenSelectedCategory);
+        });
+    }
+    if (zenMusicBox) zenMusicBox.style.display = (zenSelectedCategory === 'Musiqa') ? 'flex' : 'none';
+    if (zenVideoBox) zenVideoBox.style.display = (zenSelectedCategory === 'Video') ? 'flex' : 'none';
 }
 
-// Rasm fayl tanlanganda — kichraytirib saqlaymiz
-postImageFileInput?.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    try {
-        const dataUrl = await compressImage(file);
-        pendingImageData = dataUrl;
-        if (postImageUrlInput) postImageUrlInput.value = ''; // fayl ustun turadi
-        showImagePreview(dataUrl);
-    } catch (err) {
-        alert("Rasmni o'qishda xatolik yuz berdi.");
-    }
-});
+function switchZenTab(mode) {
+    if (mode === 'preview') {
+        if (zenTabPreview) zenTabPreview.classList.add('active');
+        if (zenTabWrite) zenTabWrite.classList.remove('active');
+        if (zenEditPane) zenEditPane.style.display = 'none';
+        if (zenPreviewPane) zenPreviewPane.style.display = 'block';
 
-// Rasm havolasi (URL) kiritilganda
-postImageUrlInput?.addEventListener('input', (e) => {
-    const url = e.target.value.trim();
-    if (url) {
-        pendingImageData = url;
-        showImagePreview(url);
-    } else if (!postImageFileInput?.files.length) {
-        pendingImageData = null;
-        showImagePreview(null);
-    }
-});
-
-// Musiqa fayl yuklash
-postMusicFileInput?.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    try {
-        const dataUrl = await readFileAsDataURL(file);
-        pendingMusicData = dataUrl;
-        pendingMusicName = file.name;
-        if (postMusicFilename) postMusicFilename.textContent = file.name;
-        if (postMusicPreview) postMusicPreview.style.display = 'block';
-    } catch (err) {
-        alert("Audio faylni o'qishda xatolik yuz berdi.");
-    }
-});
-
-// Musiqa faylni olib tashlash
-postMusicRemove?.addEventListener('click', () => {
-    pendingMusicData = null;
-    pendingMusicName = null;
-    if (postMusicFileInput) postMusicFileInput.value = '';
-    if (postMusicPreview) postMusicPreview.style.display = 'none';
-});
-
-// Video fayl yuklash
-postVideoFileInput?.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    try {
-        const dataUrl = await readFileAsDataURL(file);
-        pendingVideoData = dataUrl;
-        pendingVideoName = file.name;
-        if (postVideoPlayer) {
-            postVideoPlayer.src = dataUrl;
-            postVideoPreview.style.display = 'block';
+        if (zenPreviewContent) {
+            const rawTitle = zenTitle ? zenTitle.value.trim() : '';
+            const rawContent = zenContent ? zenContent.value.trim() : '';
+            const rawExcerpt = zenExcerpt ? zenExcerpt.value.trim() : '';
+            
+            let html = '';
+            if (pendingImageData) {
+                html += `<img src="${cssUrl(pendingImageData)}" style="width:100%;max-height:340px;object-fit:cover;border-radius:14px;margin-bottom:24px;">`;
+            }
+            html += `<div style="font-size:12px;font-weight:700;color:var(--accent-color);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">${escapeHTML(zenSelectedCategory)}</div>`;
+            html += `<h1 style="font-family:'Playfair Display',serif;font-size:32px;margin:0 0 16px 0;line-height:1.2;">${escapeHTML(rawTitle || 'Sarlavhasiz')}</h1>`;
+            if (rawExcerpt) {
+                html += `<blockquote style="font-size:16px;color:var(--text-secondary);font-style:italic;margin-bottom:20px;">${escapeHTML(rawExcerpt)}</blockquote>`;
+            }
+            html += renderMarkdown(rawContent || '*Hali hech qanday matn yozilmadi...*');
+            zenPreviewContent.innerHTML = html;
         }
-    } catch (err) {
-        alert("Video faylni o'qishda xatolik yuz berdi.");
+    } else {
+        if (zenTabWrite) zenTabWrite.classList.add('active');
+        if (zenTabPreview) zenTabPreview.classList.remove('active');
+        if (zenPreviewPane) zenPreviewPane.style.display = 'none';
+        if (zenEditPane) zenEditPane.style.display = 'block';
     }
-});
+}
 
-// Video faylni olib tashlash
-postVideoRemove?.addEventListener('click', () => {
-    pendingVideoData = null;
-    pendingVideoName = null;
-    if (postVideoFileInput) postVideoFileInput.value = '';
-    if (postVideoPlayer) postVideoPlayer.src = '';
-    if (postVideoPreview) postVideoPreview.style.display = 'none';
-});
+function openZenEditor(postId = null) {
+    if (!zenEditor) return;
+    editingPostId = postId;
 
-if (newPostForm) newPostForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+    switchZenTab('write');
 
-    const title = document.getElementById('post-title-input').value.trim();
-    const category = document.getElementById('post-category-input').value.trim();
-    let excerpt = document.getElementById('post-excerpt-input').value.trim();
-    const content = document.getElementById('post-content-input').value.trim();
-    if (!excerpt && content) {
-        excerpt = content.split('\n')[0].substring(0, 100);
-    }
-    const tagsRaw = document.getElementById('post-tags-input') ? document.getElementById('post-tags-input').value : '';
-    const tags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean).slice(0, 8);
+    if (postId) {
+        const post = posts.find(p => p.id === postId);
+        if (post) {
+            if (zenPublishLabel) zenPublishLabel.textContent = "Saqlash";
+            if (zenTitle) zenTitle.value = post.title || '';
+            if (zenExcerpt) zenExcerpt.value = post.excerpt || '';
+            if (zenContent) zenContent.value = post.content || '';
+            if (zenTags) zenTags.value = (post.tags || []).join(', ');
+            selectZenCategory(post.category || 'Kundalik Blog');
+            setZenCover(post.image || null);
 
-    // Post turini avtomatik aniqlash: musiqa > video > rasm > xotira
-    let type = 'memory';
-    const artist = postArtistInput ? postArtistInput.value.trim() : '';
-    const link = postLinkInput ? postLinkInput.value.trim() : '';
-    if (pendingMusicData || link) {
-        type = 'music';
-    } else if (pendingVideoData) {
-        type = 'video';
-    }
-    // Yashirin type inputni ham yangilash
-    if (postTypeInput) postTypeInput.value = type;
+            if (zenMusicArtist) zenMusicArtist.value = post.artist || '';
+            if (zenMusicLink) zenMusicLink.value = post.link || '';
+            pendingMusicData = post.musicData || null;
+            pendingMusicName = post.musicName || null;
+            if (zenMusicFileName) {
+                zenMusicFileName.textContent = post.musicName ? `🎵 ${post.musicName}` : '';
+                zenMusicFileName.style.display = post.musicName ? 'block' : 'none';
+            }
 
-    // Rasm: yuklangan fayl / havola, bo'lmasa standart rasm
-    let image = pendingImageData;
-    if (!image) {
-        if (type === 'music') {
-            image = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600';
-        } else if (type === 'video') {
-            image = 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=600';
+            pendingVideoData = post.videoData || null;
+            pendingVideoName = post.videoName || null;
+            if (zenVideoFileName) {
+                zenVideoFileName.textContent = post.videoName ? `🎬 ${post.videoName}` : '';
+                zenVideoFileName.style.display = post.videoName ? 'block' : 'none';
+            }
+        }
+    } else {
+        if (zenPublishLabel) zenPublishLabel.textContent = "Chop etish";
+        
+        let draft = null;
+        try { draft = JSON.parse(localStorage.getItem('zen_studio_draft')); } catch (e) {}
+        
+        if (draft && (draft.title || draft.content)) {
+            if (zenTitle) zenTitle.value = draft.title || '';
+            if (zenExcerpt) zenExcerpt.value = draft.excerpt || '';
+            if (zenContent) zenContent.value = draft.content || '';
+            if (zenTags) zenTags.value = draft.tags || '';
+            selectZenCategory(draft.category || 'Kundalik Blog');
+            setZenCover(draft.image || null);
+            if (zenMusicArtist) zenMusicArtist.value = draft.artist || '';
+            if (zenMusicLink) zenMusicLink.value = draft.link || '';
         } else {
-            image = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600';
+            if (zenTitle) zenTitle.value = '';
+            if (zenExcerpt) zenExcerpt.value = '';
+            if (zenContent) zenContent.value = '';
+            if (zenTags) zenTags.value = '';
+            selectZenCategory('Kundalik Blog');
+            setZenCover(null);
+            if (zenMusicArtist) zenMusicArtist.value = '';
+            if (zenMusicLink) zenMusicLink.value = '';
+            if (zenMusicFileName) zenMusicFileName.style.display = 'none';
+            if (zenVideoFileName) zenVideoFileName.style.display = 'none';
+            pendingMusicData = null;
+            pendingMusicName = null;
+            pendingVideoData = null;
+            pendingVideoName = null;
         }
     }
 
-    // Musiqa uchun lokal fayl yoki havola (biri bo'lsa yetarli)
-    if (type === 'music' && link && !/^https?:\/\//i.test(link)) {
-        alert("Havola http:// yoki https:// bilan boshlanishi kerak.");
-        return;
+    zenEditor.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+        autoResize(zenTitle);
+        updateZenStats();
+        if (zenTitle) zenTitle.focus();
+    }, 80);
+}
+
+function closeZenEditor() {
+    if (!zenEditor) return;
+    zenEditor.style.display = 'none';
+    document.body.style.overflow = '';
+    editingPostId = null;
+}
+
+function insertFormatting(cmd) {
+    if (!zenContent) return;
+    const start = zenContent.selectionStart;
+    const end = zenContent.selectionEnd;
+    const text = zenContent.value;
+    const selected = text.substring(start, end);
+
+    let before = text.substring(0, start);
+    let after = text.substring(end);
+    let replacement = '';
+    let newCursorPos = start;
+
+    switch (cmd) {
+        case 'bold':
+            replacement = selected ? `**${selected}**` : `**qalin matn**`;
+            newCursorPos = start + (selected ? replacement.length : 2);
+            break;
+        case 'italic':
+            replacement = selected ? `*${selected}*` : `*kursiv matn*`;
+            newCursorPos = start + (selected ? replacement.length : 1);
+            break;
+        case 'h2':
+            replacement = selected ? `\n## ${selected}\n` : `\n## Sarlavha 2\n`;
+            newCursorPos = start + replacement.length;
+            break;
+        case 'h3':
+            replacement = selected ? `\n### ${selected}\n` : `\n### Sarlavha 3\n`;
+            newCursorPos = start + replacement.length;
+            break;
+        case 'quote':
+            replacement = selected ? `\n> ${selected}\n` : `\n> Iqtibos matni\n`;
+            newCursorPos = start + replacement.length;
+            break;
+        case 'ul':
+            replacement = selected ? `\n- ${selected}\n` : `\n- Element 1\n- Element 2\n`;
+            newCursorPos = start + replacement.length;
+            break;
+        case 'ol':
+            replacement = selected ? `\n1. ${selected}\n` : `\n1. Element 1\n2. Element 2\n`;
+            newCursorPos = start + replacement.length;
+            break;
+        case 'code':
+            replacement = selected ? `\n\`\`\`javascript\n${selected}\n\`\`\`\n` : `\n\`\`\`javascript\n// kod bu yerda\n\`\`\`\n`;
+            newCursorPos = start + replacement.length;
+            break;
+        case 'link':
+            const url = prompt("Havolani kiriting (URL):", "https://");
+            if (url) {
+                replacement = `[${selected || 'havola matni'}](${url})`;
+                newCursorPos = start + replacement.length;
+            } else {
+                return;
+            }
+            break;
+        case 'img':
+            const imgUrl = prompt("Rasm havolasini kiriting (URL):", "https://");
+            if (imgUrl) {
+                replacement = `\n![${selected || 'rasm'}](${imgUrl})\n`;
+                newCursorPos = start + replacement.length;
+            } else {
+                return;
+            }
+            break;
+        case 'hr':
+            replacement = `\n\n---\n\n`;
+            newCursorPos = start + replacement.length;
+            break;
+        default:
+            return;
     }
 
-    if (editingPostId) {
-        const postIndex = posts.findIndex(p => p.id === editingPostId);
-        if (postIndex !== -1) {
-            posts[postIndex] = {
-                ...posts[postIndex],
+    zenContent.value = before + replacement + after;
+    zenContent.focus();
+    zenContent.setSelectionRange(newCursorPos, newCursorPos);
+    updateZenStats();
+    scheduleZenDraftSave();
+}
+
+// Zen Event Listeners
+if (zenCloseBtn) zenCloseBtn.addEventListener('click', closeZenEditor);
+if (zenTabWrite) zenTabWrite.addEventListener('click', () => switchZenTab('write'));
+if (zenTabPreview) zenTabPreview.addEventListener('click', () => switchZenTab('preview'));
+
+if (zenTitle) {
+    zenTitle.addEventListener('input', () => {
+        autoResize(zenTitle);
+        updateZenStats();
+        scheduleZenDraftSave();
+    });
+}
+if (zenExcerpt) {
+    zenExcerpt.addEventListener('input', scheduleZenDraftSave);
+}
+if (zenTags) {
+    zenTags.addEventListener('input', scheduleZenDraftSave);
+}
+if (zenContent) {
+    zenContent.addEventListener('input', () => {
+        updateZenStats();
+        scheduleZenDraftSave();
+    });
+}
+
+if (zenCategoryChips) {
+    zenCategoryChips.addEventListener('click', (e) => {
+        const chip = e.target.closest('.zen-chip');
+        if (chip) {
+            selectZenCategory(chip.getAttribute('data-cat'));
+            scheduleZenDraftSave();
+        }
+    });
+}
+
+// Cover image handlers
+if (zenTriggerCoverBtn) zenTriggerCoverBtn.addEventListener('click', () => zenCoverFile?.click());
+if (zenChangeCoverBtn) zenChangeCoverBtn.addEventListener('click', () => zenCoverFile?.click());
+if (zenRemoveCoverBtn) zenRemoveCoverBtn.addEventListener('click', () => {
+    setZenCover(null);
+    scheduleZenDraftSave();
+});
+
+if (zenCoverFile) {
+    zenCoverFile.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+            const dataUrl = await compressImage(file);
+            setZenCover(dataUrl);
+            scheduleZenDraftSave();
+        } catch (err) {
+            alert("Rasmni yuklashda xatolik.");
+        }
+    });
+}
+
+// URL Popover
+if (zenApplyUrlBtn) {
+    zenApplyUrlBtn.addEventListener('click', () => {
+        const url = zenCoverUrlInput?.value.trim();
+        if (url) {
+            setZenCover(url);
+            if (zenUrlPopover) zenUrlPopover.style.display = 'none';
+            scheduleZenDraftSave();
+        }
+    });
+}
+if (zenCancelUrlBtn) {
+    zenCancelUrlBtn.addEventListener('click', () => {
+        if (zenUrlPopover) zenUrlPopover.style.display = 'none';
+    });
+}
+
+// Music & Video files
+if (zenMusicFile) {
+    zenMusicFile.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+            pendingMusicData = await readFileAsDataURL(file);
+            pendingMusicName = file.name;
+            if (zenMusicFileName) {
+                zenMusicFileName.textContent = `🎵 ${file.name}`;
+                zenMusicFileName.style.display = 'block';
+            }
+        } catch (err) {
+            alert("Musiqa faylini o'qishda xatolik.");
+        }
+    });
+}
+
+if (zenVideoFile) {
+    zenVideoFile.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+            pendingVideoData = await readFileAsDataURL(file);
+            pendingVideoName = file.name;
+            if (zenVideoFileName) {
+                zenVideoFileName.textContent = `🎬 ${file.name}`;
+                zenVideoFileName.style.display = 'block';
+            }
+        } catch (err) {
+            alert("Video faylini o'qishda xatolik.");
+        }
+    });
+}
+
+if (zenToolbar) {
+    zenToolbar.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-cmd]');
+        if (btn) {
+            insertFormatting(btn.getAttribute('data-cmd'));
+        }
+    });
+}
+
+// Chop etish / Saqlash
+if (zenPublishBtn) {
+    zenPublishBtn.addEventListener('click', () => {
+        const title = zenTitle ? zenTitle.value.trim() : '';
+        if (!title) {
+            if (typeof showToast === 'function') showToast("⚠️ Iltimos, sarlavha kiriting!", "warn");
+            else alert("Iltimos, sarlavha kiriting!");
+            if (zenTitle) zenTitle.focus();
+            return;
+        }
+
+        const content = zenContent ? zenContent.value.trim() : '';
+        let excerpt = zenExcerpt ? zenExcerpt.value.trim() : '';
+        if (!excerpt && content) {
+            excerpt = content.split('\n')[0].substring(0, 110);
+        }
+
+        const tagsRaw = zenTags ? zenTags.value : '';
+        const tags = tagsRaw.split(',').map(t => t.trim().replace(/^#/, '')).filter(Boolean).slice(0, 8);
+
+        // Type
+        let type = 'memory';
+        const artist = zenMusicArtist ? zenMusicArtist.value.trim() : '';
+        const link = zenMusicLink ? zenMusicLink.value.trim() : '';
+        if (zenSelectedCategory === 'Musiqa' || pendingMusicData || link) {
+            type = 'music';
+        } else if (zenSelectedCategory === 'Video' || pendingVideoData) {
+            type = 'video';
+        } else if (zenSelectedCategory === 'Loyiha') {
+            type = 'project';
+        }
+
+        let image = pendingImageData;
+        if (!image) {
+            if (type === 'music') image = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600';
+            else if (type === 'video') image = 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=600';
+            else image = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=600';
+        }
+
+        if (editingPostId) {
+            const postIndex = posts.findIndex(p => p.id === editingPostId);
+            if (postIndex !== -1) {
+                posts[postIndex] = {
+                    ...posts[postIndex],
+                    title,
+                    category: zenSelectedCategory,
+                    type,
+                    image,
+                    excerpt,
+                    content,
+                    tags,
+                    artist: type === 'music' ? artist : (posts[postIndex].artist || null),
+                    link: type === 'music' ? link : (posts[postIndex].link || null),
+                    musicData: type === 'music' ? (pendingMusicData || posts[postIndex].musicData || null) : null,
+                    musicName: type === 'music' ? (pendingMusicName || posts[postIndex].musicName || null) : null,
+                    videoData: type === 'video' ? (pendingVideoData || posts[postIndex].videoData || null) : null,
+                    videoName: type === 'video' ? (pendingVideoName || posts[postIndex].videoName || null) : null
+                };
+            }
+            editingPostId = null;
+            if (typeof showToast === 'function') showToast("✅ O'zgarishlar saqlandi!", "success");
+        } else {
+            const newPost = {
+                id: Date.now(),
                 title,
-                category,
+                category: zenSelectedCategory,
                 type,
-                image,
                 excerpt,
                 content,
+                image,
                 tags,
-                artist: type === 'music' ? artist : (posts[postIndex].artist || null),
-                link: type === 'music' ? link : (posts[postIndex].link || null),
-                musicData: type === 'music' ? (pendingMusicData || posts[postIndex].musicData || null) : null,
-                musicName: type === 'music' ? (pendingMusicName || posts[postIndex].musicName || null) : null,
-                videoData: type === 'video' ? (pendingVideoData || posts[postIndex].videoData || null) : null,
-                videoName: type === 'video' ? (pendingVideoName || posts[postIndex].videoName || null) : null
+                artist: type === 'music' ? artist : null,
+                link: type === 'music' ? link : null,
+                musicData: type === 'music' ? pendingMusicData : null,
+                musicName: type === 'music' ? pendingMusicName : null,
+                videoData: type === 'video' ? pendingVideoData : null,
+                videoName: type === 'video' ? pendingVideoName : null,
+                date: new Date().toISOString().split('T')[0],
+                likes: 0,
+                liked: false,
+                comments: []
             };
+            posts.unshift(newPost);
+            try { localStorage.removeItem('zen_studio_draft'); } catch (e) {}
+            if (typeof showToast === 'function') showToast("🎉 Maqola muvaffaqiyatli chop etildi!", "success");
         }
-        editingPostId = null;
-    } else {
-        const newPost = {
-            id: Date.now(),
-            title,
-            category,
-            type,
-            excerpt,
-            content,
-            image,
-            tags,
-            artist: type === 'music' ? artist : null,
-            link: type === 'music' ? link : null,
-            musicData: type === 'music' ? pendingMusicData : null,
-            musicName: type === 'music' ? pendingMusicName : null,
-            videoData: type === 'video' ? pendingVideoData : null,
-            videoName: type === 'video' ? pendingVideoName : null,
-            date: new Date().toISOString().split('T')[0],
-            likes: 0,
-            liked: false,
-            comments: []
-        };
-        posts.unshift(newPost);
-    }
 
-    try {
-        savePosts();
-    } catch (err) {
-        alert("Saqlashda xatolik: brauzer xotirasi to'lgan bo'lishi mumkin. Iltimos kamroq yoki kichikroq rasm/audio ishlating.");
-        return;
-    }
-    renderPosts();
-    closeAddPostModal();
-});
+        try {
+            savePosts();
+        } catch (err) {
+            alert("Saqlashda xatolik: xotira to'lgan bo'lishi mumkin.");
+            return;
+        }
+
+        renderPosts();
+        closeZenEditor();
+    });
+}
+
+// Tugmalarni Zen Editor ga ulash
+if (addPostBtn) {
+    addPostBtn.addEventListener('click', () => openZenEditor());
+}
 
 // 12. PIN-Kod Kirish (Admin)
 if (adminBtn) {
