@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // DEUTSCH AKADEMIYASI — DEUTSCH.ABDUGOFFOROV.UZ
 // Mustaqil Nemis Tili Ta'lim Platformasi Mantiqi
 // ============================================================
@@ -72,7 +72,7 @@
 
     // View Switching
     function hideAllViews() {
-        const views = ['deutsch-view', 'flashcards-view', 'verb-trainer-view', 'tournament-view'];
+        const views = ['deutsch-view', 'flashcards-view', 'tournament-view'];
         views.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = 'none';
@@ -108,17 +108,6 @@
         if (pushHistory) history.pushState({ page: 'flashcards' }, '', '#flashcards');
     };
 
-    window.openDeutschVerbs = function(pushHistory = true) {
-        hideAllViews();
-        const v = document.getElementById('verb-trainer-view');
-        if (v) v.style.display = 'block';
-        setActiveDock('verbs');
-        if (window.verbTrainerApp && typeof window.verbTrainerApp.init === 'function') {
-            window.verbTrainerApp.init();
-        }
-        if (pushHistory) history.pushState({ page: 'verbs' }, '', '#verbs');
-    };
-
     window.openDeutschGames = function(pushHistory = true) {
         hideAllViews();
         const v = document.getElementById('flashcards-view');
@@ -150,8 +139,6 @@
         const hash = (window.location.hash || '#tests').toLowerCase();
         if (hash.includes('flashcard')) {
             openDeutschFlashcards(false);
-        } else if (hash.includes('verb')) {
-            openDeutschVerbs(false);
         } else if (hash.includes('game') || hash.includes('match')) {
             openDeutschGames(false);
         } else if (hash.includes('tournament')) {
@@ -172,7 +159,6 @@
             const action = modeCard.getAttribute('data-action');
             if (action === 'open-flashcards') openDeutschFlashcards();
             else if (action === 'open-tournament') openDeutschTournament();
-            else if (action === 'open-verb-trainer') openDeutschVerbs();
             else if (action === 'open-horror') openDeutschHorror();
             else if (action === 'scroll-to-tests') {
                 const levels = document.querySelector('.levels-stack');
@@ -186,7 +172,6 @@
             const page = dockItem.getAttribute('data-page');
             if (page === 'tests') openDeutschTests();
             else if (page === 'flashcards') openDeutschFlashcards();
-            else if (page === 'verbs') openDeutschVerbs();
             else if (page === 'games') openDeutschGames();
             else if (page === 'tournament') openDeutschTournament();
         }

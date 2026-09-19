@@ -219,11 +219,6 @@ function renderDeutschHome() {
                     <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.tournament_sub', 'Jonli musobaqa')}</div>
                 </div>
 
-                <div class="deutsch-mode-card mode-verbs" data-action="open-verb-trainer" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(168, 85, 247, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(168, 85, 247, 0.18);">
-                    <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">🔤</span>
-                    <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">Fe'llar Trenajyori</div>
-                    <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">Präsens &bull; Präteritum &bull; Perfekt</div>
-                </div>
 
                 <div class="deutsch-mode-card mode-horror" data-action="open-horror" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(239, 68, 68, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25);">
                     <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">💀</span>
