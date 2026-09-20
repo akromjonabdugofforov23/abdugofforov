@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" data-theme="light" data-light-variant="prism">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -38,7 +38,10 @@
     <meta name="apple-mobile-web-app-title" content="Abdugofforov">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="stylesheet" href="style.min.css?v=4">
+    <link rel="stylesheet" href="style.min.css?v=5">
+    <link rel="stylesheet" href="css/light-pro-ai.css">
+    <link rel="stylesheet" href="css/pro-icons.css">
+    <link rel="stylesheet" href="css/pro-animations.css">
     <!-- Google Fonts: Asynchronous & Non-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,40 +67,55 @@
 <body>
 
 
-    <!-- ===== 3D KIRISH ANIMATSIYASI (Intro Splash) ===== -->
-    <div id="intro-splash" class="intro-splash" style="display: none;">
-        <div class="intro-scene">
-            <div class="intro-cube">
-                <div class="cube-face cube-front">A</div>
-                <div class="cube-face cube-back">A</div>
-                <div class="cube-face cube-right">.</div>
-                <div class="cube-face cube-left">.</div>
-                <div class="cube-face cube-top">A</div>
-                <div class="cube-face cube-bottom">A</div>
-            </div>
-            <div class="intro-name">Abdugofforov<span>.</span></div>
-            <div class="intro-tagline">Shaxsiy blog &amp; Hikoyalar</div>
-        </div>
-    </div>
+    <!-- Minimal background ambient glow -->
+    <div class="site-ambient-bg" aria-hidden="true"></div>
 
-    <!-- Navigatsiya — bitta qatorli, logo + nav linklar + asboblar -->
+    <!-- 3D PRO BACKGROUND CANVAS (Tranquil Stars & Shooting Star) -->
+    <canvas id="pro-3d-canvas" class="pro-3d-canvas" aria-hidden="true"></canvas>
+
+
+    <!-- Navigatsiya — bitta qatorli, zamonaviy shaffof navbar -->
     <nav class="navbar" id="main-nav">
         <div class="container navbar-row">
-            <a href="#" class="logo" id="nav-logo">Abdugofforov<span>.</span></a>
+            <a href="#home" class="logo" id="nav-logo">
+                <span class="logo-mark">A</span>
+                <span class="logo-name">Abdugofforov<span class="logo-dot">.</span></span>
+            </a>
 
-            <div class="nav-links" id="top-nav-links"></div>
+            <div class="nav-links" id="top-nav-links">
+                <a href="#home" class="nav-link active" id="nav-home-link" data-page="home">
+                    <span class="nav-icon-pod">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    </span>
+                    <span class="nav-text">Asosiy</span>
+                </a>
+                <a href="#blog" class="nav-link" id="nav-blog-link" data-page="blog">
+                    <span class="nav-icon-pod">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    </span>
+                    <span class="nav-text">Maqolalar</span>
+                </a>
+                <a href="https://deutsch.abdugofforov.uz/" class="nav-link nav-link-badge" target="_blank" rel="noopener noreferrer">
+                    <span class="nav-icon-pod" style="font-size: 14px; line-height: 1;">🇩🇪</span>
+                    <span class="nav-text">Deutsch <span class="link-external-arrow">↗</span></span>
+                </a>
+                <a href="#contact" class="nav-link" id="nav-contact-link">
+                    <span class="nav-icon-pod">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    </span>
+                    <span class="nav-text">Bog'lanish</span>
+                </a>
+            </div>
 
-            <div class="nav-right" id="nav-right" style="display:flex;align-items:center;gap:10px;">
-                <!-- Qorong'u / Yorug' rejim tugmasi (doimiy ko'rinadi) -->
+            <div class="nav-right" id="nav-right">
+                <!-- Qorong'u / Yorug' rejim tugmasi -->
                 <button class="btn-icon theme-toggle" id="theme-btn" type="button" aria-label="Mavzuni o'zgartirish" title="Mavzuni o'zgartirish">
-                    <!-- Moon Icon (glowing purple moon for dark mode) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                    <!-- Sun Icon (bright sun for light mode) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                 </button>
 
                 <button class="btn-icon hamburger-btn" id="hamburger-btn" aria-label="Menyu" title="Menyu">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </button>
 
                 <!-- Mobil menyu uchun orqa qora parda (backdrop) -->
@@ -145,34 +163,8 @@
         </div>
     </nav>
 
-
-
-    <!-- Hero Section -->
-    <header class="hero" id="hero-section">
-        <!-- Floating shapes background -->
-        <div class="bg-shapes">
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-        </div>
-        
-        <div class="container hero-container" style="position: relative; z-index: 1;">
-            <div class="hero-text">
-                <p class="hero-subtitle" id="hero-sub" data-i18n="hero.subtitle">Shaxsiy blog & rivojlanish uchun</p>
-                <p class="hero-tagline" style="font-family: monospace; font-size: 1.1em; color: var(--accent-color);"><span id="typed-text"></span><span class="cursor" style="animation: blink 1s infinite;">|</span></p>
-            </div>
-        </div>
-    </header>
-
     <!-- Bespoke Kun Iqtibosi Widget (Atelier Quote) -->
-    <div class="fortune-widget-wrap atelier-quote-wrap container" id="fortune-widget-wrap">
+    <div class="fortune-widget-wrap atelier-quote-wrap container" id="fortune-widget-wrap" style="margin-top: 32px;">
         <article class="fortune-card-3d atelier-quote-card" id="fortune-card">
             <header class="atelier-card-header">
                 <span class="fortune-quote-badge atelier-tag" id="quote-category-badge">✦ KUN HIKMATI · FILOSOFIYA</span>
@@ -259,26 +251,29 @@
 
     <main class="container animate-fade-in" id="main-content">
 
-        <!-- Loyiha E'loni (Subdomain Banner) -->
-        <div class="featured-subdomain-banner" style="margin-bottom: 24px; padding: 18px 22px; border-radius: 16px; background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(56,189,248,0.08)); border: 1px solid rgba(139,92,246,0.22); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
-            <div style="display: flex; align-items: center; gap: 14px;">
-                <span style="font-size: 32px; line-height: 1;">🇩🇪</span>
+        <!-- Loyiha E'loni (Academy Banner) -->
+        <div class="featured-subdomain-banner" style="margin-bottom: 24px; padding: 20px 24px; border-radius: 18px; background: var(--card-bg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; border: 1px solid var(--border-color);">
+                    🇩🇪
+                </div>
                 <div>
-                    <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 4px 0; color: var(--text-primary);">Deutsch Akademiyasi &amp; Goethe Testlar</h3>
-                    <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">A1-B1 testlari, audio kartochkalar va trenajyor alohida subdomenga ko'chirildi.</p>
+                    <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-color); margin-bottom: 2px;">INTERAKTIV AKADEMIYA</div>
+                    <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 3px 0; color: var(--text-primary); letter-spacing: -0.01em;">Deutsch Akademiyasi &amp; Goethe Testlar</h3>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">A1-B1 darajali Goethe testlari, audio kartochkalar va nemis tili trenajyori.</p>
                 </div>
             </div>
-            <a href="https://deutsch.abdugofforov.uz/" class="btn-primary" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 10px 20px; font-size: 13px; border-radius: 10px; display: inline-flex; align-items: center; gap: 6px;">
-                <span>Saytga o'tish</span>
+            <a href="https://deutsch.abdugofforov.uz/" class="btn-primary" target="_blank" rel="noopener noreferrer" style="text-decoration: none; padding: 9px 18px; font-size: 13px; border-radius: 10px; display: inline-flex; align-items: center; gap: 6px;">
+                <span>Platformaga o'tish</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
             </a>
         </div>
 
         <!-- Asosiy bo'limlar -->
-        <div class="toolbar toolbar-centered">
+        <div class="toolbar toolbar-centered" style="margin-bottom: 16px;">
             <div class="filter-tags filter-tags-centered" id="filter-tags">
-                <button class="filter-tag active" data-filter="all" type="button">✨ Barcha maqolalar</button>
-                <a href="https://deutsch.abdugofforov.uz/" class="filter-tag" target="_blank" rel="noopener noreferrer" style="color: var(--accent-color); border-color: rgba(139,92,246,0.35); text-decoration: none;">🇩🇪 Deutsch Akademiyasi ↗</a>
+                <button class="filter-tag active" data-filter="all" type="button">Barcha maqolalar</button>
+                <a href="https://deutsch.abdugofforov.uz/" class="filter-tag" target="_blank" rel="noopener noreferrer">🇩🇪 Goethe Trenajyor ↗</a>
             </div>
         </div>
 
@@ -541,25 +536,34 @@
         <button class="mini-player-close" id="mini-player-close" aria-label="Yopish">&times;</button>
     </div>
 
-    <!-- ===== MAC OS DOCK NAVIGATION BAR ===== -->
-    <nav class="desktop-dock" id="desktop-dock" aria-label="Tezkor navigatsiya">
-        <a href="#home" class="dock-item active" id="dock-home" data-page="home" title="Asosiy blog">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            <span class="dock-label">Asosiy</span>
-        </a>
-        <a href="#blog" class="dock-item" id="dock-blog" data-page="blog" title="Maqolalar va fikrlar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-            <span class="dock-label">Maqolalar</span>
-        </a>
-        <a href="https://deutsch.abdugofforov.uz/" class="dock-item" id="dock-deutsch" target="_blank" rel="noopener noreferrer" title="Goethe Nemis Tili Akademiyasi">
-            <span style="font-size: 20px; line-height: 1;">🇩🇪</span>
-            <span class="dock-label">Deutsch ↗</span>
-        </a>
-        <a href="#contact" class="dock-item" id="dock-contact" title="Bog'lanish">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            <span class="dock-label">Bog'lanish</span>
-        </a>
-    </nav>
+
+    <!-- ===== PRO AI DESIGN LAB (LOCALHOST SWITCHER) ===== -->
+    <aside class="ai-lab-fab" id="ai-lab-fab" aria-label="AI Design Lab">
+        <button class="ai-lab-trigger" id="ai-lab-trigger" type="button" title="Pro AI Dizayn Laboratoriyasi" onclick="toggleAiLab()">
+            <span class="ai-sparkle">✦</span>
+            <span>AI Design Lab</span>
+        </button>
+        <div class="ai-lab-drawer" id="ai-lab-drawer">
+            <div class="ai-lab-head">
+                <strong>✦ Kunduzgi Rejim Namunalari</strong>
+                <a href="prototype.html" class="ai-lab-proto-link" title="To'liq taqqoslash sahifasi">Katta Lab ↗</a>
+            </div>
+            <div class="ai-lab-buttons">
+                <button type="button" class="ai-variant-btn" data-v="prism" onclick="applyProVariant('prism')">
+                    <strong>✦ Prism Lux</strong>
+                    <small>Apple Vision Pro &amp; Linear</small>
+                </button>
+                <button type="button" class="ai-variant-btn" data-v="aurora" onclick="applyProVariant('aurora')">
+                    <strong>🌌 Quantum Aurora</strong>
+                    <small>OpenAI &amp; Perplexity</small>
+                </button>
+                <button type="button" class="ai-variant-btn" data-v="atelier" onclick="applyProVariant('atelier')">
+                    <strong>🏛️ Swiss Atelier</strong>
+                    <small>Stripe Press &amp; Arc</small>
+                </button>
+            </div>
+        </div>
+    </aside>
 
     <!-- JavaScript Mantiqi -->
     <script src="storage.js?v=2" defer></script>
@@ -568,6 +572,12 @@
     <script src="scripts/gamification.js" defer></script>
     <script src="scripts/quote-widget.js" defer></script>
     <script src="app.js?v=2" defer></script>
+
+    <!-- Pro AI 3D Cosmic Background (Tranquil Stars & Shooting Star) -->
+    <script src="scripts/pro-3d-background.js" defer></script>
+
+    <!-- Pro AI Interactive Enhancements (CSP Compliant) -->
+    <script src="scripts/pro-ai-lab.js" defer></script>
 </body>
 </html>
 

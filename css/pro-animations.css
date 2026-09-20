@@ -1,0 +1,169 @@
+/* ============================================================
+   ABDUGOFFOROV — PRO AI ANIMATION ENGINE
+   Physics-Based Spring Transitions, Aurora Mesh Keyframes, 3D Tilt & Spotlights
+   ============================================================ */
+
+/* 1. INTERACTIVE MOUSE SPOTLIGHT (Radial Torch effect on Cards) */
+.ai-spotlight {
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-spotlight::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(99, 102, 241, 0.09),
+        transparent 70%
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    z-index: 2;
+}
+
+.ai-spotlight:hover::after {
+    opacity: 1;
+}
+
+/* 2. AURORA MESH DRIFT ANIMATION (Ambient living background) */
+@keyframes auroraDrift {
+    0% {
+        background-position: 0% 50%;
+        transform: scale(1) translateY(0);
+    }
+    50% {
+        background-position: 100% 50%;
+        transform: scale(1.04) translateY(-10px);
+    }
+    100% {
+        background-position: 0% 50%;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.site-ambient-bg {
+    animation: auroraDrift 20s ease-in-out infinite alternate;
+}
+
+/* 3. CARD 3D TILT PHYSICS */
+.tilt-card {
+    transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+/* 4. LUMINOUS SHIMMER ON BUTTONS & STATUS BADGES */
+@keyframes aiShimmerSweep {
+    0% { transform: translateX(-100%) rotate(25deg); }
+    100% { transform: translateX(250%) rotate(25deg); }
+}
+
+.ai-shimmer-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-shimmer-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.35),
+        transparent
+    );
+    transform: translateX(-100%) rotate(25deg);
+    pointer-events: none;
+}
+
+.ai-shimmer-btn:hover::after {
+    animation: aiShimmerSweep 1s ease-in-out forwards;
+}
+
+/* 5. SMOOTH THEME MORPHING */
+html {
+    transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 6. STATUS PULSE (Breathing Green & Indigo Dots) */
+@keyframes statusBreathe {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+        transform: scale(1.1);
+    }
+}
+
+.hero-badge-dot {
+    animation: statusBreathe 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+}
+
+/* 7. REVEAL STAGGER ANIMATION */
+@keyframes aiStaggerUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.ai-stagger-1 { animation: aiStaggerUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards; }
+.ai-stagger-2 { animation: aiStaggerUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards; }
+.ai-stagger-3 { animation: aiStaggerUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards; }
+.ai-stagger-4 { animation: aiStaggerUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards; }
+
+/* 8. PRO 3D CANVAS & FOREGROUND STACKING INTEGRATION */
+#pro-3d-canvas, .pro-3d-canvas {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0.95 !important;
+    transition: opacity 0.4s ease !important;
+}
+
+.site-ambient-bg {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+}
+
+/* Foreground sections float above canvas */
+.navbar,
+#main-nav,
+#fortune-widget-wrap,
+#functional-row,
+#main-content,
+.portfolio-container,
+.featured-subdomain-banner,
+footer,
+.site-footer,
+.modal-overlay,
+.lightbox,
+.mini-player,
+.ai-lab-fab {
+    position: relative;
+    z-index: 2;
+}
+

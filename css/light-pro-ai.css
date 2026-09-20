@@ -1,0 +1,602 @@
+/* ============================================================
+   ABDUGOFFOROV — PRO AI LIGHT DESIGN SYSTEM
+   3 Striking, High-Contrast, Visually Distinct Aesthetics:
+   - Variant 1 (Default): Prism Lux (Apple Vision Pro & Linear)
+   - Variant 2: Quantum Aurora (OpenAI, Perplexity & Dynamic Cyber Mesh)
+   - Variant 3: Swiss Neural Atelier (Stripe Press & Luxury Editorial)
+   ============================================================ */
+
+/* ============================================================
+   1. DEFAULT LIGHT THEME: LINEAR OBSIDIAN (Apple & Linear Minimalist)
+   Ultra-clean slate, crisp obsidian text, unified electric indigo accent
+   ============================================================ */
+:root[data-theme="light"],
+:root[data-light-variant="prism"],
+body[data-light-variant="prism"],
+[data-light-variant="prism"] {
+    --ai-name: "Linear Obsidian";
+    --ai-bg-canvas: #f8fafc;
+    --ai-bg-ambient: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.08) 0%, rgba(56, 189, 248, 0.04) 50%, transparent 100%), #f8fafc;
+    --ai-surface: rgba(255, 255, 255, 0.94);
+    --ai-surface-raised: #ffffff;
+    --ai-surface-inset: #f1f5f9;
+    --ai-glass-blur: blur(20px) saturate(180%);
+
+    --ai-text-headline: #0f172a;
+    --ai-text-body: #334155;
+    --ai-text-muted: #64748b;
+    --ai-text-subtle: #94a3b8;
+
+    --ai-primary: #4f46e5;
+    --ai-primary-hover: #4338ca;
+    --ai-primary-glow: rgba(79, 70, 229, 0.22);
+    --ai-primary-soft: rgba(79, 70, 229, 0.08);
+    --ai-secondary: #0ea5e9;
+    --ai-secondary-glow: rgba(14, 165, 233, 0.18);
+    --ai-grad-hero: linear-gradient(135deg, #0f172a 30%, #4f46e5 100%);
+    --ai-prismatic-border: linear-gradient(135deg, rgba(79, 70, 229, 0.6), rgba(14, 165, 233, 0.5));
+
+    --ai-border: rgba(15, 23, 42, 0.08);
+    --ai-border-hover: rgba(79, 70, 229, 0.35);
+    --ai-specular-top: inset 0 1px 0 rgba(255, 255, 255, 1);
+    --ai-shadow-ambient: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+    --ai-shadow-hover: 0 12px 32px -4px rgba(15, 23, 42, 0.10), 0 4px 12px -2px rgba(79, 70, 229, 0.12);
+
+    --ai-dock-bg: rgba(255, 255, 255, 0.94);
+    --ai-dock-border: rgba(15, 23, 42, 0.09);
+    --ai-dock-item-active: #0f172a;
+    --ai-dock-glow: 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+/* ============================================================
+   2. VARIANT 1: PRISM LUX (Apple Vision Pro & Linear)
+   Clean, surgical, crystal glass, obsidian text, electric indigo & cyan
+   ============================================================ */
+:root[data-light-variant="prism"],
+body[data-light-variant="prism"],
+[data-light-variant="prism"] {
+    --ai-name: "Prism Lux";
+    --ai-bg-canvas: #f8fafc;
+    --ai-bg-ambient: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(99, 102, 241, 0.14) 0%, rgba(56, 189, 248, 0.08) 45%, rgba(244, 114, 182, 0.04) 75%, transparent 100%);
+    --ai-surface: rgba(255, 255, 255, 0.90);
+    --ai-surface-raised: #ffffff;
+    --ai-surface-inset: #f1f5f9;
+    --ai-glass-blur: blur(24px) saturate(190%);
+
+    --ai-text-headline: #090d16;
+    --ai-text-body: #27303f;
+    --ai-text-muted: #5e6b7e;
+    --ai-text-subtle: #94a3b8;
+
+    --ai-primary: #4f46e5;
+    --ai-primary-hover: #4338ca;
+    --ai-primary-glow: rgba(79, 70, 229, 0.28);
+    --ai-primary-soft: rgba(79, 70, 229, 0.08);
+    --ai-secondary: #0284c7;
+    --ai-secondary-glow: rgba(2, 132, 199, 0.20);
+    --ai-grad-hero: linear-gradient(135deg, #090d16 30%, #4f46e5 100%);
+    --ai-prismatic-border: linear-gradient(135deg, rgba(99, 102, 241, 0.7), rgba(56, 189, 248, 0.6), rgba(236, 72, 153, 0.5));
+
+    --ai-border: rgba(99, 102, 241, 0.14);
+    --ai-border-hover: rgba(79, 70, 229, 0.45);
+    --ai-specular-top: inset 0 1px 0 rgba(255, 255, 255, 1);
+    --ai-shadow-ambient: 0 12px 36px -6px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+    --ai-shadow-hover: 0 20px 48px -8px rgba(79, 70, 229, 0.22), 0 8px 20px -4px rgba(15, 23, 42, 0.06);
+
+    --ai-dock-bg: rgba(255, 255, 255, 0.90);
+    --ai-dock-border: rgba(99, 102, 241, 0.16);
+    --ai-dock-item-active: #4f46e5;
+    --ai-dock-glow: 0 16px 40px rgba(79, 70, 229, 0.20);
+}
+
+/* ============================================================
+   3. VARIANT 3: SWISS NEURAL ATELIER (Stripe Press / Editorial)
+   Warm alabaster/ivory ceramic, venetian gold & royal navy, tactile paper
+   ============================================================ */
+:root[data-light-variant="atelier"],
+body[data-light-variant="atelier"],
+[data-light-variant="atelier"] {
+    --ai-name: "Swiss Atelier";
+    --ai-bg-canvas: #faf7f2;
+    --ai-bg-ambient: radial-gradient(ellipse at 50% 0%, rgba(217, 119, 6, 0.14) 0%, rgba(180, 83, 9, 0.07) 45%, rgba(67, 56, 202, 0.05) 80%, transparent 100%),
+                     #faf7f2;
+    --ai-surface: rgba(255, 255, 255, 0.94);
+    --ai-surface-raised: #ffffff;
+    --ai-surface-inset: #f4eee3;
+    --ai-glass-blur: blur(18px);
+
+    --ai-text-headline: #1c1917;
+    --ai-text-body: #3c3836;
+    --ai-text-muted: #78716c;
+    --ai-text-subtle: #a8a29e;
+
+    --ai-primary: #b45309;
+    --ai-primary-hover: #92400e;
+    --ai-primary-glow: rgba(180, 83, 9, 0.26);
+    --ai-primary-soft: rgba(180, 83, 9, 0.09);
+    --ai-secondary: #312e81;
+    --ai-secondary-glow: rgba(49, 46, 129, 0.22);
+    --ai-grad-hero: linear-gradient(135deg, #1c1917 40%, #b45309 100%);
+    --ai-prismatic-border: linear-gradient(135deg, #b45309, #d97706, #312e81);
+
+    --ai-border: rgba(180, 130, 80, 0.24);
+    --ai-border-hover: rgba(180, 83, 9, 0.50);
+    --ai-specular-top: inset 0 1px 0 #ffffff;
+    --ai-shadow-ambient: 0 4px 16px -2px rgba(60, 45, 30, 0.06), 0 16px 36px -8px rgba(60, 45, 30, 0.10);
+    --ai-shadow-hover: 0 8px 24px -4px rgba(60, 45, 30, 0.08), 0 24px 50px -10px rgba(180, 83, 9, 0.22);
+
+    --ai-dock-bg: rgba(255, 253, 250, 0.96);
+    --ai-dock-border: rgba(180, 130, 80, 0.26);
+    --ai-dock-item-active: #b45309;
+    --ai-dock-glow: 0 16px 40px rgba(180, 83, 9, 0.18);
+}
+
+/* ============================================================
+   GLOBAL LIGHT MODE STYLING & DIRECT VARIABLE APPLIERS
+   ============================================================ */
+[data-theme="light"],
+[data-theme="light"] body,
+body[data-theme="light"] {
+    background-color: var(--ai-bg-canvas) !important;
+    color: var(--ai-text-body) !important;
+    transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+
+[data-theme="light"] .site-ambient-bg {
+    background: var(--ai-bg-ambient) !important;
+    opacity: 1 !important;
+    filter: blur(8px);
+    transition: background 0.5s ease;
+}
+
+/* 1. NAVBAR */
+[data-theme="light"] .navbar {
+    background: var(--ai-surface) !important;
+    backdrop-filter: var(--ai-glass-blur) !important;
+    -webkit-backdrop-filter: var(--ai-glass-blur) !important;
+    border-bottom: 1px solid var(--ai-border) !important;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04) !important;
+}
+
+[data-theme="light"] .logo {
+    color: var(--ai-text-headline) !important;
+}
+
+[data-theme="light"] .logo-mark {
+    background: linear-gradient(135deg, var(--ai-primary), var(--ai-secondary)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+}
+
+[data-theme="light"] .logo-dot {
+    color: var(--ai-primary) !important;
+    text-shadow: 0 0 12px var(--ai-primary-glow);
+}
+
+[data-theme="light"] .nav-links {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+[data-theme="light"] .nav-links a {
+    color: var(--ai-text-headline) !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    padding: 6px 14px 6px 8px !important;
+    border-radius: 12px !important;
+    border: 1px solid transparent !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    text-transform: none !important;
+    letter-spacing: 0.1px !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-theme="light"] .nav-links a:hover {
+    color: var(--ai-primary) !important;
+    background: var(--ai-surface-raised) !important;
+    border-color: var(--ai-border) !important;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.10) !important;
+    transform: translateY(-1px);
+}
+
+[data-theme="light"] .nav-links a.active {
+    color: #ffffff !important;
+    background: #0f172a !important;
+    border-color: #0f172a !important;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.16) !important;
+}
+
+[data-theme="light"] .nav-links a.active .nav-icon-pod {
+    background: rgba(255, 255, 255, 0.18) !important;
+    color: #ffffff !important;
+}
+
+/* 2. HERO CARD SURFACE */
+[data-theme="light"] .hero-card-surface {
+    background: var(--ai-surface) !important;
+    backdrop-filter: var(--ai-glass-blur) !important;
+    -webkit-backdrop-filter: var(--ai-glass-blur) !important;
+    border: 1px solid var(--ai-border) !important;
+    box-shadow: var(--ai-specular-top), var(--ai-shadow-ambient) !important;
+}
+
+[data-theme="light"] .hero-card-surface::before {
+    background: var(--ai-prismatic-border) !important;
+    height: 3px !important;
+    opacity: 0.95 !important;
+}
+
+[data-theme="light"] .hero-badge-pill {
+    background: var(--ai-primary-soft) !important;
+    border: 1px solid var(--ai-border) !important;
+    color: var(--ai-primary) !important;
+    font-weight: 700 !important;
+}
+
+[data-theme="light"] .hero-title {
+    color: var(--ai-text-headline) !important;
+}
+
+[data-light-variant="aurora"] .hero-title {
+    background: var(--ai-grad-hero) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+}
+
+[data-light-variant="atelier"] .hero-title {
+    font-family: 'Playfair Display', Georgia, serif !important;
+}
+
+[data-theme="light"] .hero-bio {
+    color: var(--ai-text-muted) !important;
+}
+
+[data-theme="light"] .hero-cta-btn {
+    background: linear-gradient(135deg, var(--ai-primary), var(--ai-secondary)) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 22px var(--ai-primary-glow) !important;
+}
+
+[data-theme="light"] .hero-deutsch-btn {
+    background: var(--ai-surface-raised) !important;
+    color: var(--ai-text-headline) !important;
+    border: 1px solid var(--ai-border) !important;
+    box-shadow: var(--ai-specular-top), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* 3. KUN HIKMATI (ATELIER QUOTE) */
+[data-theme="light"] .atelier-quote-card,
+[data-theme="light"] .fortune-card-3d {
+    background: var(--ai-surface) !important;
+    backdrop-filter: var(--ai-glass-blur) !important;
+    -webkit-backdrop-filter: var(--ai-glass-blur) !important;
+    border: 1px solid var(--ai-border) !important;
+    box-shadow: var(--ai-specular-top), var(--ai-shadow-ambient) !important;
+}
+
+[data-theme="light"] .atelier-quote-card:hover,
+[data-theme="light"] .fortune-card-3d:hover {
+    border-color: var(--ai-border-hover) !important;
+    box-shadow: var(--ai-specular-top), var(--ai-shadow-hover) !important;
+}
+
+[data-theme="light"] .atelier-tag,
+[data-theme="light"] .fortune-quote-badge {
+    background: var(--ai-primary-soft) !important;
+    border: 1px solid var(--ai-border) !important;
+    color: var(--ai-primary) !important;
+    font-weight: 700 !important;
+}
+
+[data-theme="light"] .atelier-quote-text,
+[data-theme="light"] .fortune-quote-text {
+    color: var(--ai-text-headline) !important;
+}
+
+[data-theme="light"] .atelier-quote-author,
+[data-theme="light"] .fortune-quote-author {
+    color: var(--ai-text-muted) !important;
+}
+
+[data-theme="light"] .atelier-quote-author::before {
+    background: var(--ai-primary) !important;
+}
+
+[data-theme="light"] .atelier-german-folio,
+[data-theme="light"] #quote-de-wrap {
+    background: var(--ai-surface-inset) !important;
+    border: 1px solid var(--ai-border) !important;
+    border-left: 3px solid var(--ai-primary) !important;
+}
+
+[data-theme="light"] .atelier-german-text,
+[data-theme="light"] #quote-de-text {
+    color: var(--ai-text-body) !important;
+}
+
+[data-theme="light"] .atelier-flag-badge {
+    background: var(--ai-primary-soft) !important;
+    color: var(--ai-primary) !important;
+    border-color: var(--ai-border) !important;
+}
+
+/* Audio Player Button */
+[data-theme="light"] .atelier-audio-player,
+[data-theme="light"] .fortune-action-btn {
+    background: var(--ai-surface-raised) !important;
+    border: 1px solid var(--ai-border) !important;
+    box-shadow: var(--ai-specular-top), 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+    color: var(--ai-text-headline) !important;
+}
+
+[data-theme="light"] .atelier-audio-player:hover,
+[data-theme="light"] .fortune-action-btn:hover {
+    border-color: var(--ai-primary) !important;
+    box-shadow: var(--ai-specular-top), 0 6px 20px var(--ai-primary-glow) !important;
+    color: var(--ai-primary) !important;
+}
+
+[data-theme="light"] .atelier-play-disc {
+    background: linear-gradient(135deg, var(--ai-primary), var(--ai-secondary)) !important;
+    box-shadow: 0 4px 12px var(--ai-primary-glow) !important;
+}
+
+[data-theme="light"] .atelier-soundwave .bar {
+    background: var(--ai-primary) !important;
+}
+
+[data-theme="light"] .atelier-btn-secondary {
+    background: var(--ai-surface-inset) !important;
+    border: 1px solid var(--ai-border) !important;
+    color: var(--ai-text-muted) !important;
+}
+
+[data-theme="light"] .atelier-btn-secondary:hover {
+    color: var(--ai-text-headline) !important;
+    border-color: var(--ai-border-hover) !important;
+    background: var(--ai-surface-raised) !important;
+}
+
+/* 4. COMMAND BAR & CHRONOMETER CLOCK */
+[data-theme="light"] .atelier-command-bar,
+[data-theme="light"] .functional-search {
+    background: var(--ai-surface) !important;
+    backdrop-filter: var(--ai-glass-blur) !important;
+    -webkit-backdrop-filter: var(--ai-glass-blur) !important;
+    border: 1px solid var(--ai-border) !important;
+    box-shadow: var(--ai-specular-top), 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .atelier-command-bar:focus-within,
+[data-theme="light"] .functional-search:focus-within {
+    border-color: var(--ai-primary) !important;
+    box-shadow: var(--ai-specular-top), 0 0 0 3px var(--ai-primary-glow) !important;
+    background: var(--ai-surface-raised) !important;
+}
+
+[data-theme="light"] .atelier-command-input {
+    color: var(--ai-text-headline) !important;
+}
+
+[data-theme="light"] .atelier-kbd {
+    background: var(--ai-surface-inset) !important;
+    border: 1px solid var(--ai-border) !important;
+    color: var(--ai-text-muted) !important;
+}
+
+[data-theme="light"] .atelier-clock,
+[data-theme="light"] .functional-clock {
+    background: var(--ai-surface) !important;
+    backdrop-filter: var(--ai-glass-blur) !important;
+    -webkit-backdrop-filter: var(--ai-glass-blur) !important;
+    border: 1px solid var(--ai-border) !important;
+    box-shadow: var(--ai-specular-top), 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .atelier-clock-time,
+[data-theme="light"] .functional-clock .fc-time {
+    color: var(--ai-text-headline) !important;
+}
+
+[data-theme="light"] .atelier-clock-time .colon,
+[data-theme="light"] .functional-clock .fc-time .clock-colon {
+    color: var(--ai-primary) !important;
+    -webkit-text-fill-color: var(--ai-primary) !important;
+}
+
+/* 5. BLOG POST CARDS */
+[data-theme="light"] .post-card {
+    background: var(--ai-surface) !important;
+    backdrop-filter: var(--ai-glass-blur) !important;
+    -webkit-backdrop-filter: var(--ai-glass-blur) !important;
+    border: 1px solid var(--ai-border) !important;
+    box-shadow: var(--ai-specular-top), 0 4px 18px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .post-card:hover {
+    border-color: var(--ai-border-hover) !important;
+    box-shadow: var(--ai-specular-top), var(--ai-shadow-hover) !important;
+}
+
+[data-theme="light"] .post-title {
+    color: var(--ai-text-headline) !important;
+}
+
+[data-theme="light"] .post-excerpt {
+    color: var(--ai-text-muted) !important;
+}
+
+[data-theme="light"] .post-meta {
+    color: var(--ai-primary) !important;
+}
+
+/* 6. MAC OS DOCK */
+[data-theme="light"] .desktop-dock {
+    background: var(--ai-dock-bg) !important;
+    backdrop-filter: blur(28px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+    border: 1px solid var(--ai-dock-border) !important;
+    box-shadow: var(--ai-specular-top), var(--ai-dock-glow), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .desktop-dock .dock-item {
+    color: var(--ai-text-muted) !important;
+}
+
+[data-theme="light"] .desktop-dock .dock-item:hover {
+    color: var(--ai-primary) !important;
+    background: var(--ai-primary-soft) !important;
+}
+
+[data-theme="light"] .desktop-dock .dock-item.active {
+    color: var(--ai-dock-item-active) !important;
+    background: var(--ai-primary-soft) !important;
+    border: 1px solid var(--ai-border-hover) !important;
+    box-shadow: 0 4px 14px var(--ai-primary-glow) !important;
+}
+
+[data-theme="light"] .desktop-dock .dock-item.active::after {
+    background: var(--ai-primary) !important;
+    box-shadow: 0 0 8px var(--ai-primary) !important;
+}
+
+[data-theme="light"] .desktop-dock .dock-label {
+    background: var(--ai-surface-raised) !important;
+    color: var(--ai-text-headline) !important;
+    border: 1px solid var(--ai-border) !important;
+}
+
+/* 7. AI DESIGN LAB FLOATING CONTROL */
+.ai-lab-fab {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-family: 'Inter', sans-serif;
+}
+
+.ai-lab-trigger {
+    background: var(--ai-surface-raised, rgba(255, 255, 255, 0.95));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--ai-border, rgba(99, 102, 241, 0.2));
+    padding: 8px 14px;
+    border-radius: 999px;
+    color: var(--ai-text-headline, #0f172a);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ai-lab-trigger:hover {
+    transform: translateY(-2px) scale(1.05);
+    border-color: var(--ai-primary, #4f46e5);
+    box-shadow: 0 12px 30px rgba(99, 102, 241, 0.25);
+}
+
+.ai-lab-drawer {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 0;
+    width: 290px;
+    background: var(--ai-surface-raised, rgba(255, 255, 255, 0.98));
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid var(--ai-border, rgba(15, 23, 42, 0.1));
+    border-radius: 18px;
+    padding: 14px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.95);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+
+.ai-lab-fab.open .ai-lab-drawer {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.ai-lab-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ai-border, rgba(15, 23, 42, 0.08));
+    margin-bottom: 10px;
+}
+
+.ai-lab-head strong {
+    font-size: 12px;
+    color: var(--ai-text-headline, #0f172a);
+}
+
+.ai-lab-proto-link {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ai-primary, #4f46e5);
+    text-decoration: none;
+}
+
+.ai-lab-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ai-variant-btn {
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: var(--ai-surface-inset, rgba(243, 245, 249, 0.8));
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s ease;
+}
+
+.ai-variant-btn strong {
+    font-size: 12px;
+    color: var(--ai-text-headline, #0f172a);
+}
+
+.ai-variant-btn small {
+    font-size: 10.5px;
+    color: var(--ai-text-muted, #64748b);
+}
+
+.ai-variant-btn:hover {
+    background: var(--ai-primary-soft, rgba(99, 102, 241, 0.08));
+    border-color: var(--ai-border-hover, rgba(99, 102, 241, 0.3));
+    transform: translateX(3px);
+}
+
+.ai-variant-btn.active {
+    border-color: var(--ai-primary, #4f46e5);
+    background: var(--ai-primary-soft, rgba(99, 102, 241, 0.12));
+}
+
+@media (max-width: 768px) {
+    .ai-lab-fab {
+        bottom: 80px;
+        left: 14px;
+    }
+}

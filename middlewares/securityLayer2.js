@@ -13,6 +13,7 @@ const securityLayer2 = helmet({
             objectSrc: ["'none'"],
             scriptSrc: [
                 "'self'",
+                "'unsafe-inline'",
                 "https://static.cloudflareinsights.com",
                 "https://cdnjs.cloudflare.com",
                 "https://cdn.jsdelivr.net",

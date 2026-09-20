@@ -32,27 +32,41 @@
 
 .navbar-links-row { display: none; }
 
-/* Gradient logo — Abdugofforov. */
+/* Pro Brand Logo — Abdugofforov. */
 .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    background: var(--grad-text);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    position: relative;
-    transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+    text-decoration: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 .logo:hover {
-    filter: drop-shadow(0 0 12px rgba(167, 139, 250, 0.6));
+    transform: translateY(-1px);
 }
-.logo span {
-    background: linear-gradient(135deg, #60A5FA, #A78BFA);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+.logo-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: var(--grad-primary);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+.logo-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+}
+.logo-dot {
+    color: var(--accent-color);
 }
 
 .nav-right {
@@ -65,27 +79,26 @@
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     flex-wrap: nowrap;
-    margin-left: 18px;
+    margin-left: 24px;
 }
 
 .nav-links a {
     font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--color-silver);
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--text-secondary);
     cursor: pointer;
-    padding: 8px 14px;
-    border-radius: 999px;
+    padding: 7px 14px;
+    border-radius: 10px;
     border: 1px solid transparent;
     background: transparent;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s, border-color 0.25s, box-shadow 0.25s;
+    transition: all 0.2s ease;
     white-space: nowrap;
 }
 
@@ -96,18 +109,19 @@
 }
 
 .nav-links a:hover {
-    color: var(--color-silver-bright);
+    color: var(--text-primary);
     background: var(--glass-bg);
     border-color: var(--glass-border);
 }
 
 .nav-links a.active {
-    color: #fff;
-    background: var(--grad-primary-soft);
-    border-color: transparent;
-    box-shadow: 0 4px 18px rgba(139, 92, 246, 0.35);
+    color: var(--text-primary);
+    background: var(--glass-bg-strong);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-sm);
+    font-weight: 600;
 }
-.nav-links a.active svg { color: #fff; }
+.nav-links a.active svg { color: var(--accent-color); }
 
 /* Theme Switcher (icon tugma) — glass style */
 .btn-icon {

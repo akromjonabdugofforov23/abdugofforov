@@ -279,26 +279,6 @@ let searchCategoryTab = 'all';
 let editingPostId = null;
 let isAdmin = sessionStorage.getItem('kay_admin') === 'true';
 
-// Rejalar va Portfolio state
-function safeJSONParse(key, defaultVal) {
-    try {
-        const val = localStorage.getItem(key);
-        return val ? JSON.parse(val) : defaultVal;
-    } catch (e) {
-        console.error('LocalStorage parsing error for ' + key, e);
-        return defaultVal;
-    }
-}
-let tasks = safeJSONParse('abdu_tasks', []);
-let portfolioInfo = safeJSONParse('abdu_portfolio', {
-    name: "Abdugofforov",
-    title: "",
-    bio: "",
-    skills: "",
-    experience: ""
-});
-let portfolioTokens = safeJSONParse('abdu_portfolio_tokens', []);
-
 // 2. DOM Elementlari
 const blogGrid = document.getElementById('blog-grid');
 const mainNav = document.getElementById('main-nav');
@@ -307,113 +287,17 @@ const searchInput = document.getElementById('search-input');
 const filterTags = document.getElementById('filter-tags');
 const themeBtn = document.getElementById('theme-btn');
 const addPostBtn = document.getElementById('add-post-btn');
-const cancelAddBtn = document.getElementById('cancel-add-btn');
 
 // Modallar
 const postDetailModal = document.getElementById('post-detail-modal');
 const closeDetailModal = document.getElementById('close-detail-modal');
 const detailModalBody = document.getElementById('detail-modal-body');
 
-const addPostModal = document.getElementById('add-post-modal');
-const closeAddModal = document.getElementById('close-add-modal');
-const newPostForm = document.getElementById('new-post-form');
-
-// Admin Modallari va tugmalari
-const adminBtn = document.getElementById('admin-btn'); // kay.html da bor
-const pinModal = document.getElementById('pin-modal');
-const closePinModal = document.getElementById('close-pin-modal');
-const pinInput = document.getElementById('pin-input');
-const pinSubmitBtn = document.getElementById('pin-submit-btn');
-const pinError = document.getElementById('pin-error');
-
-const adminPanelModal = document.getElementById('admin-panel-modal');
-const closeAdminPanelBtn = document.getElementById('close-admin-panel-btn');
-const adminTabPlansBtn = document.getElementById('admin-tab-plans-btn');
-const adminTabPortBtn = document.getElementById('admin-tab-port-btn');
-const adminPlansSection = document.getElementById('admin-plans-section');
-const adminPortfolioSection = document.getElementById('admin-portfolio-section');
-
-// Rejalar shakli
-const adminTaskForm = document.getElementById('admin-task-form');
-const taskTitleInput = document.getElementById('task-title-input');
-const taskStatusInput = document.getElementById('task-status-input');
-const taskEditId = document.getElementById('task-edit-id');
-const adminTaskList = document.getElementById('admin-task-list');
-
-// Portfolio Tahrirlash shakli
-const adminPortForm = document.getElementById('admin-port-settings-form');
-const portNameInput = document.getElementById('port-name-input');
-const portTitleInput = document.getElementById('port-title-input');
-const portBioInput = document.getElementById('port-bio-input');
-const portSkillsInput = document.getElementById('port-skills-input');
-const portExperienceInput = document.getElementById('port-experience-input');
-
-// Havola yaratish elementlari
-const generateTokenBtn = document.getElementById('generate-token-btn');
-const generatedLinkBox = document.getElementById('generated-link-box');
-const generatedLinkInput = document.getElementById('generated-link-input');
-const copyLinkBtn = document.getElementById('copy-link-btn');
-
-// Portfolio ko'rish elementlari
-const portfolioView = document.getElementById('portfolio-view');
 const mainContent = document.getElementById('main-content');
-const closePortfolioBtn = document.getElementById('close-portfolio-btn');
 
 // Hero Section elementlari
 const heroMainTitle = document.getElementById('hero-main-title');
 const heroSub = document.getElementById('hero-sub');
-
-// 3. Sichqonchaga Ergashuvchi Doira (Mouse Follower)
-function initMouseFollower() {
-    const follower = document.createElement('div');
-    follower.id = 'cursor-follower';
-    document.body.appendChild(follower);
-
-    let mouseX = 0, mouseY = 0;
-    let followerX = 0, followerY = 0;
-
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        follower.classList.add('active');
-    });
-
-    document.addEventListener('mouseleave', () => {
-        follower.classList.remove('active');
-    });
-
-    // Lerp yordamida silliq harakatlantirish
-    function animateFollower() {
-        // Mobil qurilmalarda kursor kerak emas
-        const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-        if (isMobile) {
-            follower.style.display = 'none';
-            return;
-        }
-
-        const lerpFactor = 0.12;
-        followerX += (mouseX - followerX) * lerpFactor;
-        followerY += (mouseY - followerY) * lerpFactor;
-
-        follower.style.transform = `translate3d(${followerX}px, ${followerY}px, 0) translate(-50%, -50%)`;
-
-        requestAnimationFrame(animateFollower);
-    }
-    animateFollower();
-
-    // Hover effektlari
-    document.addEventListener('mouseover', (e) => {
-        if (e.target.closest('a, button, .post-card, .filter-tag, .form-input, .form-textarea, .modal-close')) {
-            follower.classList.add('cursor-hover');
-        }
-    });
-
-    document.addEventListener('mouseout', (e) => {
-        if (e.target.closest('a, button, .post-card, .filter-tag, .form-input, .form-textarea, .modal-close')) {
-            follower.classList.remove('cursor-hover');
-        }
-    });
-}
 
 // 4. Ob-havo va Vaqt Vidjeti
 function updateClock() {
@@ -955,70 +839,18 @@ function renderPosts(instant) {
     }
 } // <-- renderPosts funksiyasi shu yerda yopildi
 
-// Ko'rinishlarni almashtirish yordamchilari
-// (asosiy <-> deutsch <-> kartochka <-> turnir)
+// // Ko'rinishlarni almashtirish yordamchilari
 function hideAuxViews() {
-    ['deutsch-view', 'flashcards-view', 'tournament-view', 'verb-trainer-view'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
     const fortune = document.getElementById('fortune-widget-wrap');
     if (fortune) fortune.style.display = 'none';
 }
 
-// ===== LAZY LOAD AUXILIARY SCRIPTS (Tests, Flashcards, Games, Verbs, Horror) =====
-let auxScriptsLoaded = false;
-let auxScriptsLoading = false;
-const auxScriptUrls = [
-    'data-flashcards.js',
-    'data-tests.js',
-    'scripts/verb-trainer-data.js',
-    'scripts/flashcards.js',
-    'scripts/matching-game.js',
-    'scripts/tests.js',
-    'scripts/verb-trainer.js',
-    'scripts/horror-data.js',
-    'scripts/horror-logic.js'
-];
-
-function loadAuxScripts(cb) {
-    if (auxScriptsLoaded || (window.deutschTests && window.flashcardDecks && window.verbTrainerApp)) {
-        auxScriptsLoaded = true;
-        if (cb) cb();
-        return;
+function getDeutschDestination(hash) {
+    let dest = 'https://deutsch.abdugofforov.uz/';
+    if (!window.location.hostname.includes('abdugofforov.uz')) {
+        dest = 'deutsch.html';
     }
-    if (auxScriptsLoading) {
-        if (cb) window.addEventListener('aux-scripts-loaded', cb, { once: true });
-        return;
-    }
-    auxScriptsLoading = true;
-    let loaded = 0;
-    const onDone = () => {
-        loaded++;
-        if (loaded >= auxScriptUrls.length) {
-            auxScriptsLoaded = true;
-            auxScriptsLoading = false;
-            window.dispatchEvent(new CustomEvent('aux-scripts-loaded'));
-            if (cb) cb();
-        }
-    };
-    auxScriptUrls.forEach(src => {
-        const s = document.createElement('script');
-        s.src = src;
-        s.async = false;
-        s.onload = onDone;
-        s.onerror = onDone;
-        document.body.appendChild(s);
-    });
-}
-
-// Idle loader after initial page load
-if (typeof window !== 'undefined') {
-    if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(() => { setTimeout(loadAuxScripts, 2000); });
-    } else {
-        window.addEventListener('load', () => { setTimeout(loadAuxScripts, 2500); });
-    }
+    return hash ? dest + hash : dest;
 }
 
 // ===== SPA ROUTER & HISTORY STATE MANAGEMENT =====
@@ -1032,16 +864,12 @@ function applyAppRoute(route) {
     const cleanRoute = (route || window.location.hash || '#home').toLowerCase();
 
     if (cleanRoute.includes('horror-deutsch') || cleanRoute.includes('nemistili') || cleanRoute.includes('deutsch') || cleanRoute.includes('verb') || cleanRoute.includes('flashcards') || cleanRoute.includes('tournament') || cleanRoute.includes('game')) {
-        let dest = 'https://deutsch.abdugofforov.uz/';
-        if (!window.location.hostname.includes('abdugofforov.uz')) {
-            dest = 'deutsch.html';
-        }
-        if (cleanRoute.includes('verb')) dest += '#verbs';
-        else if (cleanRoute.includes('flashcards')) dest += '#flashcards';
-        else if (cleanRoute.includes('tournament')) dest += '#tournament';
-        else if (cleanRoute.includes('game')) dest += '#games';
-        else if (cleanRoute.includes('horror')) dest += '#horror';
-        else dest += '#tests';
+        let dest = getDeutschDestination('#tests');
+        if (cleanRoute.includes('verb')) dest = getDeutschDestination('#verbs');
+        else if (cleanRoute.includes('flashcards')) dest = getDeutschDestination('#flashcards');
+        else if (cleanRoute.includes('tournament')) dest = getDeutschDestination('#tournament');
+        else if (cleanRoute.includes('game')) dest = getDeutschDestination('#games');
+        else if (cleanRoute.includes('horror')) dest = getDeutschDestination('#horror');
 
         window.location.href = dest;
         return;
@@ -1066,77 +894,26 @@ function showMainView(pushHistory = true) {
     if (pushHistory) setAppRoute('#home', true);
 }
 
-function openDeutschView(pushHistory = true) {
-    loadAuxScripts(() => {
-        document.body.classList.remove('horror-theme');
-        if (mainContent) mainContent.style.display = 'none';
-        const hero = document.querySelector('.hero');
-        if (hero) hero.style.display = 'none';
-        hideAuxViews();
-        const deutschView = document.getElementById('deutsch-view');
-        if (deutschView) deutschView.style.display = 'block';
-        if (typeof renderDeutschHome === 'function') renderDeutschHome();
-        if (pushHistory) setAppRoute('#nemistili', true);
-    });
+function openDeutschView() {
+    window.location.href = getDeutschDestination('#tests');
 }
 
-function openVerbTrainerView(pushHistory = true) {
-    loadAuxScripts(() => {
-        document.body.classList.remove('horror-theme');
-        if (mainContent) mainContent.style.display = 'none';
-        const hero = document.querySelector('.hero');
-        if (hero) hero.style.display = 'none';
-        hideAuxViews();
-        const vView = document.getElementById('verb-trainer-view');
-        if (vView) vView.style.display = 'block';
-        if (window.verbTrainerApp && typeof window.verbTrainerApp.init === 'function') {
-            window.verbTrainerApp.init();
-        }
-        if (pushHistory) setAppRoute('#verbs', true);
-    });
+function openVerbTrainerView() {
+    window.location.href = getDeutschDestination('#verbs');
 }
 
-function openFlashcardsView(pushHistory = true) {
-    loadAuxScripts(() => {
-        document.body.classList.remove('horror-theme');
-        if (mainContent) mainContent.style.display = 'none';
-        const hero = document.querySelector('.hero');
-        if (hero) hero.style.display = 'none';
-        hideAuxViews();
-        const flashView = document.getElementById('flashcards-view');
-        if (flashView) flashView.style.display = 'block';
-        if (typeof renderFlashcardsHome === 'function') renderFlashcardsHome();
-        if (pushHistory) setAppRoute('#flashcards', true);
-    });
+function openFlashcardsView() {
+    window.location.href = getDeutschDestination('#flashcards');
 }
 
-function openGamesView(pushHistory = true) {
-    loadAuxScripts(() => {
-        document.body.classList.remove('horror-theme');
-        if (mainContent) mainContent.style.display = 'none';
-        const hero = document.querySelector('.hero');
-        if (hero) hero.style.display = 'none';
-        hideAuxViews();
-        const flashView = document.getElementById('flashcards-view');
-        if (flashView) flashView.style.display = 'block';
-        if (typeof showMatchingHome === 'function') showMatchingHome();
-        if (pushHistory) setAppRoute('#games', true);
-    });
+function openGamesView() {
+    window.location.href = getDeutschDestination('#games');
 }
 
-function openTournamentView(pushHistory = true) {
-    loadAuxScripts(() => {
-        document.body.classList.remove('horror-theme');
-        if (mainContent) mainContent.style.display = 'none';
-        const hero = document.querySelector('.hero');
-        if (hero) hero.style.display = 'none';
-        hideAuxViews();
-        const tView = document.getElementById('tournament-view');
-        if (tView) tView.style.display = 'block';
-        if (typeof renderTournamentHome === 'function') renderTournamentHome();
-        if (pushHistory) setAppRoute('#tournament', true);
-    });
+function openTournamentView() {
+    window.location.href = getDeutschDestination('#tournament');
 }
+
 
 // 9. SPA Routing Navigation
 // 9. SPA Routing Navigation
@@ -1589,18 +1366,6 @@ if (postDetailModal) postDetailModal.addEventListener('click', (e) => {
     if (e.target === postDetailModal) closePostDetailModal();
 });
 
-// Kategoriya o'zgarganda dinamik formani boshqarish
-const postCategoryInput = document.getElementById('post-category-input');
-const postMusicGroup = document.getElementById('post-music-group');
-const postVideoGroup = document.getElementById('post-video-group');
-
-if (postCategoryInput) {
-    postCategoryInput.addEventListener('change', () => {
-        const val = postCategoryInput.value;
-        if (postMusicGroup) postMusicGroup.style.display = (val === 'Musiqa') ? 'block' : 'none';
-        if (postVideoGroup) postVideoGroup.style.display = (val === 'Video') ? 'block' : 'none';
-    });
-}
 
 // ============================================================
 // 11. ZEN CREATIVE WRITING STUDIO (NOTION / MEDIUM USLUBI)
@@ -2033,390 +1798,6 @@ if (addPostBtn) {
     addPostBtn.addEventListener('click', () => openZenEditor());
 }
 
-// 12. PIN-Kod Kirish (Admin)
-if (adminBtn) {
-    adminBtn.addEventListener('click', () => {
-        if (pinInput) pinInput.value = '';
-        if (pinError) pinError.style.display = 'none';
-        if (pinModal) {
-            pinModal.classList.add('active');
-        }
-        document.body.style.overflow = 'hidden';
-    });
-}
-
-document.getElementById('close-pin-modal')?.addEventListener('click', () => {
-    pinModal?.classList.remove('active');
-    document.body.style.overflow = '';
-});
-
-pinSubmitBtn?.addEventListener('click', handlePinSubmit);
-pinInput?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') handlePinSubmit();
-});
-
-function handlePinSubmit() {
-    const pin = pinInput?.value.trim();
-    
-    // Brute-force himoya
-    const attempts = parseInt(sessionStorage.getItem('pin_attempts') || '0');
-    const lockUntil = parseInt(sessionStorage.getItem('pin_lock_until') || '0');
-    
-    if (Date.now() < lockUntil) {
-        const secsLeft = Math.ceil((lockUntil - Date.now()) / 1000);
-        if (pinError) pinError.textContent = `Juda ko'p urinish! ${secsLeft} soniya kuting.`;
-        if (pinError) pinError.style.display = 'block';
-        return;
-    }
-    
-    if (!pin) return;
-
-    // PIN ni SERVERDA tekshiramiz — hash KODDA saqlanmaydi (server /check-pin hal qiladi)
-    fetch('/check-pin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pin })
-    })
-    .then(r => r.json().catch(() => ({})))
-    .then(data => {
-        if (data && data.success) {
-            sessionStorage.removeItem('pin_attempts');
-            sessionStorage.removeItem('pin_lock_until');
-            // PIN ni admin sessiyasi uchun saqlaymiz (server yozishlarida kerak bo'ladi).
-            sessionStorage.setItem('kay_admin_pin', pin);
-            pinModal?.classList.remove('active');
-            openAdminPanel();
-        } else {
-            const newAttempts = attempts + 1;
-            sessionStorage.setItem('pin_attempts', newAttempts);
-            if (newAttempts >= 3) {
-                const lockTime = Date.now() + 60000; // 60 soniya
-                sessionStorage.setItem('pin_lock_until', lockTime);
-                if (pinError) pinError.textContent = 'Juda ko\'p urinish! 60 soniya kuting.';
-                sessionStorage.setItem('pin_attempts', '0');
-            } else {
-                if (pinError) pinError.textContent = `PIN noto\'g\'ri! (${newAttempts}/3 urinish)`;
-            }
-            if (pinError) pinError.style.display = 'block';
-            if (pinInput) pinInput.value = '';
-            pinInput?.focus();
-        }
-    })
-    .catch(() => {
-        if (pinError) { pinError.textContent = 'Server bilan bog\'lanib bo\'lmadi'; pinError.style.display = 'block'; }
-    });
-}
-
-// 13. Admin Panel Boshqaruvi
-function openAdminPanel() {
-    sessionStorage.setItem('kay_admin', 'true');
-    isAdmin = true;
-    adminPanelModal?.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    document.body.classList.add('admin-mode');
-    // Loyihalar nav havolasini admin uchun ko'rsatish
-    const navPortfolioLink = document.getElementById('nav-portfolio-link');
-    if (navPortfolioLink) navPortfolioLink.style.display = 'inline-flex';
-    adminTabPlansBtn?.click();
-    renderTasks();
-    loadPortfolioForm();
-    renderPosts(); // Admin tugmalarini ko'rsatish uchun qayta render
-}
-
-closeAdminPanelBtn?.addEventListener('click', () => {
-    isAdmin = false;
-    sessionStorage.removeItem('kay_admin');
-    sessionStorage.removeItem('kay_admin_pin');
-    adminPanelModal?.classList.remove('active');
-    document.body.classList.remove('admin-mode');
-    // Loyihalar nav havolasini yashirish
-    const navPortfolioLink = document.getElementById('nav-portfolio-link');
-    if (navPortfolioLink) navPortfolioLink.style.display = 'none';
-    renderPosts(); // Admin tugmalarini yashirish uchun qayta render
-    document.body.style.overflow = '';
-});
-
-// Tablararo navigatsiya
-adminTabPlansBtn?.addEventListener('click', () => {
-    adminTabPlansBtn?.classList.add('active');
-    adminTabPortBtn?.classList.remove('active');
-    if (adminPlansSection) adminPlansSection.style.display = 'block';
-    if (adminPortfolioSection) adminPortfolioSection.style.display = 'none';
-});
-
-adminTabPortBtn?.addEventListener('click', () => {
-    adminTabPortBtn?.classList.add('active');
-    adminTabPlansBtn?.classList.remove('active');
-    if (adminPortfolioSection) adminPortfolioSection.style.display = 'block';
-    if (adminPlansSection) adminPlansSection.style.display = 'none';
-});
-
-// Rejalar CRUD
-adminTaskForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const title = taskTitleInput.value.trim();
-    const status = taskStatusInput.value;
-    const editId = taskEditId.value;
-
-    if (editId) {
-        const task = tasks.find(t => t.id === parseInt(editId));
-        if (task) {
-            task.title = title;
-            task.status = status;
-        }
-        taskEditId.value = '';
-    } else {
-        const newTask = {
-            id: Date.now(),
-            title,
-            status
-        };
-        tasks.push(newTask);
-    }
-
-    localStorage.setItem('abdu_tasks', JSON.stringify(tasks));
-    adminTaskForm.reset();
-    renderTasks();
-});
-
-function renderTasks() {
-    if (!adminTaskList) return;
-    adminTaskList.innerHTML = '';
-    
-    let countTodo = 0;
-    let countProgress = 0;
-    let countDone = 0;
-
-    tasks.forEach(task => {
-        if (task.status === 'todo') countTodo++;
-        else if (task.status === 'progress') countProgress++;
-        else if (task.status === 'done') countDone++;
-
-        const item = document.createElement('div');
-        item.className = 'admin-task-item';
-        
-        let badgeClass = 'badge-todo';
-        let badgeText = 'Todo';
-        if (task.status === 'progress') { badgeClass = 'badge-progress'; badgeText = 'Progress'; }
-        else if (task.status === 'done') { badgeClass = 'badge-done'; badgeText = 'Done'; }
-
-        item.innerHTML = `
-            <span>${escapeHTML(task.title)}</span>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span class="task-badge ${badgeClass}">${badgeText}</span>
-                <div class="admin-task-actions">
-                    <button type="button" class="btn-icon" data-action="edit-task" data-id="${task.id}" style="font-size:12px; padding: 4px;">✏️</button>
-                    <button type="button" class="btn-icon" data-action="delete-task" data-id="${task.id}" style="font-size:12px; padding: 4px; color:#ff4d4d;">🗑️</button>
-                </div>
-            </div>
-        `;
-        adminTaskList.appendChild(item);
-    });
-
-    const countTodoEl = document.getElementById('count-todo');
-    const countProgressEl = document.getElementById('count-progress');
-    const countDoneEl = document.getElementById('count-done');
-    if (countTodoEl) countTodoEl.textContent = countTodo;
-    if (countProgressEl) countProgressEl.textContent = countProgress;
-    if (countDoneEl) countDoneEl.textContent = countDone;
-
-    const total = tasks.length;
-    const percentage = total === 0 ? 0 : Math.round((countDone / total) * 100);
-    const pctEl = document.getElementById('chart-percentage-text');
-    if (pctEl) pctEl.textContent = `${percentage}%`;
-
-    const circle = document.getElementById('progress-ring-circle');
-    if (circle) {
-        const radius = circle.r.baseVal.value;
-        const circumference = 2 * Math.PI * radius; 
-        const offset = circumference - (percentage / 100) * circumference;
-        circle.style.strokeDashoffset = offset;
-    }
-}
-
-window.editTask = function(taskId) {
-    const task = tasks.find(t => t.id === taskId);
-    if (!task) return;
-
-    taskTitleInput.value = task.title;
-    taskStatusInput.value = task.status;
-    taskEditId.value = task.id;
-    taskTitleInput.focus();
-};
-
-window.deleteTask = function(taskId) {
-    if (confirm("Ushbu vazifani o'chirmoqchimisiz?")) {
-        tasks = tasks.filter(t => t.id !== taskId);
-        localStorage.setItem('abdu_tasks', JSON.stringify(tasks));
-        renderTasks();
-    }
-};
-
-// Portfolio yuklash
-function loadPortfolioForm() {
-    if (!portNameInput) return;
-    portNameInput.value = portfolioInfo.name;
-    portTitleInput.value = portfolioInfo.title;
-    portBioInput.value = portfolioInfo.bio;
-    portSkillsInput.value = portfolioInfo.skills;
-    portExperienceInput.value = portfolioInfo.experience;
-}
-
-if (adminPortForm) {
-    adminPortForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        portfolioInfo = {
-            name: portNameInput.value.trim(),
-            title: portTitleInput.value.trim(),
-            bio: portBioInput.value.trim(),
-            skills: portSkillsInput.value.trim(),
-            experience: portExperienceInput.value.trim()
-        };
-        
-        localStorage.setItem('abdu_portfolio', JSON.stringify(portfolioInfo));
-        alert("Portfolio ma'lumotlari muvaffaqiyatli saqlandi!");
-        renderPortfolioView();
-    });
-}
-
-// Bir martalik token yaratish
-if (generateTokenBtn) {
-    generateTokenBtn.addEventListener('click', () => {
-        const token = 'abdu_' + Math.random().toString(36).substr(2, 8);
-        portfolioTokens.push(token);
-        localStorage.setItem('abdu_portfolio_tokens', JSON.stringify(portfolioTokens));
-
-        const link = `${window.location.origin}${window.location.pathname}?token=${token}`;
-        if (generatedLinkInput) generatedLinkInput.value = link;
-        if (generatedLinkBox) generatedLinkBox.style.display = 'block';
-    });
-}
-
-if (copyLinkBtn) {
-    copyLinkBtn.addEventListener('click', () => {
-        if (generatedLinkInput) generatedLinkInput.select();
-        document.execCommand('copy');
-        alert("Havola nusxalandi!");
-    });
-}
-
-// 14. Portfolio Sahifasini Render Qilish
-function renderPortfolioView() {
-    const nameEl = document.getElementById('port-display-name');
-    const titleEl = document.getElementById('port-display-title');
-    const bioEl = document.getElementById('port-display-bio');
-    if (nameEl) nameEl.textContent = portfolioInfo.name;
-    if (titleEl) titleEl.textContent = portfolioInfo.title;
-    if (bioEl) bioEl.textContent = portfolioInfo.bio;
-
-    const skillsList = document.getElementById('port-display-skills');
-    if (skillsList) {
-    skillsList.innerHTML = '';
-    const skillsArr = portfolioInfo.skills.split(',');
-    skillsArr.forEach(s => {
-        if (s.trim()) {
-            const li = document.createElement('li');
-            li.textContent = s.trim();
-            li.style.background = '#111827';
-            li.style.color = '#00ff88';
-            li.style.border = '1px solid rgba(0, 255, 136, 0.2)';
-            li.style.padding = '6px 14px';
-            li.style.borderRadius = '20px';
-            li.style.fontSize = '12px';
-            li.style.fontFamily = 'monospace';
-            skillsList.appendChild(li);
-        }
-    });
-    }
-
-    const expDiv = document.getElementById('port-display-experience');
-    if (expDiv) {
-    expDiv.innerHTML = '';
-    const expArr = portfolioInfo.experience.split(';');
-    expArr.forEach(exp => {
-        if (exp.trim()) {
-            const p = document.createElement('p');
-            p.style.marginBottom = '12px';
-            p.style.color = '#f3f4f6';
-            
-            const parts = exp.trim().split('(');
-            if (parts.length === 2) {
-                const comp = parts[0].trim();
-                const year = parts[1].replace(')', '').trim();
-                p.innerHTML = `<strong style="color:#ff4d4d;">${comp}</strong> (${year})`;
-            } else {
-                p.innerHTML = exp.trim();
-            }
-            expDiv.appendChild(p);
-        }
-    });
-    }
-}
-
-// Tokenni tekshirish
-function checkPortfolioAccess() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const pToken = urlParams.get('p');
-    const token = urlParams.get('token');
-
-    let isValid = false;
-
-    if (pToken) {
-        try {
-            const decoded = JSON.parse(decodeURIComponent(atob(pToken)));
-            if (decoded.exp && Date.now() > decoded.exp) {
-                isValid = false;
-            } else {
-                portfolioInfo = decoded.data;
-                isValid = true;
-            }
-        } catch (e) {
-            isValid = false;
-        }
-    } else if (token) {
-        const tokenIndex = portfolioTokens.indexOf(token);
-        if (tokenIndex !== -1) {
-            portfolioTokens.splice(tokenIndex, 1);
-            localStorage.setItem('abdu_portfolio_tokens', JSON.stringify(portfolioTokens));
-            isValid = true;
-        }
-    }
-
-    if (pToken || token) {
-        if (isValid) {
-            renderPortfolioView();
-            document.querySelector('.hero').style.display = 'none';
-            mainContent.style.display = 'none';
-            document.querySelector('.footer').style.display = 'none';
-            portfolioView.style.display = 'block';
-
-            const follower = document.getElementById('cursor-follower');
-            if (follower) {
-                follower.classList.add('portfolio-mode');
-            }
-        } else {
-            document.querySelector('.hero').style.display = 'none';
-            mainContent.style.display = 'none';
-            document.querySelector('.footer').style.display = 'none';
-            
-            portfolioView.innerHTML = `
-                <div class="portfolio-expired animate-fade-in" style="background:#000; min-height:80vh; display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:24px;">
-                    <span style="font-size: 64px; display: block; margin-bottom: 20px;">🔒</span>
-                    <h2 style="color:#ff4d4d; font-family:'Playfair Display', serif;">Ushbu kirish havolasi eskirgan yoki noto'g'ri!</h2>
-                    <p style="color:#626a7f;">Xavfsizlik maqsadida ushbu portfolio havolasi faqat cheklangan vaqt yoki bir martalik foydalanish uchun mo'ljallangan.</p>
-                    <button class="btn-primary" data-action="go-home" style="margin-top: 25px; border-color:#00ff88; color:#00ff88; background:transparent;">Bosh sahifaga o'tish</button>
-                </div>
-            `;
-            portfolioView.style.display = 'block';
-        }
-    }
-}
-
-if (closePortfolioBtn) closePortfolioBtn.addEventListener('click', () => {
-    window.location.href = window.location.pathname;
-});
-
 // Yordamchi Funksiyalar
 function escapeHTML(str) {
     if (!str) return '';
@@ -2624,38 +2005,7 @@ function initLanguage() {
     document.addEventListener('langchange', () => {
         updateHeroContent();
         renderPosts();
-        const deutschView = document.getElementById('deutsch-view');
-        const flashView = document.getElementById('flashcards-view');
-        if (deutschView && deutschView.style.display !== 'none') renderDeutschHome();
-        if (flashView && flashView.style.display !== 'none') {
-            fcDeckKey ? renderFlashcard() : renderFlashcardsHome();
-        }
     });
-}
-
-// ===== 3D KIRISH ANIMATSIYASINI YASHIRISH =====
-function initIntroSplash() {
-    const splash = document.getElementById('intro-splash');
-    if (!splash) return;
-    const start = Date.now();
-    const MIN_MS = 1800; // kamida shuncha vaqt ko'rsatiladi
-
-    function hide() {
-        const wait = Math.max(0, MIN_MS - (Date.now() - start));
-        setTimeout(() => {
-            splash.classList.add('hide');
-            setTimeout(() => splash.remove(), 800);
-        }, wait);
-    }
-
-    // Bosib o'tkazib yuborish mumkin
-    splash.addEventListener('click', () => {
-        splash.classList.add('hide');
-        setTimeout(() => splash.remove(), 800);
-    });
-
-    if (document.readyState === 'complete') hide();
-    else window.addEventListener('load', hide);
 }
 
 // ===== SCROLL REVEAL (pastdan/tepadan kirish animatsiyasi) =====
@@ -2705,17 +2055,11 @@ function initFloatingAddBtn() {
     if (!fab) return;
     fab.addEventListener('click', (e) => {
         e.preventDefault();
-        // "Yozish" tugmasini chaqirib bersa o'sha modal ochiladi
         const addBtn = document.getElementById('add-post-btn');
         if (addBtn) {
             addBtn.click();
-        } else {
-            // Backup: modal'ni to'g'ridan-to'g'ri ochish
-            const modal = document.getElementById('add-post-modal');
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
+        } else if (typeof openZenEditor === 'function') {
+            openZenEditor();
         }
     });
 }
@@ -2828,226 +2172,7 @@ function replyToComment(commentId) {
     if (list) list.innerHTML = renderComments(post.comments);
 }
 
-// ===== NEMIS TESTLARI — NATIJALAR TARIXI =====
-function saveTestResult(level, score, total, wrongDetails) {
-    const hist = JSON.parse(localStorage.getItem('deutsch_history') || '[]');
-    hist.unshift({
-        level,
-        score,
-        total,
-        pct: total ? Math.round(score / total * 100) : 0,
-        date: new Date().toISOString(),
-        details: wrongDetails ? JSON.parse(JSON.stringify(wrongDetails)) : []
-    });
-    localStorage.setItem('deutsch_history', JSON.stringify(hist.slice(0, 50)));
-}
-function getTestHistory() {
-    return JSON.parse(localStorage.getItem('deutsch_history') || '[]');
-}
-function renderTestHistory() {
-    const hist = getTestHistory();
-    if (!hist.length) return '';
-    const rows = hist.slice(0, 6).map(h => {
-        const d = new Date(h.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short' });
-        const color = h.pct >= 80 ? '#34d399' : h.pct >= 60 ? '#fbbf24' : '#f87171';
-        return `<div style="display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border-color);">
-            <span style="text-transform:uppercase;font-weight:600;width:42px;">${escapeHTML(h.level)}</span>
-            <div style="flex:1;height:6px;background:var(--border-color);border-radius:3px;overflow:hidden;">
-                <div style="height:100%;width:${h.pct}%;background:${color};"></div>
-            </div>
-            <span style="width:70px;text-align:right;color:var(--text-secondary);">${h.score}/${h.total} - ${h.pct}%</span>
-            <span style="width:56px;text-align:right;color:var(--text-muted);font-size:11px;">${d}</span>
-        </div>`;
-    }).join('');
-    return `<div class="post-card" style="max-width:680px;margin:30px auto 0;padding:22px;">
-        <h3 style="font-size:16px;margin-bottom:12px;">🏆 Sizning natijalaringiz</h3>
-        ${rows}
-    </div>`;
-}
-
-// ===== FLASHCARD — SPACED REPETITION (Leitner) + STREAK =====
-const FC_INTERVALS = [0, 1, 2, 4, 7, 15]; // box raqami -> kunlar
-function fcProgress() { return JSON.parse(localStorage.getItem('fc_progress') || '{}'); }
-function fcSaveProgress(p) { localStorage.setItem('fc_progress', JSON.stringify(p)); }
-function fcCardKey(deck, idx) { return deck + ':' + idx; }
-
-function fcAnswer(known) {
-    const prog = fcProgress();
-    const key = fcCardKey(fcDeckKey, fcOrder[fcIndex]);
-    let box = (prog[key] && prog[key].box) || 1;
-    box = known ? Math.min(box + 1, 5) : 1;
-    prog[key] = { box, due: Date.now() + FC_INTERVALS[box] * 86400000 };
-    fcSaveProgress(prog);
-    updateFcStreak();
-    if (fcIndex < fcOrder.length - 1) { fcIndex++; renderFlashcard(); }
-    else renderFlashcardDone();
-}
-
-function updateFcStreak() {
-    const today = new Date().toISOString().split('T')[0];
-    const s = JSON.parse(localStorage.getItem('fc_streak') || '{"count":0,"last":""}');
-    if (s.last === today) return s.count;
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    s.count = (s.last === yesterday) ? (s.count + 1) : 1;
-    s.last = today;
-    localStorage.setItem('fc_streak', JSON.stringify(s));
-    return s.count;
-}
-function getFcStreak() {
-    return (JSON.parse(localStorage.getItem('fc_streak') || '{"count":0}').count) || 0;
-}
-function fcMasteredCount(deckKey) {
-    const prog = fcProgress();
-    let n = 0;
-    (flashcardDecks[deckKey] || []).forEach((_, i) => {
-        const e = prog[fcCardKey(deckKey, i)];
-        if (e && e.box >= 4) n++;
-    });
-    return n;
-}
-function renderFlashcardDone() {
-    const view = document.getElementById('flashcards-content');
-    if (!view) return;
-    const mastered = fcMasteredCount(fcDeckKey);
-    const total = flashcardDecks[fcDeckKey].length;
-    view.innerHTML = `
-        <div style="max-width:480px;margin:0 auto;text-align:center;">
-            <div style="font-size:60px;margin-bottom:14px;">🌟</div>
-            <h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:8px;">To'plam yakunlandi!</h2>
-            <p style="color:var(--text-secondary);margin-bottom:24px;">O'zlashtirildi: <b>${mastered}/${total}</b> &nbsp;-&nbsp; 🔥 Streak: <b>${getFcStreak()} kun</b></p>
-            <div style="display:flex;gap:12px;justify-content:center;">
-                <button class="btn-primary" data-action="start-flashcards" data-deck="${fcDeckKey}">🔄 Qayta</button>
-                <button class="btn-secondary" data-action="render-flashcards-home">${i18n.t('fc.back')}</button>
-            </div>
-        </div>`;
-}
-
-// ===== GERMANY CAROUSEL =====
-function initCarousel() {
-    const track = document.getElementById('carousel-track');
-    const dotsContainer = document.getElementById('carousel-dots');
-    const prevBtn = document.getElementById('carousel-prev');
-    const nextBtn = document.getElementById('carousel-next');
-    if (!track || !dotsContainer) return;
-
-    const slides = track.querySelectorAll('.carousel-slide');
-    const total = slides.length;
-    let current = 0;
-    let autoSlideInterval = null;
-
-    // Dots yaratish
-    for (let i = 0; i < total; i++) {
-        const dot = document.createElement('button');
-        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-        dot.setAttribute('aria-label', 'Slide ' + (i + 1));
-        dot.addEventListener('click', () => { goTo(i); resetAuto(); });
-        dotsContainer.appendChild(dot);
-    }
-
-    function goTo(idx) {
-        current = ((idx % total) + total) % total;
-        track.style.transform = 'translateX(-' + (current * 100) + '%)';
-        dotsContainer.querySelectorAll('.carousel-dot').forEach(function(d, i) {
-            d.classList.toggle('active', i === current);
-        });
-    }
-
-    // Slide-left: always advance forward (right to left)
-    function next() { goTo(current + 1); }
-    function prev() { goTo(current - 1); }
-
-    if (prevBtn) prevBtn.addEventListener('click', function() { prev(); resetAuto(); });
-    if (nextBtn) nextBtn.addEventListener('click', function() { next(); resetAuto(); });
-
-    // Touch swipe gestures for mobile smartphones
-    let touchStartX = 0;
-    let touchStartY = 0;
-    track.addEventListener('touchstart', function(e) {
-        if (!e.changedTouches || e.changedTouches.length === 0) return;
-        touchStartX = e.changedTouches[0].clientX;
-        touchStartY = e.changedTouches[0].clientY;
-        stopAuto();
-    }, { passive: true });
-
-    track.addEventListener('touchend', function(e) {
-        if (!e.changedTouches || e.changedTouches.length === 0) return;
-        const touchEndX = e.changedTouches[0].clientX;
-        const touchEndY = e.changedTouches[0].clientY;
-        const diffX = touchEndX - touchStartX;
-        const diffY = touchEndY - touchStartY;
-
-        // Check if movement is primarily horizontal and exceeds 40px threshold
-        if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
-            if (diffX < 0) {
-                next(); // swiped left -> next slide
-            } else {
-                prev(); // swiped right -> previous slide
-            }
-        }
-        resetAuto();
-    }, { passive: true });
-
-    // Auto-play: 15 seconds interval
-    function startAuto() {
-        autoSlideInterval = setInterval(next, 15000);
-    }
-    function stopAuto() {
-        clearInterval(autoSlideInterval);
-        autoSlideInterval = null;
-    }
-    function resetAuto() {
-        stopAuto();
-        startAuto();
-    }
-
-    startAuto();
-
-    // Pause carousel when tab is hidden to prevent slide jumps on return
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            stopAuto();
-        } else {
-            startAuto();
-        }
-    });
-
-    // Image onerror fallback: hide broken image (shows dark bg)
-    slides.forEach(function(slide) {
-        var img = slide.querySelector('img');
-        if (img) {
-            img.onerror = function() {
-                this.style.display = 'none';
-            };
-        }
-    });
-}
-
-// ===== HERO TYPEWRITER =====
-// hero-title-text'ning matnini harfma-harf qayta yozadi (langchange'da yangilanadi)
-let _typewriterTimer = null;
-function runTypewriter() {
-    const el = document.querySelector('.hero-title-text');
-    if (!el) return;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const full = (window.i18n && i18n.t) ? i18n.t('hero.title') : (el.getAttribute('data-final') || el.textContent || '');
-    el.setAttribute('data-final', full);
-    if (reduced) { el.textContent = full; return; }
-    if (_typewriterTimer) { clearInterval(_typewriterTimer); _typewriterTimer = null; }
-    el.textContent = '';
-    let i = 0;
-    const speed = 55;
-    _typewriterTimer = setInterval(() => {
-        if (i >= full.length) {
-            clearInterval(_typewriterTimer);
-            _typewriterTimer = null;
-            return;
-        }
-        el.textContent += full.charAt(i);
-        i++;
-    }, speed);
-}
-
-// CTA tugmasi Ã¢â‚¬â€ blog grid'iga skroll
+// CTA tugmasi — blog grid'iga skroll
 function initHeroCta() {
     const btn = document.getElementById('hero-cta-btn');
     if (!btn) return;
@@ -3176,15 +2301,11 @@ function sanitizePosts(list) {
 }
 
 async function bootstrap() {
-    // 3D kirish animatsiyasi darhol boshlanadi
-    initIntroSplash();
-
-    // Til (i18n) Ã¢â‚¬â€  statik tarjimalar va til tanlagich
+    // Til (i18n) — statik tarjimalar va til tanlagich
     initLanguage();
 
-    // Mavzu va kursorni darhol ishga tushiramiz (ma'lumotga bog'liq emas)
+    // Mavzu darhol ishga tushiramiz (ma'lumotga bog'liq emas)
     initTheme();
-    initMouseFollower();
 
     // Yangi imkoniyatlar
     initLightbox();
@@ -3229,16 +2350,13 @@ async function bootstrap() {
         posts = getHighValueDefaultPosts();
     }
 
-    // Admin holatini tiklash Ã¢â‚¬â€ sahifa yangilanganda ham admin tugmalari
+    // Admin holatini tiklash — sahifa yangilanganda ham admin tugmalari
     // (Yozish, Floating +) faqat admin uchun ko'rinishi uchun
     if (isAdmin) {
         document.body.classList.add('admin-mode');
-        const navPortfolioLink = document.getElementById('nav-portfolio-link');
-        if (navPortfolioLink) navPortfolioLink.style.display = 'inline-flex';
     }
 
     renderPosts();
-    checkPortfolioAccess();
     initScrollReveal();
     registerServiceWorker();
     openPostFromUrl();
@@ -3246,13 +2364,7 @@ async function bootstrap() {
         applyAppRoute(window.location.hash);
     }
 
-    // Yangi: hero particles + footer particles + CTA tugmasi + 3D tilt + Floating +
-    // initParticles(); // Performance optimization
-    // initFooterParticles(); // Performance optimization
-    initCarousel();
     initHeroCta();
-    initFortuneQuotes();
-    initStatsCounters();
     initFloatingAddBtn();
 
     // O'quvchi auth – token bo'lsa tiklaymiz, UI'ni yangilaymiz
@@ -3274,31 +2386,6 @@ async function bootstrap() {
 bootstrap().catch(e => {
     console.error("Bootstrap xatolik:", e);
 });
-
-
-
-
-// Typing Animation
-const phrases = ['Medik', 'Dasturchi', 'Futbolchi'];
-let currentPhraseIndex = 0;
-let isDeleting = false;
-let currentText = '';
-function typeEffect() {
-    const el = document.getElementById('typed-text');
-    if(!el) return;
-    const fullText = phrases[currentPhraseIndex];
-    if (isDeleting) { currentText = fullText.substring(0, currentText.length - 1); }
-    else { currentText = fullText.substring(0, currentText.length + 1); }
-    el.textContent = currentText;
-    let typeSpeed = isDeleting ? 100 : 300;
-    if (!isDeleting && currentText === fullText) { typeSpeed = 2500; isDeleting = true; }
-    else if (isDeleting && currentText === '') { isDeleting = false; currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length; typeSpeed = 1000; }
-    setTimeout(typeEffect, typeSpeed);
-}
-document.addEventListener('DOMContentLoaded', typeEffect);
-
-
-setTimeout(typeEffect, 500);
 
 
 
@@ -3552,383 +2639,27 @@ if (closeMyresultsModal && myresultsModal) {
             submitBtn.textContent = loginMode ? 'Kirish' : "Ro'yxatdan o'tish";
         }
     });
-
-    // Dynamic Language Switching Handler
-    document.addEventListener('langchange', () => {
-        if (window.i18n && typeof i18n.applyStaticTranslations === 'function') {
-            i18n.applyStaticTranslations();
-        }
-        const deutschView = document.getElementById('deutsch-view');
-        if (deutschView && deutschView.style.display !== 'none') {
-            if (typeof renderDeutschHome === 'function') renderDeutschHome();
-        }
-        if (typeof renderPosts === 'function') renderPosts();
-    });
-
-    // Mobile & iOS Safari Audio Unlocker
-    (function initAudioUnlocker() {
-        let unlocked = false;
-        function unlockAudio() {
-            if (unlocked) return;
-            unlocked = true;
-            if (window.speechSynthesis) {
-                try { window.speechSynthesis.cancel(); } catch(e) {}
-            }
-            if (window.AudioContext || window.webkitAudioContext) {
-                try {
-                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                    if (ctx.state === 'suspended') ctx.resume();
-                } catch(e) {}
-            }
-        }
-        window.addEventListener('click', unlockAudio, { once: true });
-        window.addEventListener('touchstart', unlockAudio, { once: true });
-    })();
 })();
 
-// ===== 3D KUN IQTIBOSI (FORTUNE QUOTES ENGINE) =====
-const FORTUNE_QUOTES = [
-    {
-        category: "🎯 STOYATSIZM",
-        quote: "Mag'lubiyat to'xtaganingda sodir bo'ladi. Har kuni kichik bo'lsa ham qadam tashla!",
-        author: "— Stoyatsizm Hikmati",
-        de: "Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhältst."
-    },
-    {
-        category: "🏛️ MARKUS AURELIY",
-        quote: "Sening hayoting sening fikrlaring qanday bo'lsa, shunday shakllanadi.",
-        author: "— Markus Aureliy (Rim imperatori & faylasuf)",
-        de: "Das Leben eines Menschen ist das, was seine Gedanken daraus machen."
-    },
-    {
-        category: "🧠 SENEKA",
-        quote: "Bizda vaqt kam emas, shunchaki biz foydalanmaydigan vaqt juda ko'p.",
-        author: "— Seneka (Rim faylasufi)",
-        de: "Es ist nicht zu wenig Zeit, die wir haben, sondern es ist zu viel Zeit, die wir nicht nutzen."
-    },
-    {
-        category: "⚡ EPIKTET",
-        quote: "Seni voqealar emas, balki u voqealarga bo'lgan munosabating tashvishga soladi.",
-        author: "— Epiktet (Stoyik faylasuf)",
-        de: "Nicht die Dinge selbst beunruhigen die Menschen, sondern die Vorstellungen von den Dingen."
-    },
-    {
-        category: "💻 DASTURLASH",
-        quote: "Muammoni avval tushunib yet, keyin kod yoz. Kod bu faqat fikrlash mahsulidir.",
-        author: "— John Johnson (Dasturlash arxitektori)",
-        de: "Erst das Problem verstehen, dann den Code schreiben."
-    },
-    {
-        category: "💻 STEVE JOBS",
-        quote: "Ajoyib ish qilishning yagona yo'li — qilayotgan ishingizni sevishdir.",
-        author: "— Steve Jobs (Apple asoschisi)",
-        de: "Der einzige Weg, großartige Arbeit zu leisten, ist zu lieben, was man tut."
-    },
-    {
-        category: "🚀 INTIZOM",
-        quote: "Har kuni qilingan kichik harakatlar vaqt o'tishi bilan buyuk natijalarni beradi.",
-        author: "— Robin Sharma (Rivojlanish ustozi)",
-        de: "Kleine tägliche Verbesserungen führen im Laufe der Zeit zu erstaunlichen Ergebnissen."
-    },
-    {
-        category: "🎯 GYOTE",
-        quote: "Yo'lingizga qo'yilgan toshlardan ham chiroyli narsalar qurishingiz mumkin.",
-        author: "— Johann Wolfgang von Goethe",
-        de: "Auch aus Steinen, die einem in den Weg gelegt werden, kann man Schönes bauen."
-    },
-    {
-        category: "💡 ALBERT EYNSHTEYN",
-        quote: "Muvaffaqiyatli odam bo'lishga emas, balki qadrli odam bo'lishga intiling.",
-        author: "— Albert Eynshteyn (Fizik olim)",
-        de: "Versuche nicht, ein erfolgreicher, sondern ein wertvoller Mensch zu werden."
-    },
-    {
-        category: "💻 LINUS TORVALDS",
-        quote: "Gapirish oson. Menga kodni ko'rsat (Talk is cheap. Show me the code).",
-        author: "— Linus Torvalds (Linux & Git yaratuvchisi)",
-        de: "Reden ist billig. Zeig mir den Code."
-    },
-    {
-        category: "🔥 CHIDAM",
-        quote: "Meni o'ldirmagan narsa meni kuchliroq qiladi.",
-        author: "— Friedrich Nietzsche (Faylasuf)",
-        de: "Was mich nicht umbringt, macht mich starker."
-    },
-    {
-        category: "🌱 MAQSAD",
-        quote: "Qaysi portga suzishni bilmagan kapitan uchun hech qanday shamol qulay emas.",
-        author: "— Seneka (Faylasuf)",
-        de: "Wer den Hafen nicht kennt, in den er segeln will, für den ist kein Wind der richtige."
-    },
-    {
-        category: "🎓 BILIM",
-        quote: "Bilim — bu kuch, lekin amaliyotsiz u faqat potensial bo'lib qolaveradi.",
-        author: "— Francis Bacon",
-        de: "Wissen ist Macht, aber ohne Anwendung bleibt es nur Potenzial."
-    },
-    {
-        category: "⚖️ ARISTOTEL",
-        quote: "Biz qayta-qayta qilayotgan narsamizning o'zimizmiz. Mukammallik amaliyat emas, odatdir.",
-        author: "— Aristotel (Yunon faylasufi)",
-        de: "Wir sind das, was wir wiederholt tun. Vorzuglichkeit ist also eine Gewohnheit."
-    },
-    {
-        category: "💻 BILL GATES",
-        quote: "Ko'pchilik odamlar 1 yilda nima qila olishlarini oshirib yuborishadi, lekin 10 yilda nima qila olishlarini past baholaydilar.",
-        author: "— Bill Gates (Microsoft asoschisi)",
-        de: "Die meisten Menschen uberschatzen, was sie in einem Jahr tun konnen, und unterschatzen, was sie in 10 Jahren tun konnen."
-    },
-    {
-        category: "🧭 KONFUTSIY",
-        quote: "Qanchalik sekin yurishingiz muhim emas, muhimi to'xtab qolmasligingizda.",
-        author: "— Konfutsiy (Faylasuf)",
-        de: "Es spielt keine Rolle, wie langsam du gehst, solange du nicht anhaltst."
-    },
-    {
-        category: "💡 NIKOLA TESLA",
-        quote: "Koinot sirlarini tushunmoqchi bo'lsangiz, energiya, chastota va tebranishlar haqida o'ylang.",
-        author: "— Nikola Tesla (Ixtirochi olim)",
-        de: "Wenn du die Geheimnisse des Universums finden willst, denke in Begriffen von Energie, Frequenz und Schwingung."
-    },
-    {
-        category: "💻 ALAN KAY",
-        quote: "Kelajakni bashorat qilishning eng yaxshi yo'li — uni yaratishdir.",
-        author: "— Alan Kay (Informatik olim)",
-        de: "Die beste Moglichkeit, die Zukunft vorauszusagen, ist, sie zu erfinden."
-    },
-    {
-        category: "🏆 DIQQAT VA FOKUS",
-        quote: "G'oliblar diqqatini g'alabaga qaratadi, mag'lublar esa g'oliblarga.",
-        author: "— Motivatsion Hikmat",
-        de: "Gewinner konzentrieren sich auf das Gewinnen, Verlierer auf die Gewinner."
-    },
-    {
-        category: "✨ VIZION",
-        quote: "Tasavvur bilimdan muhimroqdir, chunki bilim cheklangan, tasavvur esa butun dunyoni qamrab oladi.",
-        author: "— Albert Eynshteyn",
-        de: "Phantasie ist wichtiger als Wissen, denn Wissen ist begrenzt."
-    }
-];
-
-let currentQuoteIndex = 0;
-
-function initFortuneQuotes() {
-    const card = document.getElementById('fortune-card');
-    const badge = document.getElementById('quote-category-badge');
-    const qText = document.getElementById('quote-text');
-    const qAuthor = document.getElementById('quote-author');
-    const deText = document.getElementById('quote-de-text');
-    const audioBtn = document.getElementById('quote-audio-btn');
-    const nextBtn = document.getElementById('quote-next-btn');
-
-    if (!card || !qText || !qAuthor) return;
-
-    const todayStr = new Date().toISOString().split('T')[0];
-    const saved = localStorage.getItem('abdu_quote_today');
-    if (saved) {
-        try {
-            const parsed = JSON.parse(saved);
-            if (parsed.date === todayStr && typeof parsed.idx === 'number' && FORTUNE_QUOTES[parsed.idx]) {
-                currentQuoteIndex = parsed.idx;
-            } else {
-                currentQuoteIndex = Math.floor(Math.random() * FORTUNE_QUOTES.length);
-                localStorage.setItem('abdu_quote_today', JSON.stringify({ date: todayStr, idx: currentQuoteIndex }));
-            }
-        } catch (e) {
-            currentQuoteIndex = Math.floor(Math.random() * FORTUNE_QUOTES.length);
+// Mobile & iOS Safari Audio Unlocker
+(function initAudioUnlocker() {
+    let unlocked = false;
+    function unlockAudio() {
+        if (unlocked) return;
+        unlocked = true;
+        if (window.speechSynthesis) {
+            try { window.speechSynthesis.cancel(); } catch(e) {}
         }
-    } else {
-        currentQuoteIndex = Math.floor(Math.random() * FORTUNE_QUOTES.length);
-        localStorage.setItem('abdu_quote_today', JSON.stringify({ date: todayStr, idx: currentQuoteIndex }));
-    }
-
-    function renderQuote(idx) {
-        const item = FORTUNE_QUOTES[idx];
-        if (!item) return;
-
-        card.style.opacity = '0';
-        card.style.transform = 'perspective(1000px) rotateX(15deg) translateY(10px)';
-
-        setTimeout(() => {
-            if (badge) badge.textContent = item.category ? `✦ ${item.category.toUpperCase()}` : '✦ KUN HIKMATI · FILOSOFIYA';
-            const cleanQuote = (item.quote || '').replace(/^["“”„]+|["“”„]+$/g, '');
-            const cleanDe = (item.de || '').replace(/^["“”„]+|["“”„]+$/g, '');
-            qText.textContent = `“${cleanQuote}”`;
-            qAuthor.textContent = item.author || '';
-            if (deText) deText.textContent = `„${cleanDe}“`;
-
-            card.style.opacity = '1';
-            card.style.transform = 'perspective(1000px) rotateX(0deg) translateY(0deg)';
-        }, 200);
-    }
-
-    renderQuote(currentQuoteIndex);
-
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            currentQuoteIndex = (currentQuoteIndex + 1 + Math.floor(Math.random() * (FORTUNE_QUOTES.length - 1))) % FORTUNE_QUOTES.length;
-            renderQuote(currentQuoteIndex);
-        });
-    }
-
-    if (audioBtn) {
-        audioBtn.addEventListener('click', () => {
-            const item = FORTUNE_QUOTES[currentQuoteIndex];
-            if (!item || !window.speechSynthesis) return;
-
-            window.speechSynthesis.cancel();
-            
-            const textToSpeak = item.de ? item.de : item.quote;
-            const langCode = item.de ? 'de-DE' : 'uz-UZ';
-
-            const utter = new SpeechSynthesisUtterance(textToSpeak);
-            utter.lang = langCode;
-            utter.rate = 0.9;
-            utter.onstart = () => { audioBtn.classList.add('playing'); };
-            utter.onend = () => { audioBtn.classList.remove('playing'); };
-            utter.onerror = () => { audioBtn.classList.remove('playing'); };
-            window.speechSynthesis.speak(utter);
-        });
-    }
-}
-
-// ===== LIVE STATS & MILESTONES COUNTER ENGINE =====
-function initStatsCounters() {
-    const statsSection = document.getElementById('stats');
-    if (!statsSection) return;
-
-    const counters = statsSection.querySelectorAll('.stat-counter');
-    if (!counters.length) return;
-
-    let animated = false;
-
-    function animateCounters() {
-        if (animated) return;
-        animated = true;
-
-        const duration = 2000; // 2 seconds counting animation
-        const startTime = performance.now();
-
-        function update(now) {
-            const elapsedTime = now - startTime;
-            const progress = Math.min(elapsedTime / duration, 1);
-            // Ease-out cubic formula for smooth deceleration
-            const easeOutProgress = 1 - Math.pow(1 - progress, 3);
-
-            counters.forEach(counter => {
-                const target = parseInt(counter.getAttribute('data-target') || '0', 10);
-                const currentValue = Math.floor(easeOutProgress * target);
-                counter.textContent = currentValue.toLocaleString();
-            });
-
-            if (progress < 1) {
-                requestAnimationFrame(update);
-            } else {
-                counters.forEach(counter => {
-                    const target = parseInt(counter.getAttribute('data-target') || '0', 10);
-                    counter.textContent = target.toLocaleString();
-                });
-            }
+        if (window.AudioContext || window.webkitAudioContext) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                if (ctx.state === 'suspended') ctx.resume();
+            } catch(e) {}
         }
-
-        requestAnimationFrame(update);
     }
-
-    // IntersectionObserver to trigger counter when scrolled into view
-    if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries, obs) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounters();
-                    obs.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.2 });
-
-        observer.observe(statsSection);
-    } else {
-        // Fallback for browsers without IntersectionObserver support
-        animateCounters();
-    }
-}
-
-// ===== QUICK CONTACT FORM SUBMISSION ENGINE =====
-function initContactForm() {
-    const contactForm = document.getElementById('contact-form');
-    if (!contactForm) return;
-
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const nameInput = document.getElementById('contact-name');
-        const contactInput = document.getElementById('contact-contact');
-        const messageInput = document.getElementById('contact-message');
-        const submitBtn = document.getElementById('contact-submit-btn');
-
-        const name = nameInput ? nameInput.value.trim() : '';
-        const contact = contactInput ? contactInput.value.trim() : '';
-        const message = messageInput ? messageInput.value.trim() : '';
-
-        if (!name || !contact || !message) {
-            if (typeof showToast === 'function') {
-                showToast("⚠️ Iltimos, barcha maydonlarni to'ldiring!", "warn");
-            } else {
-                alert("Iltimos, barcha maydonlarni to'ldiring!");
-            }
-            return;
-        }
-
-        // Disable submit button temporarily to prevent duplicate submissions
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.7';
-        }
-
-        // Save message locally
-        try {
-            const savedMessages = safeJSONParse('abdu_contact_messages', []);
-            savedMessages.push({
-                id: Date.now(),
-                name: name,
-                contact: contact,
-                message: message,
-                date: new Date().toISOString()
-            });
-            localStorage.setItem('abdu_contact_messages', JSON.stringify(savedMessages));
-        } catch (e) {
-            console.error('Contact message save error:', e);
-        }
-
-        // Show toast notification
-        if (typeof showToast === 'function') {
-            showToast("✅ Xabaringiz muvaffaqiyatli yuborildi! Rahmat.", "success");
-        }
-
-        // Reset form inputs
-        contactForm.reset();
-
-        if (submitBtn) {
-            setTimeout(() => {
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-            }, 800);
-        }
-    });
-}
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        initContactForm();
-        if (typeof initStatsCounters === 'function') initStatsCounters();
-    });
-} else {
-    initContactForm();
-    if (typeof initStatsCounters === 'function') initStatsCounters();
-}
-
-
-
-
+    window.addEventListener('click', unlockAudio, { once: true });
+    window.addEventListener('touchstart', unlockAudio, { once: true });
+})();
 
 // ===== GLOBAL EVENT DELEGATION (CSP COMPLIANT) =====
 document.addEventListener('click', (e) => {

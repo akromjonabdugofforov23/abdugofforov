@@ -5,137 +5,129 @@
    Deep space dark background with vibrant neon accents
    ============================================================ */
 :root, [data-theme="dark"] {
-    --color-bg-primary: #0a0a0f;
-    --color-bg-secondary: #12121a;
-    --bg-color: #0a0a0f;
-    --card-bg: rgba(18, 18, 26, 0.65);
+    --color-bg-primary: #080b11;
+    --color-bg-secondary: #0d121d;
+    --bg-color: #080b11;
+    --card-bg: rgba(13, 18, 29, 0.72);
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
-    --text-muted: #94a3b8;
-    --accent-color: #6366f1; /* Indigo */
-    --accent-hover: #8b5cf6; /* Violet */
-    --border-color: rgba(99, 102, 241, 0.2);
-    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+    --text-muted: #64748b;
+    --accent-color: #6366f1; /* Modern Electric Indigo */
+    --accent-hover: #4f46e5;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
     
-    /* Premium Glassmorphism Settings */
-    --glass-bg: rgba(18, 18, 26, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --glass-highlight: rgba(255, 255, 255, 0.02);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    --backdrop-blur: blur(12px);
+    /* Professional Glassmorphism Tokens */
+    --glass-bg: rgba(13, 18, 29, 0.65);
+    --glass-bg-strong: rgba(18, 24, 38, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-border-hover: rgba(99, 102, 241, 0.4);
+    --glass-highlight: rgba(255, 255, 255, 0.03);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+    --glass-blur: 16px;
+    --backdrop-blur: blur(16px);
     
-    /* New purple/pale blue variables */
+    /* Elegant Accents */
     --color-purple-light: #818cf8;
-    --grad-primary: linear-gradient(135deg, #6366f1, #ec4899); /* Indigo to Pink */
-    --grad-primary-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.15));
-    --grad-text: linear-gradient(135deg, #a78bfa, #38bdf8);
+    --color-silver: #94a3b8;
+    --color-silver-bright: #f8fafc;
+    --color-silver-dim: #64748b;
+    --grad-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+    --grad-primary-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.08));
+    --grad-text: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+    --glow-purple: 0 0 24px rgba(99, 102, 241, 0.25);
 
-    /* ============================================================
-       BESPOKE EDITORIAL ATELIER DESIGN TOKENS (Dark Mode)
-       Warm Basalt, Archival Slate & Champagne Bronze
-       ============================================================ */
-    --atelier-bg: #0d0e12;
-    --atelier-surface: rgba(19, 21, 28, 0.75);
-    --atelier-surface-raised: rgba(26, 29, 39, 0.90);
-    --atelier-surface-inset: rgba(12, 13, 18, 0.60);
-    --atelier-ink-primary: #f5f5f7;
-    --atelier-ink-secondary: #a1a1aa;
-    --atelier-ink-muted: #a1a1aa;
-    --atelier-ink-quote: #fafafa;
-    --atelier-accent: #c5a059;
-    --atelier-accent-hover: #d4af37;
-    --atelier-accent-glow: rgba(197, 160, 89, 0.20);
-    --atelier-accent-tint: rgba(197, 160, 89, 0.09);
+    /* Editorial Tokens */
+    --atelier-bg: #090d15;
+    --atelier-surface: rgba(14, 19, 31, 0.78);
+    --atelier-surface-raised: rgba(20, 27, 44, 0.92);
+    --atelier-surface-inset: rgba(10, 14, 23, 0.65);
+    --atelier-ink-primary: #f8fafc;
+    --atelier-ink-secondary: #94a3b8;
+    --atelier-ink-muted: #64748b;
+    --atelier-ink-quote: #f1f5f9;
+    --atelier-accent: #818cf8;
+    --atelier-accent-hover: #a5b4fc;
+    --atelier-accent-glow: rgba(99, 102, 241, 0.22);
+    --atelier-accent-tint: rgba(99, 102, 241, 0.08);
     --atelier-border: rgba(255, 255, 255, 0.08);
-    --atelier-border-subtle: rgba(255, 255, 255, 0.04);
-    --atelier-border-highlight: rgba(197, 160, 89, 0.35);
-    --atelier-shadow-ambient: 0 16px 48px -12px rgba(0, 0, 0, 0.55);
-    --atelier-shadow-tactile: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --atelier-border-subtle: rgba(255, 255, 255, 0.05);
+    --atelier-border-highlight: rgba(99, 102, 241, 0.35);
+    --atelier-shadow-ambient: 0 16px 40px -10px rgba(0, 0, 0, 0.5);
+    --atelier-shadow-tactile: 0 2px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
     --atelier-glass-blur: blur(20px);
-    --atelier-quote-watermark: rgba(255, 255, 255, 0.045);
+    --atelier-quote-watermark: rgba(255, 255, 255, 0.04);
 }
 
 /* ============================================================
-   KUNDUZGI REJIM — Zamonaviy yorqin binafsha + qizil + och ko'k + oq
-   Premium, futuristik, hayotiy ranglar
+   KUNDUZGI REJIM (Light Mode) — Zamonaviy, toza, yuqori sifatli
+   Vercel / Linear / Apple minimalistik uslubi
    ============================================================ */
 [data-theme="light"] {
-    --color-bg-primary: #F8F9FF;
+    --color-bg-primary: #f8fafc;
     --color-bg-secondary: #ffffff;
-    --bg-color: #F8F9FF;
-    --card-bg: rgba(255, 255, 255, 0.82);
-    --text-primary: #1E1B4B;
-    --text-secondary: #4338CA;
-    --text-muted: #4338CA;
-    --accent-color: #7C3AED;
-    --accent-hover: #A855F7;
-    --border-color: rgba(124, 58, 237, 0.18);
-    --shadow-sm: 0 4px 24px rgba(124, 58, 237, 0.10);
-    --shadow-md: 0 10px 48px rgba(124, 58, 237, 0.12);
-    --shadow-lg: 0 20px 64px rgba(124, 58, 237, 0.16);
+    --bg-color: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --accent-color: #4f46e5;
+    --accent-hover: #4338ca;
+    --border-color: rgba(15, 23, 42, 0.08);
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 6px 16px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+    --shadow-lg: 0 16px 32px -4px rgba(15, 23, 42, 0.10);
 
-    /* Premium Glassmorphism Settings — kristal oq shisha */
-    --glass-bg: rgba(255, 255, 255, 0.55);
-    --glass-bg-strong: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(124, 58, 237, 0.12);
-    --glass-border-hover: rgba(124, 58, 237, 0.30);
-    --glass-highlight: rgba(255, 255, 255, 0.9);
-    --glass-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.08);
+    /* Shaffof kristal shisha */
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-bg-strong: rgba(255, 255, 255, 0.92);
+    --glass-border: rgba(15, 23, 42, 0.08);
+    --glass-border-hover: rgba(79, 70, 229, 0.35);
+    --glass-highlight: rgba(255, 255, 255, 0.95);
+    --glass-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
     --glass-blur: 16px;
     --backdrop-blur: blur(16px);
 
-    /* Zamonaviy rang palitasi */
-    --color-purple: #7C3AED;
-    --color-purple-light: #8B5CF6;
-    --color-red: #EF4444;
-    --color-red-light: #F87171;
-    --color-blue: #38BDF8;
-    --color-blue-light: #7DD3FC;
-    --color-silver: #4338CA;
-    --color-silver-bright: #1E1B4B;
-    --color-silver-dim: #4338CA;
+    /* Professional ranglar */
+    --color-purple: #4f46e5;
+    --color-purple-light: #6366f1;
+    --color-silver: #475569;
+    --color-silver-bright: #0f172a;
+    --color-silver-dim: #64748b;
 
-    /* Yorqin gradientlar — binafsha → qizil → och ko'k */
-    --grad-primary: linear-gradient(135deg, #7C3AED, #EF4444, #38BDF8);
-    --grad-primary-soft: linear-gradient(135deg, rgba(124, 58, 237, 0.12), rgba(239, 68, 68, 0.08), rgba(56, 189, 248, 0.10));
-    --grad-text: linear-gradient(135deg, #7C3AED, #EF4444);
+    /* Toza gradientlar */
+    --grad-primary: linear-gradient(135deg, #4f46e5, #6366f1);
+    --grad-primary-soft: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(99, 102, 241, 0.05));
+    --grad-text: linear-gradient(135deg, #0f172a 0%, #334155 100%);
 
-    /* Glow effektlar */
-    --glow-purple: 0 0 20px rgba(124, 58, 237, 0.25), 0 0 40px rgba(124, 58, 237, 0.10);
-    --glow-red: 0 0 20px rgba(239, 68, 68, 0.20);
-    --glow-blue: 0 0 20px rgba(56, 189, 248, 0.20);
-
-    /* Qo'shimcha toklar */
-    --tag-bg: rgba(124, 58, 237, 0.06);
-    --modal-bg: rgba(255, 255, 255, 0.96);
-    --transition-speed: 0.3s;
+    --glow-purple: 0 4px 14px rgba(79, 70, 229, 0.20);
+    --tag-bg: rgba(79, 70, 229, 0.06);
+    --modal-bg: rgba(255, 255, 255, 0.98);
+    --transition-speed: 0.25s;
     --container-pad: 20px;
 
-    /* ============================================================
-       BESPOKE EDITORIAL ATELIER DESIGN TOKENS (Light Mode)
-       Warm Archival Paper & Antique Bronze
-       ============================================================ */
-    --atelier-bg: #fcfbf9;
+    /* Editorial Tokens (Light) */
+    --atelier-bg: #f8fafc;
     --atelier-surface: rgba(255, 255, 255, 0.92);
     --atelier-surface-raised: #ffffff;
-    --atelier-surface-inset: rgba(247, 245, 240, 0.90);
-    --atelier-ink-primary: #18181b;
-    --atelier-ink-secondary: #52525b;
-    --atelier-ink-muted: #52525b;
-    --atelier-ink-quote: #121316;
-    --atelier-accent: #966f33;
-    --atelier-accent-hover: #7c5824;
-    --atelier-accent-glow: rgba(150, 111, 51, 0.15);
-    --atelier-accent-tint: rgba(150, 111, 51, 0.07);
-    --atelier-border: rgba(24, 24, 27, 0.08);
-    --atelier-border-subtle: rgba(24, 24, 27, 0.04);
-    --atelier-border-highlight: rgba(150, 111, 51, 0.30);
-    --atelier-shadow-ambient: 0 16px 40px -12px rgba(24, 24, 27, 0.08);
-    --atelier-shadow-tactile: 0 2px 6px rgba(24, 24, 27, 0.04), inset 0 1px 0 #ffffff;
+    --atelier-surface-inset: #f1f5f9;
+    --atelier-ink-primary: #0f172a;
+    --atelier-ink-secondary: #475569;
+    --atelier-ink-muted: #64748b;
+    --atelier-ink-quote: #1e293b;
+    --atelier-accent: #4f46e5;
+    --atelier-accent-hover: #4338ca;
+    --atelier-accent-glow: rgba(79, 70, 229, 0.15);
+    --atelier-accent-tint: rgba(79, 70, 229, 0.06);
+    --atelier-border: rgba(15, 23, 42, 0.08);
+    --atelier-border-subtle: rgba(15, 23, 42, 0.05);
+    --atelier-border-highlight: rgba(79, 70, 229, 0.30);
+    --atelier-shadow-ambient: 0 12px 32px -8px rgba(15, 23, 42, 0.08);
+    --atelier-shadow-tactile: 0 1px 3px rgba(15, 23, 42, 0.06), inset 0 1px 0 #ffffff;
     --atelier-glass-blur: blur(20px);
-    --atelier-quote-watermark: rgba(24, 24, 27, 0.04);
+    --atelier-quote-watermark: rgba(15, 23, 42, 0.04);
 }
 
 /* Base Settings */
