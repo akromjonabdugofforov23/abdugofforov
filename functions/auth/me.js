@@ -26,5 +26,5 @@ export async function onRequestGet(context) {
     return jsonResponse({ ok: false, message: "Foydalanuvchi topilmadi" }, 404, request, env);
   }
 
-  return jsonResponse({ ok: true, user: publicUser(user) }, 200, request, env);
+  return jsonResponse({ ok: true, user: publicUser(user, env) }, 200, request, env);
 }

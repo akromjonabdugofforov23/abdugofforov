@@ -47,5 +47,5 @@ export async function onRequestPost(context) {
   }
 
   const token = await createSession(env, username);
-  return jsonResponse({ ok: true, token, user: publicUser(user) }, 200, request, env);
+  return jsonResponse({ ok: true, token, user: publicUser(user, env) }, 200, request, env);
 }

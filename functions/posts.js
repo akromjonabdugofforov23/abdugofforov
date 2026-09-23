@@ -8,32 +8,15 @@
 // bo'lsa, x-admin-pin. PIN hashi ENV (ADMIN_PIN_HASH) dan olinadi.
 
 import {
-  jsonResponse, corsHeaders, verifyAdminPin, rateLimit, tooManyRequests
+  jsonResponse, corsHeaders, verifyAdminPin, rateLimit, tooManyRequests, isAdmin
 } from './_lib.js';
 
 const KV_KEY = 'posts:list';
 const MAX_BYTES = 24 * 1024 * 1024; // 24MB — KV qiymat chegarasidan ehtiyot
 
-// Auth: ikki usul qo'llab-quvvatlanadi
-// 1) x-admin-token (Telegram 2FA dan keyin verify-code.js bergan)
-// 2) x-admin-pin (faqat Telegram ENV sozlanmagan bo'lsa)
+// Auth: Admin sessiyasi (x-user-token), x-admin-token yoki x-admin-pin
 async function isAuthorized(request, env) {
-  const token = request.headers.get('x-admin-token');
-  if (token && /^[a-f0-9]{32,128}$/.test(token)) {
-    try {
-      const tokenData = await env.POSTS_KV.get(`auth:token:${token}`);
-      if (tokenData) return true;
-    } catch (e) { /* KV xato — quyiga o'tamiz */ }
-  }
-
-  // Eski PIN-based — faqat Telegram sozlanmagan bo'lsa qabul qilamiz
-  if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
-    console.warn("⚠️ SECURITY WARNING: Telegram 2FA is NOT configured. Falling back to PIN-only authentication in posts.js. This is a security risk.");
-    const pin = request.headers.get('x-admin-pin');
-    if (pin && await verifyAdminPin(env, pin)) return true;
-  }
-
-  return false;
+  return await isAdmin(env, request);
 }
 
 export async function onRequestOptions(context) {

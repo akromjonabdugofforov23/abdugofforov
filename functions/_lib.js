@@ -247,7 +247,23 @@ export async function verifyAdminPin(env, pin) {
   return verifyPassword(pin, saltHex, expectedHashHex);
 }
 
-// ---- Admin tekshiruvi (token yoki PIN) ----
+// ---- Admin foydalanuvchilar ro'yxati va tekshiruvi ----
+export function getAdminUsernames(env) {
+  const custom = env && env.ADMIN_USERNAMES ? String(env.ADMIN_USERNAMES).split(',') : [];
+  const list = ['abdugofforov', 'admin', ...custom.map(s => s.trim().toLowerCase())];
+  return Array.from(new Set(list.filter(Boolean)));
+}
+
+export function isUserAdmin(user, env) {
+  if (!user) return false;
+  if (user.role === 'admin') return true;
+  const adminUsers = getAdminUsernames(env);
+  if (user.username && adminUsers.includes(String(user.username).toLowerCase())) return true;
+  if (env && env.TELEGRAM_CHAT_ID && user.tgId && String(user.tgId) === String(env.TELEGRAM_CHAT_ID)) return true;
+  return false;
+}
+
+// ---- Admin tekshiruvi (token, x-user-token yoki PIN) ----
 export async function isAdmin(env, request) {
   const token = request.headers.get('x-admin-token');
   if (token && /^[a-f0-9]{32,128}$/.test(token)) {
@@ -256,9 +272,18 @@ export async function isAdmin(env, request) {
       if (t) return true;
     } catch (e) {}
   }
+
+  // x-user-token yoki Authorization header orqali kirgan admin foydalanuvchini tekshirish
+  try {
+    const sessionUsername = await getSessionUsername(env, request);
+    if (sessionUsername) {
+      const user = await getUser(env, sessionUsername);
+      if (user && isUserAdmin(user, env)) return true;
+    }
+  } catch (e) {}
+
   // Telegram sozlanmagan bo'lsa PIN ham qabul qilinadi
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
-    console.warn("⚠️ SECURITY WARNING: Telegram 2FA is NOT configured. Falling back to PIN-only authentication. This is a security risk.");
     const pin = request.headers.get('x-admin-pin');
     if (pin && await verifyAdminPin(env, pin)) return true;
   }
@@ -266,7 +291,15 @@ export async function isAdmin(env, request) {
 }
 
 // Foydalanuvchidan parolni olib tashlab, xavfsiz ko'rinish qaytaradi
-export function publicUser(user) {
+export function publicUser(user, env) {
   if (!user) return null;
-  return { name: user.name, username: user.username, createdAt: user.createdAt };
+  const admin = isUserAdmin(user, env);
+  return {
+    id: user.id,
+    name: user.name,
+    username: user.username,
+    role: admin ? 'admin' : (user.role || 'student'),
+    photo: user.photo,
+    createdAt: user.createdAt
+  };
 }

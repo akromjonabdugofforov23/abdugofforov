@@ -1019,10 +1019,10 @@
    uchun ko'rinadi. Mehmonlar (oddiy o'quvchilar) ularni ko'rmaydi.
    ============================================================ */
 #add-post-btn {
-    display: none; /* default — mehmonlarga ko'rinmaydi */
+    display: none !important; /* default — mehmonlarga ko'rinmaydi */
 }
 body.admin-mode #add-post-btn {
-    display: inline-flex; /* admin uchun ko'rinadi */
+    display: inline-flex !important; /* admin uchun ko'rinadi */
 }
 
 /* Kirish tugmasi — mehmonlarga ko'rinadi, admin bo'lganda yashirin */

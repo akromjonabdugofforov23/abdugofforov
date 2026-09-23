@@ -76,6 +76,8 @@ export async function onRequestPost(context) {
   if (!name.trim()) name = tgData.name || username;
   name = name.trim().slice(0, 50);
 
+  const isAdminTg = Boolean(env.TELEGRAM_CHAT_ID && tgData.id && String(tgData.id) === String(env.TELEGRAM_CHAT_ID));
+
   let user = await getUser(env, username);
   if (!user) {
     user = {
@@ -84,6 +86,7 @@ export async function onRequestPost(context) {
       tgId: tgData.id || null,
       photo: tgData.photo_url || tgData.photo || '',
       provider: 'telegram',
+      role: isAdminTg ? 'admin' : 'student',
       verified: isVerified,
       createdAt: Date.now()
     };
@@ -94,10 +97,11 @@ export async function onRequestPost(context) {
     if (tgData.photo_url || tgData.photo) user.photo = tgData.photo_url || tgData.photo;
     user.provider = 'telegram';
     if (tgData.id) user.tgId = tgData.id;
+    if (isAdminTg) user.role = 'admin';
     user.verified = isVerified;
     await putUser(env, user);
   }
 
   const token = await createSession(env, username);
-  return jsonResponse({ ok: true, token, user: publicUser(user) }, 200, request);
+  return jsonResponse({ ok: true, token, user: publicUser(user, env) }, 200, request, env);
 }

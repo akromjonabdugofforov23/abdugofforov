@@ -4,7 +4,8 @@
 
 import {
   jsonResponse, corsHeaders, hashPassword, normUsername, validUsername,
-  createSession, getUser, putUser, addUserToIndex, publicUser, rateLimit, tooManyRequests
+  createSession, getUser, putUser, addUserToIndex, publicUser, rateLimit, tooManyRequests,
+  getAdminUsernames, verifyAdminPin
 } from '../_lib.js';
 
 export async function onRequestOptions(context) {
@@ -48,14 +49,30 @@ export async function onRequestPost(context) {
     return jsonResponse({ ok: false, message: "Bu username band. Boshqasini tanlang." }, 409, request, env);
   }
 
+  // Admin hisobini ro'yxatdan o'tkazish xavfsizligi
+  const adminUsers = getAdminUsernames(env);
+  const isAdminClaim = adminUsers.includes(username);
+  if (isAdminClaim && env.ADMIN_PIN_HASH && env.ADMIN_PIN_HASH.includes(':')) {
+    const pin = String(body.adminPin || body.pin || '');
+    const isPinValid = await verifyAdminPin(env, pin);
+    if (!isPinValid) {
+      return jsonResponse({
+        ok: false,
+        needsAdminPin: true,
+        message: "Admin profilini yaratish uchun to'g'ri Admin PIN kodini kiriting."
+      }, 403, request, env);
+    }
+  }
+
   const { hash, salt } = await hashPassword(password);
   const user = {
     name, username, passHash: hash, salt,
+    role: isAdminClaim ? 'admin' : 'student',
     createdAt: Date.now(),
   };
   await putUser(env, user);
   await addUserToIndex(env, username);
 
   const token = await createSession(env, username);
-  return jsonResponse({ ok: true, token, user: publicUser(user) }, 200, request, env);
+  return jsonResponse({ ok: true, token, user: publicUser(user, env) }, 200, request, env);
 }

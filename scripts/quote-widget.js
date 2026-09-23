@@ -57,7 +57,10 @@
 
     async function detectUserLanguage() {
         try {
-            const res = await fetch('https://ipapi.co/json/');
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 1500);
+            const res = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+            clearTimeout(timer);
             const data = await res.json();
             const country = (data.country_code || '').toLowerCase();
             if (country === 'uz') userCountryLang = 'uz';
@@ -159,7 +162,7 @@
                 </div>
 
                 <footer class="atelier-actions-bar">
-                    <button class="fortune-action-btn atelier-audio-player" id="quote-audio-btn" type="button" aria-label="Nemischa talaffuzni eshitish" data-click="speakCurrentQuote('${cleanDe.replace(/'/g, "\\'")}')">
+                    <button class="fortune-action-btn atelier-audio-player" id="quote-audio-btn" type="button" aria-label="Nemischa talaffuzni eshitish" data-action="quote-audio" data-click="speakCurrentQuote('${cleanDe.replace(/'/g, "\\'")}')">
                         <span class="atelier-play-disc" aria-hidden="true">
                             <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
                         </span>
@@ -168,7 +171,7 @@
                         </span>
                         <span class="atelier-audio-label">Talaffuzni eshitish</span>
                     </button>
-                    <button class="atelier-btn-secondary" id="quote-next-btn" type="button" aria-label="Boshqa iqtibos tanlash" data-click="nextIndividualQuote()">
+                    <button class="atelier-btn-secondary" id="quote-next-btn" type="button" aria-label="Boshqa iqtibos tanlash" data-action="quote-next" data-click="nextIndividualQuote()">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
                         </svg>

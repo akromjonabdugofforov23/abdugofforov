@@ -10,6 +10,12 @@ let currentTaskFilter = 'all';
 
 // Sahifa yuklanishida admin holatini tekshiramiz
 (function initKay() {
+    try {
+        const u = JSON.parse(localStorage.getItem('abdu_user_data') || localStorage.getItem('kay_auth_user') || 'null');
+        if (u && (u.role === 'admin' || (u.username && u.username.toLowerCase() === 'abdugofforov'))) {
+            sessionStorage.setItem('kay_admin', 'true');
+        }
+    } catch (_) {}
     if (sessionStorage.getItem('kay_admin') === 'true') {
         showAdminPanel();
     }

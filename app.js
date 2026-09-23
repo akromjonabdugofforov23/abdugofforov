@@ -277,7 +277,15 @@ let filterType = 'all';
 let searchQuery = '';
 let searchCategoryTab = 'all'; 
 let editingPostId = null;
-let isAdmin = sessionStorage.getItem('kay_admin') === 'true';
+function checkIsAdmin() {
+    try {
+        if (window.Auth && typeof Auth.isAdmin === 'function') {
+            return Auth.isAdmin();
+        }
+    } catch (_) {}
+    return sessionStorage.getItem('kay_admin') === 'true';
+}
+let isAdmin = checkIsAdmin();
 
 // 2. DOM Elementlari
 const blogGrid = document.getElementById('blog-grid');
@@ -344,7 +352,7 @@ function initTheme() {
 }
 
 function updateThemeButton(theme) {
-    const themeBtns = document.querySelectorAll('.theme-toggle, #theme-btn, #dock-theme');
+    const themeBtns = document.querySelectorAll('.theme-toggle, #theme-btn, #dock-theme, #drawer-theme-btn');
     themeBtns.forEach(btn => {
         btn.setAttribute('aria-label', theme === 'dark' ? 'Kunduzgi rejimga o\'tish' : 'Tungi rejimga o\'tish');
         const moon = btn.querySelector('.moon-icon');
@@ -359,10 +367,16 @@ function updateThemeButton(theme) {
             }
         }
     });
+
+    // Mobil menyu (drawer) ichidagi rejim matnini yangilash
+    const drawerLabel = document.getElementById('drawer-theme-label');
+    if (drawerLabel) {
+        drawerLabel.textContent = theme === 'dark' ? '☀️ Kunduzgi rejim' : '🌙 Tungi rejim';
+    }
 }
 
 document.addEventListener('click', (e) => {
-    const btn = e.target.closest('#theme-btn, .theme-toggle, #dock-theme');
+    const btn = e.target.closest('#theme-btn, .theme-toggle, #dock-theme, #drawer-theme-btn');
     if (btn) {
         e.preventDefault();
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
@@ -375,7 +389,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// 6. Ma'lumotlarni saqlash (IndexedDB orqali Ã¢â‚¬â€ katta sig'im) + serverga sinxronlash
+// 6. Ma'lumotlarni saqlash (IndexedDB orqali Ã¢â‚¬â€  katta sig'im) + serverga sinxronlash
 function savePosts() {
     try {
         if (window.Store && Store.ready) {
@@ -413,16 +427,18 @@ let _syncInFlight = false;
 let _syncQueued = false;
 
 async function syncPostsToServer() {
+    isAdmin = checkIsAdmin();
     if (!isAdmin || !window.Sync) return;
     const token = sessionStorage.getItem('kay_admin_token');
     const pin = sessionStorage.getItem('kay_admin_pin');
-    if (!token && !pin) return; // sessionstorage'da auth ma'lumoti yo'q
+    const userToken = (window.Auth && Auth.token) || null;
+    if (!token && !pin && !userToken) return; // auth ma'lumoti yo'q
 
     // Bir vaqtning o'zida bir nechta yuborishni oldini olamiz
     if (_syncInFlight) { _syncQueued = true; return; }
     _syncInFlight = true;
 
-    const result = await Sync.pushPosts(posts, { token, pin });
+    const result = await Sync.pushPosts(posts, { token, pin, userToken });
     _syncInFlight = false;
 
     if (result.ok) {
@@ -960,16 +976,75 @@ if (mainNav) {
         if (currentTab === 'projects') {
             filterType = 'project';
         } else {
-            const activeTag = filterTags ? filterTags.querySelector('.filter-tag.active') : null;
-            filterType = activeTag && activeTag.getAttribute('data-filter') ? activeTag.getAttribute('data-filter') : 'all';
+            filterType = 'all';
         }
 
         if (filterTags) {
-            filterTags.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+            filterTags.querySelectorAll('.filter-tag').forEach(tag => {
+                if (tag.getAttribute('data-filter') === filterType) tag.classList.add('active');
+                else tag.classList.remove('active');
+            });
         }
 
         if (typeof updateHeroContent === 'function') updateHeroContent();
         if (typeof renderPosts === 'function') renderPosts();
+
+        if (page === 'blog') {
+            const targetEl = document.getElementById('main-content') || document.getElementById('blog-grid');
+            if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (page === 'home') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+}
+
+// Mobil Drawer Navigatsiya Linklari
+const drawerNavLinks = document.getElementById('drawer-nav-links');
+if (drawerNavLinks) {
+    drawerNavLinks.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (!link) return;
+        if (typeof closeMobileDrawer === 'function') closeMobileDrawer();
+        const href = link.getAttribute('href') || '';
+        if (href.startsWith('http://') || href.startsWith('https://') || link.getAttribute('target') === '_blank') {
+            return;
+        }
+        e.preventDefault();
+        if (link.id === 'drawer-contact-link' || href === '#contact') {
+            openContactModal();
+            return;
+        }
+        const page = link.getAttribute('data-page') || 'home';
+        showMainView();
+        syncActiveNavState(page);
+        currentTab = page;
+        filterType = 'all';
+        if (filterTags) {
+            filterTags.querySelectorAll('.filter-tag').forEach(tag => {
+                if (tag.getAttribute('data-filter') === 'all') tag.classList.add('active');
+                else tag.classList.remove('active');
+            });
+        }
+        if (typeof renderPosts === 'function') renderPosts();
+
+        if (page === 'blog') {
+            const targetEl = document.getElementById('main-content') || document.getElementById('blog-grid');
+            if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+}
+
+// Portfolio sahifasidagi "Bosh sahifaga qaytish" tugmasi
+const closePortfolioBtn = document.getElementById('close-portfolio-btn');
+if (closePortfolioBtn) {
+    closePortfolioBtn.addEventListener('click', () => {
+        const pv = document.getElementById('portfolio-view');
+        if (pv) pv.style.display = 'none';
+        showMainView();
+        syncActiveNavState('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 }
 
@@ -1055,6 +1130,12 @@ if (desktopDock) {
 }
 
 function syncActiveNavState(page) {
+    // Drawer nav-links
+    if (typeof drawerNavLinks !== 'undefined' && drawerNavLinks) {
+        drawerNavLinks.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+        const drawerLink = drawerNavLinks.querySelector('[data-page="' + page + '"]');
+        if (drawerLink) drawerLink.classList.add('active');
+    }
     // Top nav-links
     if (mainNav) {
         mainNav.querySelectorAll('a').forEach(a => a.classList.remove('active'));
@@ -1189,6 +1270,7 @@ function handleLike(postId) {
 function openPostDetail(postId) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
+    isAdmin = checkIsAdmin();
 
     detailModalBody.innerHTML = `
         <div class="modal-actions-bar">
@@ -1342,7 +1424,7 @@ function renderComments(commentsList) {
                     </div>
                     <p class="comment-text">${escapeHTML(comment.reply.text)}</p>
                 </div>` : ''}
-            ${isAdmin && !comment.reply ? `<button class="btn-secondary btn-sm comment-reply-btn" data-action="reply-comment" data-id="${comment.id}" style="margin-top:8px;">↳ Javob berish</button>` : ''}
+            ${checkIsAdmin() && !comment.reply ? `<button class="btn-secondary btn-sm comment-reply-btn" data-action="reply-comment" data-id="${comment.id}" style="margin-top:8px;">↳ Javob berish</button>` : ''}
         </div>
     `).join('');
 }
@@ -1521,6 +1603,10 @@ function switchZenTab(mode) {
 
 function openZenEditor(postId = null) {
     if (!zenEditor) return;
+    if (!checkIsAdmin()) {
+        if (typeof showToast === 'function') showToast("⚠️ Maqola yozish faqat admin uchun ruxsat etilgan!", "warn");
+        return;
+    }
     editingPostId = postId;
 
     switchZenTab('write');
@@ -1726,6 +1812,10 @@ if (zenToolbar) {
 // Chop etish / Saqlash
 if (zenPublishBtn) {
     zenPublishBtn.addEventListener('click', () => {
+        if (!checkIsAdmin()) {
+            if (typeof showToast === 'function') showToast("⚠️ Chop etish faqat admin uchun!", "error");
+            return;
+        }
         const title = zenTitle ? zenTitle.value.trim() : '';
         if (!title) {
             if (typeof showToast === 'function') showToast("⚠️ Iltimos, sarlavha kiriting!", "warn");
@@ -1795,7 +1885,13 @@ if (zenPublishBtn) {
 
 // Tugmalarni Zen Editor ga ulash
 if (addPostBtn) {
-    addPostBtn.addEventListener('click', () => openZenEditor());
+    addPostBtn.addEventListener('click', () => {
+        if (!checkIsAdmin()) {
+            if (typeof showToast === 'function') showToast("⚠️ Maqola yozish faqat admin uchun!", "warn");
+            return;
+        }
+        openZenEditor();
+    });
 }
 
 // Yordamchi Funksiyalar
@@ -2055,6 +2151,10 @@ function initFloatingAddBtn() {
     if (!fab) return;
     fab.addEventListener('click', (e) => {
         e.preventDefault();
+        if (!checkIsAdmin()) {
+            if (typeof showToast === 'function') showToast("⚠️ Maqola yozish faqat admin uchun!", "warn");
+            return;
+        }
         const addBtn = document.getElementById('add-post-btn');
         if (addBtn) {
             addBtn.click();
@@ -2159,7 +2259,7 @@ function filterByTag(tag) {
 
 // ===== IZOHGA ADMIN JAVOBI =====
 function replyToComment(commentId) {
-    if (!isAdmin || currentDetailPostId == null) return;
+    if (!checkIsAdmin() || currentDetailPostId == null) return;
     const post = posts.find(p => p.id === currentDetailPostId);
     if (!post) return;
     const comment = post.comments.find(c => c.id === commentId);
@@ -2352,8 +2452,9 @@ async function bootstrap() {
 
     // Admin holatini tiklash — sahifa yangilanganda ham admin tugmalari
     // (Yozish, Floating +) faqat admin uchun ko'rinishi uchun
-    if (isAdmin) {
-        document.body.classList.add('admin-mode');
+    isAdmin = checkIsAdmin();
+    if (true) {
+        document.body.classList.toggle('admin-mode', checkIsAdmin());
     }
 
     renderPosts();
@@ -2377,6 +2478,8 @@ async function bootstrap() {
             } else {
                 Auth.updateUIState();
             }
+            isAdmin = checkIsAdmin();
+            document.body.classList.toggle('admin-mode', isAdmin);
         }
     } catch (authErr) {
         console.error('Auth tiklashda xatolik:', authErr);
@@ -2407,6 +2510,8 @@ function closeMobileDrawer() {
     if (drawerBackdrop) drawerBackdrop.classList.remove('active');
     document.body.style.overflow = '';
 }
+window.openMobileDrawer = openMobileDrawer;
+window.closeMobileDrawer = closeMobileDrawer;
 
 if (hamburgerBtn && hamburgerMenu) {
     hamburgerBtn.addEventListener('click', (e) => {
@@ -2446,12 +2551,28 @@ const closeAuthModalBtn = document.getElementById('close-auth-modal');
 
 window.openAuthModal = function(tab) {
     if (typeof closeMobileDrawer === 'function') closeMobileDrawer();
-    if (authModal) {
-        authModal.classList.add('active');
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.classList.add('active');
         document.body.style.overflow = 'hidden';
         if (typeof initTelegramWidget === 'function') {
             initTelegramWidget();
         }
+        if (tab === 'register') {
+            const tabReg = document.getElementById('auth-tab-register');
+            if (tabReg) tabReg.click();
+        } else {
+            const tabLog = document.getElementById('auth-tab-login');
+            if (tabLog) tabLog.click();
+        }
+    }
+};
+
+window.closeAuthModal = function() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
     }
 };
 
@@ -2545,6 +2666,8 @@ if (closeMyresultsModal && myresultsModal) {
     const usernameHint = document.getElementById('auth-username-hint');
     const errorEl = document.getElementById('auth-error');
     const submitBtn = document.getElementById('auth-submit');
+    const adminPinGroup = document.getElementById('auth-admin-pin-group');
+    const adminPinInput = document.getElementById('auth-admin-pin');
     let loginMode = true;
 
     if (!authFormEl) return; // forma topilmasa chiqamiz
@@ -2557,6 +2680,7 @@ if (closeMyresultsModal && myresultsModal) {
             if (tabRegister) tabRegister.classList.remove('active');
             if (nameGroup) nameGroup.style.display = 'none';
             if (usernameHint) usernameHint.style.display = 'none';
+            if (adminPinGroup) adminPinGroup.style.display = 'none';
             if (submitBtn) submitBtn.textContent = 'Kirish';
             if (errorEl) { errorEl.textContent = ''; errorEl.style.display = 'none'; }
         });
@@ -2569,8 +2693,27 @@ if (closeMyresultsModal && myresultsModal) {
             if (nameGroup) nameGroup.style.display = 'block';
             if (usernameHint) usernameHint.style.display = 'block';
             if (submitBtn) submitBtn.textContent = "Ro'yxatdan o'tish";
+            updateAdminPinVisibility();
             if (errorEl) { errorEl.textContent = ''; errorEl.style.display = 'none'; }
         });
+    }
+
+    function updateAdminPinVisibility() {
+        if (!adminPinGroup) return;
+        if (loginMode) {
+            adminPinGroup.style.display = 'none';
+            return;
+        }
+        const u = (document.getElementById('auth-username') ? document.getElementById('auth-username').value : '').trim().toLowerCase();
+        if (u === 'abdugofforov' || u === 'admin') {
+            adminPinGroup.style.display = 'block';
+        } else {
+            adminPinGroup.style.display = 'none';
+        }
+    }
+    const usernameInputForPin = document.getElementById('auth-username');
+    if (usernameInputForPin) {
+        usernameInputForPin.addEventListener('input', updateAdminPinVisibility);
     }
 
     // Formani yuborish
@@ -2611,7 +2754,8 @@ if (closeMyresultsModal && myresultsModal) {
             if (loginMode) {
                 result = await window.Auth.login(username, password);
             } else {
-                result = await window.Auth.register(name, username, password);
+                const adminPin = (adminPinInput && adminPinGroup && adminPinGroup.style.display !== 'none') ? adminPinInput.value.trim() : '';
+                result = await window.Auth.register(name, username, password, adminPin);
             }
 
             if (result && result.ok) {
@@ -2622,7 +2766,7 @@ if (closeMyresultsModal && myresultsModal) {
                 setTimeout(() => location.reload(), 600);
             } else {
                 // Xatolik xabari
-                const errMsg = (result && result.message) ? result.message : "Xatolik yuz berdi. Qayta urinib ko'ring.";
+                const errMsg = (result && (result.message || result.error)) ? (result.message || result.error) : "Xatolik yuz berdi. Qayta urinib ko'ring.";
                 if (errorEl) { errorEl.textContent = errMsg; errorEl.style.display = 'block'; }
             }
         } catch (networkErr) {
@@ -2747,8 +2891,37 @@ document.addEventListener('click', (e) => {
         case 'speak-german':
             if (typeof speakGermanText === 'function') speakGermanText(el.dataset.text, e);
             break;
+        case 'quote-audio': {
+            const deEl = document.getElementById('quote-de-text');
+            const textToSpeak = (el.dataset.text || (deEl ? deEl.textContent : '')).replace(/^["“”„]+|["“”„]+$/g, '').trim();
+            if (textToSpeak) {
+                if (typeof speakCurrentQuote === 'function') {
+                    speakCurrentQuote(textToSpeak);
+                } else if (window.App && window.App.Quote && typeof window.App.Quote.speak === 'function') {
+                    window.App.Quote.speak(textToSpeak);
+                } else if (typeof speakGermanText === 'function') {
+                    speakGermanText(textToSpeak, e);
+                }
+            }
+            break;
+        }
+        case 'quote-next': {
+            if (typeof nextIndividualQuote === 'function') {
+                nextIndividualQuote();
+            } else if (window.App && window.App.Quote && typeof window.App.Quote.next === 'function') {
+                window.App.Quote.next();
+            }
+            break;
+        }
         case 'open-auth':
             if (typeof openAuthModal === 'function') openAuthModal(el.dataset.mode);
+            break;
+        case 'close-auth':
+            if (typeof closeAuthModal === 'function') closeAuthModal();
+            break;
+        case 'open-results':
+            if (typeof closeMobileDrawer === 'function') closeMobileDrawer();
+            if (typeof openMyResults === 'function') openMyResults();
             break;
         case 'reply-comment':
             if (typeof replyToComment === 'function') replyToComment(Number(el.dataset.id));

@@ -15,8 +15,100 @@
         letter-spacing: -0.4px;
     }
 
-    .nav-right { gap: 6px; }
+    .nav-right { 
+        gap: 8px; 
+        display: flex; 
+        align-items: center; 
+    }
+    .nav-right .btn-icon {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px;
+        min-height: 38px;
+        flex-shrink: 0;
+        display: inline-flex !important;
+    }
     .nav-links { gap: 2px; margin-left: 6px; }
+
+    /* Mobil Drawer Theme Toggle Tugmasi */
+    .drawer-theme-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 14px;
+        background: var(--glass-bg, rgba(255, 255, 255, 0.05));
+        border: 1px solid var(--border-color, rgba(167, 139, 250, 0.2));
+        color: var(--text-primary);
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    .drawer-theme-btn:hover {
+        background: var(--tag-bg, rgba(139, 92, 246, 0.1));
+        border-color: var(--accent-color);
+        transform: translateY(-1px);
+    }
+    .drawer-theme-btn:active {
+        transform: scale(0.98);
+    }
+    .drawer-theme-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: var(--tag-bg, rgba(139, 92, 246, 0.15));
+        color: var(--accent-color);
+    }
+    .drawer-theme-text {
+        flex: 1;
+        text-align: left;
+        color: var(--text-primary);
+        font-size: 13.5px;
+    }
+
+    /* Mobil Drawer Navigatsiya Linklari */
+    .drawer-nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+        border-top: 1px solid var(--border-color, rgba(167, 139, 250, 0.15));
+        border-bottom: 1px solid var(--border-color, rgba(167, 139, 250, 0.15));
+        padding: 8px 0;
+    }
+    .drawer-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .drawer-nav-item:hover, .drawer-nav-item.active {
+        color: var(--accent-color);
+        background: var(--tag-bg, rgba(139, 92, 246, 0.1));
+    }
+    .drawer-nav-icon {
+        font-size: 16px;
+        width: 22px;
+        display: inline-flex;
+        justify-content: center;
+    }
+    .drawer-nav-text {
+        font-size: 13.5px;
+    }
 
     /* Mobilda nav linklar icon-only — bitta qatorga sig'ishi uchun */
     .nav-links a {

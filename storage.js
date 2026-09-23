@@ -190,12 +190,14 @@
             if (typeof auth === 'string') auth = { pin: auth };
             auth = auth || {};
 
-            if (!auth.token && !auth.pin) {
+            const userTok = auth.userToken || (window.Auth && Auth.token);
+            if (!auth.token && !auth.pin && !userTok) {
                 return { ok: false, reason: 'no_auth', message: 'Admin sessiyasi tugagan — qayta kiring.' };
             }
 
             const headers = { 'Content-Type': 'application/json' };
             if (auth.token) headers['x-admin-token'] = auth.token;
+            if (userTok)    headers['x-user-token']  = userTok;
             if (auth.pin)   headers['x-admin-pin']   = auth.pin;
 
             try {

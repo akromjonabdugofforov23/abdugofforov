@@ -17,7 +17,8 @@ const securityLayer2 = helmet({
                 "https://static.cloudflareinsights.com",
                 "https://cdnjs.cloudflare.com",
                 "https://cdn.jsdelivr.net",
-                "https://challenges.cloudflare.com"
+                "https://challenges.cloudflare.com",
+                "https://telegram.org"
             ],
             styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
@@ -26,7 +27,8 @@ const securityLayer2 = helmet({
             frameSrc: [
                 "https://www.youtube-nocookie.com",
                 "https://www.youtube.com",
-                "https://challenges.cloudflare.com"
+                "https://challenges.cloudflare.com",
+                "https://oauth.telegram.org"
             ],
             connectSrc: [
                 "'self'",
@@ -34,12 +36,13 @@ const securityLayer2 = helmet({
                 "https://*.abdugofforov.uz",
                 "https://ipapi.co",
                 "https://api.open-meteo.com",
-                "https://cloudflareinsights.com"
+                "https://cloudflareinsights.com",
+                "https://oauth.telegram.org"
             ],
             upgradeInsecureRequests: []
         }
     },
-    crossOriginOpenerPolicy: { policy: "same-origin" },
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
     crossOriginResourcePolicy: { policy: "same-site" }
 });
 

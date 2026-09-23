@@ -10,6 +10,12 @@
         user: null,
 
         isLoggedIn() { return !!this.token && !!this.user; },
+        isAdmin() {
+            if (!this.isLoggedIn() || !this.user) return false;
+            if (this.user.role === 'admin') return true;
+            if (this.user.username && this.user.username.toLowerCase() === 'abdugofforov') return true;
+            return false;
+        },
 
         _headers(extra) {
             const h = Object.assign({ 'Content-Type': 'application/json' }, extra || {});
@@ -17,11 +23,13 @@
             return h;
         },
 
-        async register(name, username, password) {
+        async register(name, username, password, adminPin = '') {
+            const body = { name, username, password };
+            if (adminPin) body.adminPin = adminPin;
             const res = await fetch('/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, username, password }),
+                body: JSON.stringify(body),
             });
             const data = await res.json().catch(() => ({}));
             if (data.ok && data.token) {
@@ -112,7 +120,12 @@
             this.user = null;
             localStorage.removeItem(TOKEN_KEY);
             localStorage.removeItem('abdu_user_data');
+            sessionStorage.removeItem('kay_admin');
+            sessionStorage.removeItem('kay_admin_token');
+            sessionStorage.removeItem('kay_admin_pin');
+            document.body.classList.remove('admin-mode');
             this.updateUIState();
+            if (typeof renderPosts === 'function') renderPosts();
         },
 
         // Token amal qilsa, foydalanuvchini tiklaydi
@@ -141,6 +154,7 @@
             this.user = null;
             localStorage.removeItem(TOKEN_KEY);
             localStorage.removeItem('abdu_user_data');
+            document.body.classList.remove('admin-mode');
             this.updateUIState();
             return null;
         },
@@ -150,6 +164,20 @@
             try {
                 const userMenu = document.getElementById('user-menu');
                 const loginBtnEl = document.getElementById('login-btn');
+                const addPostBtnEl = document.getElementById('add-post-btn');
+                const fabAddEl = document.getElementById('fab-add');
+                const isCurrentlyAdmin = this.isAdmin() || (sessionStorage.getItem('kay_admin') === 'true');
+
+                if (isCurrentlyAdmin) {
+                    document.body.classList.add('admin-mode');
+                    if (addPostBtnEl) addPostBtnEl.style.display = 'inline-flex';
+                    if (fabAddEl && window.innerWidth <= 768) fabAddEl.style.display = 'flex';
+                } else {
+                    document.body.classList.remove('admin-mode');
+                    if (addPostBtnEl) addPostBtnEl.style.display = 'none';
+                    if (fabAddEl) fabAddEl.style.display = 'none';
+                }
+
                 if (this.isLoggedIn()) {
                     if (userMenu) userMenu.style.display = '';
                     if (loginBtnEl) loginBtnEl.style.display = 'none';
@@ -169,11 +197,28 @@
                             avatarEl.textContent = nameStr.charAt(0).toUpperCase();
                         }
                     }
-                    if (ddName) ddName.textContent = nameStr;
+                    if (ddName) {
+                        const safeName = String(nameStr).replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t));
+                        ddName.innerHTML = `${safeName} ${isCurrentlyAdmin ? '<span style="font-size:11px; background:linear-gradient(135deg,#8b5cf6,#38bdf8); color:#fff; padding:2px 8px; border-radius:999px; margin-left:4px; font-weight:700;">👑 Admin</span>' : ''}`;
+                    }
                     if (ddUsername) ddUsername.textContent = '@' + (this.user.username || '');
+                    const drawerAuthLink = document.getElementById('drawer-auth-link');
+                    const drawerAuthText = document.getElementById('drawer-auth-text');
+                    if (drawerAuthText) drawerAuthText.textContent = nameStr;
+                    if (drawerAuthLink) {
+                        drawerAuthLink.setAttribute('data-action', 'open-results');
+                        drawerAuthLink.removeAttribute('data-mode');
+                    }
                 } else {
                     if (userMenu) userMenu.style.display = 'none';
                     if (loginBtnEl) loginBtnEl.style.display = '';
+                    const drawerAuthLink = document.getElementById('drawer-auth-link');
+                    const drawerAuthText = document.getElementById('drawer-auth-text');
+                    if (drawerAuthText) drawerAuthText.textContent = 'Kirish';
+                    if (drawerAuthLink) {
+                        drawerAuthLink.setAttribute('data-action', 'open-auth');
+                        drawerAuthLink.setAttribute('data-mode', 'login');
+                    }
                 }
             } catch (e) {
                 console.error("UI state update error:", e);
