@@ -2539,8 +2539,14 @@ if (hamburgerBtn && hamburgerMenu) {
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && hamburgerMenu.classList.contains('active')) {
-            closeMobileDrawer();
+        if (e.key === 'Escape') {
+            if (typeof hamburgerMenu !== 'undefined' && hamburgerMenu && hamburgerMenu.classList.contains('active')) {
+                closeMobileDrawer();
+            }
+            const modal = document.getElementById('auth-modal');
+            if (modal && modal.classList.contains('active')) {
+                closeAuthModal();
+            }
         }
     });
 }
@@ -2554,16 +2560,29 @@ window.openAuthModal = function(tab) {
     const modal = document.getElementById('auth-modal');
     if (modal) {
         modal.classList.add('active');
+        modal.style.display = 'flex';
+        modal.style.visibility = 'visible';
+        modal.style.opacity = '1';
+        modal.style.pointerEvents = 'auto';
+        modal.style.zIndex = '10000';
         document.body.style.overflow = 'hidden';
-        if (typeof initTelegramWidget === 'function') {
-            initTelegramWidget();
+        try {
+            if (typeof initTelegramWidget === 'function') {
+                initTelegramWidget();
+            }
+        } catch (e) {
+            console.warn('Telegram widget init:', e);
         }
-        if (tab === 'register') {
-            const tabReg = document.getElementById('auth-tab-register');
-            if (tabReg) tabReg.click();
-        } else {
-            const tabLog = document.getElementById('auth-tab-login');
-            if (tabLog) tabLog.click();
+        try {
+            if (tab === 'register') {
+                const tabReg = document.getElementById('auth-tab-register');
+                if (tabReg) tabReg.click();
+            } else {
+                const tabLog = document.getElementById('auth-tab-login');
+                if (tabLog) tabLog.click();
+            }
+        } catch (e) {
+            console.warn('Auth tab switch:', e);
         }
     }
 };
@@ -2572,12 +2591,18 @@ window.closeAuthModal = function() {
     const modal = document.getElementById('auth-modal');
     if (modal) {
         modal.classList.remove('active');
+        modal.style.display = '';
+        modal.style.visibility = '';
+        modal.style.opacity = '';
+        modal.style.pointerEvents = '';
         document.body.style.overflow = '';
     }
 };
 
 if (loginBtn) {
-    loginBtn.addEventListener('click', () => {
+    loginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         openAuthModal('login');
     });
 }
@@ -2807,6 +2832,23 @@ if (closeMyresultsModal && myresultsModal) {
 
 // ===== GLOBAL EVENT DELEGATION (CSP COMPLIANT) =====
 document.addEventListener('click', (e) => {
+    const loginTarget = e.target.closest('#login-btn, [data-action="open-auth"], #drawer-auth-link');
+    if (loginTarget) {
+        e.preventDefault();
+        e.stopPropagation();
+        const mode = loginTarget.dataset.mode || 'login';
+        if (typeof openAuthModal === 'function') openAuthModal(mode);
+        return;
+    }
+
+    const closeAuthTarget = e.target.closest('#close-auth-modal, [data-action="close-auth"]');
+    if (closeAuthTarget) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof closeAuthModal === 'function') closeAuthModal();
+        return;
+    }
+
     const el = e.target.closest('[data-action]');
     if (!el) return;
     const action = el.dataset.action;
