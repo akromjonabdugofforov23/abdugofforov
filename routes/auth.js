@@ -100,15 +100,6 @@ router.post('/register', (req, res) => {
         });
     }
 
-    const users = readUsers();
-    if (users.find(u => u.username && u.username.toLowerCase() === normUsername)) {
-        return res.status(409).json({
-            ok: false,
-            error: "Bu username band. Boshqasini tanlang.",
-            message: "Bu username band. Boshqasini tanlang."
-        });
-    }
-
     const isAdminClaim = (normUsername === 'abdugofforov' || normUsername === 'admin');
     if (isAdminClaim) {
         const expectedPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE || '0509';
@@ -119,6 +110,15 @@ router.post('/register', (req, res) => {
                 needsAdminPin: true,
                 error: "Admin profilini yaratish uchun to'g'ri Admin PIN kodini kiriting.",
                 message: "Admin profilini yaratish uchun to'g'ri Admin PIN kodini kiriting."
+            });
+        }
+    } else {
+        const users = readUsers();
+        if (users.find(u => u.username && u.username.toLowerCase() === normUsername)) {
+            return res.status(409).json({
+                ok: false,
+                error: "Bu username band. Boshqasini tanlang.",
+                message: "Bu username band. Boshqasini tanlang."
             });
         }
     }

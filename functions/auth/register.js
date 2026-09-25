@@ -44,11 +44,6 @@ export async function onRequestPost(context) {
     return jsonResponse({ ok: false, message: "Parol kamida 6 ta belgi bo'lishi kerak" }, 400, request, env);
   }
 
-  const existing = await getUser(env, username);
-  if (existing) {
-    return jsonResponse({ ok: false, message: "Bu username band. Boshqasini tanlang." }, 409, request, env);
-  }
-
   // Admin hisobini ro'yxatdan o'tkazish xavfsizligi
   const adminUsers = getAdminUsernames(env);
   const isAdminClaim = adminUsers.includes(username);
@@ -61,6 +56,11 @@ export async function onRequestPost(context) {
         needsAdminPin: true,
         message: "Admin profilini yaratish uchun to'g'ri Admin PIN kodini kiriting."
       }, 403, request, env);
+    }
+  } else {
+    const existing = await getUser(env, username);
+    if (existing) {
+      return jsonResponse({ ok: false, message: "Bu username band. Boshqasini tanlang." }, 409, request, env);
     }
   }
 
