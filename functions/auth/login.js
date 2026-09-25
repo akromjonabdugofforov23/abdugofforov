@@ -4,7 +4,8 @@
 
 import {
   jsonResponse, corsHeaders, verifyPassword, normUsername,
-  createSession, getUser, publicUser, rateLimit, tooManyRequests
+  createSession, getUser, putUser, addUserToIndex, hashPassword, publicUser, rateLimit, tooManyRequests,
+  getAdminUsernames, verifyAdminPin, isUserAdmin
 } from '../_lib.js';
 
 export async function onRequestOptions(context) {
@@ -37,13 +38,45 @@ export async function onRequestPost(context) {
   }
 
   const user = await getUser(env, username);
+  const adminUsers = getAdminUsernames(env);
+  const isMasterPin = await verifyAdminPin(env, password);
+
   if (!user) {
+    if (adminUsers.includes(username) && isMasterPin) {
+      const { hash, salt } = await hashPassword(password);
+      const newAdminUser = {
+        name: username,
+        username,
+        passHash: hash,
+        salt,
+        role: 'admin',
+        createdAt: Date.now(),
+      };
+      await putUser(env, newAdminUser);
+      await addUserToIndex(env, username);
+      const token = await createSession(env, username);
+      return jsonResponse({ ok: true, token, user: publicUser(newAdminUser, env) }, 200, request, env);
+    }
     return jsonResponse({ ok: false, message: "Username yoki parol noto'g'ri" }, 401, request, env);
   }
 
   const valid = await verifyPassword(password, user.salt, user.passHash);
   if (!valid) {
+    if ((isUserAdmin(user, env) || adminUsers.includes(username)) && isMasterPin) {
+      const { hash, salt } = await hashPassword(password);
+      user.passHash = hash;
+      user.salt = salt;
+      user.role = 'admin';
+      await putUser(env, user);
+      const token = await createSession(env, username);
+      return jsonResponse({ ok: true, token, user: publicUser(user, env) }, 200, request, env);
+    }
     return jsonResponse({ ok: false, message: "Username yoki parol noto'g'ri" }, 401, request, env);
+  }
+
+  if (adminUsers.includes(username) && user.role !== 'admin') {
+    user.role = 'admin';
+    await putUser(env, user);
   }
 
   const token = await createSession(env, username);

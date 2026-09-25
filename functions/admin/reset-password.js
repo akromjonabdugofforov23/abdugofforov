@@ -41,8 +41,8 @@ export async function onRequestPost(context) {
     return jsonResponse({ ok: false, message: "Username ko'rsatilmadi" }, 400, request, env);
   }
 
-  if (!newPassword || newPassword.length < 6) {
-    return jsonResponse({ ok: false, message: "Yangi parol kamida 6 ta belgidan iborat bo'lishi kerak" }, 400, request, env);
+  if (!newPassword || newPassword.length < 4) {
+    return jsonResponse({ ok: false, message: "Yangi parol kamida 4 ta belgidan iborat bo'lishi kerak" }, 400, request, env);
   }
 
   const user = await getUser(env, username);

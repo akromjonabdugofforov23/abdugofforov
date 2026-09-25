@@ -575,9 +575,9 @@ async function handleResetPasswordSubmit(e) {
     const submitBtn = document.getElementById('reset-modal-submit-btn');
     const msgEl = document.getElementById('reset-modal-msg');
 
-    if (!targetUsername || !newPassword || newPassword.length < 6) {
+    if (!targetUsername || !newPassword || newPassword.length < 4) {
         if (msgEl) {
-            msgEl.textContent = "Parol kamida 6 ta belgidan iborat bo'lishi kerak";
+            msgEl.textContent = "Parol kamida 4 ta belgidan iborat bo'lishi kerak";
             msgEl.style.color = '#f87171';
             msgEl.style.background = 'rgba(248,113,113,0.1)';
             msgEl.style.display = 'block';

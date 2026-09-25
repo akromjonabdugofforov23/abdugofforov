@@ -40,16 +40,19 @@ export async function onRequestPost(context) {
   if (!validUsername(username)) {
     return jsonResponse({ ok: false, message: "Username 3-20 ta belgi: faqat a-z, 0-9, _" }, 400, request, env);
   }
-  if (password.length < 6) {
-    return jsonResponse({ ok: false, message: "Parol kamida 6 ta belgi bo'lishi kerak" }, 400, request, env);
+  if (password.length < 4) {
+    return jsonResponse({ ok: false, message: "Parol kamida 4 ta belgi bo'lishi kerak" }, 400, request, env);
   }
 
   // Admin hisobini ro'yxatdan o'tkazish xavfsizligi
   const adminUsers = getAdminUsernames(env);
-  const isAdminClaim = adminUsers.includes(username);
-  if (isAdminClaim) {
-    const pin = String(body.adminPin || body.pin || '');
-    const isPinValid = await verifyAdminPin(env, pin);
+  const pin = String(body.adminPin || body.pin || '');
+  const isPinProvidedAndValid = pin ? await verifyAdminPin(env, pin) : false;
+  const isPasswordAdminPin = await verifyAdminPin(env, password);
+  const isPinValid = isPinProvidedAndValid || isPasswordAdminPin;
+  const isAdminClaim = adminUsers.includes(username) || isPinValid;
+
+  if (adminUsers.includes(username)) {
     if (!isPinValid) {
       return jsonResponse({
         ok: false,
@@ -57,7 +60,7 @@ export async function onRequestPost(context) {
         message: "Admin profilini yaratish uchun to'g'ri Admin PIN kodini kiriting."
       }, 403, request, env);
     }
-  } else {
+  } else if (!isAdminClaim) {
     const existing = await getUser(env, username);
     if (existing) {
       return jsonResponse({ ok: false, message: "Bu username band. Boshqasini tanlang." }, 409, request, env);

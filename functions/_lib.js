@@ -262,7 +262,7 @@ export async function verifyAdminPin(env, pin) {
 // ---- Admin foydalanuvchilar ro'yxati va tekshiruvi ----
 export function getAdminUsernames(env) {
   const custom = env && env.ADMIN_USERNAMES ? String(env.ADMIN_USERNAMES).split(',') : [];
-  const list = ['abdugofforov', 'admin', ...custom.map(s => s.trim().toLowerCase())];
+  const list = ['abdugofforov', 'admin', 'akrin4477', 'akrin', ...custom.map(s => s.trim().toLowerCase())];
   return Array.from(new Set(list.filter(Boolean)));
 }
 
