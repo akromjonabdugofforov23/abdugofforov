@@ -1525,7 +1525,10 @@ function compressImage(file, maxSize = 1920, quality = 0.9) {
 function autoResize(el) {
     if (!el) return;
     el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
+    const minH = el.id === 'zen-title' ? 58 : 34;
+    const computedHeight = Math.max(el.scrollHeight, minH) + 6;
+    el.style.height = computedHeight + 'px';
+    el.scrollTop = 0;
 }
 
 function updateZenStats() {
@@ -1566,13 +1569,20 @@ function setZenCover(dataUrl) {
     pendingImageData = dataUrl;
     if (dataUrl) {
         if (zenCoverImg) zenCoverImg.src = dataUrl;
-        if (zenCoverPreview) zenCoverPreview.style.display = 'block';
+        if (zenCoverPreview) zenCoverPreview.style.display = 'flex';
         if (zenCoverEmpty) zenCoverEmpty.style.display = 'none';
     } else {
-        if (zenCoverPreview) zenCoverPreview.style.display = 'none';
+        if (zenCoverPreview) {
+            zenCoverPreview.style.display = 'none';
+            zenCoverPreview.classList.remove('fit-contain');
+        }
         if (zenCoverEmpty) zenCoverEmpty.style.display = 'block';
         if (zenCoverImg) zenCoverImg.src = '';
     }
+    requestAnimationFrame(() => {
+        if (zenTitle) autoResize(zenTitle);
+        if (zenExcerpt) autoResize(zenExcerpt);
+    });
 }
 
 function switchZenTab(mode) {
@@ -1651,6 +1661,7 @@ function openZenEditor(postId = null) {
     document.body.style.overflow = 'hidden';
     setTimeout(() => {
         autoResize(zenTitle);
+        autoResize(zenExcerpt);
         updateZenStats();
         if (zenTitle) zenTitle.focus();
     }, 80);
@@ -1754,7 +1765,23 @@ if (zenTitle) {
     });
 }
 if (zenExcerpt) {
-    zenExcerpt.addEventListener('input', scheduleZenDraftSave);
+    zenExcerpt.addEventListener('input', () => {
+        autoResize(zenExcerpt);
+        scheduleZenDraftSave();
+    });
+}
+
+const zenFitCoverBtn = document.getElementById('zen-fit-cover-btn');
+if (zenFitCoverBtn) {
+    zenFitCoverBtn.addEventListener('click', () => {
+        if (!zenCoverPreview) return;
+        const isContain = zenCoverPreview.classList.toggle('fit-contain');
+        zenFitCoverBtn.textContent = isContain ? "Qoplash (Cover)" : "To'liq ko'rish";
+        requestAnimationFrame(() => {
+            if (zenTitle) autoResize(zenTitle);
+            if (zenExcerpt) autoResize(zenExcerpt);
+        });
+    });
 }
 if (zenTags) {
     zenTags.addEventListener('input', scheduleZenDraftSave);

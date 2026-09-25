@@ -235,17 +235,34 @@
 .zen-cover-preview {
     position: relative;
     width: 100%;
-    height: 260px;
+    min-height: 220px;
+    max-height: 480px;
     border-radius: 14px;
     overflow: hidden;
     background: #09121a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
 }
 
 .zen-cover-preview img {
     width: 100%;
-    height: 100%;
+    max-height: 480px;
+    height: auto;
     object-fit: cover;
+    object-position: center;
     display: block;
+    transition: object-fit 0.2s ease, max-height 0.2s ease;
+}
+
+.zen-cover-preview.fit-contain {
+    background: #06090e;
+}
+
+.zen-cover-preview.fit-contain img {
+    object-fit: contain;
+    max-height: 520px;
 }
 
 .zen-cover-actions {
@@ -304,19 +321,24 @@
 /* ---------- Title & Subtitle Typography ---------- */
 .zen-title-input {
     width: 100%;
+    min-height: 58px;
+    height: auto;
     background: transparent;
     border: none;
     outline: none;
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: clamp(24px, 3.2vw, 36px);
     font-weight: 700;
-    line-height: 1.35;
+    line-height: 1.45;
     letter-spacing: -0.025em;
     color: var(--text-primary, #ffffff);
     resize: none;
-    overflow: hidden;
-    padding: 6px 0;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    padding: 10px 0 8px 0;
     margin: 0;
+    box-sizing: border-box;
+    display: block;
 }
 
 .zen-title-input::placeholder {
@@ -334,7 +356,11 @@
     font-size: 15.5px;
     line-height: 1.6;
     color: var(--text-secondary, #94a3b8);
-    padding: 4px 0 10px 0;
+    padding: 6px 0 10px 0;
+    resize: none;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    display: block;
     transition: border-color 0.2s ease;
 }
 
