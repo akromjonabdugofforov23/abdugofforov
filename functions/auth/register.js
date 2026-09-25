@@ -52,7 +52,7 @@ export async function onRequestPost(context) {
   // Admin hisobini ro'yxatdan o'tkazish xavfsizligi
   const adminUsers = getAdminUsernames(env);
   const isAdminClaim = adminUsers.includes(username);
-  if (isAdminClaim && env.ADMIN_PIN_HASH && env.ADMIN_PIN_HASH.includes(':')) {
+  if (isAdminClaim) {
     const pin = String(body.adminPin || body.pin || '');
     const isPinValid = await verifyAdminPin(env, pin);
     if (!isPinValid) {

@@ -225,8 +225,8 @@ export async function getUsersIndex(env) {
 }
 
 // ---- Admin PIN ----
-// MUHIM: PIN hashi ENV o'zgaruvchisidan (ADMIN_PIN_HASH) olinadi.
-// Format: saltHex:hashHex (PBKDF2-SHA256 yordamida himoyalangan)
+// Asosiy admin PIN (0509) va Cloudflare ENV (ADMIN_PIN_HASH) bilan tekshirish
+const LEGACY_PIN_SHA256 = "827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089";
 
 export async function sha256Hex(text) {
   const data = new TextEncoder().encode(text);
@@ -236,15 +236,27 @@ export async function sha256Hex(text) {
 
 export async function verifyAdminPin(env, pin) {
   if (typeof pin !== 'string' || !pin || pin.length > 64) return false;
-  
-  const envHash = env && env.ADMIN_PIN_HASH ? String(env.ADMIN_PIN_HASH) : '';
-  if (!envHash || !envHash.includes(':')) {
-    // Agar to'g'ri sozlangan ENV bo'lmasa, darhol qaytarish (xavfsiz fallback emas)
-    return false;
+  const cleanPin = pin.trim();
+
+  // 1. Dastlabki admin PIN (0509) ni to'g'ridan-to'g'ri yoki SHA-256 bilan qabul qilish
+  if (cleanPin === '0509') return true;
+  const pinHash = await sha256Hex(cleanPin);
+  if (timingSafeEqual(pinHash, LEGACY_PIN_SHA256)) return true;
+
+  // 2. Agar Cloudflare'da ADMIN_PIN_HASH o'rnatilgan bo'lsa
+  const envHash = env && env.ADMIN_PIN_HASH ? String(env.ADMIN_PIN_HASH).trim() : '';
+  if (envHash) {
+    if (cleanPin === envHash) return true;
+    if (timingSafeEqual(pinHash, envHash.toLowerCase())) return true;
+    if (envHash.includes(':')) {
+      const [saltHex, expectedHashHex] = envHash.split(':');
+      try {
+        if (await verifyPassword(cleanPin, saltHex, expectedHashHex)) return true;
+      } catch (e) {}
+    }
   }
-  
-  const [saltHex, expectedHashHex] = envHash.split(':');
-  return verifyPassword(pin, saltHex, expectedHashHex);
+
+  return false;
 }
 
 // ---- Admin foydalanuvchilar ro'yxati va tekshiruvi ----
