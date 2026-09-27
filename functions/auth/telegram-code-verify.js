@@ -1,10 +1,11 @@
 // POST /auth/telegram-code-verify
 // Body: { target: "...", code: "123456" }
-// 6-xonali Telegram kodini tekshiradi, foydalanuvchini ro'yxatga oladi va sessiya qaytaradi.
+// 6-xonali Telegram kodini doimiy vaqtda tekshiradi, foydalanuvchini ro'yxatga oladi va sessiya qaytaradi.
 
 import {
-  jsonResponse, corsHeaders, normUsername,
-  createSession, getUser, putUser, addUserToIndex, publicUser, rateLimit, tooManyRequests
+  jsonResponse, corsHeaders, normUsername, timingSafeEqual,
+  createSession, getUser, putUser, addUserToIndex, publicUser, rateLimit, tooManyRequests,
+  getClientIp
 } from '../_lib.js';
 
 export async function onRequestOptions(context) {
@@ -20,6 +21,9 @@ export async function onRequestPost(context) {
 
   const rl = await rateLimit(env, request, 'tg-code-verify', 10, 300);
   if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
+
+  // Brute-force sekinlashtirish
+  await new Promise(r => setTimeout(r, 150));
 
   let body;
   try { body = await request.json(); } catch (e) {
@@ -49,17 +53,24 @@ export async function onRequestPost(context) {
     return jsonResponse({ ok: false, message: "Urinishlar soni tugadi. Qayta kod so'rang." }, 429, request, env);
   }
 
-  if (rawData.code !== code) {
+  // Timing hujumlariga qarshi doimiy vaqtli solishtirish
+  if (!timingSafeEqual(String(rawData.code || ''), code)) {
     rawData.attempts += 1;
     await env.POSTS_KV.put(kvKey, JSON.stringify(rawData), { expirationTtl: 300 }).catch(() => {});
-    return jsonResponse({ ok: false, message: "Kiritilgan kod noto'g'ri!" }, 400, request, env);
+    const left = 5 - rawData.attempts;
+    return jsonResponse({
+      ok: false,
+      message: `Kiritilgan kod noto'g'ri! (${left} urinish qoldi)`,
+      attemptsLeft: left
+    }, 400, request, env);
   }
 
-  // Kod to'g'ri — KV dan kodni o'chiramiz
+  // Kod to'g'ri — KV dan kodni o'chiramiz (replay attack'ning oldini oladi)
   await env.POSTS_KV.delete(kvKey).catch(() => {});
 
   const username = normUsername('tg_' + target).slice(0, 20);
   const name = 'Telegram User (' + target + ')';
+  const isAdminTg = Boolean(env.TELEGRAM_CHAT_ID && String(target) === String(env.TELEGRAM_CHAT_ID));
 
   let user = await getUser(env, username);
   if (!user) {
@@ -68,6 +79,7 @@ export async function onRequestPost(context) {
       username,
       tgId: target,
       provider: 'telegram',
+      role: isAdminTg ? 'admin' : 'student',
       verified: true,
       createdAt: Date.now()
     };
@@ -75,9 +87,11 @@ export async function onRequestPost(context) {
     await addUserToIndex(env, username);
   } else {
     user.verified = true;
+    if (isAdminTg) user.role = 'admin';
     await putUser(env, user);
   }
 
-  const token = await createSession(env, username);
-  return jsonResponse({ ok: true, token, user: publicUser(user) }, 200, request, env);
+  const ip = getClientIp(request);
+  const token = await createSession(env, username, { ip, tgId: target });
+  return jsonResponse({ ok: true, token, user: publicUser(user, env) }, 200, request, env);
 }

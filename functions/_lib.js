@@ -1,5 +1,5 @@
 // ============================================================
-// Umumiy yordamchi kutubxona — auth va natijalar uchun
+// Umumiy xavfsizlik va yordamchi kutubxona — auth va API uchun
 // (Fayl nomi '_' bilan boshlanadi => Cloudflare Pages uni route qilmaydi,
 //  faqat boshqa funksiyalar import qiladi)
 // ============================================================
@@ -38,7 +38,7 @@ export function isAllowedOrigin(request, env) {
 export function corsHeaders(request, env) {
   const allowOrigin = isAllowedOrigin(request, env);
   const headers = {
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, x-user-token, x-admin-token, x-admin-pin, Authorization',
     'Access-Control-Max-Age': '600',
     'Vary': 'Origin',
@@ -55,11 +55,21 @@ export function jsonResponse(data, status, request, env) {
   });
 }
 
-// ---- Mijoz IP manzili ----
+// ---- Mijoz IP manzili (IP Spoofing va noto'g'ri headerlardan himoyalangan) ----
 export function getClientIp(request) {
-  return request.headers.get('CF-Connecting-IP')
-    || request.headers.get('X-Forwarded-For')
-    || 'unknown';
+  const cfIp = request.headers.get('CF-Connecting-IP');
+  if (cfIp && /^[0-9a-fA-F:.]+$/.test(cfIp.trim())) {
+    return cfIp.trim();
+  }
+
+  const xff = request.headers.get('X-Forwarded-For');
+  if (xff) {
+    const firstIp = xff.split(',')[0].trim();
+    if (/^[0-9a-fA-F:.]+$/.test(firstIp)) {
+      return firstIp;
+    }
+  }
+  return 'unknown';
 }
 
 // ---- IP bo'yicha rate-limiting (KV asosida) ----
@@ -106,7 +116,7 @@ export function tooManyRequests(request, retryAfter, env) {
   });
 }
 
-// ---- Tasodifiy qiymatlar ----
+// ---- Kriptografik tasodifiy qiymatlar ----
 export function randomHex(bytes) {
   const arr = new Uint8Array(bytes);
   crypto.getRandomValues(arr);
@@ -144,6 +154,7 @@ export async function hashPassword(password, saltHex) {
 }
 
 export async function verifyPassword(password, saltHex, expectedHashHex) {
+  if (!password || !saltHex || !expectedHashHex) return false;
   const { hash } = await hashPassword(password, saltHex);
   return timingSafeEqual(hash, expectedHashHex);
 }
@@ -155,21 +166,26 @@ export function timingSafeEqual(a, b) {
   return r === 0;
 }
 
-// ---- Username normalizatsiya va validatsiya ----
+// ---- Username va Parol validatsiyasi ----
 export function normUsername(u) {
   return String(u || '').trim().toLowerCase();
 }
 export function validUsername(u) {
   return /^[a-z0-9_]{3,20}$/.test(u);
 }
+export function validPassword(p) {
+  return typeof p === 'string' && p.length >= 8 && p.length <= 128;
+}
 
 // ---- Sessiya tokenlari (KV) ----
 const SESSION_TTL = 30 * 24 * 3600; // 30 kun
 
-export async function createSession(env, username) {
+export async function createSession(env, username, meta = {}) {
   const token = randomHex(32);
   await env.POSTS_KV.put(`session:${token}`, JSON.stringify({
-    username, createdAt: Date.now()
+    username,
+    createdAt: Date.now(),
+    ...meta
   }), { expirationTtl: SESSION_TTL });
   return token;
 }
@@ -224,8 +240,7 @@ export async function getUsersIndex(env) {
   try { return raw ? JSON.parse(raw) : []; } catch (e) { return []; }
 }
 
-// ---- Admin PIN ----
-// Asosiy admin PIN (0509) va Cloudflare ENV (ADMIN_PIN_HASH) bilan tekshirish
+// ---- Admin PIN tekshiruvi ----
 const LEGACY_PIN_SHA256 = "827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089";
 
 export async function sha256Hex(text) {
@@ -238,14 +253,11 @@ export async function verifyAdminPin(env, pin) {
   if (typeof pin !== 'string' || !pin || pin.length > 64) return false;
   const cleanPin = pin.trim();
 
-  // 1. Dastlabki admin PIN (0509) ni to'g'ridan-to'g'ri yoki SHA-256 bilan qabul qilish
-  if (cleanPin === '0509') return true;
-  const pinHash = await sha256Hex(cleanPin);
-  if (timingSafeEqual(pinHash, LEGACY_PIN_SHA256)) return true;
-
-  // 2. Agar Cloudflare'da ADMIN_PIN_HASH o'rnatilgan bo'lsa
+  // 1. Agar Cloudflare'da ADMIN_PIN_HASH o'rnatilgan bo'lsa, FAQAT uni tekshiramiz!
+  // Eski hardcoded PIN (0509) mutlaqo qabul qilinmaydi!
   const envHash = env && env.ADMIN_PIN_HASH ? String(env.ADMIN_PIN_HASH).trim() : '';
   if (envHash) {
+    const pinHash = await sha256Hex(cleanPin);
     if (cleanPin === envHash) return true;
     if (timingSafeEqual(pinHash, envHash.toLowerCase())) return true;
     if (envHash.includes(':')) {
@@ -254,7 +266,14 @@ export async function verifyAdminPin(env, pin) {
         if (await verifyPassword(cleanPin, saltHex, expectedHashHex)) return true;
       } catch (e) {}
     }
+    return false;
   }
+
+  // 2. Agar ADMIN_PIN_HASH sozlanmagan bo'lsa (faqat lokal/dev muhitida ogohlantirish bilan)
+  console.warn("⚠️ [XAVFSIZLIK OGOHLANTIRISHI] ADMIN_PIN_HASH o'rnatilmagan! Productionda uni darhol sozlang!");
+  if (cleanPin === '0509') return true;
+  const pinHash = await sha256Hex(cleanPin);
+  if (timingSafeEqual(pinHash, LEGACY_PIN_SHA256)) return true;
 
   return false;
 }
@@ -307,11 +326,11 @@ export function publicUser(user, env) {
   if (!user) return null;
   const admin = isUserAdmin(user, env);
   return {
-    id: user.id,
-    name: user.name,
+    id: user.id || user.username,
+    name: user.name || user.username,
     username: user.username,
     role: admin ? 'admin' : (user.role || 'student'),
-    photo: user.photo,
+    photo: user.photo || '',
     createdAt: user.createdAt
   };
 }

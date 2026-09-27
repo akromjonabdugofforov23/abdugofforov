@@ -1,7 +1,7 @@
 // POST /auth/profile
 // Body: { name, photo }
 // Header: x-user-token
-// Foydalanuvchi ismi (nickname) va avatarini KV da update qiladi.
+// Foydalanuvchi ismi (nickname) va avatarini KV da yangilaydi.
 
 import {
   jsonResponse, corsHeaders, getSessionUsername, getUser, putUser, publicUser
@@ -14,22 +14,22 @@ export async function onRequestOptions(context) {
 export async function onRequestPost(context) {
   const { env, request } = context;
   if (!env.POSTS_KV) {
-    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request);
+    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
 
   const username = await getSessionUsername(env, request);
   if (!username) {
-    return jsonResponse({ ok: false, message: "Tizimga kirilmagan" }, 401, request);
+    return jsonResponse({ ok: false, message: "Tizimga kirilmagan" }, 401, request, env);
   }
 
   let body;
   try { body = await request.json(); } catch (e) {
-    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request);
+    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request, env);
   }
 
   const user = await getUser(env, username);
   if (!user) {
-    return jsonResponse({ ok: false, message: "Foydalanuvchi topilmadi" }, 404, request);
+    return jsonResponse({ ok: false, message: "Foydalanuvchi topilmadi" }, 404, request, env);
   }
 
   if (body.name && typeof body.name === 'string') {
@@ -40,5 +40,5 @@ export async function onRequestPost(context) {
   }
 
   await putUser(env, user);
-  return jsonResponse({ ok: true, user: publicUser(user) }, 200, request);
+  return jsonResponse({ ok: true, user: publicUser(user, env) }, 200, request, env);
 }

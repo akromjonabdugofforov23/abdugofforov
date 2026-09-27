@@ -1,7 +1,6 @@
 // ============================================================
 // Global Cloudflare Pages Middleware
-// Ensures responses never leak overly permissive CORS headers
-// (such as wildcard Access-Control-Allow-Origin: *)
+// Xavfsizlik protokollari: CORS, CSP, HSTS, va boshqa HTTP himoya sarlavhalari
 // ============================================================
 
 export async function onRequest(context) {
@@ -14,6 +13,20 @@ export async function onRequest(context) {
     }
   }
 
+  // Subdomain routing: tools.abdugofforov.uz -> serve tools.html
+  if (url.hostname.startsWith('tools.') || url.searchParams.get('subdomain') === 'tools') {
+    if (url.pathname === '/' || url.pathname === '/index.html') {
+      return context.env.ASSETS.fetch(new URL('/tools.html', context.request.url));
+    }
+  }
+
+  // Subdomain routing: cv.abdugofforov.uz -> serve cv.html
+  if (url.hostname.startsWith('cv.') || url.searchParams.get('subdomain') === 'cv') {
+    if (url.pathname === '/' || url.pathname === '/index.html') {
+      return context.env.ASSETS.fetch(new URL('/cv.html', context.request.url));
+    }
+  }
+
   // Redirect abdugofforov.uz/deutsch to subdomain if accessed directly on production
   if (url.pathname === '/deutsch' || url.pathname === '/deutsch/') {
     if (!url.hostname.startsWith('deutsch.')) {
@@ -21,6 +34,26 @@ export async function onRequest(context) {
         return Response.redirect(`https://deutsch.abdugofforov.uz/`, 301);
       }
       return context.env.ASSETS.fetch(new URL('/deutsch.html', context.request.url));
+    }
+  }
+
+  // Redirect abdugofforov.uz/tools to subdomain if accessed directly on production
+  if (url.pathname === '/tools' || url.pathname === '/tools/') {
+    if (!url.hostname.startsWith('tools.')) {
+      if (url.hostname.includes('abdugofforov.uz')) {
+        return Response.redirect(`https://tools.abdugofforov.uz/`, 301);
+      }
+      return context.env.ASSETS.fetch(new URL('/tools.html', context.request.url));
+    }
+  }
+
+  // Redirect abdugofforov.uz/cv to subdomain if accessed directly on production
+  if (url.pathname === '/cv' || url.pathname === '/cv/') {
+    if (!url.hostname.startsWith('cv.')) {
+      if (url.hostname.includes('abdugofforov.uz')) {
+        return Response.redirect(`https://cv.abdugofforov.uz/`, 301);
+      }
+      return context.env.ASSETS.fetch(new URL('/cv.html', context.request.url));
     }
   }
 
@@ -37,7 +70,12 @@ export async function onRequest(context) {
     try { allowed.push(new URL(context.request.url).origin); } catch (e) {}
     try {
       if (url.hostname.endsWith('abdugofforov.uz')) {
-        allowed.push('https://abdugofforov.uz', 'https://deutsch.abdugofforov.uz');
+        allowed.push(
+          'https://abdugofforov.uz',
+          'https://deutsch.abdugofforov.uz',
+          'https://tools.abdugofforov.uz',
+          'https://cv.abdugofforov.uz'
+        );
       }
     } catch (e) {}
     if (context.env && context.env.ALLOWED_ORIGINS) {
@@ -79,6 +117,26 @@ export async function onRequest(context) {
   }
   if (url.protocol === 'https:' && !newResponse.headers.has('Strict-Transport-Security')) {
     newResponse.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  }
+
+  // 3. Content-Security-Policy (CSP) sarlavhasi
+  if (!newResponse.headers.has('Content-Security-Policy')) {
+    const cspDirectives = [
+      "default-src 'self'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'none'",
+      "object-src 'none'",
+      "upgrade-insecure-requests",
+      "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://challenges.cloudflare.com https://telegram.org",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "img-src 'self' data: https:",
+      "media-src 'self' data: blob:",
+      "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://challenges.cloudflare.com https://oauth.telegram.org",
+      "connect-src 'self' https://abdugofforov.uz https://*.abdugofforov.uz https://ipapi.co https://api.open-meteo.com https://cloudflareinsights.com https://oauth.telegram.org"
+    ];
+    newResponse.headers.set('Content-Security-Policy', cspDirectives.join('; '));
   }
   
   return newResponse;

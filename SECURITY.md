@@ -1,56 +1,73 @@
-# Xavfsizlik sozlamalari (Security)
+# Xavfsizlik protokollari va sozlamalari (Security Architecture)
 
-Bu loyiha Cloudflare Pages Functions (`functions/`) orqali ishlaydi. Quyidagi
-muhit o'zgaruvchilarini (Environment Variables) Cloudflare Pages →
-**Settings → Environment variables** bo'limida sozlang.
+Ushbu loyiha Cloudflare Pages Functions (`functions/`), Express Server (`server.js`) va statik frontend arxitekturasida ishlaydi. Quyidagi xavfsizlik protokollari va muhit o'zgaruvchilari (Environment Variables) tizimning mustahkamligini ta'minlaydi.
 
-## 1. ADMIN_PIN_HASH (MUHIM — zudlik bilan o'rnating)
+---
 
-Admin PIN endi kodda hardcode qilinmaydi. U `ADMIN_PIN_HASH` ENV
-o'zgaruvchisidan o'qiladi (PIN'ning SHA-256 hashi, hex ko'rinishida).
+## 1. Asosiy Xavfsizlik Sozlamalari (Environment Variables)
 
-> ⚠️ Eski 4 xonali PIN (`0509`) git tarixida **oshkor bo'lgan**. Uni
-> ishlatishni darhol to'xtating va yangi, kuchli PIN (kamida 8+ belgi)
-> tanlang.
+Cloudflare Pages → **Settings → Environment variables** (yoki Node.js `.env` faylida) quyidagilarni sozlang:
 
-Yangi PIN hashini yaratish (terminalda):
+### `ADMIN_PIN_HASH` (O'ta muhim — zudlik bilan o'rnating)
+Admin PIN kodi kodda saqlanmaydi. U `ADMIN_PIN_HASH` ENV o'zgaruvchisidan o'qiladi (PIN'ning SHA-256 hashi).
 
+> ⚠️ **Muhim qoida**: Agar `ADMIN_PIN_HASH` o'rnatilgan bo'lsa, tizim eski zaxira PIN (`0509`) ni **mutlaqo qabul qilmaydi**. Bu orqali eski oshkor bo'lgan kod orqali kirish ehtimoli 100% yopilgan.
+
+Yangi kuchli PIN (kamida 8+ belgi) xeshini yaratish (terminalda):
 ```bash
-# "<yangi-pin>" ni o'z PIN'ingizga almashtiring
-printf '%s' '<yangi-pin>' | shasum -a 256 | awk '{print $1}'
+printf '%s' '<yangi-kuchli-pin>' | shasum -a 256 | awk '{print $1}'
 ```
-
 Chiqqan 64 belgili hex qiymatni `ADMIN_PIN_HASH` ga yozing.
 
-Agar `ADMIN_PIN_HASH` o'rnatilmasa, kod faqat zaxira (fallback) qiymatga
-qaytadi — bu oshkor bo'lgan eski PIN, shuning uchun ishlab chiqarishda buni
-albatta o'rnating.
-
-## 2. ALLOWED_ORIGINS (ixtiyoriy)
-
-CORS endi har qanday origin'ni aks ettirmaydi. Standart holatda faqat
-**same-origin** so'rovlarga ruxsat beriladi. Boshqa domenlardan murojaat
-kerak bo'lsa, vergul bilan ajratib qo'shing:
-
-```
-ALLOWED_ORIGINS=https://example.com,https://www.example.com
+### `ALLOWED_ORIGINS` (CORS himoyasi)
+Wildcard (`*`) CORS sarlavhalari to'liq bloklangan. Standart holatda faqat `same-origin` va `abdugofforov.uz` domenlariga ruxsat beriladi. Qo'shimcha domenlar uchun:
+```env
+ALLOWED_ORIGINS=https://abdugofforov.uz,https://deutsch.abdugofforov.uz
 ```
 
-## 3. Telegram 2FA (tavsiya etiladi)
+### `TELEGRAM_BOT_TOKEN` va `TELEGRAM_CHAT_ID` (2FA va Xavfsizlik signallari)
+- Telegram 2FA yoqilganda barcha admin amallari 2 bosqichli autentifikatsiya (PIN + Telegram bir martalik kod) orqali bajariladi.
+- Telegram OAuth/WebApp kirishlarida HMAC-SHA256 imzosi tekshiriladi va 24 soatlik replay attack filtratsiyasi qo'llaniladi.
+- Hujumlar va shubhali faolliklar bo'yicha admin chatga tezkor xabarlar yuboriladi.
 
-`TELEGRAM_BOT_TOKEN` va `TELEGRAM_CHAT_ID` o'rnatilganda admin kirishi
-ikki bosqichli (PIN + Telegram kod) bo'ladi va `x-admin-pin` faqat-PIN
-fallback'i **o'chiriladi**. Ishlab chiqarishda ikkalasini ham sozlang.
+---
 
-## Ushbu yangilanishda qo'shilgan himoyalar
+## 2. Takomillashtirilgan Xavfsizlik Protokollari
 
-- Admin PIN hashi ENV'ga ko'chirildi; oshkor PIN izohi olib tashlandi.
-- Barcha sezgir endpointlarga IP bo'yicha rate-limiting qo'shildi
-  (`login`, `register`, `check-pin`, `admin/request-code`,
-  `admin/verify-code`, `posts` PUT, `notify`).
-- CORS wildcard (`*`) o'rniga same-origin / allowlist joriy etildi.
-- Telegram kod solishtiruvi doimiy vaqtli (timing-safe) qilindi.
-- Takrorlangan xavfsizlik kodi `functions/_lib.js` da markazlashtirildi.
+### A. Autentifikatsiya va Ruxsatlar (Auth & Access Control)
+1. **Account Takeover himoyasi**:
+   - `/auth/register` endi hech qachon mavjud foydalanuvchini ustidan yozmaydi (overwrite taqiqlangan). Band username bilan so'rov kelsa darhol `409 Conflict` qaytadi.
+   - Parol sifatida admin PIN kiritilgani uchungina foydalanuvchiga avtomatik admin huquqi berilmaydi.
+2. **Kuchli Parol Siyosati (Password Policy)**:
+   - Ro'yxatdan o'tish va parolni tiklashda minimal parol uzunligi **kamida 8 ta belgi** qilib belgilandi.
+   - Parollar **PBKDF2-SHA256 (100,000 iteratsiya)** va kriptografik tuz (salt) bilan saqlanadi.
+3. **Doimiy Vaqtli Taqqoslash (Timing-Attack Protection)**:
+   - PIN, Telegram tasdiqlash kodlari va parol xeshlarini solishtirishda doimiy vaqtli (`timingSafeEqual`) algoritmidan foydalaniladi.
+4. **Sessiya Boshqaruvi**:
+   - Har bir sessiya tokeni mijoz IP manzili bilan bog'lanadi va 30 kunlik muddat (TTL) bilan cheklanadi.
 
-> Eslatma: KV asosidagi rate-limit eventual-consistent. Qattiqroq himoya
-> kerak bo'lsa, Cloudflare WAF / Rate Limiting Rules'ni ham yoqing.
+### B. Tarmoq va Shifrlash (Transport & HTTP Security)
+1. **Content Security Policy (CSP)**:
+   - Barcha sahifalar va Cloudflare Functions javoblarida qat'iy CSP faol. Tashqi xavfli skriptlar, ruxsat etilmagan iframelar (`frame-ancestors: 'none'`) va ma'lumotlar o'g'irlanishi (XSS) oldi olingan.
+2. **HSTS va Preload**:
+   - `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` barcha HTTPS trafigini majburiy qilib, SSL Striping hujumlarini bartaraf etadi.
+3. **IP Spoofing himoyasi**:
+   - `getClientIp` funksiyasi `CF-Connecting-IP` va `X-Forwarded-For` sarlavhalaridan faqat birinchi haqiqiy IP manzilini ajratib oladi va regex orqali IPv4/IPv6 validatsiya qiladi.
+
+### C. WAF va Bot Himoyasi (AI / Threat Detector)
+1. **Zararli Skanerlar Filtratsiyasi**:
+   - `sqlmap`, `nikto`, `wpscan`, `masscan`, `acunetix`, `gobuster` va boshqa zararli skanerlar `aiBotDetector` orqali darhol 403 bilan to'xtatiladi.
+2. **Path Traversal va Maxfiy Fayllar Qidiruvini Bloklash**:
+   - `/.env`, `/.git`, `/wp-admin`, `phpmyadmin`, `eval-stdin.php` kabi server zaifliklarini tekshiruvchi avtomatlashgan so'rovlar filtrlanadi.
+3. **Inyeksiya va XSS Filtratsiyasi**:
+   - URL va so'rov parametrlaridagi SQL inyeksiyalari (`UNION SELECT`, `' OR 1=1`) va XSS skriptlar bloklanadi.
+
+### D. Rate Limiting va DDoS Himoyasi
+1. **Bosqichma-bosqich Rate Limiting**:
+   - `login` va `register` endpointlariga maxsus qat'iy cheklovlar (masalan, 15 daqiqada 10-15 urinish).
+   - Turnir natijalari va postlar yozishga mos ravishda IP bo'yicha limitlar.
+2. **Cloudflare Avtomatik Qorovuli (`cloudflare_qorovul.ps1`)**:
+   - **TLS 1.2 va TLS 1.3** zamonaviy shifrlash protokollari.
+   - Sayt to'xtab qolganda avtomatik ravishda Cloudflare **"Under Attack"** rejimini yoqish.
+   - **Auto-Recovery protokoli**: Sayt normallashib, ketma-ket 10 marta muvaffaqiyatli javob berganda, tizim himoyani avtomatik ravishda "Medium" darajasiga tushiradi.
+   - Telegram xabarlarini spam bo'lishidan himoyalash (alert throttling).

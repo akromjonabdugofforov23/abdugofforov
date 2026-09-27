@@ -1,19 +1,25 @@
 const express = require('express');
 const path = require('path');
 const routes = require('./routes/index');
-const authRoutes = require('./routes/auth'); // Qo'shildi
+const authRoutes = require('./routes/auth');
 
 // Xavfsizlik qatlamlarini import qilish (Middlewares)
 const securityLayer1 = require('./middlewares/securityLayer1');
 const securityLayer2 = require('./middlewares/securityLayer2');
 const aiBotDetector = require('./middlewares/aiBotDetector');
-const cacheMiddleware = require('./middlewares/cache');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Body-parser qo'shildi (JSON o'qish uchun)
-app.use(express.json());
+// Xavfsizlik: Server texnologiyasini oshkor qilmaslik
+app.disable('x-powered-by');
+
+// Xavfsizlik: Reverse proxy (Cloudflare/Nginx) orqasidagi haqiqiy mijoz IP sini olish
+app.set('trust proxy', 1);
+
+// Xavfsizlik: Katta hajmdagi zararli so'rovlar (DoS) ning oldini olish uchun body limit
+app.use(express.json({ limit: '500kb' }));
+app.use(express.urlencoded({ extended: false, limit: '500kb' }));
 
 // CORS xavfsizligi — Wildcard (*) emas, faqat same-origin va ruxsat etilgan domenlar
 app.use((req, res, next) => {
@@ -39,29 +45,25 @@ app.use((req, res, next) => {
     }
 });
 
-// 1-bosqich: Helmet yordamida HTTP xavfsizlik sarlavhalari
+// 1-bosqich: Helmet yordamida HTTP xavfsizlik sarlavhalari (CSP, HSTS, X-Frame-Options)
 app.use(securityLayer2);
 
-// 2-bosqich: DDoS va ortiqcha so'rovlardan himoya
-app.use('/auth', securityLayer1); // faqat /auth uchun limit kuchliroq qilsak ham bo'ladi, lekin hozircha barcha APIlarga qilsak ham bo'ladi
-// Yoki avvalgidek hammasiga:
-app.use(securityLayer1);
-
-// 3-bosqich: AI bot detektori (Kelajakda kuchaytiriladi)
+// 2-bosqich: WAF & AI Bot Detektori (Zararli skanerlar, Traversal, Inyeksiya)
 app.use(aiBotDetector);
 
-// Tezlikni oshirish uchun Caching tizimi
-// app.use(cacheMiddleware); // Hozircha cache API requestlarga xalaqit qilishi mumkin, lekin qoldiramiz
+// 3-bosqich: DDoS va ortiqcha so'rovlardan himoya (Rate Limiting)
+app.use('/auth', securityLayer1.authLimiter || securityLayer1);
+app.use(securityLayer1);
 
 // Statik fayllarni ilova manbalaridan o'qish
 app.use(express.static(path.join(__dirname, '.')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Marshrutlarni ulash
-app.use('/auth', authRoutes); // Auth marshrutlari
+app.use('/auth', authRoutes);
 app.use('/', routes);
 
 app.listen(PORT, () => {
     console.log(`Server ishga tushdi: http://localhost:${PORT}`);
-    console.log(`Himoya qatlamlari: FAOL`);
+    console.log(`Himoya qatlamlari: FAOL (WAF, Helmet, RateLimiter, StrictAuth)`);
 });

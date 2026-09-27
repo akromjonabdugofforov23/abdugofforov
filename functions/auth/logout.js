@@ -10,8 +10,8 @@ export async function onRequestOptions(context) {
 
 export async function onRequestPost(context) {
   const { env, request } = context;
-  if (env.POSTS_KV) {
+  if (env && env.POSTS_KV) {
     await deleteSession(env, request);
   }
-  return jsonResponse({ ok: true }, 200, request);
+  return jsonResponse({ ok: true }, 200, request, env);
 }

@@ -1,10 +1,11 @@
 // POST /auth/telegram
 // Telegram OAuth Widget yoki Telegram WebApp (Mini App) ma'lumotlarini qabul qiladi.
-// Cloudflare'dagi TELEGRAM_BOT_TOKEN yordamida HMAC-SHA256 hash imzosisini tekshiradi!
+// Cloudflare'dagi TELEGRAM_BOT_TOKEN yordamida HMAC-SHA256 hash imzosisini qat'iy tekshiradi!
 
 import {
-  jsonResponse, corsHeaders, normUsername,
-  createSession, getUser, putUser, addUserToIndex, publicUser, rateLimit, tooManyRequests
+  jsonResponse, corsHeaders, normUsername, timingSafeEqual,
+  createSession, getUser, putUser, addUserToIndex, publicUser, rateLimit, tooManyRequests,
+  getClientIp
 } from '../_lib.js';
 
 // Telegram HMAC-SHA256 cryptographic hash tekshiruvi
@@ -29,7 +30,7 @@ async function verifyTelegramHash(tgData, botToken) {
   const signatureBuf = await crypto.subtle.sign('HMAC', hmacKey, encoder.encode(dataCheckString));
   const calculatedHash = Array.from(new Uint8Array(signatureBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
   
-  return calculatedHash.toLowerCase() === String(hash).toLowerCase();
+  return timingSafeEqual(calculatedHash.toLowerCase(), String(hash).toLowerCase());
 }
 
 export async function onRequestOptions(context) {
@@ -42,31 +43,53 @@ export async function onRequestPost(context) {
     return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
 
+  // Telegram bot tokeni bo'lishi shart
+  if (!env.TELEGRAM_BOT_TOKEN) {
+    return jsonResponse({
+      ok: false,
+      message: "Telegram autentifikatsiyasi serverda sozlanmagan (TELEGRAM_BOT_TOKEN yetishmaydi)."
+    }, 503, request, env);
+  }
+
   const rl = await rateLimit(env, request, 'auth-telegram', 15, 60);
   if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
 
   let body;
   try { body = await request.json(); } catch (e) {
-    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request);
+    return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request, env);
   }
 
   const tgData = body.user || body;
   if (!tgData || (!tgData.id && !tgData.username && !tgData.first_name)) {
-    return jsonResponse({ ok: false, message: "Telegram ma'lumotlari yetarsiz" }, 400, request);
+    return jsonResponse({ ok: false, message: "Telegram ma'lumotlari yetarsiz" }, 400, request, env);
   }
 
-  // Real Telegram Hash Verification
-  let isVerified = false;
-  if (env.TELEGRAM_BOT_TOKEN && tgData.hash) {
-    isVerified = await verifyTelegramHash(tgData, env.TELEGRAM_BOT_TOKEN);
-    if (!isVerified) {
+  // Hash mavjudligi va haqiqiyligi qat'iy tekshiriladi
+  if (!tgData.hash) {
+    return jsonResponse({
+      ok: false,
+      message: "Xavfsizlik xatosi: Telegram imzosi (hash) topilmadi!"
+    }, 401, request, env);
+  }
+
+  // Replay hujumlarining oldini olish uchun auth_date tekshiruvi (agar mavjud bo'lsa, 24 soatdan oshmasligi kerak)
+  if (tgData.auth_date) {
+    const authTime = parseInt(tgData.auth_date, 10);
+    const nowSec = Math.floor(Date.now() / 1000);
+    if (isNaN(authTime) || Math.abs(nowSec - authTime) > 86400) {
       return jsonResponse({
         ok: false,
-        message: "Telegram autentifikatsiya xatosi: Telegram ma'lumotlari haqiqiy emas yoki o'zgartirilgan!"
+        message: "Telegram autentifikatsiya muddati eskirgan. Qaytadan urinib ko'ring."
       }, 401, request, env);
     }
-  } else if (!env.TELEGRAM_BOT_TOKEN) {
-    console.warn("⚠️ TELEGRAM_BOT_TOKEN sozlanmagan — Hash tekshiruvisiz autentifikatsiya qilindi.");
+  }
+
+  const isVerified = await verifyTelegramHash(tgData, env.TELEGRAM_BOT_TOKEN);
+  if (!isVerified) {
+    return jsonResponse({
+      ok: false,
+      message: "Telegram autentifikatsiya xatosi: Telegram ma'lumotlari haqiqiy emas yoki o'zgartirilgan!"
+    }, 401, request, env);
   }
 
   const rawUsername = tgData.username || ('tg_' + tgData.id);
@@ -87,7 +110,7 @@ export async function onRequestPost(context) {
       photo: tgData.photo_url || tgData.photo || '',
       provider: 'telegram',
       role: isAdminTg ? 'admin' : 'student',
-      verified: isVerified,
+      verified: true,
       createdAt: Date.now()
     };
     await putUser(env, user);
@@ -98,10 +121,11 @@ export async function onRequestPost(context) {
     user.provider = 'telegram';
     if (tgData.id) user.tgId = tgData.id;
     if (isAdminTg) user.role = 'admin';
-    user.verified = isVerified;
+    user.verified = true;
     await putUser(env, user);
   }
 
-  const token = await createSession(env, username);
+  const ip = getClientIp(request);
+  const token = await createSession(env, username, { ip, tgId: tgData.id });
   return jsonResponse({ ok: true, token, user: publicUser(user, env) }, 200, request, env);
 }

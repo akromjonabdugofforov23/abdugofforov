@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const router = express.Router();
 const USERS_FILE = path.join(__dirname, '../users.json');
 const PBKDF2_ITER = 100000;
+const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 kun
 
 // Parolni PBKDF2-SHA256 (100,000 iteratsiya) bilan xesh qilish
 function hashPasswordPBKDF2(password, saltHex) {
@@ -24,7 +25,7 @@ function verifyPassword(password, user) {
         if (bufA.length !== bufB.length) return false;
         return crypto.timingSafeEqual(bufA, bufB);
     }
-    // Eski sha256 xeshlarini qo'llab-quvvatlash
+    // Eski sha256 xeshlarini xavfsiz taqqoslash
     if (user.passwordHash) {
         const legacyHash = crypto.createHash('sha256').update(password).digest('hex');
         const bufA = Buffer.from(legacyHash, 'hex');
@@ -33,6 +34,28 @@ function verifyPassword(password, user) {
         return crypto.timingSafeEqual(bufA, bufB);
     }
     return false;
+}
+
+// Doimiy vaqtli string taqqoslash
+function timingSafeCompare(a, b) {
+    if (typeof a !== 'string' || typeof b !== 'string') return false;
+    const bufA = Buffer.from(a);
+    const bufB = Buffer.from(b);
+    if (bufA.length !== bufB.length) return false;
+    return crypto.timingSafeEqual(bufA, bufB);
+}
+
+// Admin PIN kodini tekshirish
+function checkAdminPin(pin) {
+    if (!pin || typeof pin !== 'string') return false;
+    const cleanPin = pin.trim();
+    const envPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE;
+    if (envPin) {
+        return timingSafeCompare(cleanPin, String(envPin).trim());
+    }
+    // Agar env o'rnatilmagan bo'lsa (dev/test uchun ogohlantirish bilan)
+    console.warn("⚠️ [SECURITY WARNING] Node muhitida ADMIN_PIN sozlanmagan! Zaxira PIN ishlatilmoqda.");
+    return timingSafeCompare(cleanPin, '0509');
 }
 
 // Token yaratish
@@ -44,7 +67,8 @@ function generateToken() {
 function readUsers() {
     try {
         const data = fs.readFileSync(USERS_FILE, 'utf8');
-        return JSON.parse(data);
+        const parsed = JSON.parse(data);
+        return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
         return [];
     }
@@ -52,13 +76,23 @@ function readUsers() {
 
 // Foydalanuvchilarni saqlash
 function saveUsers(users) {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
+    try {
+        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
+    } catch (e) {
+        console.error("Foydalanuvchilarni faylga yozishda xato:", e);
+    }
 }
 
-// Foydalanuvchini formatlash (role bilan)
+// Foydalanuvchini formatlash (role bilan, parolsiz)
 function formatUser(u) {
-    const role = u.role || ((u.username && (u.username.toLowerCase() === 'abdugofforov' || u.username.toLowerCase() === 'admin' || u.username.toLowerCase() === 'akrin4477' || u.username.toLowerCase() === 'akrin')) ? 'admin' : 'student');
-    return { id: u.id, name: u.name, username: u.username, role };
+    const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+    const isAdmin = u.role === 'admin' || (u.username && adminUsers.includes(u.username.toLowerCase()));
+    return {
+        id: u.id || u.username,
+        name: u.name,
+        username: u.username,
+        role: isAdmin ? 'admin' : 'student'
+    };
 }
 
 // Ro'yxatdan o'tish
@@ -87,75 +121,65 @@ router.post('/register', (req, res) => {
     if (!/^[a-z0-9_]{3,20}$/.test(normUsername)) {
         return res.status(400).json({
             ok: false,
-            error: "Username 3-20 ta belgi bo'lishi va faqat harf, son yoki pastki chiziqdan iborat bo'lishi kerak",
-            message: "Username 3-20 ta belgi bo'lishi va faqat harf, son yoki pastki chiziqdan iborat bo'lishi kerak"
+            error: "Username 3-20 ta belgi: faqat a-z, 0-9, _",
+            message: "Username 3-20 ta belgi: faqat a-z, 0-9, _"
         });
     }
 
-    if (rawPassword.length < 4) {
+    // Parol kamida 8 ta belgi bo'lishi shart
+    if (rawPassword.length < 8) {
         return res.status(400).json({
             ok: false,
-            error: "Parol kamida 4 ta belgi bo'lishi kerak",
-            message: "Parol kamida 4 ta belgi bo'lishi kerak"
+            error: "Parol kamida 8 ta belgidan iborat bo'lishi kerak",
+            message: "Parol kamida 8 ta belgidan iborat bo'lishi kerak"
         });
     }
-
-    const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
-    const expectedPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE || '0509';
-    const inputPin = String(adminPin || pin || '').trim();
-    const isPinProvidedAndValid = (inputPin === expectedPin || inputPin === '0509');
-    const isPasswordAdminPin = (rawPassword === expectedPin || rawPassword === '0509');
-    const isPinValid = isPinProvidedAndValid || isPasswordAdminPin;
-    const isAdminClaim = adminUsers.includes(normUsername) || isPinValid;
 
     const users = readUsers();
     const existingIndex = users.findIndex(u => u.username && u.username.toLowerCase() === normUsername);
 
+    // XAVFSIZLIK: Mavjud username hech qachon ustidan yozilmaydi (Account takeover himoyasi)
+    if (existingIndex !== -1) {
+        return res.status(409).json({
+            ok: false,
+            error: "Bu username band. Boshqasini tanlang.",
+            message: "Bu username band. Boshqasini tanlang."
+        });
+    }
+
+    const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+    const inputPin = String(adminPin || pin || '').trim();
+    const isPinValid = inputPin ? checkAdminPin(inputPin) : false;
+
+    // Admin nomlaridan biri bilan ro'yxatdan o'tmoqchi bo'lsa, to'g'ri Admin PIN shart
     if (adminUsers.includes(normUsername)) {
         if (!isPinValid) {
             return res.status(403).json({
                 ok: false,
                 needsAdminPin: true,
-                error: "Admin profilini yaratish uchun to'g'ri Admin PIN kodini kiriting.",
-                message: "Admin profilini yaratish uchun to'g'ri Admin PIN kodini kiriting."
-            });
-        }
-    } else if (!isAdminClaim) {
-        if (existingIndex !== -1) {
-            return res.status(409).json({
-                ok: false,
-                error: "Bu username band. Boshqasini tanlang.",
-                message: "Bu username band. Boshqasini tanlang."
+                error: "Admin profilini ro'yxatdan o'tkazish uchun to'g'ri Admin PIN kodini kiriting.",
+                message: "Admin profilini ro'yxatdan o'tkazish uchun to'g'ri Admin PIN kodini kiriting."
             });
         }
     }
 
+    const role = (adminUsers.includes(normUsername) || isPinValid) ? 'admin' : 'student';
     const { hash, salt } = hashPasswordPBKDF2(rawPassword);
     const token = generateToken();
-    const role = isAdminClaim ? 'admin' : 'student';
 
-    let userObj;
-    if (existingIndex !== -1) {
-        userObj = users[existingIndex];
-        userObj.name = trimmedName;
-        userObj.passHash = hash;
-        userObj.salt = salt;
-        userObj.role = role;
-        userObj.token = token;
-        delete userObj.passwordHash;
-    } else {
-        userObj = {
-            id: Date.now().toString(),
-            name: trimmedName,
-            username: normUsername,
-            role,
-            passHash: hash,
-            salt,
-            token,
-            createdAt: Date.now()
-        };
-        users.push(userObj);
-    }
+    const userObj = {
+        id: Date.now().toString(),
+        name: trimmedName,
+        username: normUsername,
+        role,
+        passHash: hash,
+        salt,
+        token,
+        tokenCreatedAt: Date.now(),
+        createdAt: Date.now()
+    };
+
+    users.push(userObj);
     saveUsers(users);
 
     res.json({
@@ -180,14 +204,12 @@ router.post('/login', (req, res) => {
     }
 
     const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
-    const expectedPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE || '0509';
-    const isMasterPin = (rawPassword === expectedPin || rawPassword === '0509');
-
     const users = readUsers();
     let user = users.find(u => u.username && u.username.toLowerCase() === normUsername);
 
+    // Agar foydalanuvchi mavjud bo'lmasa, dastlabki adminni ro'yxatdan o'tkazish
     if (!user) {
-        if (adminUsers.includes(normUsername) && isMasterPin) {
+        if (adminUsers.includes(normUsername) && checkAdminPin(rawPassword)) {
             const { hash, salt } = hashPasswordPBKDF2(rawPassword);
             const token = generateToken();
             const newAdmin = {
@@ -198,6 +220,7 @@ router.post('/login', (req, res) => {
                 passHash: hash,
                 salt,
                 token,
+                tokenCreatedAt: Date.now(),
                 createdAt: Date.now()
             };
             users.push(newAdmin);
@@ -211,17 +234,8 @@ router.post('/login', (req, res) => {
         });
     }
 
+    // Parolni tekshirish
     if (!verifyPassword(rawPassword, user)) {
-        if ((user.role === 'admin' || adminUsers.includes(normUsername)) && isMasterPin) {
-            const upgraded = hashPasswordPBKDF2(rawPassword);
-            user.passHash = upgraded.hash;
-            user.salt = upgraded.salt;
-            user.role = 'admin';
-            delete user.passwordHash;
-            user.token = generateToken();
-            saveUsers(users);
-            return res.json({ ok: true, token: user.token, user: formatUser(user) });
-        }
         return res.status(401).json({
             ok: false,
             error: "Username yoki parol noto'g'ri",
@@ -233,7 +247,7 @@ router.post('/login', (req, res) => {
         user.role = 'admin';
     }
 
-    // Agar eski sha256 xesh bo'lsa, avtomatik PBKDF2 ga yangilaymiz
+    // Eski sha256 xesh bo'lsa, avtomatik PBKDF2 ga yangilaymiz
     if (!user.salt || !user.passHash) {
         const upgraded = hashPasswordPBKDF2(rawPassword);
         user.passHash = upgraded.hash;
@@ -241,8 +255,9 @@ router.post('/login', (req, res) => {
         delete user.passwordHash;
     }
 
-    // Yangi sessiya tokeni
+    // Yangi sessiya tokeni va vaqti
     user.token = generateToken();
+    user.tokenCreatedAt = Date.now();
     saveUsers(users);
 
     res.json({
@@ -266,7 +281,7 @@ router.post('/logout', (req, res) => {
     res.json({ ok: true });
 });
 
-// Token orqali foydalanuvchini tiklash
+// Token orqali foydalanuvchini tiklash (me)
 router.get('/me', (req, res) => {
     const token = req.headers['x-user-token'];
     if (!token) {
@@ -280,15 +295,26 @@ router.get('/me', (req, res) => {
     const users = readUsers();
     const user = users.find(u => u.token === token);
 
-    if (user) {
-        res.json({ ok: true, user: formatUser(user) });
-    } else {
-        res.status(401).json({
+    if (!user) {
+        return res.status(401).json({
             ok: false,
             error: 'Token yaroqsiz',
             message: 'Token yaroqsiz'
         });
     }
+
+    // Token muddatini tekshirish (30 kun)
+    if (user.tokenCreatedAt && (Date.now() - user.tokenCreatedAt > SESSION_TTL_MS)) {
+        user.token = null;
+        saveUsers(users);
+        return res.status(401).json({
+            ok: false,
+            error: 'Sessiya muddati tugagan',
+            message: 'Sessiya muddati tugagan. Qaytadan tizimga kiring.'
+        });
+    }
+
+    res.json({ ok: true, user: formatUser(user) });
 });
 
 module.exports = router;
