@@ -174,28 +174,48 @@
         }
     }
 
-    // 7. 3D Tilt & Mouse Spotlight Logic
+    // 7. 3D Tilt & Mouse Spotlight Logic (RAF Throttled, Zero Reflow Jank)
     function initSpotlights() {
-        const cards = document.querySelectorAll('.post-card, .hero-card-surface, .fortune-card-3d, .atelier-quote-card');
+        const cards = document.querySelectorAll('.hero-card-surface, .fortune-card-3d, .atelier-quote-card');
         cards.forEach(card => {
             card.classList.add('ai-spotlight', 'tilt-card');
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
+            let rect = null;
+            let raf = null;
 
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -4;
-                const rotateY = ((x - centerX) / centerX) * 4;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
-            });
+            function onEnter() {
+                rect = card.getBoundingClientRect();
+            }
 
-            card.addEventListener('mouseleave', () => {
+            function onMove(e) {
+                if (raf) return;
+                raf = requestAnimationFrame(() => {
+                    raf = null;
+                    if (!rect) rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${Math.round(x)}px`);
+                    card.style.setProperty('--mouse-y', `${Math.round(y)}px`);
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -3;
+                    const rotateY = ((x - centerX) / centerX) * 3;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
+                });
+            }
+
+            function onLeave() {
+                rect = null;
+                if (raf) {
+                    cancelAnimationFrame(raf);
+                    raf = null;
+                }
                 card.style.transform = '';
-            });
+            }
+
+            card.addEventListener('mouseenter', onEnter, { passive: true });
+            card.addEventListener('mousemove', onMove, { passive: true });
+            card.addEventListener('mouseleave', onLeave, { passive: true });
         });
     }
 

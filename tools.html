@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Abdugofforov Tools | Foydali Web & Dev Asboblar Laboratoriyasi</title>
+    <meta name="description" content="Lotin-Kirill konverter, WebP rasm siquvchi, JSON formatlovchi, Matn taqqoslovchi va QR kod generatori. 100% brauzerda, xavfsiz va tez.">
+    <meta name="keywords" content="tools, lotin kirill, webp converter, json formatter, qr code generator, diff checker, base64, dev tools">
+    <meta name="theme-color" content="#6366f1">
+    <link rel="canonical" href="https://tools.abdugofforov.uz/">
+
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.svg">
+    <link rel="manifest" href="/manifest.webmanifest">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap">
+    <link rel="stylesheet" href="style.min.css?v=10">
+
+    <style>
+        :root {
+            --tools-accent: #6366f1;
+            --tools-accent-hover: #4f46e5;
+            --tools-accent-glow: rgba(99, 102, 241, 0.25);
+            --tools-surface: rgba(13, 18, 29, 0.78);
+            --tools-border: rgba(255, 255, 255, 0.08);
+            --tools-border-hover: rgba(99, 102, 241, 0.4);
+            --tools-card-bg: rgba(18, 24, 38, 0.65);
+        }
+
+        [data-theme="light"] {
+            --tools-accent: #4f46e5;
+            --tools-accent-hover: #4338ca;
+            --tools-accent-glow: rgba(79, 70, 229, 0.2);
+            --tools-surface: rgba(255, 255, 255, 0.92);
+            --tools-border: rgba(0, 0, 0, 0.08);
+            --tools-border-hover: rgba(79, 70, 229, 0.35);
+            --tools-card-bg: rgba(248, 250, 252, 0.85);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-color);
+            color: var(--text-primary);
+        }
+
+        .tools-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: var(--tools-surface);
+            border-bottom: 1px solid var(--tools-border);
+        }
+
+        .tools-nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .tools-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .tools-brand-badge {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .tools-ecosystem-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .eco-link {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .eco-link:hover, .eco-link.active {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .tools-hero {
+            padding: 40px 0 24px;
+            text-align: center;
+        }
+
+        .tools-hero h1 {
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="light"] .tools-hero h1 {
+            background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tools-hero p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 0.98rem;
+        }
+
+        /* Tool Tabs */
+        .tools-tabs-wrap {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 28px 0 36px;
+        }
+
+        .tool-tab-btn {
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid var(--tools-border);
+            background: var(--tools-card-bg);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-tab-btn:hover {
+            border-color: var(--tools-border-hover);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .tool-tab-btn.active {
+            background: var(--tools-accent);
+            border-color: var(--tools-accent);
+            color: #ffffff;
+            box-shadow: 0 4px 16px var(--tools-accent-glow);
+        }
+
+        /* Tool Panels */
+        .tool-panel {
+            display: none;
+            background: var(--tools-card-bg);
+            border: 1px solid var(--tools-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(12px);
+            margin-bottom: 50px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tool-panel.active {
+            display: block;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .panel-title h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .panel-title span {
+            font-size: 1.6rem;
+        }
+
+        .panel-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 10px;
+            border: 1px solid var(--tools-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tool-btn:hover {
+            border-color: var(--tools-accent);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .tool-btn-primary {
+            background: var(--tools-accent);
+            border-color: var(--tools-accent);
+            color: #fff;
+        }
+
+        .tool-btn-primary:hover {
+            background: var(--tools-accent-hover);
+        }
+
+        /* Text converter areas */
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .converter-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .box-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .tool-textarea {
+            width: 100%;
+            height: 260px;
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid var(--tools-border);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        [data-theme="light"] .tool-textarea {
+            background: #ffffff;
+        }
+
+        .tool-textarea:focus {
+            border-color: var(--tools-accent);
+            box-shadow: 0 0 0 3px var(--tools-accent-glow);
+        }
+
+        .tool-textarea.code-font {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+        }
+
+        /* Image compressor controls */
+        .dropzone {
+            border: 2px dashed var(--tools-border);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--tools-accent);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .dropzone-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        .dropzone input[type="file"] {
+            display: none;
+        }
+
+        .compress-preview-wrap {
+            display: none;
+            margin-top: 24px;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .compress-preview-wrap {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .preview-card {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--tools-border);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .preview-img-container {
+            max-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            margin-bottom: 12px;
+        }
+
+        .preview-img-container img {
+            max-width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+        }
+
+        .slider-control {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--tools-border);
+        }
+
+        .slider-control input[type="range"] {
+            flex: 1;
+            accent-color: var(--tools-accent);
+            cursor: pointer;
+        }
+
+        /* Diff Checker results */
+        .diff-result-wrap {
+            border: 1px solid var(--tools-border);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            max-height: 360px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .diff-added {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            padding: 2px 4px;
+            border-radius: 4px;
+            display: block;
+        }
+
+        .diff-removed {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            padding: 2px 4px;
+            border-radius: 4px;
+            display: block;
+        }
+
+        .diff-unchanged {
+            color: var(--text-secondary);
+            padding: 2px 4px;
+            display: block;
+        }
+
+        /* QR Code styling */
+        .qr-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .qr-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .qr-output-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--tools-border);
+            border-radius: 16px;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.15);
+            gap: 16px;
+        }
+
+        #qr-canvas-holder {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Toast notification */
+        .tools-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--tools-surface);
+            border: 1px solid var(--tools-accent);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 9999;
+        }
+
+        .tools-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navigatsiya -->
+    <header class="tools-header">
+        <div class="container tools-nav-inner">
+            <a href="/" class="tools-brand">
+                <span>🛠️</span>
+                <span>Abdugofforov<span style="color:var(--tools-accent);">.tools</span></span>
+                <span class="tools-brand-badge">PRO</span>
+            </a>
+
+            <!-- Ekotizim navigatsiyasi -->
+            <nav class="tools-ecosystem-links">
+                <a href="https://abdugofforov.uz/" class="eco-link">🏠 Blog</a>
+                <a href="https://deutsch.abdugofforov.uz/" class="eco-link">🇩🇪 Deutsch</a>
+                <a href="https://cv.abdugofforov.uz/" class="eco-link">💼 CV / Portfolio</a>
+                <a href="https://tools.abdugofforov.uz/" class="eco-link active">🛠️ Tools</a>
+
+                <button class="btn-icon theme-toggle" id="theme-btn" type="button" aria-label="Mavzuni o'zgartirish" style="margin-left: 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Asosiy Qism -->
+    <main class="container" style="flex:1;">
+        <div class="tools-hero">
+            <h1>Foydali Web &amp; Dev Asboblar Laboratoriyasi</h1>
+            <p>100% mijoz brauzerida ishlaydi. Ma'lumotlaringiz hech qayerga yuborilmaydi, mutlaqo maxfiy va xavfsiz.</p>
+        </div>
+
+        <!-- Tool Nav Tabs -->
+        <div class="tools-tabs-wrap" id="tools-tabs">
+            <button class="tool-tab-btn active" data-tool="translit">
+                <span>🇺🇿</span> Lotin ⇄ Kirill
+            </button>
+            <button class="tool-tab-btn" data-tool="image">
+                <span>🖼️</span> WebP &amp; Rasm Siquvchi
+            </button>
+            <button class="tool-tab-btn" data-tool="json">
+                <span>📋</span> JSON Formatter
+            </button>
+            <button class="tool-tab-btn" data-tool="diff">
+                <span>⚖️</span> Text Diff Checker
+            </button>
+            <button class="tool-tab-btn" data-tool="qr">
+                <span>📱</span> QR Code Generator
+            </button>
+            <button class="tool-tab-btn" data-tool="hash">
+                <span>🔐</span> Base64 &amp; Hash
+            </button>
+        </div>
+
+        <!-- 1. LOTIN <-> KIRILL -->
+        <section class="tool-panel active" id="panel-translit">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>🇺🇿</span>
+                    <div>
+                        <h2>O'zbekcha Lotin ⇄ Kirill Konverter</h2>
+                        <small style="color:var(--text-secondary);">O‘, G‘, Sh, Ch, Ts va tutuq belgilari qoidalariga to'liq moslangan</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <button class="tool-btn" id="translit-swap-btn" title="Yo'nalishni almashtirish">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
+                        <span>Almashtirish</span>
+                    </button>
+                    <button class="tool-btn" id="translit-clear-btn">Tozalash</button>
+                    <button class="tool-btn tool-btn-primary" id="translit-copy-btn">Nusxa olish</button>
+                </div>
+            </div>
+
+            <div class="converter-grid">
+                <div class="converter-box">
+                    <div class="box-label">
+                        <span id="translit-source-title">Kiritish (Lotin):</span>
+                        <span id="translit-source-count">0 belgi · 0 so'z</span>
+                    </div>
+                    <textarea class="tool-textarea" id="translit-input" placeholder="Matnni shu yerga yozing yoki joylang..."></textarea>
+                </div>
+                <div class="converter-box">
+                    <div class="box-label">
+                        <span id="translit-target-title">Natija (Kirill):</span>
+                        <span id="translit-target-count">0 belgi</span>
+                    </div>
+                    <textarea class="tool-textarea" id="translit-output" readonly placeholder="Natija avtomatik paydo bo'ladi..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. WEBP & IMAGE OPTIMIZER -->
+        <section class="tool-panel" id="panel-image">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>🖼️</span>
+                    <div>
+                        <h2>WebP &amp; Rasm Siquvchi (Client-side Optimizer)</h2>
+                        <small style="color:var(--text-secondary);">Serverga yuklanmaydi, sifatini yo'qotmasdan 80% gacha kichraytiradi</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropzone" id="img-dropzone">
+                <div class="dropzone-icon">📁</div>
+                <h3>Rasmni bu yerga tashlang yoki tanlash uchun bosing</h3>
+                <p style="color:var(--text-secondary); margin-top:6px; font-size:0.9rem;">PNG, JPG, JPEG, WEBP formatlar qo'llab-quvvatlanadi</p>
+                <input type="file" id="img-file-input" accept="image/png, image/jpeg, image/webp">
+            </div>
+
+            <div id="img-controls" style="display:none; margin-top:20px;">
+                <div class="slider-control">
+                    <label for="img-quality" style="font-weight:600; min-width:140px;">Sifat (Quality): <span id="img-quality-val">80%</span></label>
+                    <input type="range" id="img-quality" min="10" max="100" value="80">
+                </div>
+
+                <div class="slider-control">
+                    <label for="img-format-select" style="font-weight:600; min-width:140px;">Format:</label>
+                    <select id="img-format-select" style="background:var(--tools-card-bg); color:var(--text-primary); border:1px solid var(--tools-border); padding:8px 14px; border-radius:8px;">
+                        <option value="image/webp" selected>WebP (Tavsiya etiladi)</option>
+                        <option value="image/jpeg">JPEG / JPG</option>
+                        <option value="image/png">PNG</option>
+                    </select>
+                </div>
+
+                <div class="compress-preview-wrap" id="compress-preview-wrap">
+                    <div class="preview-card">
+                        <h4 style="margin-bottom:10px;">Asl rasm</h4>
+                        <div class="preview-img-container">
+                            <img id="img-orig-preview" alt="Asl rasm">
+                        </div>
+                        <p id="img-orig-size" style="font-weight:600; color:var(--text-secondary);">Hajmi: 0 KB</p>
+                    </div>
+
+                    <div class="preview-card" style="border-color:var(--tools-accent);">
+                        <h4 style="margin-bottom:10px; color:var(--tools-accent);">Siqilgan rasm</h4>
+                        <div class="preview-img-container">
+                            <img id="img-comp-preview" alt="Siqilgan rasm">
+                        </div>
+                        <p id="img-comp-size" style="font-weight:600; color:#4ade80;">Hajmi: 0 KB (Tejash: 0%)</p>
+                        <button class="tool-btn tool-btn-primary" id="img-download-btn" style="margin-top:12px; width:100%; justify-content:center;">
+                            📥 Yuklab olish
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. JSON FORMATTER & VALIDATOR -->
+        <section class="tool-panel" id="panel-json">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>📋</span>
+                    <div>
+                        <h2>JSON Formatter &amp; Validator</h2>
+                        <small style="color:var(--text-secondary);">JSON kodni tartiblash, siqish va xatolarni aniqlash</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <button class="tool-btn" id="json-format-2-btn">Format (2 probel)</button>
+                    <button class="tool-btn" id="json-format-4-btn">Format (4 probel)</button>
+                    <button class="tool-btn" id="json-minify-btn">Minify (1 qator)</button>
+                    <button class="tool-btn" id="json-clear-btn">Tozalash</button>
+                    <button class="tool-btn tool-btn-primary" id="json-copy-btn">Nusxa olish</button>
+                </div>
+            </div>
+
+            <div id="json-status-alert" style="display:none; padding:12px 16px; border-radius:10px; margin-bottom:14px; font-size:0.9rem;"></div>
+
+            <div class="converter-grid">
+                <div class="converter-box">
+                    <div class="box-label">
+                        <span>Xom JSON (Input):</span>
+                    </div>
+                    <textarea class="tool-textarea code-font" id="json-input" placeholder='{"ism":"Ali","yosh":25,"stack":["JS","Cloudflare"]}'></textarea>
+                </div>
+                <div class="converter-box">
+                    <div class="box-label">
+                        <span>Tartiblangan JSON (Output):</span>
+                    </div>
+                    <textarea class="tool-textarea code-font" id="json-output" readonly placeholder="Formatlangan JSON natijasi..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. TEXT DIFF CHECKER -->
+        <section class="tool-panel" id="panel-diff">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>⚖️</span>
+                    <div>
+                        <h2>Text Diff Checker (Matn Solishtirgich)</h2>
+                        <small style="color:var(--text-secondary);">Ikki matn yoki kod orasidagi qo'shilgan va o'chirilgan satrlarni ko'rish</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <button class="tool-btn tool-btn-primary" id="diff-compare-btn">Taqqoslash</button>
+                    <button class="tool-btn" id="diff-clear-btn">Tozalash</button>
+                </div>
+            </div>
+
+            <div class="converter-grid">
+                <div class="converter-box">
+                    <div class="box-label"><span>Asl matn (Original):</span></div>
+                    <textarea class="tool-textarea code-font" id="diff-text-1" placeholder="Birinchi matn yoki kodni kiriting..."></textarea>
+                </div>
+                <div class="converter-box">
+                    <div class="box-label"><span>O'zgartirilgan matn (Modified):</span></div>
+                    <textarea class="tool-textarea code-font" id="diff-text-2" placeholder="O'zgartirilgan ikkinchi matnni kiriting..."></textarea>
+                </div>
+            </div>
+
+            <div class="diff-result-wrap" id="diff-result-wrap"></div>
+        </section>
+
+        <!-- 5. QR CODE GENERATOR -->
+        <section class="tool-panel" id="panel-qr">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>📱</span>
+                    <div>
+                        <h2>QR Code Generator</h2>
+                        <small style="color:var(--text-secondary);">Sayt havolasi, matn yoki kontaktlar uchun yuqori sifatli QR-kod</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qr-layout">
+                <div class="converter-box">
+                    <div class="box-label"><span>QR kod matni yoki havolasi:</span></div>
+                    <input type="text" id="qr-input" class="tool-textarea" style="height:52px;" value="https://abdugofforov.uz" placeholder="https://misol.uz yoki xohlagan matn...">
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
+                        <div>
+                            <label style="display:block; font-size:0.85rem; color:var(--text-secondary); margin-bottom:6px;">Old rang (Foreground):</label>
+                            <input type="color" id="qr-color-fg" value="#000000" style="width:100%; height:40px; border-radius:8px; border:1px solid var(--tools-border); cursor:pointer;">
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.85rem; color:var(--text-secondary); margin-bottom:6px;">Orqa fon (Background):</label>
+                            <input type="color" id="qr-color-bg" value="#ffffff" style="width:100%; height:40px; border-radius:8px; border:1px solid var(--tools-border); cursor:pointer;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="qr-output-box">
+                    <div id="qr-canvas-holder">
+                        <canvas id="qr-canvas" width="220" height="220"></canvas>
+                    </div>
+                    <button class="tool-btn tool-btn-primary" id="qr-download-btn" style="width:100%; justify-content:center;">
+                        📥 QR Kodni yuklab olish
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. HASH & BASE64 -->
+        <section class="tool-panel" id="panel-hash">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>🔐</span>
+                    <div>
+                        <h2>Hash &amp; Base64 Encoder / Decoder</h2>
+                        <small style="color:var(--text-secondary);">SHA-256, Base64, URL encode/decode (Web Crypto API)</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <button class="tool-btn" id="hash-b64-enc-btn">Base64 Encode</button>
+                    <button class="tool-btn" id="hash-b64-dec-btn">Base64 Decode</button>
+                    <button class="tool-btn" id="hash-url-enc-btn">URL Encode</button>
+                    <button class="tool-btn" id="hash-url-dec-btn">URL Decode</button>
+                    <button class="tool-btn tool-btn-primary" id="hash-sha256-btn">SHA-256 Hash</button>
+                </div>
+            </div>
+
+            <div class="converter-grid">
+                <div class="converter-box">
+                    <div class="box-label"><span>Kiruvchi matn (Input):</span></div>
+                    <textarea class="tool-textarea code-font" id="hash-input" placeholder="Shifrlash yoki o'girish kerak bo'lgan matn..."></textarea>
+                </div>
+                <div class="converter-box">
+                    <div class="box-label">
+                        <span>Natija (Output):</span>
+                        <button class="tool-btn" id="hash-copy-btn" style="padding:2px 8px; font-size:0.75rem;">Nusxa olish</button>
+                    </div>
+                    <textarea class="tool-textarea code-font" id="hash-output" readonly placeholder="Natija bu yerda chiqadi..."></textarea>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="border-top:1px solid var(--tools-border); padding:24px 0; text-align:center; color:var(--text-secondary); font-size:0.875rem;">
+        <div class="container">
+            <p>© 2026 Abdugofforov. Barcha huquqlar himoyalangan. · <a href="https://abdugofforov.uz" style="color:var(--tools-accent); text-decoration:none;">abdugofforov.uz</a></p>
+        </div>
+    </footer>
+
+    <!-- Toast Xabarnoma -->
+    <div class="tools-toast" id="tools-toast">
+        <span id="toast-icon">✓</span>
+        <span id="toast-msg">Nusxa olindi!</span>
+    </div>
+
+    <!-- Skript -->
+    <script src="tools.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
 // CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
 // bilan qorishib qolmasligi uchun
-const CACHE = 'abdu-cache-v4';
+const CACHE = 'abdu-cache-v6';
 const SHELL = [
     '/',
     '/index.html',
@@ -20,6 +20,9 @@ const SHELL = [
     '/scripts/tests.js',
     '/scripts/horror-data.js',
     '/scripts/horror-logic.js',
+    '/scripts/quote-widget.js',
+    '/scripts/pro-3d-background.js',
+    '/scripts/bg-worker.js',
     '/manifest.webmanifest',
     '/icon.svg',
     '/og-image.svg'
@@ -62,16 +65,32 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Statik resurslar — kesh birinchi, keyin tarmoq
-    event.respondWith(
-        caches.match(req).then((cached) =>
-            cached || fetch(req).then((res) => {
+    // Yangi hikmatlar va widget skripti har doim tarmoqdan eng so'nggi holatda olinsin (Network-first)
+    if (url.pathname.endsWith('quotes.json') || url.pathname.includes('quote-widget')) {
+        event.respondWith(
+            fetch(req).then((res) => {
                 if (res && res.status === 200) {
                     const copy = res.clone();
                     caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
                 }
                 return res;
-            }).catch(() => cached)
-        )
+            }).catch(() => caches.match(req))
+        );
+        return;
+    }
+
+    // Boshqa statik resurslar — Stale-While-Revalidate (0ms tezkor ochilish + fonda yangilanish)
+    event.respondWith(
+        caches.match(req).then((cached) => {
+            const networkFetch = fetch(req).then((res) => {
+                if (res && res.status === 200) {
+                    const copy = res.clone();
+                    caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+                }
+                return res;
+            }).catch(() => cached);
+
+            return cached || networkFetch;
+        })
     );
 });

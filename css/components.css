@@ -1749,6 +1749,29 @@
     margin-top: 20px;
 }
 
+/* ============================================================
+   HIGH-PERFORMANCE COMPOSITING & OFFSCREEN RENDERING OPTIMIZATIONS
+   ============================================================ */
+#blog-grid,
+.blog-grid,
+.post-grid,
+.curriculum-engine-wrap,
+.matching-game-wrap,
+.verb-trainer-container,
+.german-tests-grid {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+}
+
+.post-card,
+.fortune-card-3d,
+.atelier-quote-card,
+.hero-card-surface {
+    contain: paint;
+    transform: translateZ(0);
+}
+
+
 
 
 

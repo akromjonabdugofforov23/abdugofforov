@@ -33,33 +33,39 @@
 @keyframes auroraDrift {
     0% {
         background-position: 0% 50%;
-        transform: scale(1) translateY(0);
+        transform: translate3d(0, 0, 0) scale(1);
     }
     50% {
         background-position: 100% 50%;
-        transform: scale(1.04) translateY(-10px);
+        transform: translate3d(0, -10px, 0) scale(1.04);
     }
     100% {
         background-position: 0% 50%;
-        transform: scale(1) translateY(0);
+        transform: translate3d(0, 0, 0) scale(1);
     }
 }
 
 .site-ambient-bg {
     animation: auroraDrift 20s ease-in-out infinite alternate;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
-/* 3. CARD 3D TILT PHYSICS */
+/* 3. CARD 3D TILT PHYSICS (Zero-Lag: Transform transitions only on exit, GPU accelerated) */
 .tilt-card {
-    transition: transform 0.15s ease-out, box-shadow 0.3s ease;
     transform-style: preserve-3d;
     will-change: transform;
+    transform: translateZ(0);
+}
+
+.tilt-card:not(:hover) {
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* 4. LUMINOUS SHIMMER ON BUTTONS & STATUS BADGES */
 @keyframes aiShimmerSweep {
-    0% { transform: translateX(-100%) rotate(25deg); }
-    100% { transform: translateX(250%) rotate(25deg); }
+    0% { transform: translate3d(-100%, 0, 0) rotate(25deg); }
+    100% { transform: translate3d(250%, 0, 0) rotate(25deg); }
 }
 
 .ai-shimmer-btn {
@@ -80,7 +86,8 @@
         rgba(255, 255, 255, 0.35),
         transparent
     );
-    transform: translateX(-100%) rotate(25deg);
+    transform: translate3d(-100%, 0, 0) rotate(25deg);
+    will-change: transform;
     pointer-events: none;
 }
 
@@ -113,11 +120,11 @@ html {
 @keyframes aiStaggerUp {
     from {
         opacity: 0;
-        transform: translateY(24px) scale(0.98);
+        transform: translate3d(0, 24px, 0) scale(0.98);
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translate3d(0, 0, 0) scale(1);
     }
 }
 
@@ -136,6 +143,8 @@ html {
     pointer-events: none !important;
     z-index: 0 !important;
     opacity: 0.95 !important;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
     transition: opacity 0.4s ease !important;
 }
 
@@ -147,6 +156,8 @@ html {
     height: 100vh !important;
     pointer-events: none !important;
     z-index: -1 !important;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 /* Foreground page sections float above canvas */
@@ -177,4 +188,14 @@ footer,
     visibility: visible !important;
     pointer-events: auto !important;
 }
+
+/* 9. HIGH-PERFORMANCE GPU COMPOSITED HOVER ENGINE */
+.post-card,
+.fortune-card-3d,
+.atelier-quote-card,
+.hero-card-surface {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
 
