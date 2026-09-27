@@ -7,23 +7,12 @@ export async function onRequest(context) {
   const url = new URL(context.request.url);
 
   // Subdomain routing: deutsch.abdugofforov.uz -> serve deutsch.html
+  const ADMIN_GATE_KEY = 'kay_admin_7904cc18';
+
+  // Subdomain routing: deutsch.abdugofforov.uz -> serve deutsch.html (Barcha uchun ochiq)
   if (url.hostname.startsWith('deutsch.') || url.searchParams.get('subdomain') === 'deutsch') {
     if (url.pathname === '/' || url.pathname === '/index.html') {
       return context.env.ASSETS.fetch(new URL('/deutsch.html', context.request.url));
-    }
-  }
-
-  // Subdomain routing: tools.abdugofforov.uz -> serve tools.html
-  if (url.hostname.startsWith('tools.') || url.searchParams.get('subdomain') === 'tools') {
-    if (url.pathname === '/' || url.pathname === '/index.html') {
-      return context.env.ASSETS.fetch(new URL('/tools.html', context.request.url));
-    }
-  }
-
-  // Subdomain routing: cv.abdugofforov.uz -> serve cv.html
-  if (url.hostname.startsWith('cv.') || url.searchParams.get('subdomain') === 'cv') {
-    if (url.pathname === '/' || url.pathname === '/index.html') {
-      return context.env.ASSETS.fetch(new URL('/cv.html', context.request.url));
     }
   }
 
@@ -37,24 +26,40 @@ export async function onRequest(context) {
     }
   }
 
-  // Redirect abdugofforov.uz/tools to subdomain if accessed directly on production
-  if (url.pathname === '/tools' || url.pathname === '/tools/') {
-    if (!url.hostname.startsWith('tools.')) {
-      if (url.hostname.includes('abdugofforov.uz')) {
-        return Response.redirect(`https://tools.abdugofforov.uz/`, 301);
-      }
-      return context.env.ASSETS.fetch(new URL('/tools.html', context.request.url));
-    }
-  }
+  // ===== MAXFIY SUBDOMENLAR VA SAHIFALAR (CV & TOOLS) — FAQAT ADMIN UCHUN =====
+  // Skanerlar va ruxsatsiz foydalanuvchilarga 404 Not Found qaytaradi (go'yo mavjud emasdek).
+  const isCvReq = url.hostname.startsWith('cv.') || 
+                  url.searchParams.get('subdomain') === 'cv' ||
+                  url.pathname === '/cv' || url.pathname === '/cv/' || url.pathname === '/cv.html';
 
-  // Redirect abdugofforov.uz/cv to subdomain if accessed directly on production
-  if (url.pathname === '/cv' || url.pathname === '/cv/') {
-    if (!url.hostname.startsWith('cv.')) {
-      if (url.hostname.includes('abdugofforov.uz')) {
-        return Response.redirect(`https://cv.abdugofforov.uz/`, 301);
-      }
-      return context.env.ASSETS.fetch(new URL('/cv.html', context.request.url));
+  const isToolsReq = url.hostname.startsWith('tools.') || 
+                     url.searchParams.get('subdomain') === 'tools' ||
+                     url.pathname === '/tools' || url.pathname === '/tools/' || url.pathname === '/tools.html';
+
+  if (isCvReq || isToolsReq) {
+    const cookieHeader = context.request.headers.get('Cookie') || '';
+    const hasGateParam = url.searchParams.get('gate') === ADMIN_GATE_KEY;
+    const hasGateCookie = cookieHeader.includes(`kay_admin_gate=${ADMIN_GATE_KEY}`);
+
+    // Agar admin kaliti yoki cookie bo'lmasa -> 404 (Skanerlar va begonalardan 100% yashirish)
+    if (!hasGateParam && !hasGateCookie) {
+      return new Response('404 Not Found', {
+        status: 404,
+        statusText: 'Not Found',
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet'
+        }
+      });
     }
+
+    // Faqat admin ruxsati bo'lsa -> sahifani ochamiz va cookie o'rnatamiz
+    const targetFile = isCvReq ? '/cv.html' : '/tools.html';
+    const assetResp = await context.env.ASSETS.fetch(new URL(targetFile, context.request.url));
+    const securedResp = new Response(assetResp.body, assetResp);
+    securedResp.headers.set('Set-Cookie', `kay_admin_gate=${ADMIN_GATE_KEY}; Path=/; Max-Age=86400; SameSite=Lax; HttpOnly; Secure`);
+    securedResp.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+    return securedResp;
   }
 
   const response = await context.next();

@@ -8,18 +8,28 @@ let cachedUsers = [];
 let cachedResults = [];
 let currentTaskFilter = 'all';
 
-// Sahifa yuklanishida admin holatini tekshiramiz
-(function initKay() {
+// DOM tayyor bo'lgach admin holatini tekshiramiz
+function initKay() {
     try {
         const u = JSON.parse(localStorage.getItem('abdu_user_data') || localStorage.getItem('kay_auth_user') || 'null');
         if (u && (u.role === 'admin' || (u.username && u.username.toLowerCase() === 'abdugofforov'))) {
             sessionStorage.setItem('kay_admin', 'true');
         }
     } catch (_) {}
+
     if (sessionStorage.getItem('kay_admin') === 'true') {
         showAdminPanel();
+    } else {
+        const pinScreen = document.getElementById('pin-screen');
+        if (pinScreen) pinScreen.style.display = 'block';
     }
-})();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initKay);
+} else {
+    initKay();
+}
 
 // ===== PIN LOGIKASI =====
 const pinInput = document.getElementById('pin-input');
@@ -131,8 +141,8 @@ async function tryLogin() {
     pinInput.value = '';
 }
 
-document.getElementById('pin-submit-btn').addEventListener('click', tryLogin);
-pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+document.getElementById('pin-submit-btn')?.addEventListener('click', tryLogin);
+pinInput?.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
 
 // ===== TELEGRAM 2FA EKRANI =====
 function showPinScreen() {
@@ -268,15 +278,15 @@ async function resendTgCode() {
     }
 }
 
-document.getElementById('tg-submit-btn').addEventListener('click', verifyTgCode);
-document.getElementById('tg-code-input').addEventListener('keydown', e => {
+document.getElementById('tg-submit-btn')?.addEventListener('click', verifyTgCode);
+document.getElementById('tg-code-input')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') verifyTgCode();
 });
-document.getElementById('tg-code-input').addEventListener('input', e => {
+document.getElementById('tg-code-input')?.addEventListener('input', e => {
     e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
 });
-document.getElementById('tg-resend-btn').addEventListener('click', resendTgCode);
-document.getElementById('tg-cancel-btn').addEventListener('click', () => {
+document.getElementById('tg-resend-btn')?.addEventListener('click', resendTgCode);
+document.getElementById('tg-cancel-btn')?.addEventListener('click', () => {
     if (tgCountdownTimer) clearInterval(tgCountdownTimer);
     window.__authSession = null;
     showPinScreen();
@@ -296,37 +306,51 @@ checkLock();
 
 // ===== ADMIN PANEL ASOSIY EKRANI =====
 function showAdminPanel() {
-    document.getElementById('pin-screen').style.display = 'none';
-    const tg = document.getElementById('tg-screen');
-    if (tg) tg.style.display = 'none';
-    if (typeof tgCountdownTimer !== 'undefined' && tgCountdownTimer) {
-        clearInterval(tgCountdownTimer);
-        tgCountdownTimer = null;
+    try {
+        const pinScreen = document.getElementById('pin-screen');
+        if (pinScreen) pinScreen.style.display = 'none';
+
+        const tg = document.getElementById('tg-screen');
+        if (tg) tg.style.display = 'none';
+
+        if (typeof tgCountdownTimer !== 'undefined' && tgCountdownTimer) {
+            clearInterval(tgCountdownTimer);
+            tgCountdownTimer = null;
+        }
+
+        const adminScreen = document.getElementById('admin-screen');
+        if (adminScreen) adminScreen.classList.add('show');
+
+        const hour = new Date().getHours();
+        const greeting = hour < 12 ? 'Xayrli tong' : hour < 18 ? 'Xayrli kun' : 'Xayrli kech';
+        const greetingEl = document.getElementById('admin-greeting');
+        if (greetingEl) greetingEl.textContent = `${greeting}, Akromjon 👋`;
+
+        const dateEl = document.getElementById('glz-date');
+        if (dateEl) {
+            dateEl.textContent = new Date().toLocaleDateString('uz-UZ', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        try { loadDashboardAndRealData(); } catch (e) { console.warn('Dashboard data yuklashda xato:', e); }
+        try { loadTasks(); } catch (e) { console.warn('Tasks yuklashda xato:', e); }
+        try { loadSecurityLog(); } catch (e) { console.warn('Security log yuklashda xato:', e); }
+    } catch (err) {
+        console.error('showAdminPanel error:', err);
+        // Favqulodda holat: hech qachon bo'sh ekran qolib ketmasin
+        const pinScreen = document.getElementById('pin-screen');
+        if (pinScreen) pinScreen.style.display = 'block';
     }
-    document.getElementById('admin-screen').classList.add('show');
-
-    const hour = new Date().getHours();
-    const greeting = hour < 12 ? 'Xayrli tong' : hour < 18 ? 'Xayrli kun' : 'Xayrli kech';
-    document.getElementById('admin-greeting').textContent = `${greeting}, Akromjon 👋`;
-
-    const dateEl = document.getElementById('glz-date');
-    if (dateEl) {
-        dateEl.textContent = new Date().toLocaleDateString('uz-UZ', { day: 'numeric', month: 'long', year: 'numeric' });
-    }
-
-    loadDashboardAndRealData();
-    loadTasks();
-    loadSecurityLog();
 }
 
-document.getElementById('logout-btn').addEventListener('click', () => {
+document.getElementById('logout-btn')?.addEventListener('click', () => {
     sessionStorage.removeItem('kay_admin');
     sessionStorage.removeItem('kay_admin_token');
     sessionStorage.removeItem('kay_admin_pin');
-    document.getElementById('admin-screen').classList.remove('show');
-    document.getElementById('pin-screen').style.display = 'block';
-    pinInput.value = '';
-    pinError.style.display = 'none';
+    document.getElementById('admin-screen')?.classList.remove('show');
+    const pinScreen = document.getElementById('pin-screen');
+    if (pinScreen) pinScreen.style.display = 'block';
+    if (pinInput) pinInput.value = '';
+    if (pinError) pinError.style.display = 'none';
 });
 
 // ===== REAL DATA & DASHBOARD STATISTIKA =====
@@ -977,3 +1001,22 @@ document.addEventListener('error', (e) => {
 
 // Password reset modal form submission
 document.getElementById('reset-password-form')?.addEventListener('submit', handleResetPasswordSubmit);
+
+// ===== MAXFIY SUBDOMENLAR (CV & TOOLS) — FAQAT ADMIN UCHUN =====
+const ADMIN_GATE_KEY = 'kay_admin_7904cc18';
+
+function openStealthService(service) {
+    document.cookie = `kay_admin_gate=${ADMIN_GATE_KEY}; path=/; max-age=86400; SameSite=Lax`;
+    let url;
+    if (window.location.hostname.includes('abdugofforov.uz')) {
+        url = `https://${service}.abdugofforov.uz/?gate=${ADMIN_GATE_KEY}`;
+    } else {
+        url = `/${service}.html?gate=${ADMIN_GATE_KEY}`;
+    }
+    window.open(url, '_blank');
+}
+
+document.getElementById('admin-tools-link')?.addEventListener('click', () => openStealthService('tools'));
+document.getElementById('admin-cv-link')?.addEventListener('click', () => openStealthService('cv'));
+document.getElementById('dash-btn-tools')?.addEventListener('click', () => openStealthService('tools'));
+document.getElementById('dash-btn-cv')?.addEventListener('click', () => openStealthService('cv'));

@@ -244,12 +244,6 @@
                     <span class="nav-icon-pod" style="font-size: 14px; line-height: 1;">🇩🇪</span>
                     <span>Deutsch <span class="link-external-arrow">↗</span></span>
                 </a>
-                <a href="#contact" class="nav-link">
-                    <span class="nav-icon-pod">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    </span>
-                    <span>Bog'lanish</span>
-                </a>
             </div>
 
             <div class="nav-right">
@@ -264,15 +258,21 @@
         </div>
     </nav>
 
-    <!-- LIVE BESPOKE KUN HIKMATI (ATELIER QUOTE WIDGET) -->
-    <div class="fortune-widget-wrap atelier-quote-wrap container" style="margin-top: 32px;">
+    <!-- LIVE BESPOKE KUN HIKMATI (ATELIER QUOTE WIDGET - COMPACT) -->
+    <div class="fortune-widget-wrap atelier-quote-wrap container">
         <article class="fortune-card-3d atelier-quote-card ai-spotlight tilt-card">
             <header class="atelier-card-header">
                 <span class="fortune-quote-badge atelier-tag">
                     <span class="ai-sparkle">✦</span>
                     <span id="demo-quote-cat">KUN HIKMATI · FILOSOFIYA</span>
                 </span>
-                <span class="atelier-edition-label">KAY KUNDALIGI · ATELIER</span>
+                <div class="atelier-header-actions">
+                    <button class="atelier-icon-btn" type="button" aria-label="Boshqa hikmat" title="Boshqa hikmat" onclick="nextDemoQuote()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                        </svg>
+                    </button>
+                </div>
             </header>
 
             <div class="atelier-quote-body">
@@ -285,33 +285,21 @@
             </div>
 
             <div class="atelier-german-folio">
-                <div class="atelier-german-header">
-                    <span class="atelier-flag-badge">🇩🇪 DE · PARALLEL</span>
-                    <span>Nemischa Asl Nusxa / Tarjima</span>
+                <div class="atelier-german-meta">
+                    <span class="atelier-flag-badge">🇩🇪 DE</span>
+                    <p class="atelier-german-text" id="demo-quote-de">
+                        „Der größte Ruhm im Leben liegt darin, jedes Mal wieder aufzustehen.“
+                    </p>
                 </div>
-                <p class="atelier-german-text" id="demo-quote-de">
-                    „Der größte Ruhm im Leben liegt darin, jedes Mal wieder aufzustehen.“
-                </p>
-            </div>
-
-            <footer class="atelier-actions-bar">
-                <button class="fortune-action-btn atelier-audio-player" id="demo-audio-btn" type="button" onclick="toggleAudioDemo()">
-                    <span class="atelier-play-disc" aria-hidden="true">
+                <button class="atelier-mini-audio-btn" id="demo-audio-btn" type="button" aria-label="Nemischa audioni eshitish" title="Talaffuzni eshitish" onclick="toggleAudioDemo()">
+                    <span class="play-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" id="demo-play-icon"><polygon points="6 3 20 12 6 21 6 3"/></svg>
                     </span>
                     <span class="atelier-soundwave" aria-hidden="true">
-                        <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
                     </span>
-                    <span class="atelier-audio-label" id="demo-audio-label">Talaffuzni eshitish</span>
                 </button>
-
-                <button class="atelier-btn-secondary" type="button" onclick="nextDemoQuote()">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-                    </svg>
-                    <span>Boshqa hikmat</span>
-                </button>
-            </footer>
+            </div>
         </article>
     </div>
 

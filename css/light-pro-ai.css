@@ -329,7 +329,38 @@ body[data-theme="light"] {
     border-color: var(--ai-border) !important;
 }
 
-/* Audio Player Button */
+/* Header Action Icon Buttons */
+[data-theme="light"] .atelier-icon-btn {
+    background: var(--ai-surface-raised) !important;
+    border: 1px solid var(--ai-border) !important;
+    color: var(--ai-text-muted) !important;
+    box-shadow: var(--ai-specular-top), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .atelier-icon-btn:hover {
+    color: var(--ai-primary) !important;
+    border-color: var(--ai-primary) !important;
+    background: var(--ai-primary-soft) !important;
+}
+
+/* Mini Audio Player Button */
+[data-theme="light"] .atelier-mini-audio-btn {
+    background: var(--ai-primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 10px var(--ai-primary-glow) !important;
+}
+
+[data-theme="light"] .atelier-mini-audio-btn:hover {
+    background: var(--ai-primary-hover) !important;
+    box-shadow: 0 4px 14px var(--ai-primary-glow) !important;
+}
+
+[data-theme="light"] .atelier-mini-audio-btn.playing {
+    background: #059669 !important;
+    box-shadow: 0 3px 10px rgba(5, 150, 105, 0.35) !important;
+}
+
+/* Audio Player Button (Legacy / Fallback) */
 [data-theme="light"] .atelier-audio-player,
 [data-theme="light"] .fortune-action-btn {
     background: var(--ai-surface-raised) !important;

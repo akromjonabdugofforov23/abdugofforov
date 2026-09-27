@@ -161,18 +161,6 @@
                 <span class="drawer-nav-icon">🇩🇪</span>
                 <span class="drawer-nav-text">Deutsch Akademiyasi ↗</span>
             </a>
-            <a href="https://tools.abdugofforov.uz/" class="drawer-nav-item" target="_blank" rel="noopener noreferrer">
-                <span class="drawer-nav-icon">🛠️</span>
-                <span class="drawer-nav-text">Tools Laboratoriyasi ↗</span>
-            </a>
-            <a href="https://cv.abdugofforov.uz/" class="drawer-nav-item" target="_blank" rel="noopener noreferrer">
-                <span class="drawer-nav-icon">💼</span>
-                <span class="drawer-nav-text">CV &amp; Portfolio ↗</span>
-            </a>
-            <a href="#contact" class="drawer-nav-item" id="drawer-contact-link">
-                <span class="drawer-nav-icon">✉️</span>
-                <span class="drawer-nav-text">Bog'lanish</span>
-            </a>
             <a href="javascript:void(0)" class="drawer-nav-item" id="drawer-auth-link" data-action="open-auth" data-mode="login">
                 <span class="drawer-nav-icon">🔑</span>
                 <span class="drawer-nav-text" id="drawer-auth-text">Kirish / Profil</span>
@@ -180,41 +168,43 @@
         </div>
     </div>
 
-    <!-- Bespoke Kun Iqtibosi Widget (Atelier Quote) -->
-    <div class="fortune-widget-wrap atelier-quote-wrap container" id="fortune-widget-wrap" style="margin-top: 32px;">
+    <!-- Bespoke Kun Iqtibosi Widget (Atelier Quote - Compact Edition) -->
+    <div class="fortune-widget-wrap atelier-quote-wrap container" id="fortune-widget-wrap">
         <article class="fortune-card-3d atelier-quote-card" id="fortune-card">
             <header class="atelier-card-header">
                 <span class="fortune-quote-badge atelier-tag" id="quote-category-badge">✦ KUN HIKMATI · ILHOM</span>
-                <span class="atelier-edition-label">KAY KUNDALIGI · ATELIER</span>
+                <div class="atelier-header-actions">
+                    <button class="atelier-icon-btn" id="quote-copy-btn" type="button" aria-label="Iqtibosdan nusxa olish" title="Nusxa olish" data-action="quote-copy">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    </button>
+                    <button class="atelier-icon-btn" id="quote-next-btn" type="button" aria-label="Boshqa hikmat tanlash" title="Boshqa hikmat" data-action="quote-next">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                        </svg>
+                    </button>
+                </div>
             </header>
             <div class="atelier-quote-body">
                 <blockquote class="fortune-quote-text atelier-quote-text" id="quote-text">“Mantiq sizni A nuqtadan B nuqtaga olib boradi, tasavvur esa har qanday manzilga yetaklay oladi.”</blockquote>
                 <cite class="fortune-quote-author atelier-quote-author" id="quote-author">Albert Eynshteyn</cite>
             </div>
             <div class="atelier-german-folio" id="quote-de-wrap">
-                <div class="atelier-german-header">
-                    <span class="atelier-flag-badge">🇩🇪 DE · PARALLEL</span>
-                    <span>Nemischa Asl Nusxa / Tarjima</span>
+                <div class="atelier-german-meta">
+                    <span class="atelier-flag-badge">🇩🇪 DE</span>
+                    <p class="atelier-german-text" id="quote-de-text">„Logik bringt dich von A nach B. Fantasie bringt dich überall hin.“</p>
                 </div>
-                <p class="atelier-german-text" id="quote-de-text">„Logik bringt dich von A nach B. Fantasie bringt dich überall hin.“</p>
-            </div>
-            <footer class="atelier-actions-bar">
-                <button class="fortune-action-btn atelier-audio-player" id="quote-audio-btn" type="button" aria-label="Nemischa audioni eshitish" data-action="quote-audio">
-                    <span class="atelier-play-disc" aria-hidden="true">
+                <button class="atelier-mini-audio-btn" id="quote-audio-btn" type="button" aria-label="Nemischa audioni eshitish" title="Talaffuzni eshitish" data-action="quote-audio">
+                    <span class="play-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
                     </span>
                     <span class="atelier-soundwave" aria-hidden="true">
-                        <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
                     </span>
-                    <span class="atelier-audio-label">Talaffuzni eshitish</span>
                 </button>
-                <button class="atelier-btn-secondary" id="quote-next-btn" type="button" aria-label="Boshqa hikmat tanlash" data-action="quote-next">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-                    </svg>
-                    <span>Boshqa hikmat</span>
-                </button>
-            </footer>
+            </div>
         </article>
     </div>
 
@@ -272,6 +262,10 @@
         <div class="toolbar toolbar-centered" style="margin-bottom: 16px;">
             <div class="filter-tags filter-tags-centered" id="filter-tags">
                 <button class="filter-tag active" data-filter="all" type="button">Barcha maqolalar</button>
+                <button class="filter-tag" id="main-deutsch-btn" type="button" style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <span>🇩🇪</span>
+                    <span>Deutsch Akademiyasi ↗</span>
+                </button>
             </div>
         </div>
 
@@ -440,33 +434,6 @@
 
 
 
-    <!-- Kontakt (Bog'lanish) Modali -->
-    <div class="modal-overlay" id="contact-modal">
-        <div class="modal-container" style="max-width: 460px;">
-            <button class="modal-close" id="close-contact-modal" aria-label="Yopish">&times;</button>
-            <div class="modal-body" style="text-align:center;">
-                <div style="font-size:42px; margin-bottom:12px;">✉️</div>
-                <h2 style="font-family:'Playfair Display', serif; font-size:26px; margin-bottom:8px;" data-i18n="contact.title">Bog'lanish</h2>
-                <p style="color:var(--text-secondary); margin-bottom:28px;" data-i18n="contact.text">Savol, taklif yoki hamkorlik uchun men bilan bog'laning.</p>
-                <div class="contact-links">
-                    <a class="contact-link" href="https://t.me/Abdugofforov_kundaligi" target="_blank" rel="noopener noreferrer">
-                        <span class="contact-icon">✈️</span>
-                        <span>
-                            <strong>Telegram</strong>
-                            <small>@Abdugofforov_kundaligi</small>
-                        </span>
-                    </a>
-                    <a class="contact-link" href="mailto:akromjonabdugofforov23@gmail.com">
-                        <span class="contact-icon">📧</span>
-                        <span>
-                            <strong>Email (Gmail)</strong>
-                            <small>akromjonabdugofforov23@gmail.com</small>
-                        </span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- ===== O'QUVCHI LOGIN / RO'YXATDAN O'TISH MODALI ===== -->
     <div class="modal-overlay" id="auth-modal">

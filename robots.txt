@@ -1,6 +1,11 @@
 User-agent: *
 Allow: /
 Disallow: /kay.html
+Disallow: /kay
+Disallow: /cv
+Disallow: /cv.html
+Disallow: /tools
+Disallow: /tools.html
 Disallow: /functions/
 
 Sitemap: https://abdugofforov.uz/sitemap.xml

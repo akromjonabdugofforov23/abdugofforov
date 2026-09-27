@@ -1017,6 +1017,12 @@
         const pool = getActiveQuotesPool(lang);
         const { item } = getNextRandomQuote(pool);
         applyQuoteToDOM(item, true);
+
+        const nextBtn = document.getElementById('quote-next-btn');
+        if (nextBtn) {
+            nextBtn.classList.add('rotating');
+            setTimeout(() => nextBtn.classList.remove('rotating'), 450);
+        }
     }
 
     // 7. Haftalik internetdan yangi hikmatlarni yuklab olish (Avtomatik fon yangilanishi)
@@ -1072,42 +1078,43 @@
             wrap = document.createElement('div');
             wrap.id = 'fortune-widget-wrap';
             wrap.className = 'fortune-widget-wrap atelier-quote-wrap container';
-            wrap.style.marginTop = '32px';
             hero.parentNode.insertBefore(wrap, hero.nextSibling);
             wrap.innerHTML = `
                 <article class="fortune-card-3d atelier-quote-card" id="fortune-card">
                     <header class="atelier-card-header">
                         <span class="fortune-quote-badge atelier-tag" id="quote-category-badge">✦ KUN HIKMATI · ILHOM</span>
-                        <span class="atelier-edition-label">KAY KUNDALIGI · ATELIER</span>
+                        <div class="atelier-header-actions">
+                            <button class="atelier-icon-btn" id="quote-copy-btn" type="button" aria-label="Iqtibosdan nusxa olish" title="Nusxa olish" data-action="quote-copy">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                            <button class="atelier-icon-btn" id="quote-next-btn" type="button" aria-label="Boshqa hikmat tanlash" title="Boshqa hikmat" data-action="quote-next">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                                </svg>
+                            </button>
+                        </div>
                     </header>
                     <div class="atelier-quote-body">
                         <blockquote class="fortune-quote-text atelier-quote-text" id="quote-text"></blockquote>
                         <cite class="fortune-quote-author atelier-quote-author" id="quote-author"></cite>
                     </div>
                     <div class="atelier-german-folio" id="quote-de-wrap">
-                        <div class="atelier-german-header">
-                            <span class="atelier-flag-badge">🇩🇪 DE · PARALLEL</span>
-                            <span>Nemischa Asl Nusxa / Tarjima</span>
+                        <div class="atelier-german-meta">
+                            <span class="atelier-flag-badge">🇩🇪 DE</span>
+                            <p class="atelier-german-text" id="quote-de-text"></p>
                         </div>
-                        <p class="atelier-german-text" id="quote-de-text"></p>
-                    </div>
-                    <footer class="atelier-actions-bar">
-                        <button class="fortune-action-btn atelier-audio-player" id="quote-audio-btn" type="button" aria-label="Nemischa audioni eshitish" data-action="quote-audio">
-                            <span class="atelier-play-disc" aria-hidden="true">
+                        <button class="atelier-mini-audio-btn" id="quote-audio-btn" type="button" aria-label="Nemischa audioni eshitish" title="Talaffuzni eshitish" data-action="quote-audio">
+                            <span class="play-icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
                             </span>
                             <span class="atelier-soundwave" aria-hidden="true">
-                                <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
                             </span>
-                            <span class="atelier-audio-label">Talaffuzni eshitish</span>
                         </button>
-                        <button class="atelier-btn-secondary" id="quote-next-btn" type="button" aria-label="Boshqa hikmat tanlash" data-action="quote-next">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-                            </svg>
-                            <span>Boshqa hikmat</span>
-                        </button>
-                    </footer>
+                    </div>
                 </article>
             `;
         }
@@ -1122,6 +1129,15 @@
     }
 
     function speakCurrent(text) {
+        const audioBtn = document.getElementById('quote-audio-btn');
+        if (audioBtn && audioBtn.classList.contains('playing')) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            audioBtn.classList.remove('playing');
+            return;
+        }
+
         const deEl = document.getElementById('quote-de-text');
         const toSpeak = (text || (currentQuoteItem ? currentQuoteItem.de : (deEl ? deEl.textContent : ''))).replace(/^[\"“”„]+|[\"“”„]+$/g, '').trim();
         if (toSpeak) {

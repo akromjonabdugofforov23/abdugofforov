@@ -71,7 +71,6 @@
   • <span style="color:#60a5fa;">skills</span>    - Texnologiyalar va ko'nikmalar ro'yxati
   • <span style="color:#60a5fa;">projects</span>  - Jonli loyihalar va veb-platformalar
   • <span style="color:#60a5fa;">exp</span>       - Ish tajribasi va faoliyat
-  • <span style="color:#60a5fa;">contact</span>   - Aloqa ma'lumotlari (Telegram, Email, Web)
   • <span style="color:#60a5fa;">theme</span>     - Sayt mavzusini o'zgartirish (Dark / Light)
   • <span style="color:#60a5fa;">matrix</span>    - Hacker rejimini yoqish (Matrix effekti)
   • <span style="color:#60a5fa;">clear</span>     - Terminal ekranini tozalash
@@ -114,12 +113,6 @@ ixtisoslashgan dasturchi.`,
 
 • 2022 — 2024: Web Dasturchi & Interaktiv Ta'lim Loyihalari
   - Frontend arxitekturasi, Canvas animatsiyalari va mustaqil dasturlar.`,
-
-        contact: `BOG'LANISH:
-• Telegram:  <a href="https://t.me/Abdugofforov_kundaligi" target="_blank" style="color:#4ade80;">@Abdugofforov_kundaligi</a>
-• YouTube:   <a href="https://www.youtube.com/@kay_kundaligi" target="_blank" style="color:#f87171;">@kay_kundaligi</a>
-• Email:     <a href="mailto:akromjonabdugofforov23@gmail.com" style="color:#60a5fa;">akromjonabdugofforov23@gmail.com</a>
-• Website:   <a href="https://abdugofforov.uz" target="_blank" style="color:#a78bfa;">https://abdugofforov.uz</a>`,
 
         whoami: "guest@abdugofforov (Visitor / Recruiter)",
         sudo: "Permission denied: Sudo huquqi faqat Akromjon Abdug'offorovga berilgan :)",

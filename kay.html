@@ -55,6 +55,7 @@
             padding: 44px 32px;
             text-align: center;
             box-shadow: var(--shadow-lg);
+            z-index: 1000;
         }
         .pin-logo { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; margin-bottom: 6px; }
         .pin-logo span { color: var(--accent-color); }
@@ -82,7 +83,7 @@
             display: none;
             min-height: 100vh;
         }
-        .glz.show { display: grid; grid-template-columns: var(--glz-sidebar) 1fr; }
+        .glz.show { display: grid !important; grid-template-columns: var(--glz-sidebar) 1fr; }
 
         /* ---------- SIDEBAR ---------- */
         .glz-sidebar {
@@ -389,6 +390,16 @@
                 <button class="glz-nav-item admin-tab" data-tab="settings" data-title="Sozlamalar"><span class="ico">⚙️</span> Sozlamalar</button>
             </nav>
 
+            <div style="margin: 14px 0 10px; padding: 12px 14px; border-radius: 12px; background: rgba(0,0,0,0.25); border: 1px solid var(--border-color);">
+                <div style="font-size: 10px; color: var(--accent-color); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">🔒 Maxfiy Servislar (Stealth)</div>
+                <button type="button" id="admin-tools-link" class="glz-nav-item" style="width: 100%; border: none; background: rgba(255,255,255,0.04); color: var(--text-primary); cursor: pointer; text-align: left; font-size: 12px; display: flex; align-items: center; gap: 8px; margin-bottom: 6px; padding: 8px 10px; border-radius: 8px;">
+                    <span class="ico">🛠️</span> Tools Lab ↗
+                </button>
+                <button type="button" id="admin-cv-link" class="glz-nav-item" style="width: 100%; border: none; background: rgba(255,255,255,0.04); color: var(--text-primary); cursor: pointer; text-align: left; font-size: 12px; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px;">
+                    <span class="ico">💼</span> Shaxsiy CV ↗
+                </button>
+            </div>
+
             <div class="glz-side-actions">
                 <a href="/" class="btn-secondary">🌐 Saytga o'tish</a>
                 <button class="btn-secondary" id="logout-btn">⎋ Chiqish</button>
@@ -455,6 +466,25 @@
                             <div class="glz-status-row"><span>👥 O'quvchilar bazasi</span><span id="dash-status-db" class="glz-ok">Ulangan</span></div>
                             <div class="glz-status-row"><span>📝 Testlar tizimi</span><span id="dash-status-tests" class="glz-ok">Faol</span></div>
                             <div class="glz-status-row"><span>🏆 Turnir tizimi</span><span id="dash-status-tournament" class="glz-ok">Faol</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Maxfiy Subdomenlar kartasi (Faqat Admin uchun) -->
+                    <div class="glz-card" style="margin-top: 18px; border: 1px solid rgba(45, 212, 191, 0.3); background: rgba(12, 30, 48, 0.65);">
+                        <div class="glz-card-title">
+                            <span>🔒 Maxfiy Subdomenlar (Stealth Mode — Faqat siz uchun)</span>
+                            <span style="font-size:11px; padding:3px 10px; border-radius:12px; background:rgba(45,212,191,0.15); color:var(--accent-color); font-weight:600;">Skanerlardan yashirin</span>
+                        </div>
+                        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:14px; line-height:1.6;">
+                            Ushbu subdomenlar barcha skanerlar va oddiy foydalanuvchilar uchun 100% yopiq (404 Not Found qaytaradi). Ularga faqat shu admin paneldagi xavfsiz kalit orqali kirishingiz mumkin:
+                        </p>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button type="button" class="btn-primary" id="dash-btn-cv" style="font-size:12px; padding:8px 16px; cursor:pointer;">
+                                💼 Shaxsiy CV ni ochish ↗
+                            </button>
+                            <button type="button" class="btn-secondary" id="dash-btn-tools" style="font-size:12px; padding:8px 16px; cursor:pointer;">
+                                🛠️ Tools Lab ni ochish ↗
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -644,7 +674,7 @@
     <div class="glz-overlay" id="glz-overlay"></div>
 
 <script src="storage.js?v=2"></script>
-<script src="kay.js?v=2" defer></script>
+<script src="kay.js?v=3" defer></script>
 </body>
 </html>
 

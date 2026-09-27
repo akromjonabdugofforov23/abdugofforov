@@ -2,7 +2,7 @@
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
 // CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
 // bilan qorishib qolmasligi uchun
-const CACHE = 'abdu-cache-v6';
+const CACHE = 'abdu-cache-v7';
 const SHELL = [
     '/',
     '/index.html',
@@ -50,17 +50,26 @@ self.addEventListener('fetch', (event) => {
     const url = new URL(req.url);
     // Faqat shu domen; YouTube/Unsplash/API ni keshlamaymiz
     if (url.origin !== self.location.origin) return;
-    // Admin sahifa va funksiyalarni keshlamaymiz
-    if (url.pathname.startsWith('/functions') || url.pathname === '/kay.html') return;
 
-    // Navigatsiya (HTML) — tarmoq birinchi, keyin kesh (oflayn uchun)
+    // Admin, maxfiy servislar va API funksiyalarini mutlaqo keshlamaymiz
+    const noCachePaths = ['/kay', '/kay.html', '/cv', '/cv.html', '/tools', '/tools.html', '/deutsch', '/deutsch.html'];
+    if (url.pathname.startsWith('/functions') || url.pathname.startsWith('/admin') || noCachePaths.includes(url.pathname)) return;
+
+    // Navigatsiya (HTML) — tarmoq birinchi, keyin kesh (faqat asosiy sahifa oflayn ishlashi uchun)
     if (req.mode === 'navigate') {
         event.respondWith(
             fetch(req).then((res) => {
-                const copy = res.clone();
-                caches.open(CACHE).then((c) => c.put('/index.html', copy)).catch(() => {});
+                if (url.pathname === '/' || url.pathname === '/index.html') {
+                    const copy = res.clone();
+                    caches.open(CACHE).then((c) => c.put('/index.html', copy)).catch(() => {});
+                }
                 return res;
-            }).catch(() => caches.match('/index.html').then((r) => r || caches.match('/')))
+            }).catch(() => {
+                if (url.pathname === '/' || url.pathname === '/index.html') {
+                    return caches.match('/index.html').then((r) => r || caches.match('/'));
+                }
+                return new Response('Oflayn rejim', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+            })
         );
         return;
     }

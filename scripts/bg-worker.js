@@ -314,15 +314,19 @@ const companion = {
 function updateCompanion() {
     if (!config.enableCompanion || !companion.active) return;
 
-    if (Date.now() - companion.lastMoveTime > 1200) {
+    if (Date.now() - companion.lastMoveTime > 1100) {
         companion.targetAlpha = 0;
     }
 
     const dx = companion.targetX - companion.x;
     const dy = companion.targetY - companion.y;
-    companion.x += dx * 0.15;
-    companion.y += dy * 0.15;
-    companion.alpha += (companion.targetAlpha - companion.alpha) * 0.08;
+    companion.x += dx * 0.38;
+    companion.y += dy * 0.38;
+    companion.alpha += (companion.targetAlpha - companion.alpha) * 0.22;
+
+    if (companion.alpha < 0.01 && companion.targetAlpha === 0) {
+        companion.active = false;
+    }
 }
 
 function renderRipples() {
@@ -330,16 +334,16 @@ function renderRipples() {
 
     for (let i = companion.ripples.length - 1; i >= 0; i--) {
         const rp = companion.ripples[i];
-        rp.radius += 1.5;
-        rp.alpha -= 0.03;
+        rp.radius += 1.8;
+        rp.alpha -= 0.035;
         if (rp.alpha <= 0 || rp.radius >= rp.maxRadius) {
             companion.ripples.splice(i, 1);
             continue;
         }
         ctx.strokeStyle = isDark
-            ? `rgba(167, 139, 250, ${rp.alpha * 0.4})`
-            : `rgba(99, 102, 241, ${rp.alpha * 0.25})`;
-        ctx.lineWidth = 1;
+            ? `rgba(192, 132, 252, ${rp.alpha * 0.55})`
+            : `rgba(79, 70, 229, ${rp.alpha * 0.60})`;
+        ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.arc(rp.x, rp.y, rp.radius, 0, Math.PI * 2);
         ctx.stroke();
@@ -351,30 +355,59 @@ function renderMouseCompanion() {
     updateCompanion();
     renderRipples();
 
-    if (companion.alpha < 0.03) return;
+    if (companion.alpha < 0.02) return;
 
-    const pulse = 1 + Math.sin(clock * 0.06) * 0.18;
-    const dotR = (isDark ? 1.5 : 1.2) * pulse;
+    const pulse = 1 + Math.sin(clock * 0.08) * 0.14;
+    const glowR = 18;
+    const ringR = 12 * pulse;
+    const coreR = (isDark ? 2.2 : 2.4) * pulse;
 
-    // Yumshoq tashqi nur (yengil arc)
-    ctx.fillStyle = isDark
-        ? `rgba(167, 139, 250, ${0.08 * companion.alpha})`
-        : `rgba(99, 102, 241, ${0.05 * companion.alpha})`;
+    // 1. Yumshoq tashqi gradient aura (chegarasi xira/qirrali emas, 0% ga silliq o'chadi)
+    const auraGrad = ctx.createRadialGradient(
+        companion.x, companion.y, 0,
+        companion.x, companion.y, glowR
+    );
+    if (isDark) {
+        auraGrad.addColorStop(0, `rgba(167, 139, 250, ${0.28 * companion.alpha})`);
+        auraGrad.addColorStop(0.5, `rgba(139, 92, 246, ${0.12 * companion.alpha})`);
+        auraGrad.addColorStop(1, 'rgba(139, 92, 246, 0)');
+    } else {
+        auraGrad.addColorStop(0, `rgba(99, 102, 241, ${0.26 * companion.alpha})`);
+        auraGrad.addColorStop(0.55, `rgba(129, 140, 248, ${0.10 * companion.alpha})`);
+        auraGrad.addColorStop(1, 'rgba(99, 102, 241, 0)');
+    }
+    ctx.fillStyle = auraGrad;
     ctx.beginPath();
-    ctx.arc(companion.x, companion.y, isDark ? 40 : 30, 0, Math.PI * 2);
+    ctx.arc(companion.x, companion.y, glowR, 0, Math.PI * 2);
     ctx.fill();
 
-    // Markaziy yorug'lik nuqtasi
-    ctx.fillStyle = isDark
-        ? `rgba(224, 231, 255, ${0.65 * companion.alpha})`
-        : `rgba(99, 102, 241, ${0.45 * companion.alpha})`;
+    // 2. Nafis ingichka orbital halqa (aniq va zamonaviy chegara)
+    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = isDark
+        ? `rgba(192, 132, 252, ${0.45 * companion.alpha})`
+        : `rgba(99, 102, 241, ${0.55 * companion.alpha})`;
     ctx.beginPath();
-    ctx.arc(companion.x, companion.y, dotR, 0, Math.PI * 2);
+    ctx.arc(companion.x, companion.y, ringR, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 3. Markaziy yorug'lik nuqtasi (kunduzi ham, tunda ham ravshan ko'rinadi)
+    ctx.fillStyle = isDark
+        ? `rgba(167, 139, 250, ${0.45 * companion.alpha})`
+        : `rgba(99, 102, 241, ${0.35 * companion.alpha})`;
+    ctx.beginPath();
+    ctx.arc(companion.x, companion.y, coreR * 1.6, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = isDark
+        ? `rgba(255, 255, 255, ${0.95 * companion.alpha})`
+        : `rgba(79, 70, 229, ${0.92 * companion.alpha})`;
+    ctx.beginPath();
+    ctx.arc(companion.x, companion.y, coreR, 0, Math.PI * 2);
     ctx.fill();
 }
 
 // ============================================================
-// 4. ANIMATION LOOP (30 FPS CAPPED WITH DELTA TIMING)
+// 4. ANIMATION LOOP (DYNAMIC 60FPS ON MOVE / 30FPS IDLE)
 // ============================================================
 function loop(timestamp) {
     if (!isRunning || isPaused) {
@@ -384,9 +417,14 @@ function loop(timestamp) {
 
     rafId = requestFrame(loop);
 
+    // Sichqoncha harakatlanganda 60 FPS (silliq va zudlik bilan ergashadi),
+    // to'xtaganda esa batareya va resurslarni tejash uchun 30 FPS ga o'tadi
+    const activeTargetFps = (companion.active && companion.alpha > 0.05) ? 60 : TARGET_FPS;
+    const currentInterval = 1000 / activeTargetFps;
+
     const elapsed = timestamp - lastFrameTime;
-    if (elapsed < FPS_INTERVAL) return;
-    lastFrameTime = timestamp - (elapsed % FPS_INTERVAL);
+    if (elapsed < currentInterval) return;
+    lastFrameTime = timestamp - (elapsed % currentInterval);
 
     clock += 1;
     ctx.clearRect(0, 0, width, height);
@@ -509,19 +547,25 @@ self.onmessage = function(event) {
 
             if (data.action === 'leave' || data.isLeave) {
                 companion.targetAlpha = 0;
-                companion.active = false;
             } else if (data.action === 'click' || data.isClick) {
+                companion.active = true;
+                companion.targetAlpha = 1.0;
+                companion.lastMoveTime = Date.now();
                 if (companion.ripples.length < 3) {
                     companion.ripples.push({
                         x: data.x,
                         y: data.y,
                         radius: 4,
-                        maxRadius: 26,
-                        alpha: 0.35
+                        maxRadius: 24,
+                        alpha: 0.4
                     });
                 }
             } else {
                 // move or touch
+                if (companion.x < -100 || !companion.active) {
+                    companion.x = data.x;
+                    companion.y = data.y;
+                }
                 companion.targetX = data.x;
                 companion.targetY = data.y;
                 companion.targetAlpha = data.alpha !== undefined ? data.alpha : (data.isTouch ? 0.8 : 1.0);

@@ -948,10 +948,6 @@ if (mainNav) {
         }
         e.preventDefault();
 
-        if (link.id === 'nav-contact-link' || link.getAttribute('href') === '#contact') {
-            openContactModal();
-            return;
-        }
         if (link.id === 'nav-deutsch-link' || link.getAttribute('data-page') === 'deutsch') {
             openDeutschView();
             syncActiveNavState('deutsch');
@@ -1015,10 +1011,6 @@ if (drawerNavLinks) {
             return;
         }
         e.preventDefault();
-        if (link.id === 'drawer-contact-link' || href === '#contact') {
-            openContactModal();
-            return;
-        }
         const page = link.getAttribute('data-page') || 'home';
         showMainView();
         syncActiveNavState(page);
@@ -1053,21 +1045,6 @@ if (closePortfolioBtn) {
     });
 }
 
-// Kontakt modali
-const contactModal = document.getElementById('contact-modal');
-function openContactModal() {
-    contactModal?.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-function closeContactModal() {
-    contactModal?.classList.remove('active');
-    document.body.style.overflow = '';
-}
-document.getElementById('close-contact-modal')?.addEventListener('click', closeContactModal);
-contactModal?.addEventListener('click', (e) => {
-    if (e.target === contactModal) closeContactModal();
-});
-
 if (navLogo) {
     navLogo.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1089,10 +1066,6 @@ if (desktopDock) {
         e.preventDefault();
 
         // Maxsus tugmalar
-        if (link.id === 'dock-contact' || href === '#contact') {
-            openContactModal();
-            return;
-        }
         if (link.id === 'dock-theme') {
             const themeBtn = document.getElementById('theme-btn');
             if (themeBtn) themeBtn.click();
@@ -2938,6 +2911,30 @@ document.addEventListener('click', (e) => {
                 nextIndividualQuote();
             } else if (window.App && window.App.Quote && typeof window.App.Quote.next === 'function') {
                 window.App.Quote.next();
+            }
+            break;
+        }
+        case 'quote-copy': {
+            const textEl = document.getElementById('quote-text');
+            const authorEl = document.getElementById('quote-author');
+            if (textEl && authorEl) {
+                const text = `${textEl.textContent} — ${authorEl.textContent}`;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        const copyBtn = document.getElementById('quote-copy-btn');
+                        if (copyBtn) {
+                            copyBtn.classList.add('copied');
+                            copyBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                            setTimeout(() => {
+                                copyBtn.classList.remove('copied');
+                                copyBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+                            }, 1800);
+                        }
+                        if (typeof showToast === 'function') {
+                            showToast("Iqtibos nusxalandi! ✨");
+                        }
+                    }).catch(() => {});
+                }
             }
             break;
         }
