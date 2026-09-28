@@ -28,16 +28,11 @@ export async function onRequest(context) {
     }
   }
 
-  // 2. Subdomain routing: tools.abdugofforov.uz -> serve tools.html
+  // 2. Subdomain routing: tools.abdugofforov.uz -> serve tools.html (Ommaviy)
   if (url.hostname.startsWith('tools.') || url.searchParams.get('subdomain') === 'tools') {
     if (url.pathname === '/' || url.pathname === '/index.html' || url.pathname === '/tools' || url.pathname === '/tools.html') {
       const resp = await context.env.ASSETS.fetch(new URL('/tools.html', context.request.url));
-      const resWithHeaders = applySecurityHeaders(resp, context, url);
-      if (hasGateParam) {
-        resWithHeaders.headers.set('Set-Cookie', `kay_admin_gate=${ADMIN_GATE_KEY}; Domain=.abdugofforov.uz; Path=/; Max-Age=86400; SameSite=Lax; HttpOnly; Secure`);
-      }
-      resWithHeaders.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
-      return resWithHeaders;
+      return applySecurityHeaders(resp, context, url);
     }
   }
 
@@ -52,16 +47,11 @@ export async function onRequest(context) {
     }
   }
 
-  // 3. Subdomain routing: cv.abdugofforov.uz -> serve cv.html
+  // 3. Subdomain routing: cv.abdugofforov.uz -> serve cv.html (Ommaviy)
   if (url.hostname.startsWith('cv.') || url.searchParams.get('subdomain') === 'cv') {
     if (url.pathname === '/' || url.pathname === '/index.html' || url.pathname === '/cv' || url.pathname === '/cv.html') {
       const resp = await context.env.ASSETS.fetch(new URL('/cv.html', context.request.url));
-      const resWithHeaders = applySecurityHeaders(resp, context, url);
-      if (hasGateParam) {
-        resWithHeaders.headers.set('Set-Cookie', `kay_admin_gate=${ADMIN_GATE_KEY}; Domain=.abdugofforov.uz; Path=/; Max-Age=86400; SameSite=Lax; HttpOnly; Secure`);
-      }
-      resWithHeaders.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
-      return resWithHeaders;
+      return applySecurityHeaders(resp, context, url);
     }
   }
 

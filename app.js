@@ -935,6 +935,13 @@ function openTournamentView() {
     window.location.href = getDeutschDestination('#tournament');
 }
 
+function openToolsView() {
+    const dest = window.location.hostname.includes('abdugofforov.uz')
+        ? 'https://tools.abdugofforov.uz/'
+        : 'tools.html';
+    window.open(dest, '_blank', 'noopener,noreferrer');
+}
+
 
 // 9. SPA Routing Navigation
 // 9. SPA Routing Navigation
@@ -1164,6 +1171,10 @@ if (toolbarEl) toolbarEl.addEventListener('click', (e) => {
 
     if (btn.id === 'main-deutsch-btn') {
         openDeutschView();
+        return;
+    }
+    if (btn.id === 'main-tools-btn') {
+        openToolsView();
         return;
     }
     if (btn.id === 'main-verbs-btn') {

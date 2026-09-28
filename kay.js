@@ -1002,21 +1002,18 @@ document.addEventListener('error', (e) => {
 // Password reset modal form submission
 document.getElementById('reset-password-form')?.addEventListener('submit', handleResetPasswordSubmit);
 
-// ===== MAXFIY SUBDOMENLAR (CV & TOOLS) — FAQAT ADMIN UCHUN =====
-const ADMIN_GATE_KEY = 'kay_admin_7904cc18';
-
-function openStealthService(service) {
-    document.cookie = `kay_admin_gate=${ADMIN_GATE_KEY}; path=/; max-age=86400; SameSite=Lax`;
+// ===== SUBDOMENLAR VA LOYIHALARGA O'TISH =====
+function openService(service) {
     let url;
     if (window.location.hostname.includes('abdugofforov.uz')) {
-        url = `https://${service}.abdugofforov.uz/?gate=${ADMIN_GATE_KEY}`;
+        url = `https://${service}.abdugofforov.uz/`;
     } else {
-        url = `/${service}.html?gate=${ADMIN_GATE_KEY}`;
+        url = `/${service}.html`;
     }
     window.open(url, '_blank');
 }
 
-document.getElementById('admin-tools-link')?.addEventListener('click', () => openStealthService('tools'));
-document.getElementById('admin-cv-link')?.addEventListener('click', () => openStealthService('cv'));
-document.getElementById('dash-btn-tools')?.addEventListener('click', () => openStealthService('tools'));
-document.getElementById('dash-btn-cv')?.addEventListener('click', () => openStealthService('cv'));
+document.getElementById('admin-tools-link')?.addEventListener('click', () => openService('tools'));
+document.getElementById('admin-cv-link')?.addEventListener('click', () => openService('cv'));
+document.getElementById('dash-btn-tools')?.addEventListener('click', () => openService('tools'));
+document.getElementById('dash-btn-cv')?.addEventListener('click', () => openService('cv'));
