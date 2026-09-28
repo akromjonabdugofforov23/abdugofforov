@@ -21,21 +21,19 @@ function hasAdminGateLocal(req) {
     return false;
 }
 
-// Micro-Tools & Dev Utilities (Faqat admin uchun — skanerlar uchun 404)
+// Micro-Tools & Dev Utilities
 router.get(['/tools', '/tools/', '/tools.html'], (req, res) => {
-    if (!hasAdminGateLocal(req)) {
-        return res.status(404).type('text/plain').send('404 Not Found');
+    if (req.query.gate === ADMIN_GATE_KEY) {
+        res.cookie('kay_admin_gate', ADMIN_GATE_KEY, { maxAge: 86400000, httpOnly: true, sameSite: 'lax' });
     }
-    res.cookie('kay_admin_gate', ADMIN_GATE_KEY, { maxAge: 86400000, httpOnly: true, sameSite: 'lax' });
     res.sendFile(path.join(__dirname, '../tools.html'));
 });
 
-// Interaktiv CV & Portfolio (Faqat admin uchun — skanerlar uchun 404)
+// Interaktiv CV & Portfolio
 router.get(['/cv', '/cv/', '/cv.html'], (req, res) => {
-    if (!hasAdminGateLocal(req)) {
-        return res.status(404).type('text/plain').send('404 Not Found');
+    if (req.query.gate === ADMIN_GATE_KEY) {
+        res.cookie('kay_admin_gate', ADMIN_GATE_KEY, { maxAge: 86400000, httpOnly: true, sameSite: 'lax' });
     }
-    res.cookie('kay_admin_gate', ADMIN_GATE_KEY, { maxAge: 86400000, httpOnly: true, sameSite: 'lax' });
     res.sendFile(path.join(__dirname, '../cv.html'));
 });
 

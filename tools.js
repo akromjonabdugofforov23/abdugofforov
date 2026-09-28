@@ -73,6 +73,9 @@
 
     // Lotin -> Kirill xaritasi (Tartib muhim: 2 harfli birikmalar oldin tekshiriladi)
     const latinToCyrillicPairs = [
+        ["yo'", "йў"], ["yo‘", "йў"], ["yo’", "йў"], ["yo`", "йў"],
+        ["Yo'", "Йў"], ["Yo‘", "Йў"], ["Yo’", "Йў"], ["Yo`", "Йў"],
+        ["YO'", "ЙЎ"], ["YO‘", "ЙЎ"], ["YO’", "ЙЎ"], ["YO`", "ЙЎ"],
         ["o'", "ў"], ["o‘", "ў"], ["o’", "ў"], ["o`", "ў"],
         ["O'", "Ў"], ["O‘", "Ў"], ["O’", "Ў"], ["O`", "Ў"],
         ["g'", "ғ"], ["g‘", "ғ"], ["g’", "ғ"], ["g`", "ғ"],
@@ -87,7 +90,7 @@
         ["a", "а"], ["A", "А"],
         ["b", "б"], ["B", "Б"],
         ["d", "д"], ["D", "Д"],
-        ["e", "э"], ["E", "Э"],
+        ["e", "е"], ["E", "Е"],
         ["f", "ф"], ["F", "Ф"],
         ["g", "г"], ["G", "Г"],
         ["h", "ҳ"], ["H", "Ҳ"],
@@ -101,7 +104,7 @@
         ["p", "п"], ["P", "П"],
         ["q", "қ"], ["Q", "Қ"],
         ["r", "р"], ["R", "Р"],
-        ["s", "s"], ["s", "с"], ["S", "С"],
+        ["s", "с"], ["S", "С"],
         ["t", "т"], ["T", "Т"],
         ["u", "у"], ["U", "У"],
         ["v", "в"], ["V", "В"],
@@ -113,6 +116,7 @@
 
     // Kirill -> Lotin xaritasi
     const cyrillicToLatinPairs = [
+        ["йў", "yo‘"], ["Йў", "Yo‘"], ["ЙЎ", "YO‘"],
         ["ш", "sh"], ["Ш", "Sh"],
         ["ч", "ch"], ["Ч", "Ch"],
         ["ў", "o‘"], ["Ў", "O‘"],
@@ -343,6 +347,26 @@
         });
     }
 
+    // Clipboard (Ctrl+V) orqali rasm joylash
+    window.addEventListener('paste', (e) => {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+        for (const item of items) {
+            if (item.type.startsWith('image/')) {
+                const file = item.getAsFile();
+                if (file) {
+                    const imgTab = document.querySelector('.tool-tab-btn[data-tool="image"]');
+                    if (imgTab && !imgTab.classList.contains('active')) {
+                        imgTab.click();
+                    }
+                    handleImageFile(file);
+                    showToast("Rasm buferdan olindi!", '📋');
+                    break;
+                }
+            }
+        }
+    });
+
     if (imgQuality) imgQuality.addEventListener('input', processCompression);
     if (imgFormatSelect) imgFormatSelect.addEventListener('change', processCompression);
 
@@ -476,7 +500,7 @@
     }
 
     // ============================================================
-    // 5. QR CODE GENERATOR (Stand-alone Lightweight Canvas Generator)
+    // 5. QR CODE GENERATOR (100% Client-Side Pure Canvas Engine)
     // ============================================================
     const qrInput = document.getElementById('qr-input');
     const qrColorFg = document.getElementById('qr-color-fg');
@@ -484,30 +508,264 @@
     const qrCanvas = document.getElementById('qr-canvas');
     const qrDownloadBtn = document.getElementById('qr-download-btn');
 
-    // Oddiy va ishonchli QR generator (Standard API or public reliable renderer)
+    // GF(256) va Reed-Solomon polinomlari
+    const GF256_EXP = new Uint8Array(512);
+    const GF256_LOG = new Uint8Array(256);
+    let _gfe = 1;
+    for (let i = 0; i < 255; i++) {
+        GF256_EXP[i] = _gfe;
+        GF256_EXP[i + 255] = _gfe;
+        GF256_LOG[_gfe] = i;
+        _gfe = (_gfe << 1) ^ (_gfe >= 128 ? 0x11d : 0);
+    }
+
+    function gfMul(a, b) {
+        if (a === 0 || b === 0) return 0;
+        return GF256_EXP[GF256_LOG[a] + GF256_LOG[b]];
+    }
+
+    function rsGeneratorPoly(degree) {
+        let poly = [1];
+        for (let i = 0; i < degree; i++) {
+            const next = new Array(poly.length + 1).fill(0);
+            const root = GF256_EXP[i];
+            for (let j = 0; j < poly.length; j++) {
+                next[j] ^= gfMul(poly[j], root);
+                next[j + 1] ^= poly[j];
+            }
+            poly = next;
+        }
+        return poly;
+    }
+
+    function rsCompute(data, numEc) {
+        const gen = rsGeneratorPoly(numEc);
+        const res = new Array(numEc).fill(0);
+        for (let i = 0; i < data.length; i++) {
+            const factor = data[i] ^ res[0];
+            res.shift();
+            res.push(0);
+            if (factor !== 0) {
+                for (let j = 0; j < numEc; j++) {
+                    res[j] ^= gfMul(gen[j], factor);
+                }
+            }
+        }
+        return res;
+    }
+
+    const QR_VERSIONS = [
+        [1, 26, 10, 1], [2, 44, 16, 1], [3, 70, 26, 1], [4, 100, 36, 1],
+        [5, 134, 48, 1], [6, 172, 64, 2], [7, 196, 72, 2], [8, 242, 88, 2],
+        [9, 292, 110, 2], [10, 346, 130, 2]
+    ];
+
+    function createQRCodeMatrix(text) {
+        const utf8Bytes = new TextEncoder().encode(text);
+        let chosen = null;
+        for (const v of QR_VERSIONS) {
+            const dataCap = v[1] - v[2];
+            const lenBits = v[0] <= 9 ? 8 : 16;
+            const totalBits = 4 + lenBits + (utf8Bytes.length * 8);
+            if (Math.ceil(totalBits / 8) <= dataCap) {
+                chosen = v;
+                break;
+            }
+        }
+        if (!chosen) throw new Error('Text exceeds pure client capacity');
+
+        const [ver, totalCodewords, ecCodewords, numBlocks] = chosen;
+        const dataCodewords = totalCodewords - ecCodewords;
+        const bits = [];
+        function pushBits(val, len) {
+            for (let i = len - 1; i >= 0; i--) bits.push((val >> i) & 1);
+        }
+
+        pushBits(4, 4); // Byte mode
+        pushBits(utf8Bytes.length, ver <= 9 ? 8 : 16);
+        for (const b of utf8Bytes) pushBits(b, 8);
+        const remaining = (dataCodewords * 8) - bits.length;
+        pushBits(0, Math.min(4, remaining));
+        while (bits.length % 8 !== 0) bits.push(0);
+        const padBytes = [0xec, 0x11];
+        let pIdx = 0;
+        while (bits.length < dataCodewords * 8) {
+            pushBits(padBytes[pIdx % 2], 8);
+            pIdx++;
+        }
+
+        const dataBytes = [];
+        for (let i = 0; i < bits.length; i += 8) {
+            let b = 0;
+            for (let j = 0; j < 8; j++) b = (b << 1) | bits[i + j];
+            dataBytes.push(b);
+        }
+
+        const ecPerBlock = Math.floor(ecCodewords / numBlocks);
+        const dataPerBlock = Math.floor(dataCodewords / numBlocks);
+        const blocksData = [];
+        const blocksEc = [];
+
+        for (let i = 0; i < numBlocks; i++) {
+            const start = i * dataPerBlock;
+            const bData = dataBytes.slice(start, start + dataPerBlock);
+            blocksData.push(bData);
+            blocksEc.push(rsCompute(bData, ecPerBlock));
+        }
+
+        const finalCodewords = [];
+        for (let i = 0; i < dataPerBlock; i++) {
+            for (let b = 0; b < numBlocks; b++) finalCodewords.push(blocksData[b][i]);
+        }
+        for (let i = 0; i < ecPerBlock; i++) {
+            for (let b = 0; b < numBlocks; b++) finalCodewords.push(blocksEc[b][i]);
+        }
+
+        const mSize = 17 + 4 * ver;
+        const matrix = Array.from({ length: mSize }, () => new Array(mSize).fill(null));
+        const isReserved = Array.from({ length: mSize }, () => new Array(mSize).fill(false));
+
+        function setMod(r, c, val) {
+            matrix[r][c] = val;
+            isReserved[r][c] = true;
+        }
+
+        function drawFinder(r, c) {
+            for (let dr = -1; dr <= 7; dr++) {
+                for (let dc = -1; dc <= 7; dc++) {
+                    const nr = r + dr, nc = c + dc;
+                    if (nr >= 0 && nr < mSize && nc >= 0 && nc < mSize) {
+                        if (dr >= 0 && dr <= 6 && dc >= 0 && dc <= 6) {
+                            const isBorder = dr === 0 || dr === 6 || dc === 0 || dc === 6;
+                            const isCore = dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4;
+                            setMod(nr, nc, isBorder || isCore ? 1 : 0);
+                        } else {
+                            setMod(nr, nc, 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        drawFinder(0, 0);
+        drawFinder(0, mSize - 7);
+        drawFinder(mSize - 7, 0);
+
+        for (let i = 8; i < mSize - 8; i++) {
+            if (!isReserved[6][i]) setMod(6, i, i % 2 === 0 ? 1 : 0);
+            if (!isReserved[i][6]) setMod(i, 6, i % 2 === 0 ? 1 : 0);
+        }
+
+        const ALIGN_POS = [
+            [], [], [6, 18], [6, 22], [6, 26], [6, 30],
+            [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50]
+        ];
+        if (ver >= 2) {
+            const pos = ALIGN_POS[ver];
+            for (const ar of pos) {
+                for (const ac of pos) {
+                    if (isReserved[ar][ac]) continue;
+                    for (let dr = -2; dr <= 2; dr++) {
+                        for (let dc = -2; dc <= 2; dc++) {
+                            const isBorder = Math.abs(dr) === 2 || Math.abs(dc) === 2;
+                            const isCenter = dr === 0 && dc === 0;
+                            setMod(ar + dr, ac + dc, isBorder || isCenter ? 1 : 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        setMod(mSize - 8, 8, 1);
+
+        for (let i = 0; i < 9; i++) {
+            if (!isReserved[8][i]) isReserved[8][i] = true;
+            if (!isReserved[i][8]) isReserved[i][8] = true;
+        }
+        for (let i = mSize - 8; i < mSize; i++) {
+            if (!isReserved[8][i]) isReserved[8][i] = true;
+            if (!isReserved[i][8]) isReserved[i][8] = true;
+        }
+
+        const finalBits = [];
+        for (const b of finalCodewords) {
+            for (let i = 7; i >= 0; i--) finalBits.push((b >> i) & 1);
+        }
+
+        let bitIdx = 0, dir = -1, col = mSize - 1;
+        while (col > 0) {
+            if (col === 6) col--;
+            const rows = dir === -1
+                ? Array.from({ length: mSize }, (_, i) => mSize - 1 - i)
+                : Array.from({ length: mSize }, (_, i) => i);
+
+            for (const row of rows) {
+                for (const c of [col, col - 1]) {
+                    if (!isReserved[row][c]) {
+                        const dataBit = bitIdx < finalBits.length ? finalBits[bitIdx++] : 0;
+                        const masked = dataBit ^ (((row + c) % 2 === 0) ? 1 : 0);
+                        matrix[row][c] = masked;
+                    }
+                }
+            }
+            col -= 2;
+            dir = -dir;
+        }
+
+        const FORMAT_BITS = [1,0,1,0,1,0,0,0,0,0,1,0,0,1,0];
+        const tlCoords = [
+            [8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],
+            [7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]
+        ];
+        for (let i = 0; i < 15; i++) {
+            const [r, c] = tlCoords[i];
+            matrix[r][c] = FORMAT_BITS[i];
+        }
+        for (let i = 0; i < 7; i++) matrix[mSize - 1 - i][8] = FORMAT_BITS[i];
+        for (let i = 7; i < 15; i++) matrix[8][mSize - 15 + i] = FORMAT_BITS[i];
+
+        return { size: mSize, matrix };
+    }
+
     function renderQrCode() {
         if (!qrCanvas || !qrInput) return;
         const text = qrInput.value.trim() || 'https://abdugofforov.uz';
         const fg = qrColorFg.value || '#000000';
         const bg = qrColorBg.value || '#ffffff';
 
-        const size = 220;
-        qrCanvas.width = size;
-        qrCanvas.height = size;
+        const canvasSize = 220;
+        qrCanvas.width = canvasSize;
+        qrCanvas.height = canvasSize;
         const ctx = qrCanvas.getContext('2d');
 
-        // Draw background
-        ctx.fillStyle = bg;
-        ctx.fillRect(0, 0, size, size);
+        try {
+            const qr = createQRCodeMatrix(text);
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, canvasSize, canvasSize);
 
-        // QR render: QR kod tasvirini dinamik generatsiya qilish
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-            ctx.drawImage(img, 10, 10, size - 20, size - 20);
-        };
-        // Cloudflare Insights yoki bepul xavfsiz QR API orqali yuqori aniqlikdagi SVG/PNG
-        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=${fg.replace('#','')}&bgcolor=${bg.replace('#','')}&data=${encodeURIComponent(text)}`;
+            const margin = 2;
+            const totalModules = qr.size + margin * 2;
+            const modSize = Math.floor(canvasSize / totalModules);
+            const offsetX = Math.floor((canvasSize - modSize * qr.size) / 2);
+            const offsetY = Math.floor((canvasSize - modSize * qr.size) / 2);
+
+            ctx.fillStyle = fg;
+            for (let r = 0; r < qr.size; r++) {
+                for (let c = 0; c < qr.size; c++) {
+                    if (qr.matrix[r][c] === 1) {
+                        ctx.fillRect(offsetX + c * modSize, offsetY + r * modSize, modSize, modSize);
+                    }
+                }
+            }
+        } catch (err) {
+            // Fallback for massive text
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, canvasSize, canvasSize);
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => ctx.drawImage(img, 10, 10, canvasSize - 20, canvasSize - 20);
+            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=${fg.replace('#','')}&bgcolor=${bg.replace('#','')}&data=${encodeURIComponent(text)}`;
+        }
     }
 
     if (qrInput) qrInput.addEventListener('input', renderQrCode);
@@ -540,11 +798,21 @@
     const hashCopyBtn = document.getElementById('hash-copy-btn');
 
     function utf8ToBase64(str) {
-        return window.btoa(unescape(encodeURIComponent(str)));
+        const bytes = new TextEncoder().encode(str);
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
     }
 
     function base64ToUtf8(str) {
-        return decodeURIComponent(escape(window.atob(str)));
+        const binary = window.atob(str);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        return new TextDecoder().decode(bytes);
     }
 
     if (hashB64EncBtn) {
