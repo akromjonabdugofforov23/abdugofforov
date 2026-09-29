@@ -92,6 +92,7 @@ const badSymbolRegex = /(ÔÇö|­şô|­şÄ|­şöı)/;
 
 function auditEncoding(filePath) {
     if (!fs.existsSync(filePath)) return;
+    if (filePath.endsWith('health-check.js')) return;
     const relPath = path.relative(rootDir, filePath);
     const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');

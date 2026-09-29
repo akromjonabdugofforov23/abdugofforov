@@ -1,23 +1,24 @@
-name: Automated Health Check & QA Audit
+name: CI Health Check & Quality Gate
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
 
 jobs:
-  health-check:
+  audit:
+    name: Code Quality & Security Audit
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Repozitoriyni yuklash
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      - name: Node.js o'rnatish
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
-    - name: Run Health Check & QA Audit
-      run: node scripts/health-check.js
+      - name: Health Check & Sintaksis Auditini ishga tushirish
+        run: node scripts/health-check.js

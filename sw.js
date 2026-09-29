@@ -20,6 +20,7 @@ const SHELL = [
     '/scripts/tests.js',
     '/scripts/horror-data.js',
     '/scripts/horror-logic.js',
+    '/scripts/gamification.js',
     '/scripts/quote-widget.js',
     '/scripts/pro-3d-background.js',
     '/scripts/bg-worker.js',
