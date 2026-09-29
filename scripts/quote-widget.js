@@ -956,22 +956,95 @@
         return { item: pool[chosenIdx], index: chosenIdx };
     }
 
-    // 4. Nemischa audio talaffuz qilish (Web Speech API)
+    // 4. Yuqori sifatli Nemischa audio talaffuz qilish (Neural / Natural Web Speech Engine)
+    let cachedGermanVoice = null;
+
+    function getBestGermanVoice() {
+        if (cachedGermanVoice) return cachedGermanVoice;
+        if (!('speechSynthesis' in window)) return null;
+
+        const voices = window.speechSynthesis.getVoices() || [];
+
+        // 1-darajali: Microsoft Natural / Online studio ovozlari (Katja, Conrad, Amala)
+        let v = voices.find(v => (v.lang.startsWith('de') || v.lang === 'de_DE') && (
+            v.name.includes('Natural') || 
+            v.name.includes('Online (Natural)') || 
+            v.name.includes('Katja') ||
+            v.name.includes('Conrad')
+        ));
+        if (v) { cachedGermanVoice = v; return v; }
+
+        // 2-darajali: Google Deutsch (Chrome online yuqori sifatli ovoz)
+        v = voices.find(v => v.lang.startsWith('de') && v.name.includes('Google'));
+        if (v) { cachedGermanVoice = v; return v; }
+
+        // 3-darajali: Apple Premium / Enhanced / Siri (Safari va macOS/iOS)
+        v = voices.find(v => v.lang.startsWith('de') && (
+            v.name.includes('Enhanced') || 
+            v.name.includes('Premium') || 
+            v.name.includes('Siri') ||
+            v.name.includes('Anna')
+        ));
+        if (v) { cachedGermanVoice = v; return v; }
+
+        // 4-darajali: de-DE standart aniq ovozi
+        v = voices.find(v => v.lang === 'de-DE' || v.lang === 'de_DE');
+        if (v) { cachedGermanVoice = v; return v; }
+
+        // 5-darajali: Har qanday nemis tili ovozi
+        v = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('de'));
+        if (v) { cachedGermanVoice = v; return v; }
+
+        return null;
+    }
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => {
+            cachedGermanVoice = null;
+            getBestGermanVoice();
+        };
+        setTimeout(() => getBestGermanVoice(), 250);
+    }
+
+    function sanitizeForSpeech(raw) {
+        return raw
+            .replace(/[„“"”»«]/g, '')
+            .replace(/s+/g, ' ')
+            .replace(/—|–/g, ', ')
+            .trim();
+    }
+
     function speakGermanText(text) {
         if (!('speechSynthesis' in window)) return;
         try {
             window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(text);
+            const cleanText = sanitizeForSpeech(text);
+
+            const u = new SpeechSynthesisUtterance(cleanText);
             u.lang = 'de-DE';
-            u.rate = 0.9;
+
+            const bestVoice = getBestGermanVoice();
+            if (bestVoice) {
+                u.voice = bestVoice;
+                u.rate = bestVoice.name.includes('Natural') ? 0.94 : 0.88;
+                u.pitch = 1.0;
+            } else {
+                u.rate = 0.88;
+                u.pitch = 1.0;
+            }
+
             const audioBtn = document.getElementById('quote-audio-btn');
             if (audioBtn) {
+                audioBtn.classList.add('playing');
                 u.onstart = () => audioBtn.classList.add('playing');
                 u.onend = () => audioBtn.classList.remove('playing');
                 u.onerror = () => audioBtn.classList.remove('playing');
             }
+
             window.speechSynthesis.speak(u);
-        } catch (e) {}
+        } catch (e) {
+            console.warn("Audio talaffuzda xato:", e);
+        }
     }
 
     // 5. Hikmatni DOM'da chiroyli animatsiya bilan yangilash
