@@ -20,10 +20,10 @@ const deutschTests = {
             icon: "🌱",
             sections: [
                 {
-                    name: "ğŸ“ Salomlashish va asosiy iboralar",
+                    name: "📖 Salomlashish va asosiy iboralar",
                     type: "text",
                     questions: [
-                        { q: "'Wie geht es Ihnen?' savoliga to'g'ri javob qaysi?", options: ["Ich heiße Akrom.", "Mir geht es gut, danke.", "Ich komme aus Usbekistan.", "Ich bin 25 Jahre alt."], answer: 1, explanation: "'Mir geht es gut, danke' = Yaxshi, rahmat. Wie geht es Ihnen? = Qandaysiz? (rasmiy)." },
+                        { q: "'Wie geht es Ihnen?' savoliga to'g'ri javob qaysi?", options: ["Ich heiße Thomas.", "Mir geht es gut, danke.", "Ich komme aus Usbekistan.", "Ich bin 25 Jahre alt."], answer: 1, explanation: "'Mir geht es gut, danke' = Yaxshi, rahmat. Wie geht es Ihnen? = Qandaysiz? (rasmiy)." },
                         { q: "Kechqurun xayrlashishda qaysi ibora to'g'ri?", options: ["Guten Morgen!", "Guten Tag!", "Guten Abend!", "Auf Wiedersehen!"], answer: 3, explanation: "'Auf Wiedersehen!' = Ko'rishguncha/Xayr. Boshqalari salomlashish iboralari." },
                         { q: "Qaysi gapda artikel to'g'ri ishlatilgan?", options: ["Der Buch ist neu.", "Die Mann ist groß.", "Das Auto ist schnell.", "Ein Frau singt."], answer: 2, explanation: "'das Auto' to'g'ri. das Buch, der Mann, die Frau." }
                     ]
@@ -32,12 +32,12 @@ const deutschTests = {
                     name: "🖼️ Rasmli savollar",
                     type: "image",
                     questions: [
-                        { q: "Bu mevaning nemischa nomi?", image: emojiImage("ğŸ"), imageAlt: "Olma", options: ["die Banane", "der Apfel", "die Orange", "die Traube"], answer: 1, explanation: "'der Apfel' = olma. die Banane = banan, die Orange = apelsin." },
-                        { q: "Bu joyning nemischa nomi?", image: emojiImage("ğŸ¥"), imageAlt: "Shifoxona", options: ["die Schule", "das Hotel", "das Krankenhaus", "die Bank"], answer: 2, explanation: "'das Krankenhaus' = shifoxona. Krank=kasal + Haus=uy." }
+                        { q: "Bu mevaning nemischa nomi?", image: emojiImage("🍎"), imageAlt: "Olma", options: ["die Banane", "der Apfel", "die Orange", "die Traube"], answer: 1, explanation: "'der Apfel' = olma. die Banane = banan, die Orange = apelsin." },
+                        { q: "Bu joyning nemischa nomi?", image: emojiImage("🏥"), imageAlt: "Shifoxona", options: ["die Schule", "das Hotel", "das Krankenhaus", "die Bank"], answer: 2, explanation: "'das Krankenhaus' = shifoxona. Krank=kasal + Haus=uy." }
                     ]
                 },
                 {
-                    name: "ğŸ”Š Eshitish (Hören)",
+                    name: "🔊 Eshitish (Hören)",
                     type: "audio",
                     questions: [
                         { q: "Ovozni eshiting — tarjimasini toping:", audio: "arbeiten", audioLang: "de-DE", displayWord: "arbeiten", options: ["o'ynamoq", "ishlamoq", "o'qimoq", "yurmoq"], answer: 1, explanation: "'arbeiten' = ishlamoq. Ich arbeite = men ishlayman." },
@@ -46,7 +46,7 @@ const deutschTests = {
                     ]
                 },
                 {
-                    name: "ğŸ“ So'z va grammatika",
+                    name: "📝 So'z va grammatika",
                     type: "text",
                     questions: [
                         { q: "Bo'sh joyga mos fe'l: 'Ich ___ Student.'", options: ["bin", "bist", "ist", "sind"], answer: 0, explanation: "'ich bin' = men ...man. sein: ich bin, du bist, er/sie ist." },
@@ -68,7 +68,7 @@ const deutschTests = {
             icon: "🌱",
             sections: [
                 {
-                    name: "ğŸ“ Ko'p tanlovli",
+                    name: "📝 Ko'p tanlovli",
                     type: "text",
                     questions: [
                         { q: "'Danke schön!' iborasiga eng mos javob qaysi?", options: ["Bitte schön!", "Tschüss!", "Guten Tag!", "Wie geht's?"], answer: 0, explanation: "'Bitte schön!' = Marhamat / Arzimaydi." },
