@@ -13,5 +13,8 @@ export async function onRequestPost(context) {
   if (env && env.POSTS_KV) {
     await deleteSession(env, request);
   }
-  return jsonResponse({ ok: true }, 200, request, env);
+  const resp = jsonResponse({ ok: true }, 200, request, env);
+  resp.headers.set('Clear-Site-Data', '"cache", "cookies", "storage"');
+  return resp;
 }
+

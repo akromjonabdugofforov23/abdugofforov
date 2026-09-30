@@ -3,7 +3,7 @@ const helmet = require('helmet');
 // 2-bosqich himoya: Helmet 
 // Express.js xavfsizlik teshiklarini yopadi, sayt sarlavhalarini (HTTP Headers) to'g'rilaydi.
 // Cross-Site Scripting (XSS) va ma'lumot o'g'irlanishining oldini oladi.
-const securityLayer2 = helmet({
+const helmetMiddleware = helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
@@ -13,7 +13,6 @@ const securityLayer2 = helmet({
             objectSrc: ["'none'"],
             scriptSrc: [
                 "'self'",
-                "'unsafe-inline'",
                 "https://static.cloudflareinsights.com",
                 "https://cdnjs.cloudflare.com",
                 "https://cdn.jsdelivr.net",
@@ -39,11 +38,32 @@ const securityLayer2 = helmet({
                 "https://cloudflareinsights.com",
                 "https://oauth.telegram.org"
             ],
-            upgradeInsecureRequests: []
+            upgradeInsecureRequests: [],
+            reportUri: ['/csp-report']
         }
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-    crossOriginResourcePolicy: { policy: "same-site" }
+    crossOriginResourcePolicy: { policy: "same-site" },
+    crossOriginEmbedderPolicy: { policy: "credentialless" },
+    dnsPrefetchControl: { allow: false },
+    originAgentCluster: true,
+    permittedCrossDomainPolicies: { permittedPolicies: "none" },
+    hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true
+    },
+    xFrameOptions: { action: 'deny' },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
 });
+
+const securityLayer2 = (req, res, next) => {
+    helmetMiddleware(req, res, () => {
+        res.setHeader('X-XSS-Protection', '0');
+        res.setHeader('Permissions-Policy', 'geolocation=(), camera=(), microphone=(), payment=(), usb=(), display-capture=()');
+        res.setHeader('Reporting-Endpoints', 'csp-endpoint="https://abdugofforov.uz/csp-report"');
+        next();
+    });
+};
 
 module.exports = securityLayer2;

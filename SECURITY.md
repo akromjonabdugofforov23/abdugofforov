@@ -46,13 +46,28 @@ ALLOWED_ORIGINS=https://abdugofforov.uz,https://deutsch.abdugofforov.uz
 4. **Sessiya Boshqaruvi**:
    - Har bir sessiya tokeni mijoz IP manzili bilan bog'lanadi va 30 kunlik muddat (TTL) bilan cheklanadi.
 
-### B. Tarmoq va Shifrlash (Transport & HTTP Security)
+### B. Tarmoq va Shifrlash (Transport & HTTP Security — 15/15 Himoya Sarlavhalari)
 1. **Content Security Policy (CSP)**:
-   - Barcha sahifalar va Cloudflare Functions javoblarida qat'iy CSP faol. Tashqi xavfli skriptlar, ruxsat etilmagan iframelar (`frame-ancestors: 'none'`) va ma'lumotlar o'g'irlanishi (XSS) oldi olingan.
+   - Barcha sahifalar va Cloudflare Functions javoblarida qat'iy CSP faol. Tashqi xavfli skriptlar, ruxsat etilmagan iframelar (`frame-ancestors: 'none'`) va ma'lumotlar o'g'irlanishi (XSS) oldi olingan. Shuningdek, xatoliklarni kuzatish uchun `report-uri /csp-report; report-to csp-endpoint` sozlangan.
 2. **HSTS va Preload**:
    - `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` barcha HTTPS trafigini majburiy qilib, SSL Striping hujumlarini bartaraf etadi.
-3. **IP Spoofing himoyasi**:
+3. **Cross-Origin Izolyatsiyasi**:
+   - `Cross-Origin-Opener-Policy: same-origin-allow-popups` (Telegram WebApp / OAuth popuplarini xavfsiz ochish).
+   - `Cross-Origin-Embedder-Policy: credentialless` (Resurslarni xavfsiz cross-origin izolyatsiyada yuklash).
+   - `Cross-Origin-Resource-Policy: same-site` (Sayt resurslarining begona domenlar tomonidan o'zlashtirilishini to'sish).
+4. **Brauzer va Ma'lumotlar Himoyasi**:
+   - `X-Frame-Options: DENY` (Clickjacking ga qarshi qat'iy himoya).
+   - `X-Content-Type-Options: nosniff` (MIME-sniffing hujumlarini bloklash).
+   - `Referrer-Policy: strict-origin-when-cross-origin` (Foydalanuvchi maxfiyligini saqlash).
+   - `Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=(), display-capture=()` (Zararli API'lar, jumladan ekranni yozib olish `display-capture` to'liq cheklangan).
+   - `X-Permitted-Cross-Domain-Policies: none` (Flash va PDF cross-domain fayllarini bloklash).
+   - `X-DNS-Prefetch-Control: off` (Foydalanuvchi ma'lumotlari sizib chiqmasligi uchun brauzerning avtomatik DNS qidiruvini to'xtatish).
+   - `Origin-Agent-Cluster: ?1` (Brauzer darajasida saytni alohida jarayon/klasterga ajratish).
+   - `X-XSS-Protection: 0` (Zamonaviy standart: eskirgan va zaif auditor o'chirilgan, himoya to'liq CSP zimmasida).
+   - `Clear-Site-Data: "cache", "cookies", "storage"` (Chiqish (`/auth/logout`) amali bajarilganda foydalanuvchining barcha sessiya va kesh ma'lumotlarini brauzerdan tozalash).
+5. **IP Spoofing himoyasi**:
    - `getClientIp` funksiyasi `CF-Connecting-IP` va `X-Forwarded-For` sarlavhalaridan faqat birinchi haqiqiy IP manzilini ajratib oladi va regex orqali IPv4/IPv6 validatsiya qiladi.
+
 
 ### C. WAF va Bot Himoyasi (AI / Threat Detector)
 1. **Zararli Skanerlar Filtratsiyasi**:

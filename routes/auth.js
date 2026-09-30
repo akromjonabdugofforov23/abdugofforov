@@ -263,6 +263,7 @@ router.post('/logout', (req, res) => {
             db.update('users', user.id, { token: null });
         }
     }
+    res.setHeader('Clear-Site-Data', '"cache", "cookies", "storage"');
     res.json({ ok: true });
 });
 

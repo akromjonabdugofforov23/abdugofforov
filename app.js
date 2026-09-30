@@ -2084,7 +2084,8 @@ function playMusic(post) {
     if (!player || !frame) return;
     document.getElementById('mini-player-title').textContent = post.title || 'Musiqa';
     document.getElementById('mini-player-artist').textContent = post.artist || '';
-    frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0" title="YouTube player" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width:100%; height:100%;"></iframe>`;
+    frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0" title="YouTube player" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen credentialless style="width:100%; height:100%;"></iframe>`;
+
     player.classList.add('active');
 }
 

@@ -104,4 +104,10 @@ router.get('/api/status', (req, res) => {
     });
 });
 
+// CSP hisobotlarini qabul qilish endpointi
+router.all('/csp-report', (req, res) => {
+    res.sendStatus(204);
+});
+
 module.exports = router;
+

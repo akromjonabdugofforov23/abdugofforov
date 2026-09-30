@@ -112,20 +112,35 @@ function applySecurityHeaders(response, context, url) {
   if (!newResponse.headers.has('X-Frame-Options')) {
     newResponse.headers.set('X-Frame-Options', 'DENY');
   }
+  if (!newResponse.headers.has('X-XSS-Protection')) {
+    newResponse.headers.set('X-XSS-Protection', '0');
+  }
+  if (!newResponse.headers.has('X-DNS-Prefetch-Control')) {
+    newResponse.headers.set('X-DNS-Prefetch-Control', 'off');
+  }
+  if (!newResponse.headers.has('Origin-Agent-Cluster')) {
+    newResponse.headers.set('Origin-Agent-Cluster', '?1');
+  }
+  if (!newResponse.headers.has('Cross-Origin-Embedder-Policy')) {
+    newResponse.headers.set('Cross-Origin-Embedder-Policy', 'credentialless');
+  }
   if (!newResponse.headers.has('Referrer-Policy')) {
     newResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   }
   if (!newResponse.headers.has('Permissions-Policy')) {
-    newResponse.headers.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=(), payment=(), usb=()');
+    newResponse.headers.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=(), payment=(), usb=(), display-capture=()');
   }
   if (!newResponse.headers.has('Cross-Origin-Opener-Policy')) {
-    newResponse.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+    newResponse.headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
   }
   if (!newResponse.headers.has('Cross-Origin-Resource-Policy')) {
     newResponse.headers.set('Cross-Origin-Resource-Policy', 'same-site');
   }
   if (!newResponse.headers.has('X-Permitted-Cross-Domain-Policies')) {
     newResponse.headers.set('X-Permitted-Cross-Domain-Policies', 'none');
+  }
+  if (!newResponse.headers.has('Reporting-Endpoints')) {
+    newResponse.headers.set('Reporting-Endpoints', 'csp-endpoint="https://abdugofforov.uz/csp-report"');
   }
   if (url.protocol === 'https:' && !newResponse.headers.has('Strict-Transport-Security')) {
     newResponse.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
@@ -146,7 +161,9 @@ function applySecurityHeaders(response, context, url) {
       "img-src 'self' data: https:",
       "media-src 'self' data: blob:",
       "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://challenges.cloudflare.com https://oauth.telegram.org",
-      "connect-src 'self' https://abdugofforov.uz https://*.abdugofforov.uz https://ipapi.co https://api.open-meteo.com https://cloudflareinsights.com https://oauth.telegram.org"
+      "connect-src 'self' https://abdugofforov.uz https://*.abdugofforov.uz https://ipapi.co https://api.open-meteo.com https://cloudflareinsights.com https://oauth.telegram.org",
+      "report-uri /csp-report",
+      "report-to csp-endpoint"
     ];
     newResponse.headers.set('Content-Security-Policy', cspDirectives.join('; '));
   }
