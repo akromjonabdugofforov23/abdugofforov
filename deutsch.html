@@ -37,10 +37,14 @@
             </a>
 
             <div class="nav-links" id="top-nav-links">
-                <a href="#a1" class="active" data-nav-lvl="A1">🌱 A1 Boshlang'ich</a>
-                <a href="#a2" data-nav-lvl="A2">🌿 A2 Asosiy</a>
-                <a href="#b1" data-nav-lvl="B1">🌳 B1 O'rta</a>
-                <a href="#b2" data-nav-lvl="B2">🏔️ B2 Yuqori</a>
+                <a href="#a1" class="active" data-nav-lvl="A1">🌱 A1</a>
+                <a href="#a2" data-nav-lvl="A2">🌿 A2</a>
+                <a href="#b1" data-nav-lvl="B1">🌳 B1</a>
+                <a href="#b2" data-nav-lvl="B2">🏔️ B2</a>
+                <a href="#tests" data-nav-lvl="tests">📝 Testlar</a>
+                <a href="#flashcards" data-nav-lvl="flashcards">🎴 Lug'at</a>
+                <a href="#games" data-nav-lvl="games">🎮 O'yinlar</a>
+                <a href="#tournament" data-nav-lvl="tournament">⚔️ Turnir</a>
             </div>
 
             <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
@@ -119,6 +123,10 @@
         <div class="animate-fade-in" id="tournament-view" style="display:none;">
             <div id="tournament-content"></div>
         </div>
+
+        <div class="animate-fade-in" id="verb-trainer-view" style="display:none;">
+            <div id="verb-trainer-content"></div>
+        </div>
     </main>
 
     <!-- Footer -->
@@ -149,6 +157,22 @@
             <span style="font-size: 18px;">🏔️</span>
             <span class="dock-label">B2</span>
         </a>
+        <a href="#tests" class="dock-item" data-page="tests" title="Goethe Nemis Tili Testlari">
+            <span style="font-size: 18px;">📝</span>
+            <span class="dock-label">Testlar</span>
+        </a>
+        <a href="#flashcards" class="dock-item" data-page="flashcards" title="Lug'at Kartochkalari">
+            <span style="font-size: 18px;">🎴</span>
+            <span class="dock-label">Lug'at</span>
+        </a>
+        <a href="#games" class="dock-item" data-page="games" title="3D Vision Kartochka O'yinlari">
+            <span style="font-size: 18px;">🎮</span>
+            <span class="dock-label">O'yinlar</span>
+        </a>
+        <a href="#tournament" class="dock-item" data-page="tournament" title="Nemis Tili Turniri">
+            <span style="font-size: 18px;">⚔️</span>
+            <span class="dock-label">Turnir</span>
+        </a>
     </nav>
 
     <!-- Modallar -->
@@ -177,6 +201,7 @@
     <script src="scripts/matching-game.js"></script>
     <script src="scripts/curriculum-engine.js"></script>
     <script src="scripts/tests.js"></script>
+    <script src="scripts/verb-trainer.js"></script>
     <script src="scripts/horror-data.js"></script>
     <script src="scripts/horror-logic.js"></script>
     <script src="scripts/gamification.js"></script>

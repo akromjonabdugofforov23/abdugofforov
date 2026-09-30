@@ -471,6 +471,44 @@ function nextQuestion() {
     renderQuestion();
 }
 
+// ===== NEMIS TESTLARI — NATIJALAR TARIXI =====
+function saveTestResult(level, score, total) {
+    try {
+        const hist = JSON.parse(localStorage.getItem('deutsch_history') || '[]');
+        hist.unshift({ level, score, total, pct: total ? Math.round(score / total * 100) : 0, date: new Date().toISOString() });
+        localStorage.setItem('deutsch_history', JSON.stringify(hist.slice(0, 50)));
+    } catch (e) {}
+}
+
+function getTestHistory() {
+    try {
+        return JSON.parse(localStorage.getItem('deutsch_history') || '[]');
+    } catch (e) {
+        return [];
+    }
+}
+
+function renderTestHistory() {
+    const hist = getTestHistory();
+    if (!hist.length) return '';
+    const rows = hist.slice(0, 6).map(h => {
+        const d = new Date(h.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short' });
+        const color = h.pct >= 80 ? '#34d399' : h.pct >= 60 ? '#fbbf24' : '#f87171';
+        return `<div style="display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--border-color, rgba(255,255,255,0.08));">
+            <span style="text-transform:uppercase;font-weight:600;width:52px;color:var(--text-primary,#fff);">${typeof escapeHTML === 'function' ? escapeHTML(h.level) : h.level}</span>
+            <div style="flex:1;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">
+                <div style="height:100%;width:${h.pct}%;background:${color};"></div>
+            </div>
+            <span style="width:70px;text-align:right;color:var(--text-secondary,#94a3b8);">${h.score}/${h.total} · ${h.pct}%</span>
+            <span style="width:56px;text-align:right;color:var(--text-muted,#64748b);font-size:11px;">${d}</span>
+        </div>`;
+    }).join('');
+    return `<div class="post-card" style="max-width:680px;margin:30px auto 0;padding:22px;background:rgba(30,41,59,0.5);border:1px solid rgba(255,255,255,0.08);border-radius:18px;">
+        <h3 style="font-size:16px;margin-bottom:12px;color:var(--text-primary,#fff);">📈 Sizning natijalaringiz</h3>
+        ${rows}
+    </div>`;
+}
+
 function renderTestResult() {
     const total = currentTest.parts.reduce((s,part) => s + part.sections.reduce((s2,sec) => s2 + sec.questions.length, 0), 0);
     const pct = total ? Math.round((score / total) * 100) : 0;
@@ -1131,6 +1169,10 @@ window.startTournamentGame = startTournamentGame;
 window.renderTournamentQ = renderTournamentQ;
 window.tournamentAnswer = tournamentAnswer;
 window.tournamentNext = tournamentNext;
+window.setDeutschLevelFilter = setDeutschLevelFilter;
+window.saveTestResult = saveTestResult;
+window.renderTestHistory = renderTestHistory;
+window.getTestHistory = getTestHistory;
 
 
 // ===== HAMBURGER MENU =====

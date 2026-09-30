@@ -208,6 +208,12 @@
             modal = document.createElement('div');
             modal.id = 'curriculum-studio-modal';
             modal.className = 'modal-overlay animate-fade-in';
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeTopicStudio();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.style.display === 'flex') closeTopicStudio();
+            });
             document.body.appendChild(modal);
         }
 
@@ -339,7 +345,7 @@
                                                 <div style="color: #e2e8f0; font-size: 13.5px;">${ex.uz}</div>
                                                 ${ex.tip ? `<div style="color: #94a3b8; font-size: 11.5px; margin-top: 2px;">💡 ${ex.tip}</div>` : ''}
                                             </div>
-                                            <button onclick="window.speakGerman('${escapeAttr(ex.de)}')" style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #93c5fd; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;" title="Ovoz chiqarish">
+                                            <button class="ex-audio-btn" data-german="${(ex.de || '').replace(/['"\\<>&]/g, '')}" style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #93c5fd; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;" title="Ovoz chiqarish">
                                                 🔊
                                             </button>
                                         </div>
@@ -362,13 +368,27 @@
                 ` : ''}
 
                 <div style="display: flex; justify-content: center; gap: 14px; margin-top: 30px;">
-                    <button class="btn-primary" onclick="document.querySelector('.studio-tab-btn[data-tab=\\'flashcards\\']').click();" style="display:flex; align-items:center; gap:8px; padding: 12px 24px; border-radius: 14px; background: #3b82f6; color: #fff; font-weight: 700; cursor: pointer; border: none;">
+                    <button class="btn-primary studio-to-flashcards-btn" style="display:flex; align-items:center; gap:8px; padding: 12px 24px; border-radius: 14px; background: #3b82f6; color: #fff; font-weight: 700; cursor: pointer; border: none;">
                         <span>🎴</span> Lug'at kartochkalariga o'tish &rarr;
                     </button>
                 </div>
             </div>
         `;
         container.innerHTML = html;
+
+        container.querySelectorAll('.ex-audio-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const de = btn.getAttribute('data-german');
+                if (de) speakGerman(de);
+            });
+        });
+        const toFcBtn = container.querySelector('.studio-to-flashcards-btn');
+        if (toFcBtn) {
+            toFcBtn.addEventListener('click', () => {
+                const tab = document.querySelector('.studio-tab-btn[data-tab="flashcards"]');
+                if (tab) tab.click();
+            });
+        }
     }
 
     // 2. LUG'AT VA FLASHCARDS TABI
@@ -675,6 +695,7 @@
 
             document.querySelectorAll('.match-card-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
+                    if (selected.length >= 2) return;
                     const cardId = parseInt(btn.getAttribute('data-card-id'), 10);
                     const card = cards.find(c => c.id === cardId);
                     if (!card || matched.includes(card.pairId) || selected.some(s => s.id === card.id)) return;

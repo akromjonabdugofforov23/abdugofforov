@@ -576,7 +576,7 @@ function showMatchingHome() {
                 <h3 style="color:#ef4444;">Horror Deutsch</h3>
                 <p>Qorong'u gotik qal'ada omon qolish va nemis tili testlaridan xatosiz o'tish kvesti!</p>
                 <div class="game-mode-decks">
-                    <button class="btn-primary vision-btn" style="background:#dc2626; border-color:#ef4444;" data-click="if(typeof openHorrorHome==='function'){openHorrorHome();}else{alert('Horror rejim yuklanmoqda...');}">
+                    <button class="btn-primary vision-btn" style="background:#dc2626; border-color:#ef4444;" data-click="openHorrorHome()">
                         🏰 Qal'aga kirish
                     </button>
                 </div>
@@ -589,7 +589,7 @@ function showMatchingHome() {
                 <h3 style="color:#a855f7;">Fe'llar Trenajyori</h3>
                 <p>Kuchli va noto'g'ri fe'llarning 3 ta shaklini (Infinitiv, Präteritum, Partizip II) yodlash!</p>
                 <div class="game-mode-decks">
-                    <button class="btn-primary vision-btn" style="background:#7c3aed; border-color:#a855f7;" data-click="if(typeof openVerbTrainerView==='function'){openVerbTrainerView();}else{alert('Fe\'llar trenajyori ochilmoqda...');}">
+                    <button class="btn-primary vision-btn" style="background:#7c3aed; border-color:#a855f7;" data-click="openVerbTrainerView()">
                         ⚡ Mashg'ulotni boshlash
                     </button>
                 </div>
@@ -603,3 +603,9 @@ function showMatchingHome() {
 
     setTimeout(() => initVision3DTilt('.game-mode-card'), 60);
 }
+
+// Window Global Exports
+window.MatchingGame = MatchingGame;
+window.SpeedQuiz = SpeedQuiz;
+window.showMatchingHome = showMatchingHome;
+window.initVision3DTilt = initVision3DTilt;

@@ -328,4 +328,110 @@ function shuffleFlashcards() {
     renderFlashcard();
 }
 
+// ===== FLASHCARD — SPACED REPETITION (Leitner) + STREAK =====
+const FC_INTERVALS = [0, 1, 2, 4, 7, 15]; // box raqami -> kunlar
+function fcProgress() {
+    try {
+        return JSON.parse(localStorage.getItem('fc_progress') || '{}');
+    } catch (e) {
+        return {};
+    }
+}
+function fcSaveProgress(p) {
+    try {
+        localStorage.setItem('fc_progress', JSON.stringify(p));
+    } catch (e) {}
+}
+function fcCardKey(deck, idx) { return deck + ':' + idx; }
+
+function fcAnswer(known) {
+    const prog = fcProgress();
+    const key = fcCardKey(fcDeckKey, fcOrder[fcIndex]);
+    let box = (prog[key] && prog[key].box) || 1;
+    box = known ? Math.min(box + 1, 5) : 1;
+    prog[key] = { box, due: Date.now() + FC_INTERVALS[box] * 86400000 };
+    fcSaveProgress(prog);
+    updateFcStreak();
+    if (fcIndex < fcOrder.length - 1) {
+        fcIndex++;
+        renderFlashcard();
+    } else {
+        renderFlashcardDone();
+    }
+}
+
+function updateFcStreak() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const s = JSON.parse(localStorage.getItem('fc_streak') || '{"count":0,"last":""}');
+        if (s.last === today) return s.count;
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        s.count = (s.last === yesterday) ? (s.count + 1) : 1;
+        s.last = today;
+        localStorage.setItem('fc_streak', JSON.stringify(s));
+        return s.count;
+    } catch (e) {
+        return 1;
+    }
+}
+
+function getFcStreak() {
+    try {
+        return (JSON.parse(localStorage.getItem('fc_streak') || '{"count":0}').count) || 1;
+    } catch (e) {
+        return 1;
+    }
+}
+
+function fcMasteredCount(deckKey) {
+    try {
+        const prog = fcProgress();
+        let n = 0;
+        (flashcardDecks[deckKey] || []).forEach((_, i) => {
+            const e = prog[fcCardKey(deckKey, i)];
+            if (e && e.box >= 4) n++;
+        });
+        return n;
+    } catch (e) {
+        return 0;
+    }
+}
+
+function renderFlashcardDone() {
+    const view = document.getElementById('flashcards-content');
+    if (!view) return;
+    const mastered = fcMasteredCount(fcDeckKey);
+    const total = flashcardDecks[fcDeckKey] ? flashcardDecks[fcDeckKey].length : 0;
+    view.innerHTML = `
+        <div style="max-width:480px;margin:0 auto;text-align:center;">
+            <div style="font-size:60px;margin-bottom:14px;">🎉</div>
+            <h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:8px;color:var(--text-primary,#fff);">To'plam yakunlandi!</h2>
+            <p style="color:var(--text-secondary,#94a3b8);margin-bottom:24px;">O'zlashtirildi: <b style="color:#4ade80;">${mastered}/${total}</b> &nbsp;·&nbsp; 🔥 Streak: <b>${getFcStreak()} kun</b></p>
+            <div style="display:flex;gap:12px;justify-content:center;">
+                <button class="btn-primary" data-click="startFlashcards('${fcDeckKey}')" style="padding:10px 20px;border-radius:12px;background:#3b82f6;border:none;color:#fff;cursor:pointer;font-weight:600;">🔄 Qayta</button>
+                <button class="btn-secondary" data-click="renderFlashcardsHome()" style="padding:10px 20px;border-radius:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;cursor:pointer;font-weight:600;">${window.i18n ? i18n.t('fc.back') : 'Orqaga'}</button>
+            </div>
+        </div>`;
+}
+
+// Window Global Exports
+window.FC_ALL_DECKS = FC_ALL_DECKS;
+window.renderFlashcardsHome = renderFlashcardsHome;
+window.renderFlashcardsGridHTML = renderFlashcardsGridHTML;
+window.updateFlashcardsView = updateFlashcardsView;
+window.setFcDeckFilter = setFcDeckFilter;
+window.startFlashcardAt = startFlashcardAt;
+window.startFlashcards = startFlashcards;
+window.renderFlashcard = renderFlashcard;
+window.flipFlashcard = flipFlashcard;
+window.nextFlashcard = nextFlashcard;
+window.prevFlashcard = prevFlashcard;
+window.shuffleFlashcards = shuffleFlashcards;
+window.fcAnswer = fcAnswer;
+window.getFcStreak = getFcStreak;
+window.fcMasteredCount = fcMasteredCount;
+window.speakGermanText = speakGermanText;
+window.renderFlashcardDone = renderFlashcardDone;
+
+
 
