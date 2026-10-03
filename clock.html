@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Luxury Analog Clock | Abdugofforov Chronometer</title>
+    <meta name="description" content="Hashamatli Shveysariya uslubidagi analog soat. Ish stoli va diqqatni jamlash uchun estetik xronometr.">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#0b0f19">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", "Inter", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-gradient: radial-gradient(circle at center, #182333 0%, #0d1522 50%, #060910 100%);
+            --clock-size: min(82vw, 360px);
+            --gold: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --gold-light: #f5d76e;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-gradient);
+            color: #f1f5f9;
+            overflow: hidden;
+            position: relative;
+            user-select: none;
+        }
+
+        /* Ambient Glow & Vignette */
+        .ambient-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, rgba(99, 102, 241, 0.08) 40%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Top Bar Controls */
+        .clock-topbar {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 20;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.25s ease;
+        }
+
+        .back-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateX(-2px);
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .top-btn {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 15px;
+        }
+
+        .top-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: scale(1.06);
+        }
+
+        /* Clock Outer Bezel */
+        .clock-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .clock-bezel {
+            padding: 10px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #2a384c, #0e1520 60%, #3a4b63);
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.85),
+                0 0 40px rgba(0, 0, 0, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.25),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Clock Body */
+        .clock {
+            width: var(--clock-size);
+            height: var(--clock-size);
+            border-radius: 50%;
+            background: radial-gradient(circle, #151821 55%, #07090e 100%);
+            border: 6px solid rgba(255, 255, 255, 0.09);
+            box-shadow: 
+                inset 0 0 35px rgba(0, 0, 0, 0.95),
+                inset 0 0 15px rgba(212, 175, 55, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle sunray dial pattern */
+        .dial-rays {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: repeating-conic-gradient(from 0deg, rgba(255,255,255,0.015) 0deg 15deg, transparent 15deg 30deg);
+            pointer-events: none;
+        }
+
+        /* Ticks (Dial Indices) */
+        .ticks-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+        }
+
+        .tick {
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            width: 2px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.25);
+            transform-origin: bottom center;
+            transform: translateX(-50%);
+        }
+
+        .tick.major {
+            width: 3px;
+            height: 12px;
+            background: var(--gold);
+            box-shadow: 0 0 6px var(--gold-glow);
+        }
+
+        /* Logo */
+        .clock-branding {
+            position: absolute;
+            top: 66px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .clock-logo-img {
+            width: 48px;
+            opacity: 0.92;
+            filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.35));
+        }
+
+        .clock-brand-title {
+            font-family: "Cinzel", "Playfair Display", serif;
+            font-size: 11px;
+            letter-spacing: 3.5px;
+            color: #f1f5f9;
+            margin-top: 4px;
+            font-weight: 700;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+
+        .clock-sub-title {
+            font-size: 7.5px;
+            letter-spacing: 2.2px;
+            color: var(--gold);
+            opacity: 0.85;
+            margin-top: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* Numbers */
+        .numbers span {
+            position: absolute;
+            color: var(--gold-light);
+            font-size: 24px;
+            font-weight: 700;
+            font-family: "Cinzel", "Poppins", sans-serif;
+            text-shadow: 0 0 12px var(--gold-glow);
+            z-index: 5;
+        }
+
+        .twelve {
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .three {
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .six {
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .nine {
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Rolex-style Cyclops Date Window at 3 o'clock */
+        .date-cyclops {
+            position: absolute;
+            right: 56px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 22px;
+            background: #ffffff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                inset 0 1px 3px rgba(0,0,0,0.5),
+                0 0 6px rgba(0,0,0,0.7);
+            border: 1px solid var(--gold);
+            z-index: 6;
+        }
+
+        .date-digit {
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0b0f19;
+            line-height: 1;
+        }
+
+        /* Arrows Container */
+        .arrows {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            inset: 0;
+            z-index: 8;
+        }
+
+        /* Center Pin */
+        .arrows::before {
+            content: "";
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #ffe27a, var(--gold) 70%, #997818);
+            border-radius: 50%;
+            z-index: 12;
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.8), 0 2px 4px rgba(0,0,0,0.8);
+            border: 2px solid #111;
+        }
+
+        .arrows div {
+            position: absolute;
+            bottom: 50%;
+            transform-origin: bottom center;
+            border-radius: 8px;
+        }
+
+        /* Hour Hand */
+        .hour {
+            height: 72px;
+            width: 7px;
+            background: linear-gradient(to top, #e2e8f0, #ffffff);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), 0 2px 5px rgba(255, 255, 255, 0.2);
+            z-index: 9;
+        }
+
+        .hour::after {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 38px;
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        /* Minute Hand */
+        .minute {
+            height: 108px;
+            width: 5px;
+            background: linear-gradient(to top, #cbd5e1, #ffffff);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+            z-index: 10;
+        }
+
+        .minute::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 60px;
+            background: #94a3b8;
+            border-radius: 2px;
+        }
+
+        /* Second Hand (Gold with counterweight) */
+        .second {
+            height: 132px;
+            width: 2px;
+            background: var(--gold-light);
+            box-shadow: 0 0 14px rgba(245, 215, 110, 0.75);
+            z-index: 11;
+        }
+
+        .second::before {
+            content: "";
+            position: absolute;
+            bottom: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 22px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .second::after {
+            content: "";
+            position: absolute;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gold-light);
+            box-shadow: 0 0 8px var(--gold);
+        }
+
+        /* Bottom Status & Digital Readout */
+        .clock-meta-dock {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .digital-readout {
+            font-family: "Cinzel", "Inter", monospace;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 6px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .digital-date {
+            font-size: 13px;
+            color: var(--gold);
+            letter-spacing: 1px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .mode-toggles {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            padding: 6px 14px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn:hover, .mode-btn.active {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold-light);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --clock-size: 280px;
+            }
+            .clock-branding {
+                top: 50px;
+            }
+            .clock-logo-img {
+                width: 38px;
+            }
+            .hour {
+                height: 56px;
+            }
+            .minute {
+                height: 84px;
+            }
+            .second {
+                height: 104px;
+            }
+            .date-cyclops {
+                right: 44px;
+                width: 24px;
+                height: 19px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <!-- Top Navigation & Controls -->
+    <header class="clock-topbar">
+        <a href="index.html" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <span>Bosh sahifaga</span>
+        </a>
+
+        <div class="top-actions">
+            <button class="top-btn" id="audio-tick-btn" type="button" title="Soat tovushini yoqish/o'chirish" aria-label="Tik-tak ovozi">
+                <span id="audio-icon">🔇</span>
+            </button>
+            <button class="top-btn" id="fullscreen-btn" type="button" title="To'liq ekran rejimi" aria-label="To'liq ekran">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Luxury Watch -->
+    <main class="clock-container">
+        <div class="clock-bezel">
+            <div class="clock" id="luxury-clock">
+                <div class="dial-rays"></div>
+
+                <!-- Generated 60 Dial Ticks -->
+                <div class="ticks-ring" id="ticks-ring"></div>
+
+                <!-- Clock Logo / Brand -->
+                <div class="clock-branding">
+                    <img class="clock-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Logo_da_Rolex.png/1280px-Logo_da_Rolex.png?20210605010030" alt="Crown Logo" onerror="this.style.display='none'">
+                    <span class="clock-brand-title">ABDUGOFFOROV</span>
+                    <span class="clock-sub-title">ATELIER · GENÈVE</span>
+                </div>
+
+                <!-- Numbers -->
+                <div class="numbers">
+                    <span class="twelve">12</span>
+                    <span class="three">3</span>
+                    <span class="six">6</span>
+                    <span class="nine">9</span>
+                </div>
+
+                <!-- Rolex-style Date Window -->
+                <div class="date-cyclops" title="Sana">
+                    <span class="date-digit" id="clock-date-digit">01</span>
+                </div>
+
+                <!-- Arrows (Hands) -->
+                <div class="arrows">
+                    <div class="hour" id="clock-hour"></div>
+                    <div class="minute" id="clock-minute"></div>
+                    <div class="second" id="clock-second"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Digital & Meta Dock -->
+        <div class="clock-meta-dock">
+            <div class="digital-readout" id="digital-clock">00:00:00</div>
+            <div class="digital-date" id="digital-date">DUSHANBA · 01 OKTYABR 2026</div>
+
+            <div class="mode-toggles">
+                <button type="button" class="mode-btn active" id="mode-smooth-btn">Silliq harakat (Automatic)</button>
+                <button type="button" class="mode-btn" id="mode-step-btn">Sekundma-sekund (Quartz)</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        (function() {
+            const hour = document.getElementById("clock-hour");
+            const minute = document.getElementById("clock-minute");
+            const second = document.getElementById("clock-second");
+            const dateDigit = document.getElementById("clock-date-digit");
+            const digitalClock = document.getElementById("digital-clock");
+            const digitalDate = document.getElementById("digital-date");
+            const ticksRing = document.getElementById("ticks-ring");
+            const fullscreenBtn = document.getElementById("fullscreen-btn");
+            const audioTickBtn = document.getElementById("audio-tick-btn");
+            const audioIcon = document.getElementById("audio-icon");
+            const modeSmoothBtn = document.getElementById("mode-smooth-btn");
+            const modeStepBtn = document.getElementById("mode-step-btn");
+
+            let isSmooth = true;
+            let isMuted = true;
+            let audioCtx = null;
+
+            // Generate Dial Ticks (60 ticks for all minutes, with major ticks on hours)
+            if (ticksRing) {
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < 60; i++) {
+                    // skip 0, 15, 30, 45 as they have big numbers 12, 3, 6, 9
+                    if (i % 15 === 0) continue;
+                    const tick = document.createElement("div");
+                    tick.className = "tick" + (i % 5 === 0 ? " major" : "");
+                    tick.style.transform = `rotate(${i * 6}deg)`;
+                    fragment.appendChild(tick);
+                }
+                ticksRing.appendChild(fragment);
+            }
+
+            // Web Audio API Tick Sound
+            function playTick() {
+                if (isMuted) return;
+                try {
+                    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    if (audioCtx.state === 'suspended') audioCtx.resume();
+                    
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.025);
+
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.025);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.03);
+                } catch(e) {}
+            }
+
+            // Weekdays and Months in Uzbek
+            const weekdays = ["YAKSHANBA", "DUSHANBA", "SESHANBA", "CHORSHANBA", "PAYSHANBA", "JUMA", "SHANBA"];
+            const months = ["YANVAR", "FEVRAL", "MART", "APREL", "MAY", "IYUN", "IYUL", "AVGUST", "SENTYABR", "OKTYABR", "NOYABR", "DEKABR"];
+
+            let lastSec = -1;
+
+            function updateTime() {
+                const now = new Date();
+                const ms = now.getMilliseconds();
+                const sec = now.getSeconds();
+                const min = now.getMinutes();
+                const hr = now.getHours();
+                const day = now.getDate();
+
+                // Mechanical automatic watch smooth movement vs standard quartz step
+                const secondDegree = isSmooth 
+                    ? ((sec + ms / 1000) / 60) * 360 
+                    : (sec / 60) * 360;
+
+                const minuteDegree = ((min + sec / 60) / 60) * 360;
+                const hourDegree = (((hr % 12) + min / 60) / 12) * 360;
+
+                second.style.transform = `rotate(${secondDegree}deg)`;
+                minute.style.transform = `rotate(${minuteDegree}deg)`;
+                hour.style.transform = `rotate(${hourDegree}deg)`;
+
+                // Date digit in cyclops window
+                if (dateDigit.textContent !== String(day)) {
+                    dateDigit.textContent = day;
+                }
+
+                // Tick sound on every second
+                if (sec !== lastSec) {
+                    lastSec = sec;
+                    playTick();
+
+                    // Digital Readout
+                    const hStr = String(hr).padStart(2, '0');
+                    const mStr = String(min).padStart(2, '0');
+                    const sStr = String(sec).padStart(2, '0');
+                    digitalClock.textContent = `${hStr}:${mStr}:${sStr}`;
+
+                    // Digital Date
+                    const dayName = weekdays[now.getDay()];
+                    const monthName = months[now.getMonth()];
+                    digitalDate.textContent = `${dayName} · ${day} ${monthName} ${now.getFullYear()}`;
+                }
+
+                if (isSmooth) {
+                    requestAnimationFrame(updateTime);
+                }
+            }
+
+            // Mode Toggle
+            modeSmoothBtn.addEventListener('click', () => {
+                isSmooth = true;
+                modeSmoothBtn.classList.add('active');
+                modeStepBtn.classList.remove('active');
+                requestAnimationFrame(updateTime);
+            });
+
+            modeStepBtn.addEventListener('click', () => {
+                isSmooth = false;
+                modeStepBtn.classList.add('active');
+                modeSmoothBtn.classList.remove('active');
+                updateTime();
+            });
+
+            // Audio Toggle
+            audioTickBtn.addEventListener('click', () => {
+                isMuted = !isMuted;
+                audioIcon.textContent = isMuted ? '🔇' : '🔊';
+                if (!isMuted && !audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            });
+
+            // Fullscreen Toggle
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                } else {
+                    document.exitFullscreen().catch(() => {});
+                }
+            });
+
+            // Run
+            if (isSmooth) {
+                requestAnimationFrame(updateTime);
+            } else {
+                setInterval(updateTime, 1000);
+            }
+            updateTime();
+        })();
+    </script>
+</body>
+</html>

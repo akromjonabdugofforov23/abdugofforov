@@ -1,0 +1,418 @@
+/* ============================================================
+   ABDUGOFFOROV — CLAPS, LIVE REACTIONS & QUOTE SELECTION SHARE
+   Medium-Style Claps, Live Emojis, Floating Particles & Quote Share
+   ============================================================ */
+
+/* --- 1. Medium-Style Claps & Card Integration --- */
+.clap-btn-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.post-stat.clap-btn,
+.modal-clap-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    background: var(--glass-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+    color: var(--text-secondary, #94a3b8);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    outline: none;
+}
+
+.post-stat.clap-btn:hover,
+.modal-clap-btn:hover {
+    background: var(--glass-bg-strong, rgba(99, 102, 241, 0.12));
+    border-color: var(--accent-color, #6366f1);
+    color: var(--accent-color, #6366f1);
+    transform: translateY(-1px);
+}
+
+.post-stat.clap-btn:active,
+.modal-clap-btn:active {
+    transform: scale(0.92);
+}
+
+.post-stat.clap-btn.clapped,
+.modal-clap-btn.clapped {
+    color: var(--accent-color, #6366f1);
+    border-color: rgba(99, 102, 241, 0.4);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.clap-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.clap-btn:hover .clap-icon,
+.modal-clap-btn:hover .clap-icon {
+    transform: rotate(-10deg) scale(1.15);
+}
+
+.clap-animate .clap-icon {
+    animation: clap-bounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes clap-bounce {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.35) rotate(-15deg); }
+    70% { transform: scale(0.9) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Floating Badge (+1, +2, ...) */
+.clap-floating-badge {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    pointer-events: none;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.45);
+    white-space: nowrap;
+    animation: clap-float-up 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    z-index: 100;
+}
+
+@keyframes clap-float-up {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px) scale(0.6);
+    }
+    20% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-6px) scale(1.1);
+    }
+    40% {
+        transform: translateX(-50%) translateY(-14px) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-36px) scale(0.85);
+    }
+}
+
+/* Floating Particle Burst */
+.clap-particle {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 50%;
+    z-index: 99;
+    animation: particle-burst 0.75s ease-out forwards;
+}
+
+@keyframes particle-burst {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx, 0px), var(--ty, -40px)) scale(0);
+    }
+}
+
+/* --- 2. Live Emojis Reaction Bar --- */
+.live-reactions-container {
+    margin: 24px 0 16px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    background: var(--glass-bg, rgba(13, 18, 29, 0.65));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.live-reactions-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary, #94a3b8);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.live-reactions-header .reaction-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.live-reactions-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.reaction-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 9999px;
+    background: var(--card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+    color: var(--text-primary, #f8fafc);
+    font-size: 15px;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.reaction-btn:hover {
+    background: rgba(99, 102, 241, 0.14);
+    border-color: rgba(99, 102, 241, 0.35);
+    transform: translateY(-2px) scale(1.05);
+}
+
+.reaction-btn:active {
+    transform: scale(0.92);
+}
+
+.reaction-btn.user-reacted {
+    background: rgba(99, 102, 241, 0.18);
+    border-color: var(--accent-color, #6366f1);
+    box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+}
+
+.reaction-emoji {
+    display: inline-block;
+    font-size: 18px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.reaction-btn:hover .reaction-emoji {
+    transform: scale(1.2);
+}
+
+.reaction-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary, #94a3b8);
+}
+
+.reaction-btn.user-reacted .reaction-count {
+    color: var(--text-primary, #f8fafc);
+}
+
+/* Emoji Pulse & Burst */
+.reaction-pulse .reaction-emoji {
+    animation: emoji-pulse 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes emoji-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.5) rotate(-10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+.floating-emoji {
+    position: absolute;
+    pointer-events: none;
+    font-size: 20px;
+    animation: float-emoji-up 0.85s ease-out forwards;
+    z-index: 100;
+}
+
+@keyframes float-emoji-up {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(0.8);
+    }
+    40% {
+        transform: translateY(-20px) scale(1.25);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-45px) scale(0.7);
+    }
+}
+
+/* --- 3. Quote Selection Share Popover --- */
+.quote-share-popover {
+    position: absolute;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 8px;
+    background: var(--atelier-surface-raised, rgba(18, 24, 38, 0.95));
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px) scale(0.96);
+    transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.2s;
+    pointer-events: none;
+}
+
+.quote-share-popover.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* Arrow pointer */
+.quote-share-popover::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    pointer-events: none;
+}
+
+.quote-share-popover.arrow-bottom::after {
+    bottom: -12px;
+    border-color: var(--atelier-surface-raised, rgba(18, 24, 38, 0.95)) transparent transparent transparent;
+}
+
+.quote-share-popover.arrow-top::after {
+    top: -12px;
+    border-color: transparent transparent var(--atelier-surface-raised, rgba(18, 24, 38, 0.95)) transparent;
+}
+
+.quote-popover-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary, #f8fafc);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.quote-popover-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.quote-popover-btn:active {
+    transform: scale(0.95);
+}
+
+.quote-popover-btn.telegram-btn:hover {
+    background: rgba(41, 169, 234, 0.2);
+    color: #29a9ea;
+}
+
+.quote-popover-btn.copy-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    color: #818cf8;
+}
+
+.quote-popover-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--glass-border, rgba(255, 255, 255, 0.15));
+    margin: 0 2px;
+}
+
+.quote-copied-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    background: #10b981;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.quote-copied-tooltip.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+/* Light Theme Adjustments */
+[data-theme="light"] .quote-share-popover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .quote-share-popover.arrow-bottom::after {
+    border-color: rgba(255, 255, 255, 0.95) transparent transparent transparent;
+}
+
+[data-theme="light"] .quote-share-popover.arrow-top::after {
+    border-color: transparent transparent rgba(255, 255, 255, 0.95) transparent;
+}
+
+[data-theme="light"] .quote-popover-btn {
+    color: #1e293b;
+}
+
+[data-theme="light"] .quote-popover-btn:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .quote-popover-divider {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .live-reactions-container {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .reaction-btn {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #1e293b;
+}
+
+[data-theme="light"] .post-stat.clap-btn,
+[data-theme="light"] .modal-clap-btn {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #475569;
+}

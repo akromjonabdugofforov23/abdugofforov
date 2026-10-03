@@ -1163,6 +1163,13 @@
                                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                                 </svg>
                             </button>
+                            <button class="atelier-icon-btn" id="quote-image-btn" type="button" aria-label="Iqtibosni rasm qilib saqlash" title="Rasm sifatida yuklab olish (Instagram / Telegram)" data-action="quote-image">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </button>
                             <button class="atelier-icon-btn" id="quote-next-btn" type="button" aria-label="Boshqa hikmat tanlash" title="Boshqa hikmat" data-action="quote-next">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
@@ -1197,6 +1204,15 @@
         const { item } = getNextRandomQuote(pool);
         applyQuoteToDOM(item, false);
 
+        const imgBtn = document.getElementById('quote-image-btn');
+        if (imgBtn && !imgBtn._hasImgListener) {
+            imgBtn._hasImgListener = true;
+            imgBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                generateQuoteImage();
+            });
+        }
+
         // Orqa fonda yangilanishni tekshirish
         setTimeout(() => syncWeeklyQuotes(false), 800);
     }
@@ -1221,6 +1237,365 @@
         }
     }
 
+    // 9. Iqtibosni Yuqori Sifatli Rasm Qilib Generatsiya Qilish (Canvas 1080x1080)
+    let isGeneratingImage = false;
+
+    function wrapCanvasText(ctx, text, maxWidth) {
+        const words = text.split(/\s+/);
+        const lines = [];
+        let currentLine = '';
+
+        for (let i = 0; i < words.length; i++) {
+            const word = words[i];
+            const testLine = currentLine ? `${currentLine} ${word}` : word;
+            if (ctx.measureText(testLine).width > maxWidth && currentLine) {
+                lines.push(currentLine);
+                currentLine = word;
+            } else {
+                currentLine = testLine;
+            }
+        }
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+        return lines;
+    }
+
+    function drawCanvasRoundRect(ctx, x, y, w, h, r) {
+        if (typeof ctx.roundRect === 'function') {
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, r);
+        } else {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        }
+    }
+
+    async function generateQuoteImage() {
+        if (isGeneratingImage) return;
+        isGeneratingImage = true;
+
+        const btn = document.getElementById('quote-image-btn');
+        const origSvg = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.classList.add('copied');
+            btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        }
+
+        try {
+            if (document.fonts && document.fonts.ready) {
+                try { await document.fonts.ready; } catch (e) {}
+            }
+
+            const item = currentQuoteItem || {};
+            const textEl = document.getElementById('quote-text');
+            const authorEl = document.getElementById('quote-author');
+            const deEl = document.getElementById('quote-de-text');
+            const badgeEl = document.getElementById('quote-category-badge');
+
+            const uzQuote = (item.quote || (textEl ? textEl.textContent : '') || '').replace(/^["“”„]+|["“”„]+$/g, '').trim();
+            const author = (item.author || (authorEl ? authorEl.textContent : '') || '').replace(/^—\s*/, '').trim();
+            const deQuote = (item.de || (deEl ? deEl.textContent : '') || '').replace(/^["“”„]+|["“”„]+$/g, '').trim();
+            const categoryText = (item.category || (badgeEl ? badgeEl.textContent : '') || '✦ KUN HIKMATI · ILHOM').trim();
+
+            const canvas = document.createElement('canvas');
+            const WIDTH = 1080;
+            const HEIGHT = 1080;
+            canvas.width = WIDTH;
+            canvas.height = HEIGHT;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) throw new Error('Canvas 2D context not supported');
+
+            // 1. Sleek Dark Luxury Atelier Background
+            const bgGrad = ctx.createLinearGradient(0, 0, WIDTH, HEIGHT);
+            bgGrad.addColorStop(0, '#090d16');
+            bgGrad.addColorStop(0.5, '#0e1424');
+            bgGrad.addColorStop(1, '#151b2d');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+            // Ambient Glow Circles (Violet / Indigo)
+            const glow1 = ctx.createRadialGradient(880, 180, 10, 880, 180, 500);
+            glow1.addColorStop(0, 'rgba(139, 92, 246, 0.28)');
+            glow1.addColorStop(0.45, 'rgba(99, 102, 241, 0.12)');
+            glow1.addColorStop(1, 'rgba(99, 102, 241, 0)');
+            ctx.fillStyle = glow1;
+            ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+            const glow2 = ctx.createRadialGradient(200, 900, 10, 200, 900, 520);
+            glow2.addColorStop(0, 'rgba(99, 102, 241, 0.22)');
+            glow2.addColorStop(0.5, 'rgba(59, 130, 246, 0.08)');
+            glow2.addColorStop(1, 'rgba(59, 130, 246, 0)');
+            ctx.fillStyle = glow2;
+            ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+            // Subtle Architectural Grid
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.018)';
+            ctx.lineWidth = 1;
+            for (let x = 60; x < WIDTH; x += 60) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, HEIGHT);
+                ctx.stroke();
+            }
+            for (let y = 60; y < HEIGHT; y += 60) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(WIDTH, y);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // 2. Atelier Glass Card Container
+            const cardX = 64;
+            const cardY = 64;
+            const cardW = 952;
+            const cardH = 952;
+            const cardR = 32;
+
+            drawCanvasRoundRect(ctx, cardX, cardY, cardW, cardH, cardR);
+            ctx.fillStyle = 'rgba(13, 18, 30, 0.78)';
+            ctx.fill();
+
+            const borderGrad = ctx.createLinearGradient(cardX, cardY, cardX + cardW, cardY + cardH);
+            borderGrad.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
+            borderGrad.addColorStop(0.3, 'rgba(139, 92, 246, 0.38)');
+            borderGrad.addColorStop(0.7, 'rgba(99, 102, 241, 0.18)');
+            borderGrad.addColorStop(1, 'rgba(255, 255, 255, 0.05)');
+            ctx.strokeStyle = borderGrad;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // 3. Top Header
+            const contentLeft = cardX + 48; // 112
+            const contentRight = cardX + cardW - 48; // 968
+            const contentWidth = contentRight - contentLeft; // 856
+
+            // Badge (Category)
+            const cleanCategory = (categoryText || '✦ KUN HIKMATI · ILHOM').toUpperCase();
+            ctx.font = '700 15px -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Inter", sans-serif';
+            const catMetrics = ctx.measureText(cleanCategory);
+            const badgeW = catMetrics.width + 28;
+            const badgeH = 34;
+            const badgeX = contentLeft;
+            const badgeY = 112;
+
+            drawCanvasRoundRect(ctx, badgeX, badgeY, badgeW, badgeH, 17);
+            ctx.fillStyle = 'rgba(139, 92, 246, 0.16)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(139, 92, 246, 0.4)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.fillStyle = '#c4b5fd';
+            ctx.textAlign = 'left';
+            ctx.fillText(cleanCategory, badgeX + 14, badgeY + 22);
+
+            // Brand Mark (Right)
+            ctx.font = '700 16px -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Inter", sans-serif';
+            ctx.fillStyle = '#94a3b8';
+            ctx.textAlign = 'right';
+            ctx.fillText('ABDUGOFFOROV.UZ', contentRight, 134);
+            const brandW = ctx.measureText('ABDUGOFFOROV.UZ').width;
+            ctx.fillStyle = '#8b5cf6';
+            ctx.fillText('✦', contentRight - brandW - 10, 134);
+            ctx.textAlign = 'left';
+
+            // Header Divider
+            const divGrad = ctx.createLinearGradient(contentLeft, 168, contentRight, 168);
+            divGrad.addColorStop(0, 'rgba(255, 255, 255, 0.03)');
+            divGrad.addColorStop(0.3, 'rgba(139, 92, 246, 0.28)');
+            divGrad.addColorStop(0.7, 'rgba(99, 102, 241, 0.18)');
+            divGrad.addColorStop(1, 'rgba(255, 255, 255, 0.03)');
+            ctx.strokeStyle = divGrad;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(contentLeft, 168);
+            ctx.lineTo(contentRight, 168);
+            ctx.stroke();
+
+            // 4. Calculate Dynamic Typography & Heights
+            let uzFontSize = 38;
+            if (uzQuote.length > 200) {
+                uzFontSize = 28;
+            } else if (uzQuote.length > 130) {
+                uzFontSize = 33;
+            } else if (uzQuote.length < 75) {
+                uzFontSize = 42;
+            }
+            const uzLineHeight = Math.round(uzFontSize * 1.48);
+
+            ctx.font = `600 ${uzFontSize}px "Playfair Display", Georgia, serif`;
+            const uzLines = wrapCanvasText(ctx, `“${uzQuote}”`, contentWidth - 30);
+            const uzBlockHeight = uzLines.length * uzLineHeight;
+
+            const hasGerman = Boolean(deQuote && deQuote.length > 0);
+            let deFontSize = uzFontSize > 34 ? 22 : 19;
+            let deLineHeight = Math.round(deFontSize * 1.48);
+            let deLines = [];
+            let deBoxH = 0;
+            if (hasGerman) {
+                ctx.font = `italic 400 ${deFontSize}px "Playfair Display", Georgia, serif`;
+                deLines = wrapCanvasText(ctx, `„${deQuote}“`, contentWidth - 64);
+                deBoxH = 32 + (deLines.length * deLineHeight) + 40;
+            }
+
+            const authorH = author ? 40 : 0;
+            const deTotalH = hasGerman ? deBoxH + 32 : 0;
+            const totalContentH = uzBlockHeight + authorH + deTotalH;
+
+            const availableH = 920 - 180;
+            const contentStartY = 180 + Math.max(20, Math.floor((availableH - totalContentH) / 2));
+
+            // Decorative Elegant Watermark Quote
+            ctx.save();
+            ctx.font = 'italic 125px "Playfair Display", Georgia, serif';
+            ctx.fillStyle = 'rgba(139, 92, 246, 0.22)';
+            ctx.fillText('“', contentLeft - 8, contentStartY + 30);
+            ctx.restore();
+
+            // Draw Uzbek Quote Text
+            ctx.save();
+            ctx.font = `600 ${uzFontSize}px "Playfair Display", Georgia, serif`;
+            ctx.fillStyle = '#f8fafc';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 3;
+
+            let curY = contentStartY + (uzFontSize > 36 ? 42 : 34);
+            for (let i = 0; i < uzLines.length; i++) {
+                ctx.fillText(uzLines[i], contentLeft, curY);
+                curY += uzLineHeight;
+            }
+            ctx.restore();
+
+            // Author Name
+            if (author) {
+                curY += 12;
+                ctx.font = '600 22px -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Inter", sans-serif';
+                ctx.fillStyle = '#a5b4fc';
+                ctx.fillText(`— ${author}`, contentLeft, curY);
+                curY += 26;
+            }
+
+            // German Translation Card (Secondary Folio)
+            if (hasGerman) {
+                curY += 28;
+                const boxX = contentLeft;
+                const boxY = curY;
+                const boxW = contentWidth;
+
+                drawCanvasRoundRect(ctx, boxX, boxY, boxW, deBoxH, 18);
+                ctx.fillStyle = 'rgba(10, 15, 27, 0.72)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Left Accent Stripe
+                ctx.save();
+                drawCanvasRoundRect(ctx, boxX, boxY, boxW, deBoxH, 18);
+                ctx.clip();
+                const stripeGrad = ctx.createLinearGradient(boxX, boxY, boxX, boxY + deBoxH);
+                stripeGrad.addColorStop(0, '#8b5cf6');
+                stripeGrad.addColorStop(1, '#6366f1');
+                ctx.fillStyle = stripeGrad;
+                ctx.fillRect(boxX, boxY, 5, deBoxH);
+                ctx.restore();
+
+                // German badge
+                const badgeInnerY = boxY + 28;
+                ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Inter", sans-serif';
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillText('🇩🇪  NEMISCHA TARJIMA', boxX + 24, badgeInnerY);
+
+                // German text
+                ctx.font = `italic 400 ${deFontSize}px "Playfair Display", Georgia, serif`;
+                ctx.fillStyle = '#cbd5e1';
+                let deCurY = badgeInnerY + 28;
+                for (let i = 0; i < deLines.length; i++) {
+                    ctx.fillText(deLines[i], boxX + 24, deCurY);
+                    deCurY += deLineHeight;
+                }
+            }
+
+            // 5. Footer inside card
+            const footerLineY = cardY + cardH - 74;
+            const fGrad = ctx.createLinearGradient(contentLeft, footerLineY, contentRight, footerLineY);
+            fGrad.addColorStop(0, 'rgba(255, 255, 255, 0.02)');
+            fGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.12)');
+            fGrad.addColorStop(1, 'rgba(255, 255, 255, 0.02)');
+            ctx.strokeStyle = fGrad;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(contentLeft, footerLineY);
+            ctx.lineTo(contentRight, footerLineY);
+            ctx.stroke();
+
+            const footerTextY = footerLineY + 36;
+            ctx.font = '500 15px -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Inter", sans-serif';
+            ctx.fillStyle = '#64748b';
+            ctx.fillText('✦ Kay Kundaligi · Shaxsiy Blog & Falsafa', contentLeft, footerTextY);
+
+            ctx.font = '600 15px -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Inter", sans-serif';
+            ctx.fillStyle = '#94a3b8';
+            ctx.textAlign = 'right';
+            ctx.fillText('abdugofforov.uz', contentRight, footerTextY);
+            ctx.textAlign = 'left';
+
+            // 6. Export as PNG and Download
+            const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+            if (!blob) throw new Error('Blob generation failed');
+
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+            const fileName = `abdugofforov-iqtibos-${timestamp}.png`;
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1200);
+
+            // Copy to clipboard if supported
+            if (navigator.clipboard && window.ClipboardItem) {
+                try {
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': blob })
+                    ]);
+                } catch (e) {}
+            }
+
+            if (typeof showToast === 'function') {
+                showToast("Iqtibos rasm ko'rinishida saqlandi! 🎨");
+            }
+        } catch (err) {
+            console.error('Quote to image generation failed:', err);
+            if (typeof showToast === 'function') {
+                showToast("Rasm yaratishda xatolik yuz berdi");
+            }
+        } finally {
+            setTimeout(() => {
+                if (btn) {
+                    btn.classList.remove('copied');
+                    if (origSvg) btn.innerHTML = origSvg;
+                }
+                isGeneratingImage = false;
+            }, 1800);
+        }
+    }
+
     // Module Export
     window.App = window.App || {};
     window.App.Quote = {
@@ -1228,12 +1603,14 @@
         next: nextQuote,
         speak: speakCurrent,
         syncWeekly: syncWeeklyQuotes,
-        getPool: getActiveQuotesPool
+        getPool: getActiveQuotesPool,
+        generateImage: generateQuoteImage
     };
 
     window.renderDailyFortuneWidget = renderDailyFortuneWidget;
     window.nextIndividualQuote = nextQuote;
     window.speakCurrentQuote = speakCurrent;
+    window.generateQuoteImage = generateQuoteImage;
 
     // Til o'zgarganda yangi tildagi hikmatga moslashtirish
     window.addEventListener('languageChanged', () => {

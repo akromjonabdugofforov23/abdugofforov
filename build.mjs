@@ -25,7 +25,7 @@ const OUT = path.join(ROOT, 'dist');
 
 const JS_FILES = ['data-flashcards.js', 'data-tests.js', 'app.js', 'auth.js', 'i18n.js', 'storage.js', 'sw.js', 'kay.js', 'deutsch.js', 'tools.js', 'cv.js'];
 const CSS_FILES = ['style.css'];
-const HTML_FILES = ['index.html', 'kay.html', 'deutsch.html', 'prototype.html', '3d-lab.html', 'tools.html', 'cv.html'];
+const HTML_FILES = ['index.html', 'kay.html', 'deutsch.html', 'prototype.html', '3d-lab.html', 'tools.html', 'cv.html', 'clock.html'];
 // Statik fayllar (o'zgartirilmasdan ko'chiriladi)
 const COPY_FILES = [
   '_headers', 'robots.txt', 'sitemap.xml', 'manifest.webmanifest',

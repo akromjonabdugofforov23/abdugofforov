@@ -272,6 +272,8 @@ window.SearchEngine = SearchEngine;
 // State (Holat) - Abdugofforov rebrending kalitlari bilan boshlash
 // posts endi IndexedDB (Store) orqali yuklanadi Ã¢â‚¬â€  bootstrap() ichida hydrate qilinadi.
 let posts = [];
+window.posts = posts;
+window.getPosts = () => posts;
 let currentTab = 'home'; 
 let filterType = 'all'; 
 let searchQuery = '';
@@ -1386,6 +1388,7 @@ function openPostDetail(postId) {
 
     postDetailModal.classList.add('active');
     document.body.style.overflow = 'hidden';
+    try { window.dispatchEvent(new CustomEvent('postOpenedInModal', { detail: { post } })); } catch (_) {}
 
     // Deep-link (ulashiladigan havola) va dinamik meta
     currentDetailPostId = post.id;
@@ -2424,6 +2427,7 @@ async function bootstrap() {
         console.error('Xotira yuklashda xato:', e);
         posts = getHighValueDefaultPosts();
     }
+    window.posts = posts;
 
     // Admin holatini tiklash — sahifa yangilanganda ham admin tugmalari
     // (Yozish, Floating +) faqat admin uchun ko'rinishi uchun
@@ -2947,6 +2951,14 @@ document.addEventListener('click', (e) => {
                         }
                     }).catch(() => {});
                 }
+            }
+            break;
+        }
+        case 'quote-image': {
+            if (typeof generateQuoteImage === 'function') {
+                generateQuoteImage();
+            } else if (window.App && window.App.Quote && typeof window.App.Quote.generateImage === 'function') {
+                window.App.Quote.generateImage();
             }
             break;
         }

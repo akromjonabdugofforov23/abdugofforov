@@ -42,6 +42,11 @@
     <link rel="stylesheet" href="css/light-pro-ai.css">
     <link rel="stylesheet" href="css/pro-icons.css">
     <link rel="stylesheet" href="css/pro-animations.css?v=3">
+    <link rel="stylesheet" href="css/claps-reactions.css?v=1">
+    <link rel="stylesheet" href="css/ambient-player.css?v=1">
+    <link rel="stylesheet" href="css/reader-mode.css?v=1">
+    <link rel="stylesheet" href="css/ai-summary-bookmarks.css?v=1">
+    <link rel="stylesheet" href="css/luxury-clock-modal.css?v=1">
     <!-- Google Fonts: Asynchronous & Non-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -165,6 +170,10 @@
                 <span class="drawer-nav-icon">🛠️</span>
                 <span class="drawer-nav-text">Tools Lab ↗</span>
             </a>
+            <a href="clock.html" class="drawer-nav-item">
+                <span class="drawer-nav-icon">⌚</span>
+                <span class="drawer-nav-text">Luxury Clock</span>
+            </a>
             <a href="javascript:void(0)" class="drawer-nav-item" id="drawer-auth-link" data-action="open-auth" data-mode="login">
                 <span class="drawer-nav-icon">🔑</span>
                 <span class="drawer-nav-text" id="drawer-auth-text">Kirish / Profil</span>
@@ -182,6 +191,13 @@
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    </button>
+                    <button class="atelier-icon-btn" id="quote-image-btn" type="button" aria-label="Iqtibosni rasm qilib saqlash" title="Rasm sifatida yuklab olish (Instagram / Telegram)" data-action="quote-image">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
                         </svg>
                     </button>
                     <button class="atelier-icon-btn" id="quote-next-btn" type="button" aria-label="Boshqa hikmat tanlash" title="Boshqa hikmat" data-action="quote-next">
@@ -222,14 +238,14 @@
             <input type="text" class="search-input atelier-command-input" id="search-input" placeholder="Maqolalar, nemis tili qoidalari yoki hikmatlar..." data-i18n-placeholder="search.placeholder" autocomplete="off" spellcheck="false" aria-label="Qidiruv">
             <kbd class="atelier-kbd" title="Qidiruv tezkor tugmasi">⌘K</kbd>
         </div>
-        <div class="functional-clock atelier-clock" id="functional-clock" aria-label="Hozirgi vaqt">
+        <a href="clock.html" class="functional-clock atelier-clock" id="functional-clock" aria-label="Hozirgi vaqt — Hashamatli soatni ochish" title="Hashamatli analog soatni ochish (Rolex / Atelier)" style="text-decoration: none; cursor: pointer;">
             <div class="fc-time atelier-clock-time">
                 <span class="clock-digits" data-clock="h">00</span><span class="clock-colon colon">:</span><span class="clock-digits" data-clock="m">00</span><span class="clock-colon colon">:</span><span class="clock-digits" data-clock="s">00</span>
             </div>
             <div class="fc-date atelier-clock-meta">
                 <span id="widget-date">--.--.----</span>
             </div>
-        </div>
+        </a>
     </div>
 
 
@@ -572,6 +588,21 @@
 
     <!-- Pro AI Interactive Enhancements (CSP Compliant) -->
     <script src="scripts/pro-ai-lab.js?v=13" defer></script>
+
+    <!-- Medium-Style Claps, Live Emojis & Quote Selection Share -->
+    <script src="scripts/claps-reactions.js?v=1" defer></script>
+
+    <!-- Lofi / Ambient Focus Audio Player (100% Pure Web Audio API) -->
+    <script src="scripts/ambient-player.js?v=1" defer></script>
+
+    <!-- Modern Reader Mode (Reading Progress Bar + Bionic Reading + Web Speech TTS) -->
+    <script src="scripts/reader-mode.js?v=1" defer></script>
+
+    <!-- AI Post Summary (TL;DR) & Offline Bookmarks -->
+    <script src="scripts/ai-summary-bookmarks.js?v=1" defer></script>
+
+    <!-- Luxury Swiss Atelier Analog Watch Modal -->
+    <script src="scripts/luxury-clock-modal.js?v=1" defer></script>
 </body>
 </html>
 
