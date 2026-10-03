@@ -587,11 +587,11 @@ function renderPosts(instant) {
                             <h2 class="post-title">${highlightedTitle}</h2>
                             <p class="post-excerpt">${highlightedExcerpt}</p>
                             <div class="post-footer">
-                                <span class="post-date">${formatDate(post.date)} - ⏳ ${readingTime(post)}</span>
+                                <span class="post-date">${formatDate(post.date)}</span>
                                 <div class="post-stats">
                                     <div class="post-stat like-btn" data-id="${post.id}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                        <span>${post.likes || 0}</span>
+                                        <span>${(post.likes && post.likes > 0) ? post.likes : ''}</span>
                                     </div>
                                     <div class="post-stat">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -736,11 +736,11 @@ function renderPosts(instant) {
                         </div>
 
                         <div class="post-footer" style="margin-top: 15px;">
-                            <span class="post-date">${formatDate(post.date)} - ⏳ ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                    <span>${post.likes || 0}</span>
+                                    <span>${(post.likes && post.likes > 0) ? post.likes : ''}</span>
                                 </div>
                                 <div class="post-stat">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -761,11 +761,11 @@ function renderPosts(instant) {
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)} - ⏳ ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                    <span>${post.likes || 0}</span>
+                                    <span>${(post.likes && post.likes > 0) ? post.likes : ''}</span>
                                 </div>
                                 <div class="post-stat">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -791,11 +791,11 @@ function renderPosts(instant) {
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)} - ⏳ ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                    <span>${post.likes || 0}</span>
+                                    <span>${(post.likes && post.likes > 0) ? post.likes : ''}</span>
                                 </div>
                                 <div class="post-stat">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -815,11 +815,11 @@ function renderPosts(instant) {
                         <h2 class="post-title">${escapeHTML(post.title)}</h2>
                         <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
                         <div class="post-footer">
-                            <span class="post-date">${formatDate(post.date)} - ⏳ ${readingTime(post)}</span>
+                            <span class="post-date">${formatDate(post.date)}</span>
                             <div class="post-stats">
                                 <div class="post-stat like-btn" data-id="${post.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                    <span>${post.likes || 0}</span>
+                                    <span>${(post.likes && post.likes > 0) ? post.likes : ''}</span>
                                 </div>
                                 <div class="post-stat">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -1233,10 +1233,10 @@ function handleLike(postId) {
     if (!post) return;
 
     if (post.liked) {
-        post.likes--;
+        post.likes = Math.max(0, (post.likes || 1) - 1);
         post.liked = false;
     } else {
-        post.likes++;
+        post.likes = (post.likes || 0) + 1;
         post.liked = true;
     }
 
@@ -1245,7 +1245,8 @@ function handleLike(postId) {
 
     const modalLikeBtn = document.getElementById(`modal-like-${postId}`);
     if (modalLikeBtn) {
-        modalLikeBtn.querySelector('span').textContent = post.likes;
+        const countSpan = modalLikeBtn.querySelector('span');
+        if (countSpan) countSpan.textContent = (post.likes && post.likes > 0) ? post.likes : '';
         const svg = modalLikeBtn.querySelector('svg');
         if (post.liked) {
             svg.setAttribute('fill', 'var(--accent-color)');
@@ -1275,10 +1276,9 @@ function openPostDetail(postId) {
             <h1 class="modal-post-title">${escapeHTML(post.title)}</h1>
             <div class="modal-post-meta">
                 <span>📅 ${formatDate(post.date)}</span>
-                <span>⏳ ${readingTime(post)}</span>
                 <span class="post-stat" id="modal-like-${post.id}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: ${post.liked ? 'var(--accent-color)' : 'inherit'}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    <span>${post.likes}</span>
+                    <span>${(post.likes && post.likes > 0) ? post.likes : ''}</span>
                 </span>
             </div>
         </div>

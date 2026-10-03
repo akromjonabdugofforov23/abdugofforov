@@ -37,6 +37,7 @@
     let analyserNode = null;
     let currentPresetNodes = null;
     let rainDropTimer = null;
+    let cosmicChimeTimer = null;
     let visualizerAnimFrame = null;
     let cachedPinkBuffer = null;
     let cachedBrownBuffer = null;
@@ -141,7 +142,7 @@
     }
 
     /**
-     * Synthesizer: Preset 1 - Yomg'ir (Rain)
+     * Synthesizer: Preset 1 - Yomg'ir (Crystal-Clear Natural Rain & Gentle Droplets)
      */
     function createRainPreset(ctx, destination) {
         const nodesToCleanup = [];
@@ -151,75 +152,88 @@
         presetGain.connect(destination);
         nodesToCleanup.push(presetGain);
 
-        // 1. Continuous Rain Hiss (Pink Noise + Lowpass + Highpass)
+        // 1. Soft, soothing rain bed (Filtered pink noise with gentle roll-offs)
         const pinkSrc = ctx.createBufferSource();
         pinkSrc.buffer = getPinkNoiseBuffer(ctx);
         pinkSrc.loop = true;
 
-        const rainFilter = ctx.createBiquadFilter();
-        rainFilter.type = 'lowpass';
-        rainFilter.frequency.setValueAtTime(1200, ctx.currentTime);
-        rainFilter.Q.setValueAtTime(0.7, ctx.currentTime);
+        const rainLowPass = ctx.createBiquadFilter();
+        rainLowPass.type = 'lowpass';
+        rainLowPass.frequency.setValueAtTime(750, ctx.currentTime);
+        rainLowPass.Q.setValueAtTime(0.5, ctx.currentTime);
 
         const rainHighPass = ctx.createBiquadFilter();
         rainHighPass.type = 'highpass';
-        rainHighPass.frequency.setValueAtTime(280, ctx.currentTime);
+        rainHighPass.frequency.setValueAtTime(220, ctx.currentTime);
+        rainHighPass.Q.setValueAtTime(0.5, ctx.currentTime);
 
         const rainGain = ctx.createGain();
-        rainGain.gain.setValueAtTime(0.45, ctx.currentTime);
+        rainGain.gain.setValueAtTime(0.24, ctx.currentTime);
 
-        pinkSrc.connect(rainFilter);
-        rainFilter.connect(rainHighPass);
+        pinkSrc.connect(rainLowPass);
+        rainLowPass.connect(rainHighPass);
         rainHighPass.connect(rainGain);
         rainGain.connect(presetGain);
 
         pinkSrc.start(0);
-        nodesToCleanup.push(pinkSrc, rainFilter, rainHighPass, rainGain);
+        nodesToCleanup.push(pinkSrc, rainLowPass, rainHighPass, rainGain);
 
-        // 2. Distant Rain Hum (Brown Noise)
-        const brownSrc = ctx.createBufferSource();
-        brownSrc.buffer = getBrownNoiseBuffer(ctx);
-        brownSrc.loop = true;
+        // 2. Subtle rain shower breeze modulation (soft natural air movement)
+        const breezeSrc = ctx.createBufferSource();
+        breezeSrc.buffer = getPinkNoiseBuffer(ctx);
+        breezeSrc.loop = true;
 
-        const brownFilter = ctx.createBiquadFilter();
-        brownFilter.type = 'lowpass';
-        brownFilter.frequency.setValueAtTime(320, ctx.currentTime);
+        const breezeFilter = ctx.createBiquadFilter();
+        breezeFilter.type = 'bandpass';
+        breezeFilter.frequency.setValueAtTime(1300, ctx.currentTime);
+        breezeFilter.Q.setValueAtTime(0.8, ctx.currentTime);
 
-        const brownGain = ctx.createGain();
-        brownGain.gain.setValueAtTime(0.35, ctx.currentTime);
+        const breezeGain = ctx.createGain();
+        breezeGain.gain.setValueAtTime(0.03, ctx.currentTime);
 
-        brownSrc.connect(brownFilter);
-        brownFilter.connect(brownGain);
-        brownGain.connect(presetGain);
+        const breezeLfo = ctx.createOscillator();
+        breezeLfo.type = 'sine';
+        breezeLfo.frequency.setValueAtTime(0.07, ctx.currentTime);
 
-        brownSrc.start(0);
-        nodesToCleanup.push(brownSrc, brownFilter, brownGain);
+        const breezeLfoGain = ctx.createGain();
+        breezeLfoGain.gain.setValueAtTime(0.02, ctx.currentTime);
 
-        // 3. Dynamic Rain Drop Generator
+        breezeLfo.connect(breezeLfoGain);
+        breezeLfoGain.connect(breezeGain.gain);
+
+        breezeSrc.connect(breezeFilter);
+        breezeFilter.connect(breezeGain);
+        breezeGain.connect(presetGain);
+
+        breezeSrc.start(0);
+        breezeLfo.start(0);
+        nodesToCleanup.push(breezeSrc, breezeFilter, breezeGain, breezeLfo, breezeLfoGain);
+
+        // 3. Realistic, natural water droplets (soft pitch-drop sines, no harsh laser beeps)
         function triggerDrop() {
             if (!state.isPlaying || state.preset !== 'rain' || !ctx || ctx.state !== 'running') return;
             try {
                 const now = ctx.currentTime;
                 const osc = ctx.createOscillator();
                 const dropGain = ctx.createGain();
-                const duration = 0.04 + Math.random() * 0.05;
-                const startFreq = 1600 + Math.random() * 900;
-                const endFreq = 800 + Math.random() * 400;
+                const dropDuration = 0.038 + Math.random() * 0.025;
+                const startFreq = 420 + Math.random() * 200;
+                const endFreq = 200 + Math.random() * 70;
 
-                osc.type = Math.random() > 0.35 ? 'sine' : 'triangle';
+                osc.type = 'sine';
                 osc.frequency.setValueAtTime(startFreq, now);
-                osc.frequency.exponentialRampToValueAtTime(endFreq, now + duration);
+                osc.frequency.exponentialRampToValueAtTime(endFreq, now + dropDuration);
 
-                const peakGain = 0.015 + Math.random() * 0.025;
+                const peakGain = 0.015 + Math.random() * 0.018;
                 dropGain.gain.setValueAtTime(0.0001, now);
-                dropGain.gain.exponentialRampToValueAtTime(peakGain, now + 0.004);
-                dropGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+                dropGain.gain.exponentialRampToValueAtTime(peakGain, now + 0.002);
+                dropGain.gain.exponentialRampToValueAtTime(0.0001, now + dropDuration);
 
                 let connectionTarget = presetGain;
                 let pannerNode = null;
                 if (ctx.createStereoPanner) {
                     pannerNode = ctx.createStereoPanner();
-                    pannerNode.pan.setValueAtTime(Math.random() * 1.6 - 0.8, now);
+                    pannerNode.pan.setValueAtTime(Math.random() * 1.5 - 0.75, now);
                     dropGain.connect(pannerNode);
                     pannerNode.connect(connectionTarget);
                 } else {
@@ -228,7 +242,7 @@
 
                 osc.connect(dropGain);
                 osc.start(now);
-                osc.stop(now + duration + 0.02);
+                osc.stop(now + dropDuration + 0.01);
 
                 osc.onended = () => {
                     try {
@@ -239,12 +253,10 @@
                 };
             } catch (_) {}
 
-            // Schedule next drop with organic randomness
-            const nextDropDelay = 70 + Math.random() * 220;
+            const nextDropDelay = 120 + Math.random() * 220;
             rainDropTimer = setTimeout(triggerDrop, nextDropDelay);
         }
 
-        // Kick off raindrops
         triggerDrop();
 
         return {
@@ -265,55 +277,107 @@
     }
 
     /**
-     * Synthesizer: Preset 2 - Fokus / Kafe (Warm Velvet Brown Noise)
+     * Synthesizer: Preset 2 - Fokus (Warm Harmonic Drone & Binaural Alpha Flow)
+     * Replaces harsh brown noise with crystal-clear 10Hz Alpha waves & lush chord pad
      */
     function createFocusPreset(ctx, destination) {
         const nodesToCleanup = [];
         const presetGain = ctx.createGain();
         presetGain.gain.setValueAtTime(0.001, ctx.currentTime);
-        presetGain.gain.exponentialRampToValueAtTime(1.0, ctx.currentTime + 0.3);
+        presetGain.gain.exponentialRampToValueAtTime(1.0, ctx.currentTime + 0.35);
         presetGain.connect(destination);
         nodesToCleanup.push(presetGain);
 
-        // Brown noise source
-        const brownSrc = ctx.createBufferSource();
-        brownSrc.buffer = getBrownNoiseBuffer(ctx);
-        brownSrc.loop = true;
+        // 1. 10Hz Alpha wave binaural carrier (Tranquil focus & clarity)
+        const leftOsc = ctx.createOscillator();
+        leftOsc.type = 'sine';
+        leftOsc.frequency.setValueAtTime(128.0, ctx.currentTime);
 
-        // Warm lowpass filter
-        const lowpass = ctx.createBiquadFilter();
-        lowpass.type = 'lowpass';
-        lowpass.frequency.setValueAtTime(480, ctx.currentTime);
-        lowpass.Q.setValueAtTime(1.2, ctx.currentTime);
+        const rightOsc = ctx.createOscillator();
+        rightOsc.type = 'sine';
+        rightOsc.frequency.setValueAtTime(138.0, ctx.currentTime); // +10Hz Alpha beat
 
-        // Highpass filter to eliminate sub-rumble
-        const highpass = ctx.createBiquadFilter();
-        highpass.type = 'highpass';
-        highpass.frequency.setValueAtTime(45, ctx.currentTime);
+        const binauralGain = ctx.createGain();
+        binauralGain.gain.setValueAtTime(0.14, ctx.currentTime);
 
-        // Slow organic breath LFO (0.1Hz) modulating lowpass frequency
-        const lfo = ctx.createOscillator();
-        lfo.type = 'sine';
-        lfo.frequency.setValueAtTime(0.09, ctx.currentTime);
+        if (ctx.createStereoPanner) {
+            const leftPan = ctx.createStereoPanner();
+            leftPan.pan.setValueAtTime(-0.85, ctx.currentTime);
+            const rightPan = ctx.createStereoPanner();
+            rightPan.pan.setValueAtTime(0.85, ctx.currentTime);
 
-        const lfoGain = ctx.createGain();
-        lfoGain.gain.setValueAtTime(90, ctx.currentTime); // Filter cutoff modulation depth
+            leftOsc.connect(leftPan);
+            leftPan.connect(binauralGain);
+            rightOsc.connect(rightPan);
+            rightPan.connect(binauralGain);
 
-        lfo.connect(lfoGain);
-        lfoGain.connect(lowpass.frequency);
+            nodesToCleanup.push(leftPan, rightPan);
+        } else {
+            leftOsc.connect(binauralGain);
+            rightOsc.connect(binauralGain);
+        }
 
-        const focusGain = ctx.createGain();
-        focusGain.gain.setValueAtTime(0.68, ctx.currentTime);
+        binauralGain.connect(presetGain);
+        leftOsc.start(0);
+        rightOsc.start(0);
+        nodesToCleanup.push(leftOsc, rightOsc, binauralGain);
 
-        brownSrc.connect(highpass);
-        highpass.connect(lowpass);
-        lowpass.connect(focusGain);
-        focusGain.connect(presetGain);
+        // 2. Warm harmonic chord voices (Pure sines: G3, C4, E4, G4 - warm, soothing chord)
+        const chordVoices = [
+            { freq: 196.00, gain: 0.11, pan: -0.25 },
+            { freq: 261.63, gain: 0.09, pan: 0.25 },
+            { freq: 329.63, gain: 0.07, pan: -0.1 },
+            { freq: 392.00, gain: 0.05, pan: 0.1 }
+        ];
 
-        brownSrc.start(0);
-        lfo.start(0);
+        const chordMaster = ctx.createGain();
+        chordMaster.gain.setValueAtTime(0.9, ctx.currentTime);
+        chordMaster.connect(presetGain);
+        nodesToCleanup.push(chordMaster);
 
-        nodesToCleanup.push(brownSrc, lfo, lfoGain, lowpass, highpass, focusGain);
+        chordVoices.forEach(v => {
+            const osc = ctx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(v.freq, ctx.currentTime);
+
+            const vGain = ctx.createGain();
+            vGain.gain.setValueAtTime(v.gain, ctx.currentTime);
+
+            if (ctx.createStereoPanner) {
+                const pan = ctx.createStereoPanner();
+                pan.pan.setValueAtTime(v.pan, ctx.currentTime);
+                osc.connect(vGain);
+                vGain.connect(pan);
+                pan.connect(chordMaster);
+                nodesToCleanup.push(pan);
+            } else {
+                osc.connect(vGain);
+                vGain.connect(chordMaster);
+            }
+
+            osc.start(0);
+            nodesToCleanup.push(osc, vGain);
+        });
+
+        // 3. Delicate analog room warmth (heavily filtered low-frequency warmth, no harsh hiss)
+        const warmSrc = ctx.createBufferSource();
+        warmSrc.buffer = getBrownNoiseBuffer(ctx);
+        warmSrc.loop = true;
+
+        const warmLowpass = ctx.createBiquadFilter();
+        warmLowpass.type = 'lowpass';
+        warmLowpass.frequency.setValueAtTime(180, ctx.currentTime);
+        warmLowpass.Q.setValueAtTime(0.5, ctx.currentTime);
+
+        const warmGain = ctx.createGain();
+        warmGain.gain.setValueAtTime(0.06, ctx.currentTime);
+
+        warmSrc.connect(warmLowpass);
+        warmLowpass.connect(warmGain);
+        warmGain.connect(presetGain);
+
+        warmSrc.start(0);
+        nodesToCleanup.push(warmSrc, warmLowpass, warmGain);
 
         return {
             gainNode: presetGain,
@@ -329,7 +393,8 @@
     }
 
     /**
-     * Synthesizer: Preset 3 - Koinot & Meditatsiya (Cosmic Harmonic Drone)
+     * Synthesizer: Preset 3 - Koinot & Meditatsiya (Celestial Pure Sine Drone & Stardust Chimes)
+     * Replaces harsh triangle buzzy drone with sacred 432Hz pure sines & space chimes
      */
     function createCosmicPreset(ctx, destination) {
         const nodesToCleanup = [];
@@ -339,43 +404,44 @@
         presetGain.connect(destination);
         nodesToCleanup.push(presetGain);
 
-        // Harmonic chord: F2, C3, F3, A3, C4, E4 (Lush Fmaj7 / Fmaj9)
-        const voices = [
-            { freq: 87.31, type: 'sine', detune: 0, gain: 0.28, pan: -0.2 },
-            { freq: 130.81, type: 'triangle', detune: -4, gain: 0.18, pan: 0.2 },
-            { freq: 174.61, type: 'sine', detune: 4, gain: 0.22, pan: -0.4 },
-            { freq: 220.00, type: 'triangle', detune: -6, gain: 0.14, pan: 0.4 },
-            { freq: 261.63, type: 'sine', detune: 5, gain: 0.12, pan: -0.1 },
-            { freq: 329.63, type: 'triangle', detune: -3, gain: 0.08, pan: 0.1 }
+        // 1. Pure Sine Harmonic Constellation (432Hz Sacred Cosmic Tuning - 0% buzz)
+        const cosmicVoices = [
+            { freq: 54.00, gain: 0.16, pan: 0.0, detune: 0 },      // Sub-bass root
+            { freq: 108.00, gain: 0.20, pan: 0.0, detune: 0 },     // Deep fundamental
+            { freq: 162.00, gain: 0.15, pan: -0.25, detune: 0 },   // Cosmic fifth
+            { freq: 216.00, gain: 0.12, pan: 0.25, detune: 2 },    // Ethereal octave
+            { freq: 270.00, gain: 0.09, pan: -0.15, detune: -1.5 },// Major ninth
+            { freq: 324.00, gain: 0.07, pan: 0.15, detune: 1.5 },  // Resonant fifth
+            { freq: 432.00, gain: 0.05, pan: -0.1, detune: 0 }     // Celestial shimmer
         ];
 
-        // Cosmic lowpass filter with slow sweeping LFO
+        // Smooth sweeping lowpass filter (gentle Q: 0.6 to avoid harsh whistling)
         const filter = ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(580, ctx.currentTime);
-        filter.Q.setValueAtTime(1.5, ctx.currentTime);
+        filter.frequency.setValueAtTime(540, ctx.currentTime);
+        filter.Q.setValueAtTime(0.6, ctx.currentTime);
 
         const lfo = ctx.createOscillator();
         lfo.type = 'sine';
-        lfo.frequency.setValueAtTime(0.06, ctx.currentTime); // 16s cycle
+        lfo.frequency.setValueAtTime(0.04, ctx.currentTime); // 25s slow cosmic wave
 
         const lfoGain = ctx.createGain();
-        lfoGain.gain.setValueAtTime(180, ctx.currentTime);
+        lfoGain.gain.setValueAtTime(160, ctx.currentTime);
         lfo.connect(lfoGain);
         lfoGain.connect(filter.frequency);
         lfo.start(0);
         nodesToCleanup.push(lfo, lfoGain, filter);
 
-        // Delay & Reverb effect
+        // Deep Space Delay / Reverb simulation
         const delay = ctx.createDelay();
-        delay.delayTime.setValueAtTime(0.35, ctx.currentTime);
+        delay.delayTime.setValueAtTime(0.42, ctx.currentTime);
 
         const delayFeedback = ctx.createGain();
         delayFeedback.gain.setValueAtTime(0.32, ctx.currentTime);
 
         const delayFilter = ctx.createBiquadFilter();
         delayFilter.type = 'lowpass';
-        delayFilter.frequency.setValueAtTime(1400, ctx.currentTime);
+        delayFilter.frequency.setValueAtTime(1200, ctx.currentTime);
 
         delay.connect(delayFilter);
         delayFilter.connect(delayFeedback);
@@ -383,10 +449,10 @@
         delayFilter.connect(presetGain);
         nodesToCleanup.push(delay, delayFeedback, delayFilter);
 
-        // Create voice oscillators
-        voices.forEach(voice => {
+        // Generate pure sine voice oscillators
+        cosmicVoices.forEach(voice => {
             const osc = ctx.createOscillator();
-            osc.type = voice.type;
+            osc.type = 'sine'; // Pure sine, crystal clear, zero distortion
             osc.frequency.setValueAtTime(voice.freq, ctx.currentTime);
             osc.detune.setValueAtTime(voice.detune, ctx.currentTime);
 
@@ -409,13 +475,65 @@
             nodesToCleanup.push(osc, vGain);
         });
 
-        // Filter out to preset gain & delay
         filter.connect(presetGain);
         filter.connect(delay);
+
+        // 2. Stardust Chimes (Delicate celestial bells in the distance)
+        const chimePitches = [864, 1080, 1296, 1728];
+        function triggerChime() {
+            if (!state.isPlaying || state.preset !== 'cosmic' || !ctx || ctx.state !== 'running') return;
+            try {
+                const now = ctx.currentTime;
+                const chimeOsc = ctx.createOscillator();
+                const chimeGain = ctx.createGain();
+                const freq = chimePitches[Math.floor(Math.random() * chimePitches.length)];
+
+                chimeOsc.type = 'sine';
+                chimeOsc.frequency.setValueAtTime(freq, now);
+
+                const chimeVol = 0.02 + Math.random() * 0.015;
+                chimeGain.gain.setValueAtTime(0.0001, now);
+                chimeGain.gain.exponentialRampToValueAtTime(chimeVol, now + 0.004);
+                chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+
+                let chimeTarget = delay;
+                if (ctx.createStereoPanner) {
+                    const pan = ctx.createStereoPanner();
+                    pan.pan.setValueAtTime(Math.random() * 1.6 - 0.8, now);
+                    chimeGain.connect(pan);
+                    pan.connect(chimeTarget);
+                    pan.connect(presetGain);
+                } else {
+                    chimeGain.connect(chimeTarget);
+                    chimeGain.connect(presetGain);
+                }
+
+                chimeOsc.connect(chimeGain);
+                chimeOsc.start(now);
+                chimeOsc.stop(now + 2.3);
+
+                chimeOsc.onended = () => {
+                    try {
+                        chimeOsc.disconnect();
+                        chimeGain.disconnect();
+                    } catch (_) {}
+                };
+            } catch (_) {}
+
+            const nextChime = 3800 + Math.random() * 3200;
+            cosmicChimeTimer = setTimeout(triggerChime, nextChime);
+        }
+
+        // Kick off first stardust chime after smooth initial fade-in
+        cosmicChimeTimer = setTimeout(triggerChime, 1800);
 
         return {
             gainNode: presetGain,
             cleanup: () => {
+                if (cosmicChimeTimer) {
+                    clearTimeout(cosmicChimeTimer);
+                    cosmicChimeTimer = null;
+                }
                 nodesToCleanup.forEach(node => {
                     try {
                         if (node.stop) node.stop();
@@ -437,6 +555,11 @@
         if (rainDropTimer) {
             clearTimeout(rainDropTimer);
             rainDropTimer = null;
+        }
+
+        if (cosmicChimeTimer) {
+            clearTimeout(cosmicChimeTimer);
+            cosmicChimeTimer = null;
         }
 
         if (audioCtx && current.gainNode) {

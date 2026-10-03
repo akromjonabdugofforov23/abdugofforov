@@ -598,47 +598,9 @@
     // 8. INJECT "🔖 SAQLANGANLAR" FILTER BUTTON
     // ------------------------------------------------------------
     function injectBookmarksFilterButton() {
-        const filterContainer = document.getElementById('filter-tags');
-        if (!filterContainer) return;
-
-        if (document.getElementById('main-bookmarks-btn')) return;
-
-        const bookmarksBtn = document.createElement('button');
-        bookmarksBtn.className = 'filter-tag filter-tag-bookmarks';
-        bookmarksBtn.id = 'main-bookmarks-btn';
-        bookmarksBtn.type = 'button';
-        bookmarksBtn.setAttribute('data-filter', 'bookmarks');
-
-        const savedCount = BookmarkManager.getBookmarks().length;
-        bookmarksBtn.innerHTML = `
-            <span>🔖</span>
-            <span>Saqlanganlar</span>
-            <span class="bookmark-count-badge" id="bookmark-count-badge" style="display: ${savedCount > 0 ? 'inline-flex' : 'none'};">${savedCount}</span>
-        `;
-
-        bookmarksBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            // Filtr tugmalarini faollashtirish
-            document.querySelectorAll('.toolbar .filter-tag').forEach(tag => tag.classList.remove('active'));
-            bookmarksBtn.classList.add('active');
-
-            // Agar global filterType bo'lsa, o'rnatish
-            if (typeof window.filterType !== 'undefined') {
-                window.filterType = 'bookmarks';
-            }
-
-            // Postlarni faqat saqlanganlar bo'yicha chiqarish
-            renderBookmarkedPostsGrid();
-        });
-
-        // "Barcha maqolalar" dan keyin yoki boshida joylashtirish
-        const allBtn = filterContainer.querySelector('[data-filter="all"]');
-        if (allBtn && allBtn.nextSibling) {
-            filterContainer.insertBefore(bookmarksBtn, allBtn.nextSibling);
-        } else {
-            filterContainer.appendChild(bookmarksBtn);
-        }
+        // User requested removing Saqlanganlar / Saralanganlar section
+        const existing = document.getElementById('main-bookmarks-btn');
+        if (existing) existing.remove();
     }
 
     // ------------------------------------------------------------
@@ -730,11 +692,11 @@
                     </div>
 
                     <div class="post-footer">
-                        <span class="post-date">${postDate} - ⏳ ${reading}</span>
+                        <span class="post-date">${postDate}</span>
                         <div class="post-stats">
                             <div class="post-stat like-btn" data-id="${post.id}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                <span>${likes}</span>
+                                <span>${likes > 0 ? likes : ''}</span>
                             </div>
                             <div class="post-stat">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>

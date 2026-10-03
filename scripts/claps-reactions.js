@@ -92,13 +92,9 @@
             if (stored !== null) {
                 return parseInt(stored, 10) || 0;
             }
-            // Seed a realistic baseline count from post ID
-            const numericId = parseInt(String(postId).replace(/\D/g, '') || '7', 10);
-            const initial = (numericId * 9 + 18) % 43 + 7;
-            localStorage.setItem(STORAGE_PREFIX_TOTAL + postId, initial);
-            return initial;
+            return 0;
         } catch (e) {
-            return 12;
+            return 0;
         }
     }
 
@@ -120,24 +116,15 @@
     }
 
     function getReactions(postId) {
-        const defaultReactions = { '🔥': 8, '💡': 5, '👏': 14, '❤️': 11 };
+        const emptyReactions = { '🔥': 0, '💡': 0, '👏': 0, '❤️': 0 };
         try {
             const raw = localStorage.getItem(STORAGE_PREFIX_REACTIONS + postId);
             if (raw) {
-                return { ...defaultReactions, ...JSON.parse(raw) };
+                return { ...emptyReactions, ...JSON.parse(raw) };
             }
-            // Seed baseline
-            const numericId = parseInt(String(postId).replace(/\D/g, '') || '5', 10);
-            const seeded = {
-                '🔥': (numericId * 3) % 20 + 3,
-                '💡': (numericId * 2) % 15 + 2,
-                '👏': (numericId * 4) % 25 + 5,
-                '❤️': (numericId * 5) % 30 + 6
-            };
-            localStorage.setItem(STORAGE_PREFIX_REACTIONS + postId, JSON.stringify(seeded));
-            return seeded;
+            return emptyReactions;
         } catch (e) {
-            return defaultReactions;
+            return emptyReactions;
         }
     }
 
@@ -207,49 +194,11 @@
         </svg>
     `;
 
-    // 5. Enhance Post Card with Clap Button
+    // 5. Enhance Post Card with Clap Button - Disabled per user request (remove artificial likes)
     function enhancePostCard(card) {
-        if (card.querySelector('.clap-btn')) return;
-
-        const likeBtn = card.querySelector('.like-btn');
-        let statsContainer = card.querySelector('.post-stats:not(span)');
-        if (!statsContainer) {
-            statsContainer = card.querySelector('.post-footer');
-        }
-        if (!statsContainer) return;
-
-        let postId = likeBtn ? likeBtn.getAttribute('data-id') : (card.getAttribute('data-id') || card.getAttribute('data-post-id'));
-        if (!postId) {
-            const titleEl = card.querySelector('.post-title');
-            postId = titleEl ? titleEl.textContent.trim().slice(0, 20).replace(/\s+/g, '-').toLowerCase() : 'post';
-        }
-
-        const totalClaps = getTotalClaps(postId);
-        const userClaps = getUserClaps(postId);
-
-        const clapWrapper = document.createElement('div');
-        clapWrapper.className = 'clap-btn-wrapper';
-
-        const clapBtn = document.createElement('div');
-        clapBtn.className = 'post-stat clap-btn' + (userClaps > 0 ? ' clapped' : '');
-        clapBtn.setAttribute('data-post-id', postId);
-        clapBtn.title = "Qarsak chalish (50 tagacha)";
-        clapBtn.innerHTML = `
-            ${CLAP_SVG}
-            <span class="clap-count">${totalClaps}</span>
-        `;
-
-        clapBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Do not trigger card open
-            handleClapClick(postId, clapBtn, clapWrapper);
-        });
-
-        if (likeBtn && likeBtn.parentNode === statsContainer && likeBtn.nextSibling) {
-            statsContainer.insertBefore(clapWrapper, likeBtn.nextSibling);
-        } else {
-            statsContainer.appendChild(clapWrapper);
-        }
-        clapWrapper.appendChild(clapBtn);
+        if (!card) return;
+        const existing = card.querySelector('.clap-btn-wrapper, .clap-btn');
+        if (existing) existing.remove();
     }
 
     function handleClapClick(postId, btnEl, wrapperEl) {
