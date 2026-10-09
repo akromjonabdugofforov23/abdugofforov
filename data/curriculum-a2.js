@@ -1051,6 +1051,366 @@ window.deutschCurriculum['A2'] = {
                 { de: "deshalb lerne ich", uz: "shuning uchun o'rganyapman" },
                 { de: "weil es regnet", uz: "chunki yomg'ir yog'yapti" }
             ]
+        },
+
+        {
+            id: "a2_8",
+            number: 8,
+            title: "Sayohat, Ta'til va Mehmonxona",
+            germanTitle: "Reisen, Urlaub und Hotel",
+            icon: "✈️",
+            description: "O'zlik fe'llari (sich erholen, sich freuen auf/über) hamda o'tgan zamonda taassurotlarni ifodalash (war, hatte).",
+            theory: {
+                summary: "Ta'til, sayohat va mehmonxona mavzusi o'zlik fe'llari (Reflexivverben) bilan chambarchas bog'liq. Shuningdek, o'tgan zamondagi xotiralar uchun war va hatte fe'llari asosiy o'rin tutadi.",
+                sections: [
+                    {
+                        heading: "1. O'zlik fe'llari va o'zlik olmoshlari (Reflexivpronomen)",
+                        content: "<p>Nemis tilida harakat so'zlovchining o'ziga qaratilgan bo'lsa, <strong>o'zlik fe'llari (Reflexivverben)</strong> ishlatiladi. Ular <strong>sich</strong> o'zlik olmoshi bilan qo'llanadi va shaxsga qarab o'zgaradi: mich, dich, sich, uns, euch, sich.</p>",
+                        examples: [
+                            { de: "Wir erholen uns im Sommer sehr gut am Meer.", uz: "Biz yozda dengiz bo'yida juda yaxshi dam olamiz.", tip: "sich erholen = dam olmoq (wir uns)." },
+                            { de: "Ich freue mich schon sehr auf meinen Urlaub.", uz: "Men ta'tilimni intiqlik bilan kutyapman.", tip: "sich freuen auf + Akk = kelajakdagi voqeadan quvonmoq." },
+                            { de: "Letztes Jahr waren wir in Berlin und hatten tolles Wetter.", uz: "O'tgan yili biz Berlinda edik va ob-havomiz ajoyib edi.", tip: "sein va haben o'tgan zamonda war/hatte shaklida keladi." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "O'zlik olmoshlari shaxsga qarab o'zgaradi: mich, dich, sich, uns, euch, sich.",
+                    "Kelajakdagi quvonch uchun 'sich freuen auf + Akk', o'tib ketgan quvonch uchun 'sich freuen über + Akk' ishlatiladi.",
+                    "Sayohat xotiralarida 'war' (edim) va 'hatte' (bor edi) shakllari eng tabiiy vositadir."
+                ]
+            },
+            flashcards: [
+                { front: "der Urlaub (-e)", back: "ta'til, hordiq", tip: "im Urlaub sein" },
+                { front: "die Reise (-n)", back: "sayohat", tip: "eine Reise buchen" },
+                { front: "das Hotel (-s)", back: "mehmonxona", tip: "im Hotel übernachten" },
+                { front: "der Koffer (-)", back: "chamadon", tip: "den Koffer packen" },
+                { front: "die Buchung (-en)", back: "bron qilish", tip: "die Buchung bestätigen" },
+                { front: "die Übernachtung (-en)", back: "tunash, yotib qolish", tip: "Übernachtung mit Frühstück" },
+                { front: "der Strand (⸚e)", back: "plyaj, sohil", tip: "am Strand liegen" },
+                { front: "der Reisepass (⸚e)", back: "xorijga chiqish pasporti", tip: "den Reisepass mitnehmen" }
+            ],
+            test: [
+                {
+                    q: "Bo'sh joyni to'ldiring: 'Ich freue mich sehr ___ meinen nächsten Urlaub.'",
+                    options: [
+                        "auf",
+                        "über",
+                        "an",
+                        "für"
+                    ],
+                    answer: 0,
+                    explanation: "Kelajakdagi voqeani intiqib kutishda 'sich freuen auf + Akkusativ' ishlatiladi."
+                },
+                {
+                    q: "'Letztes Jahr ___ wir in Italien und ___ schönes Wetter.'",
+                    options: [
+                        "waren / hatten",
+                        "sind / haben",
+                        "hatten / waren",
+                        "waren / waren"
+                    ],
+                    answer: 0,
+                    explanation: "Joylashuv uchun 'waren' (edek), ob-havoga ega bo'lish uchun 'hatten' (bor edi) ishlatiladi."
+                }
+            ],
+            gamePairs: [
+                { de: "die Reise buchen", uz: "sayohatni bron qilmoq" },
+                { de: "sich im Urlaub erholen", uz: "ta'tilda dam olmoq" },
+                { de: "das Zimmer mit Frühstück", uz: "nonushtali xona" },
+                { de: "den Koffer packen", uz: "chamadon yig'moq" },
+                { de: "am Strand liegen", uz: "plyajda yotmoq" },
+                { de: "sich freuen auf", uz: "intiqlik bilan kutmoq" },
+                { de: "ein Hotel reservieren", uz: "mehmonxona bron qilmoq" },
+                { de: "gute Reise!", uz: "oq yo'l!" }
+            ]
+        },
+
+        {
+            id: "a2_9",
+            number: 9,
+            title: "Mehnat dunyosi, Ish kuni va Rezyume asoslari",
+            germanTitle: "Arbeitswelt, Büroalltag und Lebenslauf",
+            icon: "💼",
+            description: "Vaqt ergash gaplari: Als va Wenn farqi, rezyume tuzish va ish suhbatiga tayyorgarlik.",
+            theory: {
+                summary: "Ish tajribasi va faoliyat haqida so'zlashganda 'als' va 'wenn' bog'lovchilari muhim ahamiyat kasb etadi. O'tgan zamondagi yakka voqealar uchun als, takroriy yoki hozirgi holatlar uchun wenn ishlatiladi.",
+                sections: [
+                    {
+                        heading: "1. Vaqt ergash gaplari: Als va Wenn farqi",
+                        content: "<p>Ikkala bog'lovchi ham vaqtni bildiradi va tuslangan fe'lni <strong>gap oxiriga</strong> suradi:</p><ul><li><strong>als (o'tgan zamonda bir marta):</strong> <em>Als ich mein Studium beendet habe, habe ich sofort eine Stelle gefunden.</em></li><li><strong>wenn (hozirgi zamon yoki takrorlanuvchi harakat):</strong> <em>Wenn ich im Büro arbeite, trinke ich immer Kaffee.</em></li></ul>",
+                        examples: [
+                            { de: "Als ich 20 Jahre alt war, habe ich meinen Lebenslauf geschrieben.", uz: "Men 20 yoshda bo'lganimda, rezyumemni yozgan edim.", tip: "O'tgan zamondagi aniq payt -> Als." },
+                            { de: "Wenn ich Fragen habe, frage ich meinen Kollegen.", uz: "Savollarim bo'lsa, men hamkasbimdan so'rayman.", tip: "Hozirgi va umumiy holat -> Wenn." },
+                            { de: "Ich bewerbe mich um die Stelle als Webentwickler.", uz: "Men veb-dasturchi lavozimiga ariza topshiryapman.", tip: "sich bewerben um + Akk = arizani topshirmoq." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "O'tgan zamondagi bir martalik voqealar yoki hayot davrlari uchun 'als' ishlatiladi.",
+                    "Takrorlanuvchi harakatlar va hozirgi/kelasi zamon uchun 'wenn' qo'llanadi.",
+                    "Ergash gap bo'lgani sababli ikkalasidan keyin ham fe'l eng oxirida keladi."
+                ]
+            },
+            flashcards: [
+                { front: "der Beruf (-e)", back: "kasb, mutaxassislik", tip: "Was sind Sie von Beruf?" },
+                { front: "die Arbeit (-en)", back: "ish, mehnat", tip: "zur Arbeit gehen" },
+                { front: "der Lebenslauf (⸚e)", back: "rezyume (CV)", tip: "den Lebenslauf schreiben" },
+                { front: "das Vorstellungsgespräch (-e)", back: "ish suhbati", tip: "ein Vorstellungsgespräch haben" },
+                { front: "die Berufserfahrung (-en)", back: "ish tajribasi", tip: "Berufserfahrung sammeln" },
+                { front: "der Kollege (-n)", back: "hamkasb", tip: "ein netter Kollege" },
+                { front: "die Stelle (-n)", back: "ish o'rni, bo'sh lavozim", tip: "sich um eine Stelle bewerben" },
+                { front: "die Kündigung (-en)", back: "ishdan bo'shash arizasi", tip: "die Kündigung einreichen" }
+            ],
+            test: [
+                {
+                    q: "'___ ich zum ersten Mal nach Deutschland geflogen bin, war ich sehr nervös.'",
+                    options: [
+                        "Als",
+                        "Wenn",
+                        "Wann",
+                        "Weil"
+                    ],
+                    answer: 0,
+                    explanation: "O'tgan zamonda faqat bir marta yuz bergan hodisa uchun 'Als' ishlatiladi."
+                },
+                {
+                    q: "'Immer ___ der Chef ins Büro kommt, grüßt er alle.' Bo'sh joyni to'ldiring:",
+                    options: [
+                        "wenn",
+                        "als",
+                        "ob",
+                        "wann"
+                    ],
+                    answer: 0,
+                    explanation: "'Immer' so'zi harakatning takrorlanuvchanligini ko'rsatadi, shuning uchun 'wenn' qo'yiladi."
+                }
+            ],
+            gamePairs: [
+                { de: "der Lebenslauf", uz: "rezyume (CV)" },
+                { de: "die Bewerbung schreiben", uz: "ariza yozmoq" },
+                { de: "das Vorstellungsgespräch", uz: "ish suhbati" },
+                { de: "die Berufserfahrung", uz: "ish tajribasi" },
+                { de: "als ich Student war", uz: "talaba bo'lganimda" },
+                { de: "im Büro arbeiten", uz: "ofisda ishlamoq" },
+                { de: "eine Stelle finden", uz: "ish topmoq" },
+                { de: "der nette Kollege", uz: "yoqimli hamkasb" }
+            ]
+        },
+
+        {
+            id: "a2_10",
+            number: 10,
+            title: "Bank va Pochta xizmatlari",
+            germanTitle: "Auf der Bank und der Post",
+            icon: "💳",
+            description: "Dativ va Akkusativ olmoshlari, ikkita to'ldiruvchili fe'llar hamda to'lov va jo'natma amaliyotlari.",
+            theory: {
+                summary: "Bank va pochta muassasalarida asosan birovga biror narsani berish, jo'natish yoki tushuntirish talab etiladi. Bu vaziyatda Dativ (kimga) va Akkusativ (nimani) olmoshlari ishlatiladi.",
+                sections: [
+                    {
+                        heading: "1. Dativ va Akkusativ olmoshlari va ikkita to'ldiruvchi",
+                        content: "<p>Fe'l ikkita to'ldiruvchi talab qilsa: shaxs doim <strong>Dativda</strong> (kimga?), narsa esa <strong>Akkusativda</strong> (nimani?) bo'ladi: <em>Ich schicke <strong>dir</strong> (Dat) <strong>ein Paket</strong> (Akk).</em></p><ul><li>Olmoshlar: mich/mir, dich/dir, ihn/ihm, sie/ihr, uns/uns, euch/euch, sie/ihnen, Sie/Ihnen.</li><li>Ikkala to'ldiruvchi ham olmosh bo'lsa: Akkusativ oldin keladi: <em>Er gibt <strong>es</strong> <strong>mir</strong>.</em></li></ul>",
+                        examples: [
+                            { de: "Können Sie mir bitte helfen? Ich möchte Geld überweisen.", uz: "Menga yordam bera olasizmi? Pul o'tkazmoqchiman.", tip: "helfen fe'li doim Dativ (mir) oladi." },
+                            { de: "Der Postbote bringt mir heute ein großes Paket.", uz: "Pochtachi bugun menga katta posilka olib keladi.", tip: "bringen + Dat (mir) + Akk (ein großes Paket)." },
+                            { de: "Ich gebe Ihnen Ihre Bankkarte zurück.", uz: "Men Sizga bank kartangizni qaytarib beryapman.", tip: "zurückgeben + Dat (Ihnen) + Akk (Ihre Bankkarte)." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Fe'l ikkita to'ldiruvchi olganda: shaxs Dativda (kimga?), buyum Akkusativda (nimani?) bo'ladi.",
+                    "Olmoshlar: mir/dir/ihm/ihr/uns/euch/ihnen/Ihnen (Dativ).",
+                    "Ikkala to'ldiruvchi olmosh bo'lsa: Akkusativ olmoshi Dativdan oldin keladi (Er schenkt es mir)."
+                ]
+            },
+            flashcards: [
+                { front: "das Konto (Konten)", back: "bank hisob raqami", tip: "ein Konto eröffnen" },
+                { front: "die Bankkarte (-n)", back: "bank kartasi", tip: "mit der Bankkarte bezahlen" },
+                { front: "der Geldautomat (-en)", back: "bankomat", tip: "am Geldautomaten Geld abheben" },
+                { front: "die Überweisung (-en)", back: "pul o'tkazmasi", tip: "eine Überweisung machen" },
+                { front: "das Paket (-e)", back: "posilka, jo'natma", tip: "ein Paket verschicken" },
+                { front: "der Brief (-e)", back: "xat, maktub", tip: "einen Brief schreiben" },
+                { front: "die Quittung (-en)", back: "kvitansiya, chek", tip: "eine Quittung bekommen" },
+                { front: "der Absender (-)", back: "jo'natuvchi", tip: "Absender und Empfänger" }
+            ],
+            test: [
+                {
+                    q: "'Können Sie ___ bitte helfen? Ich verstehe den Vertrag nicht.' Bo'sh o'ringa mos olmosh:",
+                    options: [
+                        "mir",
+                        "mich",
+                        "mein",
+                        "ich"
+                    ],
+                    answer: 0,
+                    explanation: "'helfen' fe'li qat'iy Dativ kelishigini talab qiladi (jemandem helfen -> mir)."
+                },
+                {
+                    q: "'Geld am Automaten abheben' iborasi qanday ma'noni bildiradi?",
+                    options: [
+                        "Bankomatdan naqd pul yechmoq",
+                        "Bank hisobiga pul qo'ymoq",
+                        "Kartadan kartaga pul o'tkazmoq",
+                        "Hisob raqamini yopmoq"
+                    ],
+                    answer: 0,
+                    explanation: "'abheben' bankomatdan naqd pul yechib olishni anglatadi."
+                }
+            ],
+            gamePairs: [
+                { de: "ein Konto eröffnen", uz: "hisob raqami ochmoq" },
+                { de: "Geld abheben", uz: "pul yechib olmoq" },
+                { de: "Geld überweisen", uz: "pul o'tkazmoq" },
+                { de: "ein Paket verschicken", uz: "posilka jo'natmoq" },
+                { de: "die Geheimzahl eingeben", uz: "PIN-kodni kiritmoq" },
+                { de: "der Geldautomat", uz: "bankomat" },
+                { de: "die Quittung bekommen", uz: "kvitansiya olmoq" },
+                { de: "der Briefumschlag", uz: "xat konverti" }
+            ]
+        },
+
+        {
+            id: "a2_11",
+            number: 11,
+            title: "Bayramlar, Tabriklar va Sovg'a tanlash",
+            germanTitle: "Feste, Feiern und Geschenke",
+            icon: "🎁",
+            description: "Dativda sifat tuslanishi (har doim -en qo'shimchasi), taklif qilish va taklifga javob qaytarish.",
+            theory: {
+                summary: "Bayramlar, tabriklar va mehmondorchilikda Dativ kelishigidagi sifat tuslanishi asosiy o'rinda turadi. Dativda barcha sifatlar istisnosiz -en qo'shimchasini oladi.",
+                sections: [
+                    {
+                        heading: "1. Dativda sifat tuslanishining 'Oltin qoidasi'",
+                        content: "<p>Dativ kelishigida har qanday artikldan keyin barcha sifatlar <strong>-en</strong> qo'shimchasini oladi:</p><ul><li><strong>dem / einem neu<u>en</u> Freund</strong> (muzskoy)</li><li><strong>der / einer groß<u>en</u> Party</strong> (jenskiy)</li><li><strong>dem / einem schön<u>en</u> Geschenk</strong> (sredniy)</li><li><strong>den lieb<u>en</u> Gäst<u>en</u></strong> (ko'plik: sifat -en, ot -n oladi)</li></ul>",
+                        examples: [
+                            { de: "Ich schenke meinem besten Freund ein Buch.", uz: "Men eng yaxshi do'stimga kitob sovg'a qilaman.", tip: "Dativda sifat har doim -en oladi: besten." },
+                            { de: "Wir feiern Silvester mit einer großen Familie.", uz: "Biz Yangi yilni katta oila bilan nishonlaymiz.", tip: "mit + Dativ: einer großen Familie." },
+                            { de: "Herzlichen Glückwunsch zum Geburtstag!", uz: "Tug'ilgan kuningiz muborak bo'lsin!", tip: "Eng mashhur tabrik iborasi." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Dativ kelishigida barcha sifatlar qat'iy -en qo'shimchasini oladi.",
+                    "Ko'plikdagi otlar ham Dativda qo'shimcha -n oladi (den Freunden).",
+                    "Taklif qilishda: 'Ich lade dich zu... ein', rad etishda: 'Ich kann leider nicht kommen, weil...' ishlatiladi."
+                ]
+            },
+            flashcards: [
+                { front: "das Fest (-e)", back: "bayram, tantana", tip: "ein großes Fest feiern" },
+                { front: "das Geschenk (-e)", back: "sovg'a", tip: "ein Geschenk auswählen" },
+                { front: "die Einladung (-en)", back: "taklifnoma", tip: "Danke für die Einladung!" },
+                { front: "der Geburtstag (-e)", back: "tug'ilgan kun", tip: "Alles Gute zum Geburtstag!" },
+                { front: "die Hochzeit (-en)", back: "to'y", tip: "zur Hochzeit gratulieren" },
+                { front: "der Feiertag (-e)", back: "dam olish / bayram kuni", tip: "gesetzlicher Feiertag" },
+                { front: "die Überraschung (-en)", back: "syurpriz, kutilmagan sovg'a", tip: "eine schöne Überraschung" },
+                { front: "der Gast (⸚e)", back: "mehmon", tip: "Gäste herzlich empfangen" }
+            ],
+            test: [
+                {
+                    q: "'Ich gehe heute zu ein___ groß___ Party.' To'g'ri qo'shimchalarni tanlang:",
+                    options: [
+                        "einer / großen",
+                        "eine / große",
+                        "einem / großen",
+                        "einer / großer"
+                    ],
+                    answer: 0,
+                    explanation: "'Party' jenskiy rod (die). 'zu' Dativ talab qiladi (einer). Dativda barcha sifatlar '-en' oladi (großen)."
+                },
+                {
+                    q: "Birovning taklifini samimiy qabul qilish uchun qaysi ibora to'g'ri keladi?",
+                    options: [
+                        "Ich komme sehr gerne!",
+                        "Ich habe keine Lust.",
+                        "Ich darf leider nicht.",
+                        "Das interessiert mich nicht."
+                    ],
+                    answer: 0,
+                    explanation: "'Ich komme sehr gerne!' nemis tilida taklifga eng xushmuomala rozilik bildirish shaklidir."
+                }
+            ],
+            gamePairs: [
+                { de: "zum Geburtstag gratulieren", uz: "tug'ilgan kun bilan tabriklamoq" },
+                { de: "ein Geschenk auswählen", uz: "sovg'a tanlamoq" },
+                { de: "eine Einladung bekommen", uz: "taklifnoma olmoq" },
+                { de: "Gäste einladen", uz: "mehmonlarni taklif qilmoq" },
+                { de: "die Hochzeit feiern", uz: "to'yni nishonlamoq" },
+                { de: "mit dem besten Freund", uz: "eng yaxshi do'st bilan" },
+                { de: "viel Glück!", uz: "omad tilayman!" },
+                { de: "herzlichen Dank", uz: "samimiy minnatdorchilik" }
+            ]
+        },
+
+        {
+            id: "a2_12",
+            number: 12,
+            title: "Xaridda muammolar, Kafolat va Tovarni almashtirish",
+            germanTitle: "Reklamation, Garantie und Umtausch",
+            icon: "🔄",
+            description: "Vositali so'roq gaplar: ob va W-savollar bilan muloyim murojaat qilish (Indirekte Fragesätze).",
+            theory: {
+                summary: "Do'konda tovar almashtirish, kafolat va shikoyat bildirishda vositali so'roq gaplar (Indirekte Fragesätze) orqali muloyim gapirish lozim. Bular tobe gap bo'lib, fe'l eng oxirida keladi.",
+                sections: [
+                    {
+                        heading: "1. Vositali so'roq gaplar (ob va W-savollar)",
+                        content: "<p>Muloyim murojaat qilishda (<em>Können Sie mir sagen...?</em> / <em>Ich möchte wissen...?</em>):</p><ul><li><strong>Ha/yo'q savollarida 'ob'</strong> qo'yiladi: <em>Können Sie mir sagen, <strong>ob</strong> ich das umtauschen <strong>kann</strong>?</em></li><li><strong>W-savollarida so'roq so'zi</strong> saqlanadi: <em>Ich möchte wissen, wie lange die Garantie <strong>dauert</strong>.</em></li><li>Ikkala holatda ham tuslangan fe'l qat'iy <strong>gap oxirida</strong> keladi!</li></ul>",
+                        examples: [
+                            { de: "Können Sie mir sagen, ob das Gerät noch Garantie hat?", uz: "Aytib bera olasizmi, asbobning hali kafolati bormi?", tip: "ob ergash gapida fe'l (hat) eng oxirida." },
+                            { de: "Ich möchte wissen, wie viel die Reparatur kostet.", uz: "Men ta'mirlash qancha turishini bilmoqchiman.", tip: "W-savolli vositali gap: kostet eng oxirida." },
+                            { de: "Das Gerät funktioniert leider nicht, es ist kaputt.", uz: "Uskuna afsuski ishlamayapti, u buzilgan.", tip: "Reklamatsiya qilishdagi asosiy ibora." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Ha/yo'q savollarida 'ob' (-mi yoki yo'q) bog'lovchisi ishlatiladi.",
+                    "So'roq so'zli savollarda (wann, wie viel, wo) o'sha so'z bog'lovchi vazifasini bajaradi.",
+                    "Vositali so'roq gaplarda tuslangan fe'l har doim gapning eng oxirida turadi."
+                ]
+            },
+            flashcards: [
+                { front: "die Reklamation (-en)", back: "shikoyat, e'tiroz (nuqson bo'yicha)", tip: "eine Reklamation machen" },
+                { front: "der Umtausch (-e)", back: "tovar almashtirish", tip: "Umtausch innerhalb von 14 Tagen" },
+                { front: "die Garantie (-n)", back: "kafolat", tip: "zwei Jahre Garantie haben" },
+                { front: "der Kassenbon (-s)", back: "xarid cheki", tip: "den Kassenbon vorlegen" },
+                { front: "das Gerät (-e)", back: "uskuna, asbob", tip: "das elektronische Gerät" },
+                { front: "der Fehler (-)", back: "nuqson, nosozlik, xato", tip: "einen Fehler haben" },
+                { front: "die Rückerstattung (-en)", back: "pulni qaytarib berish", tip: "die Rückerstattung verlangen" },
+                { front: "der Kundenservice (-s)", back: "mijozlar xizmati", tip: "den Kundenservice kontaktieren" }
+            ],
+            test: [
+                {
+                    q: "'Können Sie mir sagen, wo ich den Kassenbon ___?' Bo'sh o'ringa mos fe'lni tanlang:",
+                    options: [
+                        "finden kann",
+                        "kann finden",
+                        "finde ich",
+                        "gefunden habe"
+                    ],
+                    answer: 0,
+                    explanation: "Vositali so'roq gap (Nebensatz) bo'lgani uchun, tuslangan modal fe'l 'kann' eng oxirida keladi: finden kann."
+                },
+                {
+                    q: "'Ich möchte gern wissen, ___ man hier mit Karte bezahlen kann.' Bo'sh joyni to'ldiring:",
+                    options: [
+                        "ob",
+                        "dass",
+                        "weil",
+                        "denn"
+                    ],
+                    answer: 0,
+                    explanation: "Ha/yo'q turidagi noaniq so'rovda 'ob' (-mi yoki yo'q) bog'lovchisi ishlatiladi."
+                }
+            ],
+            gamePairs: [
+                { de: "die Ware umtauschen", uz: "tovarni almashtirmoq" },
+                { de: "das Geld zurückbekommen", uz: "pulni qaytarib olmoq" },
+                { de: "den Kassenbon zeigen", uz: "xarid chekini ko'rsatmoq" },
+                { de: "zwei Jahre Garantie", uz: "ikki yillik kafolat" },
+                { de: "das kaputte Gerät", uz: "buzilgan asbob" },
+                { de: "eine Reklamation machen", uz: "shikoyat/da'vo qilmoq" },
+                { de: "den Kundenservice anrufen", uz: "mijozlar xizmatiga qo'ng'iroq qilmoq" },
+                { de: "ich möchte wissen, ob...", uz: "bilmoqchimanki, ...mi" }
+            ]
         }
     ]
 };

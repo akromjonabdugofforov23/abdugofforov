@@ -128,7 +128,7 @@ function applySecurityHeaders(response, context, url) {
     newResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   }
   if (!newResponse.headers.has('Permissions-Policy')) {
-    newResponse.headers.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=(), payment=(), usb=(), display-capture=()');
+    newResponse.headers.set('Permissions-Policy', 'accelerometer=(), autoplay=(), camera=(), cross-origin-isolated=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(self), screen-wake-lock=(), sync-xhr=(), usb=(), xr-spatial-tracking=()');
   }
   if (!newResponse.headers.has('Cross-Origin-Opener-Policy')) {
     newResponse.headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
@@ -143,7 +143,7 @@ function applySecurityHeaders(response, context, url) {
     newResponse.headers.set('Reporting-Endpoints', 'csp-endpoint="https://abdugofforov.uz/csp-report"');
   }
   if (url.protocol === 'https:' && !newResponse.headers.has('Strict-Transport-Security')) {
-    newResponse.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    newResponse.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   }
 
   // 3. Content-Security-Policy (CSP) sarlavhasi
@@ -154,6 +154,8 @@ function applySecurityHeaders(response, context, url) {
       "form-action 'self'",
       "frame-ancestors 'none'",
       "object-src 'none'",
+      "worker-src 'self' blob:",
+      "manifest-src 'self'",
       "upgrade-insecure-requests",
       "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://challenges.cloudflare.com https://telegram.org",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",

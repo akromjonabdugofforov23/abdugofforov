@@ -983,6 +983,366 @@ window.deutschCurriculum['A1'] = {
                 { de: 'an der Wand', uz: 'devorda' },
                 { de: 'unter dem Bett', uz: 'karavot tagida' }
             ]
+        },
+
+        {
+            id: "a1_8",
+            number: 8,
+            title: "Bo'sh vaqt, Qiziqishlar va Xobbi",
+            germanTitle: "Freizeit, Hobbys & Modalverben: können, möchten",
+            icon: "⚽",
+            description: "Modal fe'llar (können, möchten), sevimli mashg'ulotlar, sport va qobiliyatlarni ifodalash.",
+            theory: {
+                summary: "Nemis tilida qobiliyat va istakni ifodalash uchun 'können' (qila olmoq) va 'möchten' (istamoq) modal fe'llari ishlatiladi. Modal fe'l 2-o'rinda tuslanadi, asosiy fe'l esa gap oxiriga infinitiv holida o'tadi.",
+                sections: [
+                    {
+                        heading: "1. Modal fe'llar: können va möchten",
+                        content: "<p>Modal fe'llar harakatga bo'lgan munosabatni bildiradi. Ular tuslanganda gapda <strong>2-o'rinda</strong> keladi, asosiy fe'l esa <strong>gapning eng oxirida</strong> infinitiv shaklda turadi:</p><ul><li><strong>können</strong> (qila olmoq): ich kann, du kannst, er/sie/es kann, wir können, ihr könnt, sie/Sie können</li><li><strong>möchten</strong> (xohlamoq/istamoq): ich möchte, du möchtest, er/sie/es möchte, wir möchten, ihr möchtet, sie/Sie möchten</li></ul>",
+                        examples: [
+                            { de: "Ich kann sehr gut Deutsch sprechen.", uz: "Men nemischa juda yaxshi gapira olaman.", tip: "kann 2-o'rinda, sprechen gap oxirida." },
+                            { de: "Am Wochenende möchten wir ins Kino gehen.", uz: "Dam olish kunida biz kinoga bormoqchimiz.", tip: "möchten 2-o'rinda, gehen oxirida." },
+                            { de: "Kannst du Gitarre spielen?", uz: "Sen gitara chala olasanmi?", tip: "So'roq gapda modal fe'l 1-o'rinda." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Modal fe'l 1- va 3-shaxs birlikda bir xil shaklga ega (ich kann = er kann; ich möchte = er möchte).",
+                    "Asosiy fe'l har doim o'zgarmasdan (Infinitiv) gapning eng oxirida keladi.",
+                    "Bo'sh vaqt mashg'ulotlarida 'gern' so'zi ishlatiladi (Ich spiele gern Fußball)."
+                ]
+            },
+            flashcards: [
+                { front: "das Hobby (-s)", back: "sevimli mashg'ulot, xobbi", tip: "Was ist dein Hobby?" },
+                { front: "das Buch (⸚er)", back: "kitob", tip: "ein Buch lesen" },
+                { front: "das Fahrrad (⸚er)", back: "velosiped", tip: "Fahrrad fahren" },
+                { front: "das Kino (-s)", back: "kinoteatr", tip: "ins Kino gehen" },
+                { front: "das Schwimmbad (⸚er)", back: "suzish havzasi (basseyn)", tip: "im Schwimmbad schwimmen" },
+                { front: "der Sport (-arten)", back: "sport", tip: "Sport treiben" },
+                { front: "der Park (-s)", back: "xiyobon, istirohat bog'i", tip: "im Park spazieren gehen" },
+                { front: "die Musik", back: "musiqa", tip: "Musik hören" }
+            ],
+            test: [
+                {
+                    q: "Qaysi gap grammatik jihatdan to'g'ri tuzilgan?",
+                    options: [
+                        "Ich kann sehr gut Tennis spielen.",
+                        "Ich kann spiele sehr gut Tennis.",
+                        "Ich spielen kann sehr gut Tennis.",
+                        "Ich kann Tennis spielen sehr gut."
+                    ],
+                    answer: 0,
+                    explanation: "Modal fe'l 2-o'rinda shaxsga qarab tuslanadi, asosiy fe'l (spielen) esa gap oxirida infinitiv bo'ladi."
+                },
+                {
+                    q: "'Mein Bruder ______ am Sonntag ins Kino gehen.' Bo'sh o'ringa mos fe'lni qo'ying:",
+                    options: [
+                        "möchte",
+                        "möchtet",
+                        "möchten",
+                        "möchtest"
+                    ],
+                    answer: 0,
+                    explanation: "'Mein Bruder' 3-shaxs birlik (er). Modal fe'l: er möchte."
+                }
+            ],
+            gamePairs: [
+                { de: "das Hobby", uz: "sevimli mashg'ulot" },
+                { de: "das Fahrrad", uz: "velosiped" },
+                { de: "das Buch", uz: "kitob" },
+                { de: "das Kino", uz: "kinoteatr" },
+                { de: "die Freizeit", uz: "bo'sh vaqt" },
+                { de: "können", uz: "qila olmoq" },
+                { de: "spazieren gehen", uz: "sayr qilmoq" },
+                { de: "Gitarre spielen", uz: "gitara chalmoq" }
+            ]
+        },
+
+        {
+            id: "a1_9",
+            number: 9,
+            title: "Kiyim-kechak, Ranglar va Narxlar",
+            germanTitle: "Kleidung, Farben & Preise (Welcher/Dieser)",
+            icon: "👗",
+            description: "Kiyim-kechak nomlari, ranglar, narx so'rash hamda welcher/dieser ko'rsatish olmoshlari.",
+            theory: {
+                summary: "Kiyim tanlash va ko'rsatishda 'welcher?' (qaysi?) so'rog'i va 'dieser' (mana bu) ko'rsatish olmoshi ishlatiladi. Ular otning jinsi va kelishigiga qarab artikllar singari tuslanadi.",
+                sections: [
+                    {
+                        heading: "1. Welcher? va Dieser olmoshlari",
+                        content: "<p>Ko'rsatish olmoshlari aniq artikllar (der, die, das) kabi qo'shimcha oladi:</p><ul><li><strong>Muzskoy (der):</strong> Welcher Pullover gefällt dir? — Dieser Pullover. (Akkusativda: <em>Welchen / Diesen</em>)</li><li><strong>Jenskiy (die):</strong> Welche Hose nimmst du? — Diese Hose.</li><li><strong>Sredniy (das):</strong> Welches Hemd kaufst du? — Dieses Hemd.</li></ul>",
+                        examples: [
+                            { de: "Welchen Mantel möchten Sie? — Ich nehme diesen Mantel.", uz: "Qaysi paltoni xohlaysiz? — Mana bu paltoni olaman.", tip: "der Mantel -> Akkusativda welchen/diesen." },
+                            { de: "Wie viel kostet dieses weiße Hemd? — Es kostet 29 Euro.", uz: "Mana bu oq ko'ylak qancha turadi? — U 29 yevro turadi.", tip: "das Hemd -> dieses." },
+                            { de: "Die Jacke ist sehr modern und bequem.", uz: "Kurtka juda zamonaviy va qulay.", tip: "Kesim sifatlari o'zgarmaydi." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Muzskoy jinsdagi otlar Akkusativda: Welchen? — Diesen Pullover.",
+                    "Sifatlar kesim bo'lib kelganda (ist rot, ist groß) qo'shimcha olmaydi.",
+                    "Narx so'rashda: 'Was kostet das?' yoki 'Wie viel kostet...?' qo'llanadi."
+                ]
+            },
+            flashcards: [
+                { front: "die Hose (-n)", back: "shim", tip: "eine schwarze Hose" },
+                { front: "das Hemd (-en)", back: "erkaklar ko'ylagi", tip: "ein weißes Hemd" },
+                { front: "das Kleid (-er)", back: "ayollar ko'ylagi", tip: "ein schönes Kleid" },
+                { front: "die Jacke (-n)", back: "kurtka, jaket", tip: "die warme Jacke" },
+                { front: "der Pullover (-)", back: "jemper, sviter", tip: "der Pullover aus Wolle" },
+                { front: "der Mantel (⸚)", back: "palto", tip: "einen Mantel anziehen" },
+                { front: "der Schuh (-e)", back: "oyoq kiyim, poyabzal", tip: "neue Schuhe" },
+                { front: "das T-Shirt (-s)", back: "futbolka", tip: "ein bequemes T-Shirt" }
+            ],
+            test: [
+                {
+                    q: "'______ Pullover gefällt Ihnen? — Diesen Pullover hier.' Bo'sh o'ringa mos olmoshni qo'ying:",
+                    options: [
+                        "Welchen",
+                        "Welcher",
+                        "Welches",
+                        "Welche"
+                    ],
+                    answer: 0,
+                    explanation: "'der Pullover' muzskoy ot. Akkusativda 'welchen' bo'ladi."
+                },
+                {
+                    q: "Do'konda kiyimni o'lchab kiyib ko'rish qaysi fe'l bilan ifodalanadi?",
+                    options: [
+                        "anprobieren",
+                        "einkaufen",
+                        "anziehen",
+                        "bezahlen"
+                    ],
+                    answer: 0,
+                    explanation: "'anprobieren' — kiyimni o'lchab ko'rmoq ma'nosini bildiradi."
+                }
+            ],
+            gamePairs: [
+                { de: "die Hose", uz: "shim" },
+                { de: "das Hemd", uz: "erkaklar ko'ylagi" },
+                { de: "das Kleid", uz: "ayollar ko'ylagi" },
+                { de: "die Jacke", uz: "kurtka" },
+                { de: "der Schuh", uz: "oyoq kiyim" },
+                { de: "anprobieren", uz: "kiyib ko'rmoq" },
+                { de: "Wie viel kostet das?", uz: "Bu qancha turadi?" },
+                { de: "zu teuer", uz: "juda qimmat" }
+            ]
+        },
+
+        {
+            id: "a1_10",
+            number: 10,
+            title: "Shaharda yo'l so'rash va Mo'ljal olish",
+            germanTitle: "Nach dem Weg fragen & Orientierung (Imperativ & Präpositionen)",
+            icon: "🗺️",
+            description: "Shaharda manzilni so'rash, yo'nalish ko'rsatish (zum/zur, nach links/rechts) va rasmiy buyruq shakli.",
+            theory: {
+                summary: "Shaharda mo'ljal olish uchun 'Gehen Sie!' (Boring!) buyruq shakli hamda 'zu' (Dativ) predlogi ishlatiladi: zum Bahnhof, zur Bank.",
+                sections: [
+                    {
+                        heading: "1. Yo'nalish predloglari va buyruq shakli",
+                        content: "<p>Yo'l tushuntirganda rasmiy Imperativ (Gehen Sie, Biegen Sie ab) va quyidagi predloglar qo'llanadi:</p><ul><li><strong>zu + dem = zum</strong> (muzskoy/sredniy): <em>zum Bahnhof, zum Supermarkt</em></li><li><strong>zu + der = zur</strong> (jenskiy): <em>zur Post, zur Apotheke</em></li><li><strong>nach:</strong> <em>nach links</em> (chapga), <em>nach rechts</em> (o'ngga)</li><li><strong>geradeaus:</strong> to'g'riga (predlogsiz)</li></ul>",
+                        examples: [
+                            { de: "Gehen Sie geradeaus und biegen Sie nach links ab!", uz: "To'g'riga boring va chapga buriling!", tip: "abbiegen ajraluvchi fe'l." },
+                            { de: "Entschuldigung, wie komme ich zum Bahnhof?", uz: "Kechirasiz, vokzalga qanday borsa bo'ladi?", tip: "zum = zu + dem Bahnhof." },
+                            { de: "Biegen Sie an der Kreuzung rechts ab!", uz: "Chorrahada o'ngga buriling!", tip: "nach rechts = o'ng tomonga." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Rasmiy buyruqda fe'l 1-o'rinda keladi: 'Gehen Sie!', 'Biegen Sie ab!'.",
+                    "zu + dem = zum (der/das otdan oldin), zu + der = zur (die otdan oldin).",
+                    "geradeaus — to'g'riga (predlog talab qilmaydi)."
+                ]
+            },
+            flashcards: [
+                { front: "der Bahnhof (⸚e)", back: "vokzal, temir yo'l bekati", tip: "zum Bahnhof gehen" },
+                { front: "die Straße (-n)", back: "ko'cha", tip: "in der Goethe-Straße" },
+                { front: "die Haltestelle (-n)", back: "bekat (avtobus/tramvay)", tip: "an der Haltestelle" },
+                { front: "die Ampel (-n)", back: "svetofor", tip: "an der Ampel anhalten" },
+                { front: "die Kreuzung (-en)", back: "chorraha", tip: "an der Kreuzung abbiegen" },
+                { front: "die Apotheke (-n)", back: "dorixona", tip: "zur Apotheke gehen" },
+                { front: "der Bus (-se)", back: "avtobus", tip: "den Bus nehmen" },
+                { front: "der Flughafen (⸚)", back: "aeroport", tip: "zum Flughafen fahren" }
+            ],
+            test: [
+                {
+                    q: "'Wie komme ich ______ Post? (die Post)' Bo'sh joyga to'g'ri predlogni qo'ying:",
+                    options: [
+                        "zur",
+                        "zum",
+                        "nach",
+                        "in"
+                    ],
+                    answer: 0,
+                    explanation: "'die Post' ayol jinsidagi ot bo'lgani uchun 'zu + der' qisqarib 'zur' bo'ladi."
+                },
+                {
+                    q: "'Svetofordan keyin o'ngga buriling!' jumlasi nemis tilida qanday bo'ladi?",
+                    options: [
+                        "Biegen Sie an der Ampel rechts ab!",
+                        "Sie biegen rechts an der Ampel ab!",
+                        "Gehen Sie rechts mit Ampel!",
+                        "Fahren Sie ab rechts an Ampel!"
+                    ],
+                    answer: 0,
+                    explanation: "Imperativ (buyruq) shaklida fe'l birinchi o'rinda keladi: 'Biegen Sie ... ab!'."
+                }
+            ],
+            gamePairs: [
+                { de: "der Bahnhof", uz: "vokzal" },
+                { de: "die Haltestelle", uz: "bekat" },
+                { de: "die Ampel", uz: "svetofor" },
+                { de: "die Kreuzung", uz: "chorraha" },
+                { de: "geradeaus", uz: "to'g'riga" },
+                { de: "nach links", uz: "chapga" },
+                { de: "nach rechts", uz: "o'ngga" },
+                { de: "in der Nähe", uz: "yaqinda" }
+            ]
+        },
+
+        {
+            id: "a1_11",
+            number: 11,
+            title: "Ob-havo, Fasllar va Taqvim",
+            germanTitle: "Wetter, Jahreszeiten & Kalender (Unpersönliches 'es')",
+            icon: "⛅",
+            description: "Ob-havo hodisalari, shaxssiz 'es' olmoshi, fasllar (im Sommer) va sanalar (am Montag).",
+            theory: {
+                summary: "Ob-havo holatlarida ega mavjud bo'lmagani uchun shaxssiz 'es' ishlatiladi: Es regnet (Yomg'ir yog'yapti), Es ist kalt (Havo sovuq). Fasllarda 'im', kunlarda 'am' predlogi qo'llanadi.",
+                sections: [
+                    {
+                        heading: "1. Shaxssiz 'es' va vaqt predloglari",
+                        content: "<p>Nemis tilida ob-havo ifodasi shaxssiz 'es' bilan keladi:</p><ul><li><em>Es regnet</em> (Yomg'ir yog'yapti), <em>Es schneit</em> (Qor yog'yapti)</li><li><em>Es ist sonnig / windig / kalt / warm</em></li><li><strong>im:</strong> Fasllar va oylar bilan (<em>im Frühling, im Sommer, im Juli</em>)</li><li><strong>am:</strong> Hafta kunlari va sanalarda (<em>am Montag, am 5. Mai</em>)</li></ul>",
+                        examples: [
+                            { de: "Heute ist es sehr sonnig und warm.", uz: "Bugun havo juda quyoshli va iliq.", tip: "es ist + sifat." },
+                            { de: "Im Winter schneit es oft in den Bergen.", uz: "Qishda tog'larda tez-tez qor yog'adi.", tip: "im Winter = qishda." },
+                            { de: "Mein Geburtstag ist am 12. Juli.", uz: "Mening tug'ilgan kunim 12-iyulda.", tip: "am + aniq sana." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Barcha 4 fasl va 12 oy bilan 'im' predlogi ishlatiladi (im Sommer, im Winter).",
+                    "Hafta kunlari bilan 'am' keladi (am Montag, am Sonntag).",
+                    "Ob-havoda ega vazifasida 'es' turadi (Es ist kalt)."
+                ]
+            },
+            flashcards: [
+                { front: "das Wetter", back: "ob-havo", tip: "Wie ist das Wetter heute?" },
+                { front: "die Sonne (-n)", back: "quyosh", tip: "Die Sonne scheint" },
+                { front: "der Regen", back: "yomg'ir", tip: "Der Regen fällt" },
+                { front: "der Schnee", back: "qor", tip: "Es gibt viel Schnee" },
+                { front: "der Frühling (-e)", back: "bahor", tip: "im Frühling blühen Blumen" },
+                { front: "der Sommer (-)", back: "yoz", tip: "im Sommer reisen" },
+                { front: "der Herbst (-e)", back: "kuz", tip: "im Herbst wird es kühl" },
+                { front: "der Winter (-)", back: "qish", tip: "im Winter ist es kalt" }
+            ],
+            test: [
+                {
+                    q: "'______ Winter schneit es oft.' Bo'sh o'ringa mos predlogni tanlang:",
+                    options: [
+                        "Im",
+                        "Am",
+                        "Um",
+                        "An"
+                    ],
+                    answer: 0,
+                    explanation: "Fasllar va oylar bilan nemis tilida 'im' (in dem) ishlatiladi."
+                },
+                {
+                    q: "'Bugun havo bulutli va yomg'ir yog'yapti' gapining to'g'ri nemischa varianti:",
+                    options: [
+                        "Heute ist es bewölkt und es regnet.",
+                        "Heute macht Wetter Wolken und Regen.",
+                        "Heute ist Wolke mit Regen.",
+                        "Heute es ist sonnig und schneit."
+                    ],
+                    answer: 0,
+                    explanation: "'es ist bewölkt' (bulutli) va 'es regnet' (yomg'ir yog'yapti) grammatik jihatdan to'g'ri ifodadir."
+                }
+            ],
+            gamePairs: [
+                { de: "das Wetter", uz: "ob-havo" },
+                { de: "die Sonne", uz: "quyosh" },
+                { de: "der Regen", uz: "yomg'ir" },
+                { de: "der Schnee", uz: "qor" },
+                { de: "der Frühling", uz: "bahor" },
+                { de: "der Sommer", uz: "yoz" },
+                { de: "der Herbst", uz: "kuz" },
+                { de: "der Winter", uz: "qish" }
+            ]
+        },
+
+        {
+            id: "a1_12",
+            number: 12,
+            title: "Restoran va Kafeda buyurtma berish",
+            germanTitle: "Im Restaurant & Café (Möchten, Nehmen, Ich hätte gern)",
+            icon: "☕",
+            description: "Ovqat va ichimlik buyurtma berish, hisob-kitob qilish, 'Ich hätte gern...' va 'nehmen' fe'li.",
+            theory: {
+                summary: "Restoran va kafelarda eng xushmuomala buyurtma berish shakli 'Ich hätte gern...' (Menga ... bersangiz edi) hisoblanadi. Shuningdek 'nehmen' (olmoq) va 'möchten' fe'llari keng qo'llaniladi.",
+                sections: [
+                    {
+                        heading: "1. Buyurtma berish va to'lov odobi",
+                        content: "<p>Restoranda buyurtma berishda quyidagi asosiy konstruksiyalar ishlatiladi:</p><ul><li><strong>Ich hätte gern... (+ Akk):</strong> <em>Ich hätte gern einen Kaffee und ein Mineralwasser, bitte.</em></li><li><strong>nehmen (+ Akk):</strong> <em>Ich nehme das Hähnchen mit Reis.</em> (ich nehme, du nimmst, er nimmt)</li><li><strong>Hisob so'rash:</strong> <em>Wir möchten bitte zahlen. / Die Rechnung, bitte!</em></li><li><strong>Zusammen oder getrennt?</strong> — Birgami yoki alohida to'laysizmi?</li></ul>",
+                        examples: [
+                            { de: "Ich hätte gern einen Cappuccino, bitte.", uz: "Menga bitta kapuchino bersangiz, iltimos.", tip: "der Cappuccino -> einen Cappuccino (Akkusativ)." },
+                            { de: "Was nehmen Sie als Vorspeise? — Ich nehme eine Suppe.", uz: "Birinchi taomga nima olasiz? — Men sho'rva olaman.", tip: "nehmen fe'li Akkusativ talab qiladi." },
+                            { de: "Zusammen oder getrennt? — Getrennt, bitte.", uz: "Birgami yoki alohidami? — Alohida, iltimos.", tip: "Germaniyada alohida to'lash odati keng tarqalgan." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "'Ich hätte gern...' — eng muloyim va tabiiy buyurtma iborasi.",
+                    "'nehmen' kuchli fe'l: du nimmst, er nimmt.",
+                    "Choypuli berganda 'Stimmt so!' (Qaytimi kerak emas) deyiladi."
+                ]
+            },
+            flashcards: [
+                { front: "die Speisekarte (-n)", back: "taomnoma, menyu", tip: "die Speisekarte bitte" },
+                { front: "der Kellner (-)", back: "ofitsiant (erkak)", tip: "Herr Ober! / Herr Kellner!" },
+                { front: "die Rechnung (-en)", back: "hisob cheki", tip: "die Rechnung bitte" },
+                { front: "das Trinkgeld (-er)", back: "choypuli", tip: "Trinkgeld geben" },
+                { front: "das Gericht (-e)", back: "taom, ovqat", tip: "ein leckeres Gericht" },
+                { front: "das Getränk (-e)", back: "ichimlik", tip: "Getränke bestellen" },
+                { front: "der Kaffee (-s)", back: "qahva, kofe", tip: "einen Kaffee trinken" },
+                { front: "das Mineralwasser", back: "mineral suv", tip: "eine Flasche Mineralwasser" }
+            ],
+            test: [
+                {
+                    q: "Kafeda ofitsiantga eng muloyim tarzda qora choy buyurtma berish iborasi qaysi?",
+                    options: [
+                        "Ich hätte gern einen schwarzen Tee, bitte.",
+                        "Ich will Tee sofort!",
+                        "Bringen Sie mir Tee schnell!",
+                        "Ich trinke Tee ohne Geld."
+                    ],
+                    answer: 0,
+                    explanation: "'Ich hätte gern...' eng muloyim va olijanob buyurtma iborasidir."
+                },
+                {
+                    q: "Restoranda ofitsiantning 'Zusammen oder getrennt?' savolining ma'nosi nima?",
+                    options: [
+                        "Hisobni birgalikda to'laysizmi yoki har kim o'zinikini alohidami?",
+                        "Taom issiq bo'lsinmi yoki sovuqmi?",
+                        "Ichkaridami yoki tashqaridami?",
+                        "Naqd puldami yoki kartadami?"
+                    ],
+                    answer: 0,
+                    explanation: "'zusammen' — birgalikda, 'getrennt' — alohida to'lash degani."
+                }
+            ],
+            gamePairs: [
+                { de: "die Speisekarte", uz: "taomnoma" },
+                { de: "der Kellner", uz: "ofitsiant" },
+                { de: "die Rechnung", uz: "hisob" },
+                { de: "das Trinkgeld", uz: "choypuli" },
+                { de: "das Getränk", uz: "ichimlik" },
+                { de: "bestellen", uz: "buyurtma bermoq" },
+                { de: "Guten Appetit!", uz: "Yoqimli ishtaha!" },
+                { de: "Stimmt so!", uz: "Qaytimi kerak emas" }
+            ]
         }
     ]
 };

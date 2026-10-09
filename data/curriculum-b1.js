@@ -1516,6 +1516,366 @@ window.deutschCurriculum['B1'] = {
                 { de: 'teamfähig', uz: 'jamoada ishlay oladigan' },
                 { de: 'die Kündigungsfrist', uz: 'ogohlantirish muddati' }
             ]
+        },
+
+        {
+            id: "b1_8",
+            number: 8,
+            title: "Zamonaviy media va Ijtimoiy tarmoqlar",
+            germanTitle: "Moderne Medien & Soziale Netzwerke (Der Genitiv und Genitivpräpositionen)",
+            icon: "📱",
+            description: "Genitiv kelishigi va Genitiv predloglari (wegen, während, trotz, innerhalb, außerhalb) hamda raqamli xavfsizlik.",
+            theory: {
+                summary: "B1 darajasida Genitiv kelishigi yozma nutq, maqolalar va rasmiy muloqotda asosiy o'rin tutadi. wegen, während, trotz, innerhalb, außerhalb predloglari Genitiv talab qiladi.",
+                sections: [
+                    {
+                        heading: "1. Genitiv kelishigi va Genitiv predloglari",
+                        content: "<p>Genitiv egalik va sabab-oqibat munosabatlarini ifodalaydi:</p><ul><li><strong>wegen</strong> (+ Gen) — tufayli, sababli (<em>wegen des schlechten Wetters</em>)</li><li><strong>trotz</strong> (+ Gen) — qaramasdan (<em>trotz der ständigen Kritik</em>)</li><li><strong>während</strong> (+ Gen) — davomida (<em>während der Live-Sendung</em>)</li><li><strong>innerhalb / außerhalb</strong> (+ Gen) — ichida / tashqarisida</li></ul>",
+                        examples: [
+                            { de: "Wegen des schlechten Internetanschlusses konnte ich nicht teilnehmen.", uz: "Yomon internet aloqasi tufayli qatnasha olmadim.", tip: "wegen + Maskulin Genitiv: des Anschlusses." },
+                            { de: "Trotz der Kritik nutzen Jugendliche täglich soziale Netzwerke.", uz: "Tanqidlarga qaramay, yoshlar har kuni ijtimoiy tarmoqlardan foydalanadilar.", tip: "trotz + Feminin Genitiv: der Kritik." },
+                            { de: "Während der Sendung sprachen Experten über Datenschutz.", uz: "Ko'rsatuv davomida mutaxassislar ma'lumotlar himoyasi haqida gapirdilar.", tip: "während + Feminin Genitiv: der Sendung." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Maskulin va Neutrum otlarga Genitivda -(e)s qo'shiladi (des Internets, des Handys).",
+                    "Feminin va Plural otlarda artikl 'der' bo'ladi, ot o'zgarmaydi (der Medien, der Technologie).",
+                    "wegen, während, trotz, innerhalb predloglari qat'iy Genitiv talab qiladi."
+                ]
+            },
+            flashcards: [
+                { front: "das soziale Netzwerk (-e)", back: "ijtimoiy tarmoq", tip: "soziale Netzwerke nutzen" },
+                { front: "der Datenschutz", back: "shaxsiy ma'lumotlar himoyasi", tip: "auf den Datenschutz achten" },
+                { front: "die Falschmeldung (-en)", back: "yolg'on xabar, feyk nyus", tip: "Falschmeldungen erkennen" },
+                { front: "die Medienkompetenz", back: "media savodxonlik", tip: "Medienkompetenz stärken" },
+                { front: "das Passwort (⸚er)", back: "maxfiy so'z, parol", tip: "ein sicheres Passwort wählen" },
+                { front: "die Privatsphäre", back: "shaxsiy hayot daxlsizligi", tip: "die Privatsphäre schützen" },
+                { front: "veröffentlichen", back: "e'lon qilmoq, post qo'ymoq", tip: "Beiträge veröffentlichen" },
+                { front: "beeinflussen", back: "ta'sir o'tkazmoq", tip: "die Meinung beeinflussen" }
+            ],
+            test: [
+                {
+                    q: "Qaysi gapda Genitiv predlogi grammatik jihatdan to'g'ri qo'llangan?",
+                    options: [
+                        "Wegen des schlechten Wetters blieben wir zu Hause.",
+                        "Wegen dem schlechten Wetter blieben wir zu Hause.",
+                        "Trotz das Problem gab er niemals auf.",
+                        "Während die Konferenz durfte niemand telefonieren."
+                    ],
+                    answer: 0,
+                    explanation: "'wegen' predlogi Genitiv talab qiladi: 'des schlechten Wetters'."
+                },
+                {
+                    q: "'Shaxsiy ma'lumotlar xavfsizligiga qaramay...' birikmasi qaysi javobda to'g'ri berilgan?",
+                    options: [
+                        "Trotz des Datenschutzes",
+                        "Wegen der Datenschutz",
+                        "Während dem Datenschutz",
+                        "Trotz den Datenschutz"
+                    ],
+                    answer: 0,
+                    explanation: "'trotz' Genitiv talab qiladi: der Datenschutz -> des Datenschutzes."
+                }
+            ],
+            gamePairs: [
+                { de: "das soziale Netzwerk", uz: "ijtimoiy tarmoq" },
+                { de: "der Datenschutz", uz: "ma'lumotlar himoyasi" },
+                { de: "die Falschmeldung", uz: "yolg'on xabar" },
+                { de: "wegen des Internets", uz: "internet tufayli" },
+                { de: "trotz der Warnung", uz: "ogohlantirishga qaramay" },
+                { de: "während der Sendung", uz: "ko'rsatuv davomida" },
+                { de: "veröffentlichen", uz: "post qo'ymoq" },
+                { de: "die Medienkompetenz", uz: "media savodxonlik" }
+            ]
+        },
+
+        {
+            id: "b1_9",
+            number: 9,
+            title: "Atrof-muhitni muhofaza qilish va Barqaror hayot",
+            germanTitle: "Umweltschutz & Nachhaltigkeit (Passiv mit Modalverben)",
+            icon: "🌿",
+            description: "Modal fe'llar bilan Passiv (muss recycelt werden), ekologiya va barqarorlik leksikasi.",
+            theory: {
+                summary: "Majhul nisbat (Passiv) ish-harakat jarayoniga urg'u beradi. Ekologik qoidalar va tavsiyalarda modal fe'lli Passiv: 'Modalverb + Partizip II + werden' eng ko'p ishlatiladigan vositadir.",
+                sections: [
+                    {
+                        heading: "1. Modal fe'llar bilan Passiv (Passiv mit Modalverben)",
+                        content: "<p>Strukturasi: <strong>Modalverb + Partizip II + werden</strong>:</p><ul><li><em>Plastikmüll muss recycelt werden.</em> (qayta ishlanishi shart)</li><li><em>Batterien dürfen nicht weggeworfen werden.</em> (tashlash taqiqlanadi)</li><li>Ergash gapda: <em>... weil die Natur geschützt werden muss.</em></li></ul>",
+                        examples: [
+                            { de: "Plastikmüll muss sorgfältig recycelt werden.", uz: "Plastik chiqindilar sinchkovlik bilan qayta ishlanishi shart.", tip: "müssen + recycelt + werden." },
+                            { de: "Alte Batterien dürfen nicht in den Müll geworfen werden.", uz: "Eski batareyalarni oddiy axlatga tashlash mumkin emas.", tip: "dürfen nicht + geworfen + werden." },
+                            { de: "Ich denke, dass Solarenergie stärker genutzt werden sollte.", uz: "O'ylaymanki, quyosh energiyasidan ko'proq foydalanilishi kerak.", tip: "ergash gap: genutzt werden sollte." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Bosh gapda modal fe'l 2-o'rinda, Partizip II + werden esa eng oxirida keladi.",
+                    "Ergash gapda ketma-ketlik: ... Partizip II + werden + Modalverb.",
+                    "schützen vor + Dat (asramoq), verzichten auf + Akk (voz kechmoq)."
+                ]
+            },
+            flashcards: [
+                { front: "die Umweltverschmutzung", back: "atrof-muhit ifloslanishi", tip: "die Umweltverschmutzung stoppen" },
+                { front: "der Klimawandel", back: "iqlim o'zgarishi", tip: "Folgen des Klimawandels" },
+                { front: "die Mülltrennung", back: "chiqindilarni saralash", tip: "Mülltrennung beachten" },
+                { front: "die Nachhaltigkeit", back: "ekologik barqarorlik", tip: "auf Nachhaltigkeit setzen" },
+                { front: "erneuerbare Energien", back: "qayta tiklanuvchi energiya", tip: "Wind- und Solarkraft" },
+                { front: "der Kunststoff (-e)", back: "plastmassa", tip: "Produkte aus Kunststoff" },
+                { front: "schützen vor (+ Dat)", back: "...dan himoya qilmoq", tip: "die Natur vor Zerstörung schützen" },
+                { front: "verzichten auf (+ Akk)", back: "...dan voz kechmoq", tip: "auf Plastiktüten verzichten" }
+            ],
+            test: [
+                {
+                    q: "'Qog'oz chiqindilari alohida to'planishi kerak' gapi qaysi javobda to'g'ri Passiv bo'ladi?",
+                    options: [
+                        "Altpapier muss getrennt gesammelt werden.",
+                        "Altpapier muss getrennt sammeln werden.",
+                        "Altpapier wird getrennt gesammelt gemusst.",
+                        "Altpapier hat getrennt gesammelt werden."
+                    ],
+                    answer: 0,
+                    explanation: "Modal fe'lli Passiv formulasi: Modalverb + Partizip II (gesammelt) + werden."
+                },
+                {
+                    q: "'Wir wissen, dass die Natur unbedingt geschützt ___ ___.' Bo'sh o'rinni to'ldiring:",
+                    options: [
+                        "werden muss",
+                        "muss werden",
+                        "wird müssen",
+                        "gemusst wird"
+                    ],
+                    answer: 0,
+                    explanation: "Ergash gap oxirida tartib: Partizip II + werden + tuslangan Modalverb."
+                }
+            ],
+            gamePairs: [
+                { de: "die Mülltrennung", uz: "chiqindilarni saralash" },
+                { de: "der Klimawandel", uz: "iqlim o'zgarishi" },
+                { de: "die Nachhaltigkeit", uz: "barqarorlik" },
+                { de: "erneuerbare Energien", uz: "qayta tiklanuvchi energiya" },
+                { de: "muss recycelt werden", uz: "qayta ishlanishi shart" },
+                { de: "darf nicht weggeworfen werden", uz: "tashlash taqiqlanadi" },
+                { de: "schützen vor", uz: "...dan himoya qilmoq" },
+                { de: "verzichten auf", uz: "...dan voz kechmoq" }
+            ]
+        },
+
+        {
+            id: "b1_10",
+            number: 10,
+            title: "Shahar vs Qishloq hayoti: Taqqoslash",
+            germanTitle: "Stadt- vs. Landleben (Zweiteilige Konnektoren: je...desto, sowohl...als auch)",
+            icon: "🏙️",
+            description: "Ikki qismli bog'lovchilar: je...desto/umso, sowohl...als auch, weder...noch orqali taqqoslash.",
+            theory: {
+                summary: "Ikki qismli bog'lovchilar qiyoslash va taqqoslashda juda samarali. 'je ... desto/umso' (qanchalik ... shunchalik), 'sowohl ... als auch' (ham ... ham), 'weder ... noch' (na ... na) ifodalarini yasaydi.",
+                sections: [
+                    {
+                        heading: "1. je ... desto / umso va boshqa juft bog'lovchilar",
+                        content: "<p><strong>je ... desto</strong> bog'lovchisida ikkala tomonda ham sifatning qiyosiy darajasi (Komparativ) keladi:</p><ul><li><code>Je + Komparativ + ... + Fe'l oxirida, desto + Komparativ + Fe'l 2-o'rinda + Ega...</code></li><li><em>sowohl A als auch B</em> — ham A, ham B</li><li><em>weder A noch B</em> — na A, na B</li></ul>",
+                        examples: [
+                            { de: "Je näher man am Zentrum wohnt, desto teurer sind die Mieten.", uz: "Shahar markaziga qanchalik yaqin yashalsa, ijara shunchalik qimmat bo'ladi.", tip: "je näher (fe'l oxirda) -> desto teurer sind (fe'l darhol keyin)." },
+                            { de: "Das Landleben bietet sowohl Ruhe als auch saubere Luft.", uz: "Qishloq hayoti ham osoyishtalik, ham toza havoni taqdim etadi.", tip: "sowohl ... als auch = ham ... ham." },
+                            { de: "In diesem kleinen Dorf gibt es weder Kinos noch Supermärkte.", uz: "Bu kichik qishloqda na kinoteatrlar, na supermarketlar bor.", tip: "weder ... noch = na ... na." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "'je' qismida fe'l gap oxiriga o'tadi, 'desto/umso' qismida esa darhol komparativdan keyin keladi.",
+                    "'sowohl ... als auch' ijobiy qo'shimchalikni, 'weder ... noch' ikkala narsani inkor qilishni bildiradi.",
+                    "desto o'rniga sinonim sifatida 'umso' so'zini ham ishlatish mumkin."
+                ]
+            },
+            flashcards: [
+                { front: "die Lebensqualität", back: "hayot sifati", tip: "hohe Lebensqualität" },
+                { front: "die Infrastruktur (-en)", back: "infratuzilma", tip: "moderne Infrastruktur" },
+                { front: "die Hektik", back: "shoshqaloqlik, shovqin-suron", tip: "der Hektik entfliehen" },
+                { front: "die Grünfläche (-n)", back: "yashil maydon, park", tip: "Grünflächen in der Stadt" },
+                { front: "der Mietpreis (-e)", back: "ijara narxi", tip: "steigende Mietpreise" },
+                { front: "das Pendeln", back: "shaharga qatnab ishlash", tip: "täglich zur Arbeit pendeln" },
+                { front: "der öffentliche Nahverkehr", back: "jamoat transporti", tip: "Bus und Bahn nutzen" },
+                { front: "ländlich vs. städtisch", back: "qishloqona vs. shaharcha", tip: "ländliche Gegend" }
+            ],
+            test: [
+                {
+                    q: "'Je länger man im Stau steht, ___ ___ die Laune.' So'zlarning to'g'ri tartibini toping:",
+                    options: [
+                        "desto schlechter wird",
+                        "desto die Laune schlechter wird",
+                        "umso schlechter die Laune wird",
+                        "als schlechter wird"
+                    ],
+                    answer: 0,
+                    explanation: "'desto' dan keyin darhol komparativ (schlechter) va keyin fe'l (wird) keladi."
+                },
+                {
+                    q: "'U yerda na shifoxona, na dorixona bor' ma'nosi qaysi bog'lovchi bilan to'g'ri tuziladi?",
+                    options: [
+                        "weder ... noch",
+                        "sowohl ... als auch",
+                        "nicht nur ... sondern auch",
+                        "entweder ... oder"
+                    ],
+                    answer: 0,
+                    explanation: "Ikkala narsani ham inkor qilish uchun 'weder ... noch' qo'llanadi."
+                }
+            ],
+            gamePairs: [
+                { de: "die Lebensqualität", uz: "hayot sifati" },
+                { de: "die Hektik", uz: "shovqin va stress" },
+                { de: "die Infrastruktur", uz: "infratuzilma" },
+                { de: "je mehr ... desto besser", uz: "qanchalik ko'p ... shunchalik yaxshi" },
+                { de: "sowohl ... als auch", uz: "ham ... ham" },
+                { de: "weder ... noch", uz: "na ... na" },
+                { de: "das Pendeln", uz: "qatnab ishlash" },
+                { de: "die Grünfläche", uz: "yashil maydon" }
+            ]
+        },
+
+        {
+            id: "b1_11",
+            number: 11,
+            title: "Madaniyatlararo muloqot va Mehmondo'stlik",
+            germanTitle: "Interkulturelle Kommunikation & Gastfreundschaft (Plusquamperfekt & nachdem)",
+            icon: "🤝",
+            description: "O'tgan zamondagi oldinma-ketinlik (Plusquamperfekt va nachdem), madaniy farqlar va odob.",
+            theory: {
+                summary: "O'tgan zamonda ketma-ket sodir bo'lgan ikki ish-harakatning oldingisi Plusquamperfektda (hatte/war + Partizip II), keyingisi Präteritumda keladi. Buni bog'lashda 'nachdem' ishlatiladi.",
+                sections: [
+                    {
+                        heading: "1. Plusquamperfekt va nachdem bilan Vorzeitigkeit",
+                        content: "<p>Formula: <code>Nachdem + Ega + ... + Partizip II + hatte/war, [Präteritum fe'l] + Ega...</code></p><ul><li>Harakat fe'llari: <em>war angekommen, war gefahren</em></li><li>Boshqa fe'llar: <em>hatte gelernt, hatte gegessen</em></li></ul>",
+                        examples: [
+                            { de: "Nachdem ich in Deutschland angekommen war, bemerkte ich die Unterschiede.", uz: "Germaniyaga yetib kelganimdan so'ng, farqlarni payqadim.", tip: "oldin keldi (war angekommen), keyin payqadi (bemerkte)." },
+                            { de: "Nachdem wir die Schuhe ausgezogen hatten, betraten wir das Haus.", uz: "Poyabzallarimizni yechganimizdan so'ng, xonadonga kirdik.", tip: "hatten ausgezogen -> betraten." },
+                            { de: "Er verstand die Pünktlichkeit erst, nachdem er den Zug verpasst hatte.", uz: "U poyezdni o'tkazib yuborgachgina, aniqlikni tushundi.", tip: "nachdem gapida Plusquamperfekt." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "nachdem ergash gapida oldin bo'lgan voqea Plusquamperfektda bo'lishi shart.",
+                    "Bosh gapdagi keyingi voqea Präteritumda (yoki og'zaki nutqda Perfektda) ifodalanadi.",
+                    "sich anpassen an + Akk (moslashmoq), aufgeschlossen sein (ochiqko'ngil bo'lmoq)."
+                ]
+            },
+            flashcards: [
+                { front: "die Gastfreundschaft", back: "mehmondo'stlik", tip: "herzliche Gastfreundschaft" },
+                { front: "das Missverständnis (-se)", back: "tushunmovchilik", tip: "Missverständnisse klären" },
+                { front: "der Kulturschock (-s)", back: "madaniy shok", tip: "einen Kulturschock erleben" },
+                { front: "die Höflichkeit (-en)", back: "xushmuomalalik, odob", tip: "Höflichkeit zeigen" },
+                { front: "die Gewohnheit (-en)", back: "odat, ko'nikma", tip: "neue Gewohnheiten annehmen" },
+                { front: "der Brauch (⸚e)", back: "urf-odat, an'ana", tip: "alte Bräuche pflegen" },
+                { front: "sich anpassen an (+ Akk)", back: "...ga moslashmoq", tip: "sich an die Kultur anpassen" },
+                { front: "aufgeschlossen", back: "ochiqko'ngil, samimiy", tip: "aufgeschlossen für Neues sein" }
+            ],
+            test: [
+                {
+                    q: "Qaysi gapda o'tgan zamondagi oldinma-ketinlik (Vorzeitigkeit) to'g'ri ifodalangan?",
+                    options: [
+                        "Nachdem wir die Präsentation vorbereitet hatten, tranken wir einen Kaffee.",
+                        "Nachdem wir die Präsentation vorbereiten, tranken wir einen Kaffee.",
+                        "Nachdem wir tranken einen Kaffee, hatten wir vorbereitet.",
+                        "Nachdem wir vorbereitet haben, hatten wir getrunken."
+                    ],
+                    answer: 0,
+                    explanation: "nachdem gapida Plusquamperfekt (hatten vorbereitet), bosh gapda Präteritum (tranken) bo'lishi shart."
+                },
+                {
+                    q: "'sich anpassen' fe'li qaysi predlog va kelishik bilan birga keladi?",
+                    options: [
+                        "an + Akkusativ",
+                        "für + Akkusativ",
+                        "mit + Dativ",
+                        "über + Akkusativ"
+                    ],
+                    answer: 0,
+                    explanation: "'sich anpassen an + Akkusativ' qat'iy boshqaruvga ega."
+                }
+            ],
+            gamePairs: [
+                { de: "die Gastfreundschaft", uz: "mehmondo'stlik" },
+                { de: "das Missverständnis", uz: "tushunmovchilik" },
+                { de: "der Kulturschock", uz: "madaniy shok" },
+                { de: "sich anpassen an", uz: "...ga moslashmoq" },
+                { de: "nachdem er gegessen hatte", uz: "u ovqatlangach" },
+                { de: "die Höflichkeit", uz: "xushmuomalalik" },
+                { de: "der Brauch", uz: "urf-odat" },
+                { de: "aufgeschlossen", uz: "ochiqko'ngil" }
+            ]
+        },
+
+        {
+            id: "b1_12",
+            number: 12,
+            title: "Iste'molchilik madaniyati va Onlayn xaridlar",
+            germanTitle: "Konsumverhalten & Online-Shopping (Verben mit Präpositionen & Pronominaladverbien)",
+            icon: "🛒",
+            description: "Predlogli fe'llar va olmoshli ravishlar (worauf/darauf, worüber/darüber) hamda xarid huquqlari.",
+            theory: {
+                summary: "Nemis tilida ko'plab fe'llar qat'iy predloglar bilan keladi. Predmet yoki voqeaga ishora qilinganda 'wo(r)-' va 'da(r)-' olmoshli ravishlari yasaladi: Worüber ärgerst du dich? — Ich ärgere mich darüber.",
+                sections: [
+                    {
+                        heading: "1. Verben mit Präpositionen va Pronominaladverbien",
+                        content: "<p>Inson haqida: <em>Auf wen wartest du? — Auf Anna.</em><br>Narsa/hodisa haqida: <strong>worauf / darauf</strong>, <strong>worüber / darüber</strong>:</p><ul><li><em>sich ärgern über + Akk</em> (jahli chiqmoq)</li><li><em>sich interessieren für + Akk</em> (qiziqmoq)</li><li><em>achten auf + Akk</em> (e'tibor bermoq)</li><li><em>zufrieden sein mit + Dat</em> (mamnun bo'lmoq)</li></ul>",
+                        examples: [
+                            { de: "Viele Kunden ärgern sich über lange Lieferzeiten.", uz: "Ko'plab mijozlar uzoq yetkazib berishdan norozi bo'ladilar.", tip: "sich ärgern über + Akk." },
+                            { de: "Worüber hast du dich beschwert? — Ich habe mich über die Rechnung beschwert.", uz: "Nimadan shikoyat qilding? — Hisob-kitob ustidan shikoyat qildim.", tip: "narsa haqida so'rov: worüber." },
+                            { de: "Interessierst du dich dafür? — Ja, sehr!", uz: "Sen bunga qiziqasanmi? — Ha, juda!", tip: "dafür = für das Thema." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Unli bilan boshlangan predlog oldiga 'r' qo'shiladi: wo+r+auf, da+r+über.",
+                    "Insonlarga nisbatan pronominaladverb ishlatilmaydi (Auf wen? Für wen?).",
+                    "xaridda: das Rückgaberecht (14 kunlik qaytarish huquqi)."
+                ]
+            },
+            flashcards: [
+                { front: "das Konsumverhalten", back: "iste'molchilik odatlari", tip: "bewusstes Konsumverhalten" },
+                { front: "die Lieferzeit (-en)", back: "yetkazib berish muddati", tip: "schnelle Lieferzeit" },
+                { front: "das Rückgaberecht (-e)", back: "tovarni qaytarish huquqi", tip: "14 Tage Rückgaberecht" },
+                { front: "die Kundenbewertung (-en)", back: "mijozlar fikri va bahosi", tip: "Bewertungen lesen" },
+                { front: "das Schnäppchen (-)", back: "foydali arzon xarid", tip: "ein Schnäppchen machen" },
+                { front: "die Reklamation (-en)", back: "shikoyat arizasi", tip: "eine Reklamation einreichen" },
+                { front: "die Verschwendung (-en)", back: "isrofgarchilik", tip: "Geldverschwendung vermeiden" },
+                { front: "bestellen", back: "buyurtma qilmoq", tip: "online bestellen" }
+            ],
+            test: [
+                {
+                    q: "'Worauf freust du dich?' savoliga narsaga nisbatan to'g'ri javob qaysi?",
+                    options: [
+                        "Ich freue mich darauf.",
+                        "Ich freue mich dafür.",
+                        "Ich freue mich davon.",
+                        "Ich freue mich auf ihm."
+                    ],
+                    answer: 0,
+                    explanation: "'sich freuen auf + Akk' narsaga nisbatan 'darauf' shaklini oladi."
+                },
+                {
+                    q: "'Viele Kunden beschweren sich ___ die verspätete Lieferung.' Bo'sh joyni to'ldiring:",
+                    options: [
+                        "über",
+                        "für",
+                        "mit",
+                        "an"
+                    ],
+                    answer: 0,
+                    explanation: "Biror salbiy holat ustidan shikoyat qilish 'sich beschweren über + Akkusativ' bo'ladi."
+                }
+            ],
+            gamePairs: [
+                { de: "das Konsumverhalten", uz: "iste'mol madaniyati" },
+                { de: "die Lieferzeit", uz: "yetkazish muddati" },
+                { de: "das Rückgaberecht", uz: "qaytarish huquqi" },
+                { de: "die Kundenbewertung", uz: "mijozlar sharhi" },
+                { de: "das Schnäppchen", uz: "arzon xarid" },
+                { de: "sich ärgern über", uz: "...dan norozi bo'lmoq" },
+                { de: "sich interessieren für", uz: "...ga qiziqmoq" },
+                { de: "die Verschwendung", uz: "isrofgarchilik" }
+            ]
         }
     ]
 };

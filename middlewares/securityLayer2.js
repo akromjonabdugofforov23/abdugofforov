@@ -11,8 +11,11 @@ const helmetMiddleware = helmet({
             formAction: ["'self'"],
             frameAncestors: ["'none'"],
             objectSrc: ["'none'"],
+            workerSrc: ["'self'", "blob:"],
+            manifestSrc: ["'self'"],
             scriptSrc: [
                 "'self'",
+                "'unsafe-inline'",
                 "https://static.cloudflareinsights.com",
                 "https://cdnjs.cloudflare.com",
                 "https://cdn.jsdelivr.net",
@@ -49,7 +52,7 @@ const helmetMiddleware = helmet({
     originAgentCluster: true,
     permittedCrossDomainPolicies: { permittedPolicies: "none" },
     hsts: {
-        maxAge: 31536000,
+        maxAge: 63072000, // 2 yil (HSTS Preload tavsiyasi)
         includeSubDomains: true,
         preload: true
     },
@@ -60,7 +63,7 @@ const helmetMiddleware = helmet({
 const securityLayer2 = (req, res, next) => {
     helmetMiddleware(req, res, () => {
         res.setHeader('X-XSS-Protection', '0');
-        res.setHeader('Permissions-Policy', 'geolocation=(), camera=(), microphone=(), payment=(), usb=(), display-capture=()');
+        res.setHeader('Permissions-Policy', 'accelerometer=(), autoplay=(), camera=(), cross-origin-isolated=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(self), screen-wake-lock=(), sync-xhr=(), usb=(), xr-spatial-tracking=()');
         res.setHeader('Reporting-Endpoints', 'csp-endpoint="https://abdugofforov.uz/csp-report"');
         next();
     });

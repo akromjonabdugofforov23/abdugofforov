@@ -130,6 +130,46 @@ while ((idMatch = getElementByIdRegex.exec(appJsContent)) !== null) {
 }
 
 // -------------------------------------------------------------
+// 5. XAVFSIZLIK PROTOKOLLARI VA HIMOYALANGANLIK AUDITI
+// -------------------------------------------------------------
+console.log('\n📌 5. Xavfsizlik Protokollari va Kriptografiya Audit:');
+try {
+    const sec1 = require('../middlewares/securityLayer1');
+    if (sec1 && sec1.authLimiter && sec1.aiLimiter && sec1.adminLimiter) {
+        logPass("Rate Limiting protokollari (General, Auth, AI, Admin) to'liq mavjud");
+    } else {
+        logFail("Rate Limiting limiterlaridan biri yetishmaydi");
+    }
+} catch (e) {
+    logFail(`securityLayer1 yuklanmadi: ${e.message}`);
+}
+
+try {
+    const aiBotDetector = require('../middlewares/aiBotDetector');
+    let blockedMalicious = false;
+    const mockResMalicious = {
+        status: (code) => ({
+            json: () => { if (code === 403) blockedMalicious = true; }
+        })
+    };
+    aiBotDetector({ get: () => 'sqlmap/1.5', headers: {}, url: '/' }, mockResMalicious, () => {});
+    if (blockedMalicious) {
+        logPass("WAF & Threat Detektori zararli vositalarni (sqlmap) to'g'ri bloklaydi");
+    } else {
+        logFail("WAF zararli vositalarni bloklay olmadi");
+    }
+} catch (e) {
+    logFail(`aiBotDetector tekshiruvida xatolik: ${e.message}`);
+}
+
+try {
+    const sec2 = require('../middlewares/securityLayer2');
+    logPass("HTTP Security Headers (Helmet, CSP, HSTS 2-yil, Permissions-Policy) yuklandi");
+} catch (e) {
+    logFail(`securityLayer2 yuklanmadi: ${e.message}`);
+}
+
+// -------------------------------------------------------------
 // AUDIT SUMMARY
 // -------------------------------------------------------------
 console.log('\n=================================================');

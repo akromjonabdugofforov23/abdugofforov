@@ -26,19 +26,40 @@ app.use(express.urlencoded({ extended: false, limit: '500kb' }));
 // CORS xavfsizligi — Wildcard (*) emas, faqat same-origin va ruxsat etilgan domenlar
 app.use((req, res, next) => {
     const origin = req.headers.origin;
-    const allowed = [req.headers.host ? `${req.protocol}://${req.headers.host}` : ''];
+    const allowed = [
+        req.headers.host ? `${req.protocol}://${req.headers.host}` : '',
+        'https://abdugofforov.uz',
+        'https://deutsch.abdugofforov.uz',
+        'https://tools.abdugofforov.uz',
+        'https://cv.abdugofforov.uz'
+    ];
     if (process.env.ALLOWED_ORIGINS) {
         process.env.ALLOWED_ORIGINS.split(',').forEach(o => {
             const t = o.trim();
             if (t) allowed.push(t);
         });
     }
-    if (origin && (allowed.includes(origin) || allowed.includes(origin.replace(/\/$/, '')))) {
+
+    let isOriginAllowed = false;
+    if (origin) {
+        try {
+            const originUrl = new URL(origin);
+            if (originUrl.hostname === 'abdugofforov.uz' || originUrl.hostname.endsWith('.abdugofforov.uz')) {
+                isOriginAllowed = true;
+            }
+        } catch (_) {}
+        if (!isOriginAllowed && (allowed.includes(origin) || allowed.includes(origin.replace(/\/$/, '')))) {
+            isOriginAllowed = true;
+        }
+    }
+
+    if (origin && isOriginAllowed) {
         res.header("Access-Control-Allow-Origin", origin);
         res.header("Vary", "Origin");
     }
     res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, x-user-token, x-admin-token, x-admin-pin");
+    res.header("Access-Control-Max-Age", "86400");
     res.header("X-Content-Type-Options", "nosniff");
     if ('OPTIONS' === req.method) {
         res.sendStatus(204);
@@ -55,12 +76,22 @@ app.use(aiBotDetector);
 
 // 3-bosqich: DDoS va ortiqcha so'rovlardan himoya (Rate Limiting)
 app.use('/auth', securityLayer1.authLimiter || securityLayer1);
+app.use('/api/ai', securityLayer1.aiLimiter || securityLayer1);
+app.use('/api/admin', securityLayer1.adminLimiter || securityLayer1);
 app.use(securityLayer1);
 
+// Maxfiy ma'lumotlar va API endpointlar uchun keshlanishni taqiqlash (No-Cache protokoli)
+const noCacheMiddleware = (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Surrogate-Control', 'no-store');
+    next();
+};
+
 // Marshrutlarni ulash
-app.use('/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/ai', aiRoutes);
+app.use('/auth', noCacheMiddleware, authRoutes);
+app.use('/api/admin', noCacheMiddleware, adminRoutes);
+app.use('/api/ai', noCacheMiddleware, aiRoutes);
 
 // Statik fayllarni ilova manbalaridan o'qish
 app.use(express.static(path.join(__dirname, '.')));

@@ -40,7 +40,7 @@ export function corsHeaders(request, env) {
   const headers = {
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, x-user-token, x-admin-token, x-admin-pin, Authorization',
-    'Access-Control-Max-Age': '600',
+    'Access-Control-Max-Age': '86400',
     'Vary': 'Origin',
   };
   // Faqat ruxsat etilgan origin uchun ACAO sarlavhasini qo'shamiz.
@@ -132,10 +132,11 @@ function hexToBuf(hex) {
   return arr;
 }
 
-// ---- Parol hashlash (PBKDF2-SHA256, 100k iteratsiya) ----
-const PBKDF2_ITER = 100000;
+// ---- Parol hashlash (PBKDF2-SHA256, zamonaviy 250k iteratsiya) ----
+const PBKDF2_ITER_MODERN = 250000;
+const PBKDF2_ITER_LEGACY = 100000;
 
-export async function hashPassword(password, saltHex) {
+export async function hashPassword(password, saltHex, iterations = PBKDF2_ITER_MODERN) {
   let salt;
   if (saltHex) {
     salt = hexToBuf(saltHex);
@@ -147,7 +148,7 @@ export async function hashPassword(password, saltHex) {
     'raw', new TextEncoder().encode(password), { name: 'PBKDF2' }, false, ['deriveBits']
   );
   const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', salt, iterations: PBKDF2_ITER, hash: 'SHA-256' },
+    { name: 'PBKDF2', salt, iterations: iterations || PBKDF2_ITER_MODERN, hash: 'SHA-256' },
     keyMaterial, 256
   );
   return { hash: bufToHex(bits), salt: saltHex };
@@ -155,8 +156,13 @@ export async function hashPassword(password, saltHex) {
 
 export async function verifyPassword(password, saltHex, expectedHashHex) {
   if (!password || !saltHex || !expectedHashHex) return false;
-  const { hash } = await hashPassword(password, saltHex);
-  return timingSafeEqual(hash, expectedHashHex);
+  // 1. Zamonaviy 250,000 iteratsiya bilan tekshirish
+  const modern = await hashPassword(password, saltHex, PBKDF2_ITER_MODERN);
+  if (timingSafeEqual(modern.hash, expectedHashHex)) return true;
+  // 2. Merosiy 100,000 iteratsiya bilan tekshirish (orqaga moslashuvchanlik)
+  const legacy = await hashPassword(password, saltHex, PBKDF2_ITER_LEGACY);
+  if (timingSafeEqual(legacy.hash, expectedHashHex)) return true;
+  return false;
 }
 
 export function timingSafeEqual(a, b) {

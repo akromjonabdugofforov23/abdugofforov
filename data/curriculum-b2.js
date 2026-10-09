@@ -1310,6 +1310,366 @@ window.deutschCurriculum['B2'] = {
                 { de: 'das Fazit ziehen', uz: 'yakuniy xulosa chiqarmoq' },
                 { de: 'Vielen Dank für Ihre Aufmerksamkeit', uz: 'E\'tiboringiz uchun tashakkur' }
             ]
+        },
+
+        {
+            id: "b2_8",
+            number: 8,
+            title: "Rasmiy shikoyat xati yozish va Mijozlar e'tirozi",
+            germanTitle: "Schriftliche Beschwerde & Reklamation (Brief an Institutionen)",
+            icon: "✉️",
+            description: "telc B2 Schriftlicher Ausdruck formati: shikoyat xati, talab bildirish, muddat belgilash va Konjunktiv II.",
+            theory: {
+                summary: "telc B2 imtihonining Yozma qismida (Schriftlicher Ausdruck) rasmiy shikoyat xati (Beschwerdebrief) eng muhim mavzudir. Unda rasmiy talab, Fristsetzung (muddat belgilash) va Konjunktiv II qoliplari qo'llanadi.",
+                sections: [
+                    {
+                        heading: "1. Rasmiy talab, muddat belgilash va Konjunktiv II",
+                        content: "<p>Shikoyat xatida muloyim, ammo qat'iy ohangda talab qo'yiladi:</p><ul><li><em>Ich wäre Ihnen sehr verbunden, wenn Sie mir den Betrag zeitnah erstatten würden.</em></li><li><em>Ich setze Ihnen hiermit eine Frist bis zum [Datum]...</em></li><li><em>Sollten Sie dieser Forderung nicht nachkommen, sehe ich mich gezwungen, rechtliche Schritte einzuleiten.</em></li></ul>",
+                        examples: [
+                            { de: "Mit großem Bedauern wende ich mich an Sie, um mich über den Kurs zu beschweren.", uz: "Afsus bilan, buyurtma qilingan kurs ustidan shikoyat bildirish maqsadida murojaat qilyapman.", tip: "Klassik kirish jumlasi." },
+                            { de: "Entgegen Ihren Zusicherungen entsprach das Zimmer keineswegs dem Standard.", uz: "Sizning va'dalaringizga zid o'laroq, xona aslo standartga to'g'ri kelmadi.", tip: "Kutilgan va haqiqiy holat tafovuti." },
+                            { de: "Aus den genannten Gründen fordere ich eine Rückerstattung in Höhe von 50 %.", uz: "Ko'rsatilgan sabablarga ko'ra 50 foiz mablag' qaytarilishini talab qilaman.", tip: "Kompensatsiya talabi." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Xat oxirida qat'iy muddat (Fristsetzung) va shartli ogohlantirish berilishi kerak.",
+                    "Konjunktiv II orqali olijanob murojaat: 'Ich wäre Ihnen sehr dankbar, wenn Sie... würden'.",
+                    "sich gezwungen sehen, etwas zu tun (biror chora ko'rishga majbur bo'lmoq)."
+                ]
+            },
+            flashcards: [
+                { front: "die Reklamation einreichen", back: "e'tiroz/shikoyat arizasi kiritmoq", tip: "beim Kundendienst einreichen" },
+                { front: "einen Mangel beheben", back: "nuqsonni bartaraf etmoq", tip: "den Schaden unverzüglich beheben" },
+                { front: "Schadensersatz fordern", back: "zararni qoplashni talab qilmoq", tip: "angemessenen Ersatz verlangen" },
+                { front: "die Rückerstattung", back: "xarajatlarni qaytarish", tip: "vollständige Rückerstattung" },
+                { front: "vom Vertrag zurücktreten", back: "shartnomani bekor qilmoq", tip: "bei Nichterfüllung zurücktreten" },
+                { front: "eine Frist setzen bis zum", back: "oxirgi muddat belgilamoq", tip: "Frist bis zum 15. Oktober setzen" },
+                { front: "rechtliche Schritte einleiten", back: "huquqiy chora ko'rmoq", tip: "rechtliche Schritte androhen" },
+                { front: "die Beanstandung (-en)", back: "sifat bo'yicha e'tiroz", tip: "eine Beanstandung vorbringen" }
+            ],
+            test: [
+                {
+                    q: "'Sollten Sie meiner Forderung nicht nachkommen, ______ ich mich gezwungen, rechtliche Schritte einzuleiten.'",
+                    options: [
+                        "sehe",
+                        "habe",
+                        "werde",
+                        "lasse"
+                    ],
+                    answer: 0,
+                    explanation: "B2 rasmiy uslubidagi ifoda: 'sich gezwungen sehen, etwas zu tun' (majbur deb bilmoq)."
+                },
+                {
+                    q: "Rasmiy xatda Konjunktiv II orqali to'lovni talab qilish qaysi javobda to'g'ri berilgan?",
+                    options: [
+                        "Ich wäre Ihnen sehr dankbar, wenn Sie mir den Betrag bis zum 15. Mai erstatten würden.",
+                        "Ich will, dass Sie mir das Geld bis zum 15. Mai erstattet haben.",
+                        "Wenn Sie nicht zahlen bis 15. Mai, bin ich sehr sauer.",
+                        "Sie müssen das Geld bis 15. Mai zahlen sofort."
+                    ],
+                    answer: 0,
+                    explanation: "telc B2 talabiga mos rasmiy muloyim uslub: 'Ich wäre Ihnen dankbar, wenn Sie... erstatten würden'."
+                }
+            ],
+            gamePairs: [
+                { de: "die Beschwerde einreichen", uz: "shikoyat topshirmoq" },
+                { de: "einen Mangel beheben", uz: "nuqsonni bartaraf etmoq" },
+                { de: "Schadensersatz fordern", uz: "zararni qoplashni talab qilmoq" },
+                { de: "die Rückerstattung", uz: "pulni qaytarib berish" },
+                { de: "vom Vertrag zurücktreten", uz: "shartnomadan voz kechmoq" },
+                { de: "eine Frist setzen", uz: "oxirgi muddat belgilamoq" },
+                { de: "rechtliche Schritte einleiten", uz: "huquqiy chora ko'rmoq" },
+                { de: "die Beanstandung", uz: "e'tiroz bildirmoq" }
+            ]
+        },
+
+        {
+            id: "b2_9",
+            number: 9,
+            title: "Sun'iy intellekt, Raqamlashtirish va Axloqiy masalalar",
+            germanTitle: "Künstliche Intelligenz, Digitalisierung & Ethik (Subjektive Modalverben)",
+            icon: "🤖",
+            description: "Modal fe'llarning subyektiv ma'nolari (müssen, dürfte, könnte) va 'es gilt zu + Infinitiv'.",
+            theory: {
+                summary: "B2 darajasida modal fe'llar ehtimollik va taxmin darajalarini bildiradi (müssen = 100%, dürfte = 75-80%, könnte = 50%). Shuningdek 'haben/es gilt + zu + Infinitiv' passiv va zaruriyat o'rnida ishlatiladi.",
+                sections: [
+                    {
+                        heading: "1. Subyektiv modal fe'llar va Umschreibungen",
+                        content: "<p>Ehtimollik darajalari:</p><ul><li><strong>müssen (100% qat'iy ishonch):</strong> <em>KI muss den Arbeitsmarkt grundlegend verändern.</em></li><li><strong>dürfte (~80% yuqori ehtimol):</strong> <em>Die Umstellung dürfte viel Zeit kosten.</em></li><li><strong>könnte (~50% imkoniyat):</strong> <em>Es könnte Gefahren bergen.</em></li><li><strong>es gilt + zu + Infinitiv:</strong> <em>Hier gilt es, Risiken abzuwägen (= man muss abwägen).</em></li></ul>",
+                        examples: [
+                            { de: "Die Digitalisierung dürfte zahlreiche Berufsfelder revolutionieren.", uz: "Raqamlashtirish ko'plab kasb sohalarini inqilobiy o'zgartirsa kerak.", tip: "dürfte = sehr wahrscheinlich (katta ehtimol bilan)." },
+                            { de: "Hier gilt es, verbindliche ethische Richtlinien festzulegen.", uz: "Bu yerda majburiy axloqiy me'yorlarni belgilash lozim.", tip: "es gilt zu + Infinitiv = man muss/sollte." },
+                            { de: "Intelligente Algorithmen bergen zweifellos erhebliche Risiken.", uz: "Aqlli algoritmlar shubhasiz jiddiy xatarlarni o'zida yashiradi.", tip: "ein Risiko bergen = xavf saqlamoq." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "dürfte modal fe'li 75-80% ehtimollikni bildiradi (tengdosh: es ist sehr wahrscheinlich).",
+                    "es gilt + zu + Infinitiv = man muss/sollte (majburiyat va vazifa).",
+                    "haben + zu + Infinitiv = müssen (Die Politik hat Gesetze zu erlassen)."
+                ]
+            },
+            flashcards: [
+                { front: "der Datenschutz", back: "ma'lumotlar maxfiyligi va himoyasi", tip: "strenge Datenschutzgesetze" },
+                { front: "die Automatisierung", back: "avtomatlashtirish jarayoni", tip: "fortschreitende Automatisierung" },
+                { front: "ethische Bedenken äußern", back: "axloqiy xavotir/shubhalar bildirmoq", tip: "Bedenken gegen KI äußern" },
+                { front: "Schritt halten mit (+ Dat)", back: "shiddat bilan teng qadam tashlamoq", tip: "mit dem Fortschritt Schritt halten" },
+                { front: "einen Durchbruch erzielen", back: "ulkan yutuqqa/kashfiyotga erishmoq", tip: "in der Forschung einen Durchbruch erzielen" },
+                { front: "ein Risiko bergen", back: "o'zida xavf-xatar saqlamoq", tip: "unberechenbare Risiken bergen" },
+                { front: "die Weichen stellen für", back: "kelajak yo'nalishini belgilamoq", tip: "die Weichen für die Zukunft stellen" },
+                { front: "Zugang haben zu (+ Dat)", back: "...dan foydalanish imkoniga ega bo'lmoq", tip: "Zugang zu Daten haben" }
+            ],
+            test: [
+                {
+                    q: "'Experten vermuten, dass Roboter sehr wahrscheinlich Routinearbeiten übernehmen.' Ushbu gapni subyektiv modal fe'l bilan to'g'ri ifodalang:",
+                    options: [
+                        "Roboter dürften in Zukunft Routinearbeiten übernehmen.",
+                        "Roboter müssen Routinearbeiten übernehmen.",
+                        "Roboter wollen Routinearbeiten übernehmen.",
+                        "Roboter mögen Routinearbeiten übernehmen."
+                    ],
+                    answer: 0,
+                    explanation: "Subyektiv 'dürfte' modal fe'li 75-80% yuqori ehtimollikni (sehr wahrscheinlich) anglatadi."
+                },
+                {
+                    q: "'Um Missbrauch vorzubeugen, ______ es, strenge Sicherheitsstandards einzuführen.' Bo'sh o'rinni to'ldiring:",
+                    options: [
+                        "gilt",
+                        "lässt",
+                        "bleibt",
+                        "scheint"
+                    ],
+                    answer: 0,
+                    explanation: "'es gilt + zu + Infinitiv' ifodasi zaruriyat va majburiyatni (man muss) bildiradi."
+                }
+            ],
+            gamePairs: [
+                { de: "der Datenschutz", uz: "ma'lumotlar himoyasi" },
+                { de: "ethische Bedenken", uz: "axloqiy xavotirlar" },
+                { de: "Schritt halten mit", uz: "bir maromda ulgurmoq" },
+                { de: "ein Risiko bergen", uz: "xavfni saqlamoq" },
+                { de: "die Weichen stellen", uz: "yo'nalishni belgilamoq" },
+                { de: "einen Durchbruch erzielen", uz: "ulkan yutuqqa erishmoq" },
+                { de: "die Automatisierung", uz: "avtomatlashtirish" },
+                { de: "es gilt zu beachten", uz: "e'tiborga olish shart" }
+            ]
+        },
+
+        {
+            id: "b2_10",
+            number: 10,
+            title: "Ish joyidagi stress va Work-Life-Balance",
+            germanTitle: "Stressbewältigung, Burnout & Moderne Arbeitswelt (Konjunktiv II Vergangenheit)",
+            icon: "⚖️",
+            description: "O'tgan zamondagi nereal shart va afsus (hätte... müssen/können), Doppelinfinitiv va psixologik salomatlik.",
+            theory: {
+                summary: "O'tgan zamonda yuz bermagan holatlarga afsus bildirishda Konjunktiv II: 'hätte + Infinitiv + Infinitiv' (Doppelinfinitiv) qo'llanadi. Masalan: Er hätte Urlaub nehmen müssen (U ta'til olishi kerak edi, ammo olmadi).",
+                sections: [
+                    {
+                        heading: "1. O'tgan zamon Konjunktiv II va Doppelinfinitiv",
+                        content: "<p>Formula: <strong>hätte + Infinitiv (asosiy fe'l) + Infinitiv (modal fe'l)</strong>:</p><ul><li><em>Der Abteilungsleiter hätte die Überstunden früher reduzieren müssen.</em></li><li><em>Wenn ich früher reagiert hätte, wäre ich nicht im Burnout gelandet.</em></li><li><em>An deiner Stelle hätte ich mich an den Betriebsrat gewandt.</em></li></ul>",
+                        examples: [
+                            { de: "Der Mitarbeiter hätte viel früher auf die Warnsignale achten müssen.", uz: "Xodim ancha oldinroq ogohlantiruvchi belgilarga e'tibor qaratishi kerak edi.", tip: "hätte ... achten müssen (Doppelinfinitiv)." },
+                            { de: "Hätten die Angestellten mehr Flexibilität gehabt, wären sie zufriedener gewesen.", uz: "Agar xodimlarda ko'proq erkinlik bo'lganida, ular ko'proq mamnun bo'lgan bo'lardilar.", tip: "Irrealis der Vergangenheit." },
+                            { de: "Es ist wichtig, eine strikte Grenze zum Feierabend zu ziehen.", uz: "Ish tugash vaqtiga qat'iy chegara qo'yish muhim ahamiyatga ega.", tip: "eine Grenze ziehen = chegara qo'ymoq." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Modal fe'llar bilan o'tgan zamon Konjunktiv II: doimo 'hätte' yordamchi fe'li va ikkita infinitivdan iborat bo'ladi.",
+                    "Shartli gapda: Wenn ... hätte/wäre, wäre/hätte ... gewesen.",
+                    "unter Leistungsdruck stehen (natija bosimi ostida bo'lmoq)."
+                ]
+            },
+            flashcards: [
+                { front: "das Burnout-Syndrom", back: "kasbiy charchoq, ruhiy so'nish", tip: "an Burnout leiden" },
+                { front: "Überstunden leisten", back: "ortiqcha soatlarda ishlamoq", tip: "viele Überstunden leisten" },
+                { front: "die Vereinbarkeit von Familie und Beruf", back: "oila va ishning uyg'unligi", tip: "bessere Vereinbarkeit fördern" },
+                { front: "unter Leistungsdruck stehen", back: "doimiy natija bosimi ostida yashamoq", tip: "unter enormem Druck stehen" },
+                { front: "Prioritäten richtig setzen", back: "ustuvorliklarni to'g'ri belgilamoq", tip: "klare Prioritäten setzen" },
+                { front: "die Belastungsgrenze überschreiten", back: "bardosh chegarasidan oshib ketmoq", tip: "die Grenze überschreiten" },
+                { front: "den Ausgleich finden", back: "ishga qarshi hordiq topmoq", tip: "Ausgleich zum Berufsalltag" },
+                { front: "zur Ruhe kommen", back: "xotirjamlik topmoq, tinchlanmoq", tip: "am Wochenende zur Ruhe kommen" }
+            ],
+            test: [
+                {
+                    q: "'Der Angestellte war überarbeitet. Er ______ dringend Urlaub nehmen ______.' Bo'sh joyni to'ldiring:",
+                    options: [
+                        "hätte ... müssen",
+                        "hat ... müssen",
+                        "wäre ... gemusst",
+                        "würde ... gemusst"
+                    ],
+                    answer: 0,
+                    explanation: "O'tgan zamon Konjunktiv II modal fe'l bilan 'hätte + Infinitiv + Infinitiv' shaklida bo'ladi."
+                },
+                {
+                    q: "Qaysi gapda o'tgan zamon nereal shart gapi grammatik jihatdan to'liq to'g'ri tuzilgan?",
+                    options: [
+                        "Wenn die Firma Pausenräume eingerichtet hätte, wären die Mitarbeiter weniger gestresst gewesen.",
+                        "Wenn die Firma Pausenräume einrichtete, waren die Mitarbeiter gestresst.",
+                        "Wenn die Firma Pausenräume einrichten würde, waren sie gestresst gewesen.",
+                        "Hätte die Firma Pausenräume eingerichtet, würden sie gestresst sein gewesen."
+                    ],
+                    answer: 0,
+                    explanation: "O'tgan zamon nereal sharti: 'hätte + Partizip II' va 'wäre + Partizip II (gestresst gewesen)'."
+                }
+            ],
+            gamePairs: [
+                { de: "das Burnout-Syndrom", uz: "kasbiy charchoq sindromi" },
+                { de: "Überstunden leisten", uz: "ortiqcha soatlarda ishlamoq" },
+                { de: "Prioritäten setzen", uz: "ustuvorlikni belgilamoq" },
+                { de: "unter Leistungsdruck stehen", uz: "talab bosimi ostida bo'lmoq" },
+                { de: "zur Ruhe kommen", uz: "xotirjam bo'lmoq" },
+                { de: "die Belastungsgrenze", uz: "chidamlilik chegarasi" },
+                { de: "den Ausgleich finden", uz: "ishga qarshi hordiq topmoq" },
+                { de: "die Vereinbarkeit", uz: "oila va ish uyg'unligi" }
+            ]
+        },
+
+        {
+            id: "b2_11",
+            number: 11,
+            title: "Iqlim o'zgarishi, Energetik o'tish va Ekologik siyosat",
+            germanTitle: "Klimawandel, Energiewende & Umweltpolitik (Präpositionen mit Genitiv & Pronominaladverbien)",
+            icon: "🌱",
+            description: "Murakkab Genitiv predloglari (angesichts, infolge, anlässlich) va ergash gapli Pronominaladverbien.",
+            theory: {
+                summary: "telc B2 matnlarida murakkab sabab-oqibat predloglari faol uchraydi: angesichts (hisobga olgan holda), infolge (oqibatida), anlässlich (munosabati bilan), mangels (yetishmasligi sababli). Shuningdek fe'l boshqaruvi bilan bog'langan Pronominaladverbien (darauf hinweisen, dass...).",
+                sections: [
+                    {
+                        heading: "1. Murakkab Genitiv predloglari va Pronominaladverbien",
+                        content: "<p>B2 darajasidagi rasmiy Genitiv predloglari:</p><ul><li><strong>angesichts (+ Gen):</strong> <em>Angesichts der Erwärmung muss gehandelt werden.</em></li><li><strong>infolge (+ Gen):</strong> <em>Infolge extremer Dürren kam es zu Ernteausfällen.</em></li><li><strong>anlässlich (+ Gen):</strong> <em>Anlässlich des Weltklimagipfels...</em></li><li><strong>Pronominaladverbien:</strong> <em>Es kommt entscheidend darauf an, dass...</em></li></ul>",
+                        examples: [
+                            { de: "Angesichts der dramatischen Wetterereignisse ist ein Umdenken unumgänglich.", uz: "Ob-havo falokatlarini hisobga olganda, fikrlashni o'zgartirish muqarrardir.", tip: "angesichts + Genitiv." },
+                            { de: "Infolge des hohen CO2-Ausstoßes steigen die globalen Temperaturen.", uz: "Yuqori CO2 chiqindilari oqibatida global harorat ko'tarilmoqda.", tip: "infolge + Genitiv." },
+                            { de: "Wissenschaftler weisen mit Nachdruck darauf hin, dass die Zeit drängt.", uz: "Olimlar vaqt oz qolganiga qat'iy ishora qilmoqdalar.", tip: "hinweisen auf -> darauf hinweisen, dass..." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "angesichts, infolge, anlässlich, anhand, mangels, ungeachtet predloglari qat'iy Genitiv talab qiladi.",
+                    "Fe'l predlogi ergash gapga yo'naltirilganda: 'darauf / daran / dazu + dass...' ishlatiladi.",
+                    "wirkungsvolle Maßnahmen ergreifen (samarali choralar ko'rmoq)."
+                ]
+            },
+            flashcards: [
+                { front: "der Treibhauseffekt (-e)", back: "issiqxona effekti", tip: "den Treibhauseffekt verstärken" },
+                { front: "die erneuerbaren Energien", back: "qayta tiklanuvchi energiya manbalari", tip: "auf erneuerbare Energien umsteigen" },
+                { front: "den CO2-Ausstoß drosseln", back: "chiqindilarni kamaytirmoq/jilovlamoq", tip: "Emissionen drastisch drosseln" },
+                { front: "den Atomausstieg vollziehen", back: "atom energiyasidan to'liq voz kechmoq", tip: "den Ausstieg vollziehen" },
+                { front: "einen Beitrag leisten zu", back: "...ga hissa qo'shmoq", tip: "zum Klimaschutz beitragen" },
+                { front: "nachhaltig wirtschaften", back: "ekologik barqaror iqtisodiyot yuritmoq", tip: "zukunftsorientiert handeln" },
+                { front: "die Ressourcenverknappung", back: "tabiiy boyliklarning taqchilligi", tip: "drohende Verknappung" },
+                { front: "Maßnahmen ergreifen gegen", back: "...ga qarshi choralar ko'rmoq", tip: "wirkungsvolle Maßnahmen ergreifen" }
+            ],
+            test: [
+                {
+                    q: "'______ der verheerenden Überschwemmungen mussten Tausende Menschen evakuiert werden.'",
+                    options: [
+                        "Infolge",
+                        "Trotzdem",
+                        "Anstatt",
+                        "Seitens"
+                    ],
+                    answer: 0,
+                    explanation: "Sabab-oqibatni ifodalovchi Genitiv predlogi: 'infolge + Genitiv' (oqibatida)."
+                },
+                {
+                    q: "'Der Erfolg beruht im Wesentlichen ______ , dass innovative Technologien gefördert werden.'",
+                    options: [
+                        "darauf",
+                        "daran",
+                        "worauf",
+                        "dazu"
+                    ],
+                    answer: 0,
+                    explanation: "'beruhen auf + Dativ/Akkusativ' ergash gapga ishora qilinganda 'darauf' shaklida keladi."
+                }
+            ],
+            gamePairs: [
+                { de: "der Treibhauseffekt", uz: "issiqxona effekti" },
+                { de: "nachhaltig wirtschaften", uz: "ekologik yashamoq" },
+                { de: "den CO2-Ausstoß drosseln", uz: "chiqindini kamaytirmoq" },
+                { de: "den Atomausstieg vollziehen", uz: "atomdan voz kechmoq" },
+                { de: "Maßnahmen ergreifen", uz: "choralar ko'rmoq" },
+                { de: "angesichts (+ Gen)", uz: "hisobga olgan holda" },
+                { de: "infolge (+ Gen)", uz: "oqibatida" },
+                { de: "die Ressourcenverknappung", uz: "resurslar taqchilligi" }
+            ]
+        },
+
+        {
+            id: "b2_12",
+            number: 12,
+            title: "Global migratsiya, Mehnat bozori va Integratsiya",
+            germanTitle: "Migration, Fachkräftemangel & Gesellschaftliche Integration (Gerundivum & Unpersönliches Passiv)",
+            icon: "🌍",
+            description: "Gerundivum (das zu lösende Problem), Unpersönliches Passiv va malakali kadrlar integratsiyasi.",
+            theory: {
+                summary: "Gerundivum (zu + Partizip I + Adjektivendung) majburiyat va imkoniyat ma'nosidagi Passivni ixcham sifatdoshga aylantiradi: das zu lösende Problem = das Problem, das gelöst werden muss. Shuningdek Dativli shaxssiz Passiv o'rganiladi.",
+                sections: [
+                    {
+                        heading: "1. Gerundivum va Unpersönliches Passiv",
+                        content: "<p><strong>Gerundivum: zu + Infinitivnegiz + -end- + Sifat qo'shimchasi:</strong></p><ul><li><em>die zu bewältigenden Aufgaben</em> (= die Aufgaben, die bewältigt werden müssen)</li><li><em>eine nicht zu unterschätzende Hürde</em> (= die nicht unterschätzt werden darf)</li><li><strong>Unpersönliches Passiv:</strong> <em>Dem Fachkräftemangel muss gezielt entgegengewirkt werden.</em></li></ul>",
+                        examples: [
+                            { de: "Die von den Behörden zügig zu bearbeitenden Anträge sind essenziell.", uz: "Idoralar tomonidan tezkor ko'rib chiqilishi lozim bo'lgan arizalar o'ta muhimdir.", tip: "zu bearbeitenden Anträge = arizalar, qaysiki ko'rib chiqilishi shart." },
+                            { de: "Dem akuten Fachkräftemangel muss entschlossen entgegengewirkt werden.", uz: "Kadrlar taqchilligiga qarshi qat'iy qarshi choralar ko'rilishi lozim.", tip: "Dativli fe'l bilan shaxssiz Passiv." },
+                            { de: "Erfolgreiche Integration ist keine Einbahnstraße.", uz: "Muvaffaqiyatli integratsiya bir tomonlama yo'l emas (har ikki tomon hamkorligi shart).", tip: "Klassik nemischa ibora." }
+                        ]
+                    }
+                ],
+                keyRules: [
+                    "Gerundivum faqat o'timli (transitiv) fe'llardan yasaladi va sifat kabi turlanadi.",
+                    "Gerundivum ma'nosi: 'müssen/können + Passiv' ifodasining ixcham muqobili.",
+                    "Dativli fe'llar bilan Passivda Dativ subyektga aylanmaydi (Dem Problem muss begegnet werden)."
+                ]
+            },
+            flashcards: [
+                { front: "der Fachkräftemangel", back: "malakali kadrlar taqchilligi", tip: "akuter Fachkräftemangel" },
+                { front: "die Anerkennung von Abschlüssen", back: "diplomlarning rasmiy tan olinishi", tip: "berufliche Anerkennung" },
+                { front: "die Sprachbarriere überwinden", back: "til to'sig'ini yengib o'tmoq", tip: "Barrieren abbauen" },
+                { front: "sich nahtlos integrieren", back: "jamiyatga to'laqonli qo'shilmoq", tip: "in die Gesellschaft integrieren" },
+                { front: "bürokratische Hürden abbauen", back: "byurokratik to'siqlarni kamaytirmoq", tip: "Hürden spürbar abbauen" },
+                { front: "auf offene Türen stoßen", back: "xayrixohlikka duch kelmoq", tip: "bei Kollegen auf offene Türen stoßen" },
+                { front: "die Chancengleichheit", back: "teng imkoniyatlar", tip: "Chancengleichheit auf dem Markt" },
+                { front: "eine Bereicherung darstellen", back: "qimmatli boylik bo'lmoq", tip: "eine Bereicherung für alle sein" }
+            ],
+            test: [
+                {
+                    q: "'Die Anträge, die von den Ämtern bearbeitet werden müssen...' gapini Gerundivum bilan qanday ixchamlashtiriladi?",
+                    options: [
+                        "Die von den Ämtern zu bearbeitenden Anträge...",
+                        "Die von den Ämtern bearbeitenden Anträge...",
+                        "Die von den Ämtern bearbeitet werdenden Anträge...",
+                        "Die von den Ämtern zu bearbeitet Anträge..."
+                    ],
+                    answer: 0,
+                    explanation: "Gerundivum strukturasi: zu + Fe'l negizi + -end- + sifat qo'shimchasi: 'zu bearbeitenden Anträge'."
+                },
+                {
+                    q: "'Dem Mangel an Pflegekräften ______ mit Programmen entgegengewirkt ______.' Bo'sh o'rinni to'ldiring:",
+                    options: [
+                        "muss ... werden",
+                        "wird ... werden",
+                        "hat ... worden",
+                        "ist ... gewesen"
+                    ],
+                    answer: 0,
+                    explanation: "Dativ boshqaruvli fe'l bilan Passivda fe'l 3-shaxs birlikda keladi: 'muss ... werden'."
+                }
+            ],
+            gamePairs: [
+                { de: "der Fachkräftemangel", uz: "kadrlar yetishmovchiligi" },
+                { de: "die Sprachbarriere", uz: "til to'sig'i" },
+                { de: "Hürden abbauen", uz: "to'siqlarni bartaraf etmoq" },
+                { de: "die Chancengleichheit", uz: "teng imkoniyatlar" },
+                { de: "eine Bereicherung sein", uz: "boylik bo'lmoq" },
+                { de: "die Anerkennung", uz: "diplomni tan olish" },
+                { de: "sich integrieren", uz: "jamiyatga qo'shilmoq" },
+                { de: "auf offene Türen stoßen", uz: "iliq kutib olinmoq" }
+            ]
         }
     ]
 };

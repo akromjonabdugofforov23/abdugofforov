@@ -5,39 +5,77 @@ const { authenticateUser, SESSION_TTL_MS } = require('../middlewares/auth');
 const { notifyNewUser } = require('../services/telegram');
 
 const router = express.Router();
-const PBKDF2_ITER = 100000;
+
+// Zamonaviy xavfsizlik: Scrypt (Xotiraga asoslangan, GPU/ASIC hujumlariga chidamli zamonaviy shifr)
+const SCRYPT_PARAMS = { N: 16384, r: 8, p: 1, maxmem: 32 * 1024 * 1024 };
+const PBKDF2_ITER_MODERN = 600000; // OWASP 2023+ tavsiyasi
+const PBKDF2_ITER_LEGACY = 100000;
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCK_TIME_MS = 15 * 60 * 1000; // 15 daqiqa
 
-// Parolni PBKDF2-SHA256 (100,000 iteratsiya) bilan xesh qilish
-function hashPasswordPBKDF2(password, saltHex) {
+// Zamonaviy Scrypt yordamida parolni xesh qilish (Asosiy xavfsizlik protokoli)
+function hashPasswordScrypt(password, saltHex) {
+    const salt = saltHex ? Buffer.from(saltHex, 'hex') : crypto.randomBytes(32);
+    const hash = crypto.scryptSync(password, salt, 64, SCRYPT_PARAMS).toString('hex');
+    return { hash, salt: salt.toString('hex'), algo: 'scrypt' };
+}
+
+// PBKDF2-HMAC-SHA256 xesh qilish (Merosiy va oraliq xavfsizlik uchun)
+function hashPasswordPBKDF2(password, saltHex, iterations = PBKDF2_ITER_MODERN) {
     const salt = saltHex ? Buffer.from(saltHex, 'hex') : crypto.randomBytes(16);
-    const hash = crypto.pbkdf2Sync(password, salt, PBKDF2_ITER, 32, 'sha256').toString('hex');
+    const hash = crypto.pbkdf2Sync(password, salt, iterations, 32, 'sha256').toString('hex');
     return { hash, salt: salt.toString('hex') };
 }
 
-// Parolni tekshirish (PBKDF2 va eski sha256 bilan moslashuvchan)
+// Parolni tekshirish (Scrypt, PBKDF2 va eski sha256 bilan to'liq orqaga moslashuvchan)
 function verifyPassword(password, user) {
-    if (!user || !password) return false;
-    if (user.salt && user.passHash) {
-        const { hash } = hashPasswordPBKDF2(password, user.salt);
-        const bufA = Buffer.from(hash, 'hex');
-        const bufB = Buffer.from(user.passHash, 'hex');
-        if (bufA.length !== bufB.length) return false;
-        return crypto.timingSafeEqual(bufA, bufB);
+    if (!user || !password) return { valid: false, needsUpgrade: false };
+
+    // 1. Zamonaviy Scrypt xeshi tekshiruvi (64 bayt = 128 ta hex belgi)
+    if (user.algo === 'scrypt' || (user.passHash && user.passHash.length === 128)) {
+        if (user.salt && user.passHash) {
+            const { hash } = hashPasswordScrypt(password, user.salt);
+            const bufA = Buffer.from(hash, 'hex');
+            const bufB = Buffer.from(user.passHash, 'hex');
+            if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
+                return { valid: true, needsUpgrade: false };
+            }
+        }
     }
-    // Eski sha256 xeshlarini xavfsiz taqqoslash
+
+    // 2. PBKDF2 tekshiruvi (zamonaviy 600k yoki merosiy 100k)
+    if (user.salt && user.passHash) {
+        // Modern PBKDF2 (600,000)
+        const modern = hashPasswordPBKDF2(password, user.salt, PBKDF2_ITER_MODERN);
+        const bufModA = Buffer.from(modern.hash, 'hex');
+        const bufModB = Buffer.from(user.passHash, 'hex');
+        if (bufModA.length === bufModB.length && crypto.timingSafeEqual(bufModA, bufModB)) {
+            return { valid: true, needsUpgrade: true };
+        }
+
+        // Legacy PBKDF2 (100,000)
+        const legacy = hashPasswordPBKDF2(password, user.salt, PBKDF2_ITER_LEGACY);
+        const bufLegA = Buffer.from(legacy.hash, 'hex');
+        const bufLegB = Buffer.from(user.passHash, 'hex');
+        if (bufLegA.length === bufLegB.length && crypto.timingSafeEqual(bufLegA, bufLegB)) {
+            return { valid: true, needsUpgrade: true };
+        }
+    }
+
+    // 3. Eski SHA-256 xeshlarini xavfsiz vaqtli taqqoslash
     if (user.passwordHash) {
         const legacyHash = crypto.createHash('sha256').update(password).digest('hex');
         const bufA = Buffer.from(legacyHash, 'hex');
         const bufB = Buffer.from(user.passwordHash, 'hex');
-        if (bufA.length !== bufB.length) return false;
-        return crypto.timingSafeEqual(bufA, bufB);
+        if (bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB)) {
+            return { valid: true, needsUpgrade: true };
+        }
     }
-    return false;
+
+    return { valid: false, needsUpgrade: false };
 }
 
-// Doimiy vaqtli string taqqoslash
+// Doimiy vaqtli string taqqoslash (Timing attack'larning oldini oladi)
 function timingSafeCompare(a, b) {
     if (typeof a !== 'string' || typeof b !== 'string') return false;
     const bufA = Buffer.from(a);
@@ -46,14 +84,32 @@ function timingSafeCompare(a, b) {
     return crypto.timingSafeEqual(bufA, bufB);
 }
 
-// Admin PIN kodini tekshirish
+// Admin PIN kodini tekshirish (Hash yoki tekis PIN bilan)
 function checkAdminPin(pin) {
     if (!pin || typeof pin !== 'string') return false;
     const cleanPin = pin.trim();
+
+    // 1. ADMIN_PIN_HASH tekshiruvi (Eng xavfsiz usul)
+    const envHash = process.env.ADMIN_PIN_HASH ? String(process.env.ADMIN_PIN_HASH).trim() : '';
+    if (envHash) {
+        const pinSha256 = crypto.createHash('sha256').update(cleanPin).digest('hex');
+        if (timingSafeCompare(cleanPin, envHash)) return true;
+        if (timingSafeCompare(pinSha256, envHash.toLowerCase())) return true;
+        if (envHash.includes(':')) {
+            const [saltHex, expectedHash] = envHash.split(':');
+            const derived = crypto.pbkdf2Sync(cleanPin, Buffer.from(saltHex, 'hex'), 100000, 32, 'sha256').toString('hex');
+            if (timingSafeCompare(derived, expectedHash)) return true;
+        }
+        return false;
+    }
+
+    // 2. ADMIN_PIN yoki ADMIN_PIN_CODE tekshiruvi
     const envPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE;
     if (envPin) {
         return timingSafeCompare(cleanPin, String(envPin).trim());
     }
+
+    // Standart zaxira PIN
     return timingSafeCompare(cleanPin, '0509');
 }
 
@@ -137,7 +193,7 @@ router.post('/register', (req, res) => {
     }
 
     const role = (adminUsers.includes(normUsername) || isPinValid) ? 'admin' : 'student';
-    const { hash, salt } = hashPasswordPBKDF2(rawPassword);
+    const { hash, salt, algo } = hashPasswordScrypt(rawPassword);
     const token = generateToken();
 
     const userObj = db.insert('users', {
@@ -146,6 +202,7 @@ router.post('/register', (req, res) => {
         role,
         passHash: hash,
         salt,
+        algo,
         token,
         tokenCreatedAt: Date.now(),
         failedAttempts: 0,
@@ -180,7 +237,7 @@ router.post('/login', (req, res) => {
     // Dastlabki admin avtomatik yaratilishi
     if (!user) {
         if (adminUsers.includes(normUsername) && checkAdminPin(rawPassword)) {
-            const { hash, salt } = hashPasswordPBKDF2(rawPassword);
+            const { hash, salt, algo } = hashPasswordScrypt(rawPassword);
             const token = generateToken();
             const newAdmin = db.insert('users', {
                 name: normUsername,
@@ -188,6 +245,7 @@ router.post('/login', (req, res) => {
                 role: 'admin',
                 passHash: hash,
                 salt,
+                algo,
                 token,
                 tokenCreatedAt: Date.now(),
                 failedAttempts: 0,
@@ -212,8 +270,9 @@ router.post('/login', (req, res) => {
         });
     }
 
-    // Parolni tekshirish
-    if (!verifyPassword(rawPassword, user)) {
+    // Parolni tekshirish (Scrypt, PBKDF2 va SHA-256 ni xavfsiz tekshiradi)
+    const { valid, needsUpgrade } = verifyPassword(rawPassword, user);
+    if (!valid) {
         const failed = (user.failedAttempts || 0) + 1;
         const updates = { failedAttempts: failed };
         if (failed >= MAX_FAILED_ATTEMPTS) {
@@ -239,10 +298,12 @@ router.post('/login', (req, res) => {
         updates.role = 'admin';
     }
 
-    if (!user.salt || !user.passHash) {
-        const upgraded = hashPasswordPBKDF2(rawPassword);
+    // Xavfsizlik protokollarini avtomatik oshirish (Eski xeshni zamonaviy Scrypt ga ko'chirish)
+    if (needsUpgrade || user.algo !== 'scrypt' || !user.salt || !user.passHash) {
+        const upgraded = hashPasswordScrypt(rawPassword);
         updates.passHash = upgraded.hash;
         updates.salt = upgraded.salt;
+        updates.algo = 'scrypt';
     }
 
     const updatedUser = db.update('users', user.id, updates);
