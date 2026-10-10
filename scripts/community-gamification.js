@@ -228,42 +228,30 @@
     }
 
     // ------------------------------------------------------------
-    // 3. ASK ME ANYTHING (AMA) DEVORI (#23)
+    // 3. ASK ME ANYTHING (AMA) DEVORI (#23) — FAQAT HAQIQIY FOYDALANUVCHILAR UCHUN
     // ------------------------------------------------------------
     const AMA_STORAGE_KEY = 'abdu_ama_questions';
-    const DEFAULT_AMA = [
-        {
-            id: 1,
-            author: "Azizbek",
-            question: "Nemis tilini o'rganishda so'zlarni tez eslab qolish uchun qanday maslahat berasiz?",
-            answer: "Eng samarali usul — so'zni alohida emas, artikli (der/die/das) va kichik gap ichida eslab qolish. Shuningdek, har kuni 10 daqiqa platformamizdagi ovozli kartochkalarni takrorlash kifoya.",
-            likes: 24,
-            date: "2026-10-09"
-        },
-        {
-            id: 2,
-            author: "Malika",
-            question: "Saytdagi Lofi audio va hashamatli soat juda yoqdi! Ular qanday yaratilgan?",
-            answer: "Rahmat! Ular og'ir tashqi kutubxonalarsiz, 100% toza HTML5 Canvas va Web Audio API asosida nol dan yaratilgan. Shu sababli sayt har qanday qurilmada yengil va bir zumda ochiladi.",
-            likes: 31,
-            date: "2026-10-08"
-        },
-        {
-            id: 3,
-            author: "Jasur",
-            question: "Germaniyada Ausbildung uchun B1 yetarlimi yoki B2 kerakmi?",
-            answer: "Aksariyat sohalar (masalan IT, mehmondo'stlik) uchun B1 sertifikati qabul qilinadi. Biroq tibbiyot va hamshiralik kabi sohalarda qat'iy B2 talab qilinadi.",
-            likes: 19,
-            date: "2026-10-07"
-        }
-    ];
+    const DEFAULT_AMA = [];
+
+    function escapeText(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c] || c));
+    }
 
     function getAmaQuestions() {
         try {
             const raw = localStorage.getItem(AMA_STORAGE_KEY);
-            return raw ? JSON.parse(raw) : DEFAULT_AMA;
+            if (!raw) return [];
+            const list = JSON.parse(raw);
+            if (!Array.isArray(list)) return [];
+            // Soxta demo savollarni butkul tozalash (Azizbek, Malika, Jasur)
+            const cleanList = list.filter(item => item && item.id !== 1 && item.id !== 2 && item.id !== 3 && item.author !== "Azizbek" && item.author !== "Malika" && item.author !== "Jasur");
+            if (cleanList.length !== list.length) {
+                saveAmaQuestions(cleanList);
+            }
+            return cleanList;
         } catch (e) {
-            return DEFAULT_AMA;
+            return [];
         }
     }
 
@@ -358,16 +346,27 @@
         const container = modal.querySelector('#ama-list');
         const list = getAmaQuestions();
 
+        if (list.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 36px 16px; background: var(--card-bg); border: 1px dashed var(--border-color); border-radius: 12px; color: var(--text-secondary); font-size: 13.5px;">
+                    <span style="font-size: 28px; display: block; margin-bottom: 8px;">✍️</span>
+                    Hozircha savollar qoldirilmagan.<br>Birinchi bo'lib o'z savolingizni yuboring!
+                </div>
+            `;
+            return;
+        }
+
         container.innerHTML = list.map(item => `
             <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                    <strong style="color: var(--accent-color); font-size: 14px;">👤 ${item.author}</strong>
-                    <small style="color: var(--text-secondary); font-size: 11px;">${item.date}</small>
+                    <strong style="color: var(--accent-color); font-size: 14px;">👤 ${escapeText(item.author || 'Mehmon')}</strong>
+                    <small style="color: var(--text-secondary); font-size: 11px;">${escapeText(item.date || '')}</small>
                 </div>
-                <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: 500; color: var(--text-primary); line-height: 1.45;">${item.question}</p>
+                <p style="margin: 0 0 10px 0; font-size: 14px; font-weight: 500; color: var(--text-primary); line-height: 1.45;">${escapeText(item.question)}</p>
+                ${item.answer ? `
                 <div style="background: rgba(99, 102, 241, 0.05); border-left: 3px solid var(--accent-color); padding: 8px 12px; border-radius: 6px; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
-                    <strong style="color: var(--text-primary);">Javob:</strong> ${item.answer}
-                </div>
+                    <strong style="color: var(--text-primary);">Javob:</strong> ${escapeText(item.answer)}
+                </div>` : ''}
             </div>
         `).join('');
     }
