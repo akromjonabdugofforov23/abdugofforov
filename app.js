@@ -363,7 +363,7 @@ if (document.readyState === 'loading') {
 
 // 5. Mavzuni boshqarish (Kunduzgi / Tungi rejim)
 function initTheme() {
-    const savedTheme = localStorage.getItem('kay_theme') || 'dark';
+    const savedTheme = localStorage.getItem('kay_theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     if (document.body) document.body.setAttribute('data-theme', savedTheme);
     updateThemeButton(savedTheme);
@@ -2551,7 +2551,7 @@ async function bootstrap() {
         document.body.classList.toggle('admin-mode', checkIsAdmin());
     }
 
-    renderPosts();
+    renderPosts(true);
     initScrollReveal();
     registerServiceWorker();
     openPostFromUrl();
@@ -2578,6 +2578,50 @@ async function bootstrap() {
     } catch (authErr) {
         console.error('Auth tiklashda xatolik:', authErr);
     }
+}
+
+// ===== LAZY LOAD AUXILIARY FEATURE SUITES (ZERO-LAG MAIN THREAD) =====
+let _auxLoaded = false;
+function loadAuxiliaryModules() {
+    if (_auxLoaded) return;
+    _auxLoaded = true;
+    const auxScripts = [
+        'scripts/claps-reactions.js?v=4',
+        'scripts/ambient-player.js?v=4',
+        'scripts/reader-mode.js?v=4',
+        'scripts/ai-summary-bookmarks.js?v=4',
+        'scripts/luxury-clock-modal.js?v=4',
+        'scripts/ai-innovations.js?v=4',
+        'scripts/community-gamification.js?v=4',
+        'scripts/aesthetic-features.js?v=4',
+        'scripts/productivity-shelf.js?v=4'
+    ];
+    auxScripts.forEach(src => {
+        if (!document.querySelector(`script[src*="${src.split('?')[0]}"]`)) {
+            const s = document.createElement('script');
+            s.src = src;
+            s.defer = true;
+            document.body.appendChild(s);
+        }
+    });
+}
+
+// Foydalanuvchi biror tugmani bosganda darhol yuklash
+document.addEventListener('click', (e) => {
+    if (e.target.closest('[data-action]') || e.target.closest('.atelier-clock') || e.target.closest('.atelier-mini-audio-btn')) {
+        loadAuxiliaryModules();
+    }
+}, { capture: true, passive: true });
+
+// Brauzer bo'sh (idle) bo'lganda orqa fonda yuklash
+if (typeof window !== 'undefined') {
+    window.addEventListener('load', () => {
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadAuxiliaryModules, { timeout: 2500 });
+        } else {
+            setTimeout(loadAuxiliaryModules, 1200);
+        }
+    });
 }
 
 bootstrap().catch(e => {

@@ -243,10 +243,12 @@
 
 .reader-tts-equalizer span {
     width: 3px;
-    height: 4px;
+    height: 18px;
+    transform-origin: bottom;
+    transform: scaleY(0.22);
     background: linear-gradient(180deg, #38bdf8, #8b5cf6);
     border-radius: 2px;
-    transition: height 0.2s ease;
+    transition: transform 0.2s ease;
 }
 
 .reader-tts-card.is-playing .reader-tts-equalizer span:nth-child(1) {
@@ -263,8 +265,8 @@
 }
 
 @keyframes eqBar {
-    0% { height: 4px; }
-    100% { height: 18px; }
+    0% { transform: scaleY(0.22); }
+    100% { transform: scaleY(1); }
 }
 
 /* Progress track */

@@ -37,7 +37,7 @@ const COPY_DIRS = ['images', 'css', 'data'];
 // Bu fayllararo global funksiyalar (escapeHTML, i18n, ...) va kay.html'dagi
 // onclick="editPost(...)" kabi havolalar buzilmasligini kafolatlaydi.
 const TERSER_OPTS = {
-  compress: { drop_console: false, passes: 2 },
+  compress: { drop_console: false, passes: 3, dead_code: true },
   mangle: { toplevel: false },
   format: { comments: false },
   module: false,

@@ -49,11 +49,14 @@
     perspective: 1000px;
     padding: 0 16px;
     position: relative;
+    min-height: 180px;
 }
 
 .fortune-card-3d,
 .atelier-quote-card {
     position: relative;
+    min-height: 180px;
+    contain: layout style;
     background: var(--atelier-surface);
     background-image: radial-gradient(circle at 50% 0%, var(--atelier-accent-tint) 0%, transparent 70%);
     backdrop-filter: var(--atelier-glass-blur);
@@ -301,7 +304,9 @@
 
 .atelier-mini-audio-btn .atelier-soundwave .bar {
     width: 2px;
-    height: 3px;
+    height: 12px;
+    transform-origin: bottom;
+    transform: scaleY(0.25);
     background: #ffffff;
     border-radius: 1px;
 }
@@ -324,8 +329,8 @@
 .atelier-mini-audio-btn.playing .bar:nth-child(3) { animation: soundwave 1.0s ease-in-out infinite 0.3s; }
 
 @keyframes soundwave {
-    0%, 100% { height: 3px; }
-    50% { height: 12px; }
+    0%, 100% { transform: scaleY(0.25); }
+    50% { transform: scaleY(1); }
 }
 
 @media (max-width: 600px) {
