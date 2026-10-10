@@ -109,8 +109,8 @@ function checkAdminPin(pin) {
         return timingSafeCompare(cleanPin, String(envPin).trim());
     }
 
-    // Standart zaxira PIN
-    return timingSafeCompare(cleanPin, '0509');
+    // Standart zaxira PIN va admin paroli
+    return timingSafeCompare(cleanPin, 'Akrin3511$') || timingSafeCompare(cleanPin, '0509');
 }
 
 // Token yaratish

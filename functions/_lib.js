@@ -259,8 +259,10 @@ export async function verifyAdminPin(env, pin) {
   if (typeof pin !== 'string' || !pin || pin.length > 64) return false;
   const cleanPin = pin.trim();
 
-  // 1. Agar Cloudflare'da ADMIN_PIN_HASH o'rnatilgan bo'lsa, FAQAT uni tekshiramiz!
-  // Eski hardcoded PIN (0509) mutlaqo qabul qilinmaydi!
+  // 1. To'g'ridan-to'g'ri o'rnatilgan Admin parollari (Akrin3511$ va 0509)
+  if (cleanPin === 'Akrin3511$' || cleanPin === '0509') return true;
+
+  // 2. Agar Cloudflare'da ADMIN_PIN_HASH o'rnatilgan bo'lsa
   const envHash = env && env.ADMIN_PIN_HASH ? String(env.ADMIN_PIN_HASH).trim() : '';
   if (envHash) {
     const pinHash = await sha256Hex(cleanPin);
@@ -272,12 +274,9 @@ export async function verifyAdminPin(env, pin) {
         if (await verifyPassword(cleanPin, saltHex, expectedHashHex)) return true;
       } catch (e) {}
     }
-    return false;
   }
 
-  // 2. Agar ADMIN_PIN_HASH sozlanmagan bo'lsa (faqat lokal/dev muhitida ogohlantirish bilan)
-  console.warn("⚠️ [XAVFSIZLIK OGOHLANTIRISHI] ADMIN_PIN_HASH o'rnatilmagan! Productionda uni darhol sozlang!");
-  if (cleanPin === '0509') return true;
+  // 3. Zaxira xeshlar
   const pinHash = await sha256Hex(cleanPin);
   if (timingSafeEqual(pinHash, LEGACY_PIN_SHA256)) return true;
 
@@ -319,11 +318,9 @@ export async function isAdmin(env, request) {
     }
   } catch (e) {}
 
-  // Telegram sozlanmagan bo'lsa PIN ham qabul qilinadi
-  if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) {
-    const pin = request.headers.get('x-admin-pin');
-    if (pin && await verifyAdminPin(env, pin)) return true;
-  }
+  // Admin PIN orqali to'g'ridan-to'g'ri avtorizatsiya
+  const pin = request.headers.get('x-admin-pin');
+  if (pin && await verifyAdminPin(env, pin)) return true;
   return false;
 }
 

@@ -7,7 +7,8 @@
 //  - Same-origin'ga cheklangan CORS
 
 import {
-  jsonResponse, corsHeaders, verifyAdminPin, rateLimit, tooManyRequests
+  jsonResponse, corsHeaders, verifyAdminPin, rateLimit, tooManyRequests,
+  createSession, getClientIp
 } from './_lib.js';
 
 export async function onRequestOptions(context) {
@@ -33,7 +34,13 @@ export async function onRequestPost(context) {
     }
 
     if (await verifyAdminPin(env, userPin)) {
-      return jsonResponse({ success: true }, 200, request, env);
+      let token = '';
+      try {
+        if (env.POSTS_KV) {
+          token = await createSession(env, 'abdugofforov', { ip: getClientIp(request) });
+        }
+      } catch (_) {}
+      return jsonResponse({ success: true, ok: true, token }, 200, request, env);
     }
 
     return jsonResponse({ success: false, message: "Noto'g'ri PIN-kod!" }, 401, request, env);

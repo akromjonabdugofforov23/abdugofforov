@@ -56,25 +56,47 @@ async function tryLogin() {
         const attempts = parseInt(localStorage.getItem('kay_attempts') || '0') + 1;
         localStorage.setItem('kay_attempts', attempts);
         addLog('fail', `Noto'g'ri PIN urinish #${attempts}`);
-        if (attempts >= 3) {
+        if (attempts >= 5) {
             const lockCount = parseInt(localStorage.getItem('kay_lockcount') || '0') + 1;
             localStorage.setItem('kay_lockcount', lockCount);
-            const lockSeconds = Math.min(60 * Math.pow(2, lockCount - 1), 3600);
+            const lockSeconds = Math.min(30 * Math.pow(2, lockCount - 1), 300);
             localStorage.setItem('kay_lock', Date.now() + lockSeconds * 1000);
             localStorage.removeItem('kay_attempts');
             addLog('fail', `Blok faollashtirildi: ${lockSeconds}s`);
-            pinError.textContent = `3 marta xato! ${lockSeconds} soniya kuting.`;
+            pinError.textContent = `5 marta xato! ${lockSeconds} soniya kuting.`;
         } else {
-            pinError.textContent = msg || `Noto'g'ri PIN (${attempts}/3)`;
+            pinError.textContent = msg || `Noto'g'ri PIN (${attempts}/5)`;
         }
         pinError.style.display = 'block';
         pinInput.value = '';
         pinInput.focus();
     }
 
+    // 1-qadam: To'g'ridan-to'g'ri /check-pin orqali PIN/parolni tekshirish (Tezkor va 2FA kutmasdan kirish)
+    try {
+        const cp = await fetch('/check-pin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin })
+        });
+        const cpData = await cp.json().catch(() => ({}));
+        if (cpData && (cpData.success || cpData.ok)) {
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Kirish'; }
+            localStorage.removeItem('kay_attempts');
+            localStorage.removeItem('kay_lock');
+            localStorage.removeItem('kay_lockcount');
+            sessionStorage.setItem('kay_admin', 'true');
+            sessionStorage.setItem('kay_admin_pin', pin);
+            if (cpData.token) sessionStorage.setItem('kay_admin_token', cpData.token);
+            addLog('success', 'Admin paroli tasdiqlandi — panel ochildi');
+            showAdminPanel();
+            return;
+        }
+    } catch (_) {}
+
     let res, data;
     try {
-        // PIN ni SERVERGA yuboramiz — to'g'riligini FAQAT server hal qiladi
+        // 2-qadam: Agar /check-pin qanoatlantirmasa, Telegram 2FA (/admin/request-code) ga murojaat
         res = await fetch('/admin/request-code', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
