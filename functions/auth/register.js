@@ -42,7 +42,7 @@ export async function onRequestPost(context) {
     return jsonResponse({ ok: false, message: "Username 3-20 ta belgi: faqat a-z, 0-9, _" }, 400, request, env);
   }
   if (!validPassword(password)) {
-    return jsonResponse({ ok: false, message: "Parol kamida 8 ta belgidan iborat bo'lishi kerak" }, 400, request, env);
+    return jsonResponse({ ok: false, message: "Parol kamida 4 ta belgidan iborat bo'lishi kerak" }, 400, request, env);
   }
 
   // XAVFSIZLIK: Mavjud hisobni hech qachon ustidan yozib (account takeover) bo'lmaydi!

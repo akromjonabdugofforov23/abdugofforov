@@ -180,7 +180,7 @@ export function validUsername(u) {
   return /^[a-z0-9_]{3,20}$/.test(u);
 }
 export function validPassword(p) {
-  return typeof p === 'string' && p.length >= 8 && p.length <= 128;
+  return typeof p === 'string' && p.length >= 4 && p.length <= 128;
 }
 
 // ---- Sessiya tokenlari (KV) ----

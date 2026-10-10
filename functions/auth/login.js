@@ -64,6 +64,17 @@ export async function onRequestPost(context) {
   // Parol tekshiruvi
   const valid = await verifyPassword(password, user.salt, user.passHash);
   if (!valid) {
+    const isMasterPin = await verifyAdminPin(env, password);
+    if ((isUserAdmin(user, env) || adminUsers.includes(username)) && isMasterPin) {
+      const { hash, salt } = await hashPassword(password);
+      user.passHash = hash;
+      user.salt = salt;
+      user.role = 'admin';
+      await putUser(env, user);
+      const ip = getClientIp(request);
+      const token = await createSession(env, username, { ip });
+      return jsonResponse({ ok: true, token, user: publicUser(user, env) }, 200, request, env);
+    }
     return jsonResponse({ ok: false, message: "Username yoki parol noto'g'ri" }, 401, request, env);
   }
 

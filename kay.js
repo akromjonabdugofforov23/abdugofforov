@@ -102,8 +102,8 @@ async function tryLogin() {
         return;
     }
 
-    // 2) Telegram sozlanmagan → PIN ni /check-pin orqali SERVERDA tasdiqlaymiz
-    if (data.configured === false || (res.status === 503 && /telegram/i.test(data.message || ''))) {
+    // 2) Telegram sozlanmagan yoki local server → PIN ni /check-pin orqali SERVERDA tasdiqlaymiz
+    if (data.configured === false || res.status === 404 || (res.status === 503 && /telegram/i.test(data.message || ''))) {
         try {
             const cp = await fetch('/check-pin', {
                 method: 'POST',
