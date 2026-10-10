@@ -270,8 +270,33 @@
     }
 
     // ------------------------------------------------------------
-    // 5. EXPORT & INITIALIZATION
+    // 5. GLOBAL DATA-ACTION DISPATCHER (100% CSP Compliant)
     // ------------------------------------------------------------
+    document.addEventListener('click', (e) => {
+        const el = e.target.closest('[data-action]');
+        if (!el) return;
+        const action = el.getAttribute('data-action');
+        if (action === 'open-bookshelf') {
+            e.preventDefault();
+            if (window.ProductivitySuite) window.ProductivitySuite.openBookshelf();
+        } else if (action === 'open-certificate') {
+            e.preventDefault();
+            if (window.CommunitySuite) window.CommunitySuite.openCertificate();
+        } else if (action === 'open-ama') {
+            e.preventDefault();
+            if (window.CommunitySuite) window.CommunitySuite.openAma();
+        } else if (action === 'open-capsule') {
+            e.preventDefault();
+            if (window.AestheticSuite) window.AestheticSuite.openTimeCapsule();
+        } else if (action === 'open-changelog') {
+            e.preventDefault();
+            if (window.ProductivitySuite) window.ProductivitySuite.openChangelog();
+        } else if (action === 'open-terminal') {
+            e.preventDefault();
+            if (window.AestheticSuite) window.AestheticSuite.toggleTerminal();
+        }
+    });
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', injectMetricsAndNewsletter);
     } else {

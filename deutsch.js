@@ -123,7 +123,7 @@ window.runDataClickAction = runDataClickAction;
 
     // View Switching
     function hideAllViews() {
-        const views = ['deutsch-view', 'flashcards-view', 'tournament-view', 'verb-trainer-view'];
+        const views = ['deutsch-view', 'flashcards-view', 'tournament-view', 'verb-trainer-view', 'tandem-view', 'pronounce-view', 'idioms-view', 'corrector-view'];
         views.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = 'none';
@@ -223,6 +223,50 @@ window.runDataClickAction = runDataClickAction;
         if (pushHistory) history.pushState({ page: 'verbs' }, '', '#verbs');
     };
 
+    window.openDeutschTandem = function(pushHistory = true) {
+        hideAllViews();
+        const v = document.getElementById('tandem-view');
+        if (v) v.style.display = 'block';
+        setActiveDock('tandem');
+        if (window.AIInnovations && typeof window.AIInnovations.initTandemInline === 'function') {
+            window.AIInnovations.initTandemInline();
+        }
+        if (pushHistory) history.pushState({ page: 'tandem' }, '', '#tandem');
+    };
+
+    window.openDeutschPronounce = function(pushHistory = true) {
+        hideAllViews();
+        const v = document.getElementById('pronounce-view');
+        if (v) v.style.display = 'block';
+        setActiveDock('pronounce');
+        if (window.AIInnovations && typeof window.AIInnovations.initPronounceInline === 'function') {
+            window.AIInnovations.initPronounceInline();
+        }
+        if (pushHistory) history.pushState({ page: 'pronounce' }, '', '#pronounce');
+    };
+
+    window.openDeutschIdioms = function(pushHistory = true) {
+        hideAllViews();
+        const v = document.getElementById('idioms-view');
+        if (v) v.style.display = 'block';
+        setActiveDock('idioms');
+        if (window.AIInnovations && typeof window.AIInnovations.initIdiomsInline === 'function') {
+            window.AIInnovations.initIdiomsInline();
+        }
+        if (pushHistory) history.pushState({ page: 'idioms' }, '', '#idioms');
+    };
+
+    window.openDeutschCorrector = function(pushHistory = true) {
+        hideAllViews();
+        const v = document.getElementById('corrector-view');
+        if (v) v.style.display = 'block';
+        setActiveDock('corrector');
+        if (window.AIInnovations && typeof window.AIInnovations.initCorrectorInline === 'function') {
+            window.AIInnovations.initCorrectorInline();
+        }
+        if (pushHistory) history.pushState({ page: 'corrector' }, '', '#corrector');
+    };
+
     // Routing
     function applyRoute() {
         const hash = (window.location.hash || '#a1').toLowerCase();
@@ -238,6 +282,14 @@ window.runDataClickAction = runDataClickAction;
             openDeutschLevel('B2', false);
         } else if (hash.includes('flashcard') || hash.includes('lugat')) {
             openDeutschFlashcards(false);
+        } else if (hash.includes('tandem')) {
+            openDeutschTandem(false);
+        } else if (hash.includes('pronounce')) {
+            openDeutschPronounce(false);
+        } else if (hash.includes('idiom')) {
+            openDeutschIdioms(false);
+        } else if (hash.includes('corrector') || hash.includes('insho')) {
+            openDeutschCorrector(false);
         } else if (hash.includes('game') || hash.includes('match') || hash.includes('oyin')) {
             openDeutschGames(false);
         } else if (hash.includes('tournament') || hash.includes('turnir')) {

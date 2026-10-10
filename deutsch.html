@@ -43,9 +43,10 @@
                 <a href="#b2" data-nav-lvl="B2">🏔️ B2</a>
                 <a href="#tests" data-nav-lvl="tests">📝 Testlar</a>
                 <a href="#flashcards" data-nav-lvl="flashcards">🎴 Lug'at</a>
-                <a href="javascript:void(0)" onclick="window.AIInnovations &amp;&amp; window.AIInnovations.openIdioms()">🥨 Iboralar</a>
-                <a href="javascript:void(0)" onclick="window.AIInnovations &amp;&amp; window.AIInnovations.openTandem()" style="color:var(--accent-color); font-weight:600;">🤖 AI Tandem</a>
-                <a href="javascript:void(0)" onclick="window.AIInnovations &amp;&amp; window.AIInnovations.openPronounce()">🎙️ Talaffuz</a>
+                <a href="#tandem" data-nav-lvl="tandem" style="color:var(--accent-color); font-weight:600;">🤖 AI Tandem</a>
+                <a href="#pronounce" data-nav-lvl="pronounce">🎙️ Talaffuz</a>
+                <a href="#idioms" data-nav-lvl="idioms">🥨 Iboralar</a>
+                <a href="#corrector" data-nav-lvl="corrector">✍️ Insho</a>
                 <a href="#games" data-nav-lvl="games">🎮 O'yinlar</a>
                 <a href="#tournament" data-nav-lvl="tournament">⚔️ Turnir</a>
             </div>
@@ -123,6 +124,22 @@
             <div id="flashcards-content"></div>
         </div>
 
+        <div class="animate-fade-in" id="tandem-view" style="display:none;">
+            <div id="tandem-inline-content"></div>
+        </div>
+
+        <div class="animate-fade-in" id="pronounce-view" style="display:none;">
+            <div id="pronounce-inline-content"></div>
+        </div>
+
+        <div class="animate-fade-in" id="idioms-view" style="display:none;">
+            <div id="idioms-inline-content"></div>
+        </div>
+
+        <div class="animate-fade-in" id="corrector-view" style="display:none;">
+            <div id="corrector-inline-content"></div>
+        </div>
+
         <div class="animate-fade-in" id="tournament-view" style="display:none;">
             <div id="tournament-content"></div>
         </div>
@@ -167,6 +184,22 @@
         <a href="#flashcards" class="dock-item" data-page="flashcards" title="Lug'at Kartochkalari">
             <span style="font-size: 18px;">🎴</span>
             <span class="dock-label">Lug'at</span>
+        </a>
+        <a href="#tandem" class="dock-item" data-page="tandem" title="AI Tandem Bot">
+            <span style="font-size: 18px;">🤖</span>
+            <span class="dock-label">Tandem</span>
+        </a>
+        <a href="#pronounce" class="dock-item" data-page="pronounce" title="AI Talaffuz Coach">
+            <span style="font-size: 18px;">🎙️</span>
+            <span class="dock-label">Talaffuz</span>
+        </a>
+        <a href="#idioms" class="dock-item" data-page="idioms" title="Nemis Iboralari">
+            <span style="font-size: 18px;">🥨</span>
+            <span class="dock-label">Iboralar</span>
+        </a>
+        <a href="#corrector" class="dock-item" data-page="corrector" title="Insho Tahrirchi">
+            <span style="font-size: 18px;">✍️</span>
+            <span class="dock-label">Insho</span>
         </a>
         <a href="#games" class="dock-item" data-page="games" title="3D Vision Kartochka O'yinlari">
             <span style="font-size: 18px;">🎮</span>

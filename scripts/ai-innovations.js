@@ -814,7 +814,334 @@
     }
 
     // ------------------------------------------------------------
-    // 8. GLOBAL EXPOSURE & INITIALIZATION
+    // 8. INLINE PAGE RENDERERS FOR DEUTSCH.HTML
+    // ------------------------------------------------------------
+    function initTandemInline() {
+        const wrap = document.getElementById('tandem-inline-content');
+        if (!wrap) return;
+        wrap.innerHTML = `
+            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:18px; padding:24px; box-shadow:var(--shadow-sm); max-width:820px; margin:0 auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px; border-bottom:1px solid var(--border-color); padding-bottom:14px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-size:32px;">🤖</span>
+                        <div>
+                            <h2 style="margin:0; font-size:1.4rem;">AI Nemis Tili Tandem Suhbatdoshi</h2>
+                            <small style="color:var(--text-secondary);" id="inline-partner-name">Lukas (Barista - Berlin)</small>
+                        </div>
+                    </div>
+                    <select id="inline-scenario-select" style="padding:8px 14px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-primary); font-size:14px; font-weight:500;">
+                        <option value="cafe">☕ Im Café (Buyurtma)</option>
+                        <option value="arzt">🩺 Beim Arzt (Shifokor)</option>
+                        <option value="interview">💼 Vorstellungsgespräch (Intervyu)</option>
+                    </select>
+                </div>
+
+                <div id="inline-chat-box" style="height:340px; overflow-y:auto; padding:16px; background:rgba(0,0,0,0.03); border:1px solid var(--border-color); border-radius:14px; margin-bottom:16px; display:flex; flex-direction:column; gap:12px;"></div>
+
+                <div id="inline-tip-box" style="font-size:13px; padding:10px 14px; background:rgba(99,102,241,0.08); border-left:3px solid var(--accent-color); border-radius:8px; margin-bottom:16px; color:var(--text-secondary);">
+                    💡 Maslahat: Javobingizni mikrofonga aytishingiz yoki klaviaturada yozishingiz mumkin.
+                </div>
+
+                <form id="inline-tandem-form" style="display:flex; gap:10px;">
+                    <button type="button" id="inline-mic-btn" class="btn-secondary" style="padding:0 18px; font-size:18px;" title="Mikrofon orqali gapirish">🎙️</button>
+                    <input type="text" id="inline-tandem-input" class="form-input" placeholder="Nemischa javobingizni yozing..." autocomplete="off" style="flex:1;">
+                    <button type="submit" class="btn-primary" style="padding:0 24px;">Yuborish</button>
+                </form>
+            </div>
+        `;
+
+        const chatBox = wrap.querySelector('#inline-chat-box');
+        const tipBox = wrap.querySelector('#inline-tip-box');
+        const partnerLabel = wrap.querySelector('#inline-partner-name');
+        const form = wrap.querySelector('#inline-tandem-form');
+        const input = wrap.querySelector('#inline-tandem-input');
+        const micBtn = wrap.querySelector('#inline-mic-btn');
+        const select = wrap.querySelector('#inline-scenario-select');
+
+        let step = 0;
+        let currentKey = 'cafe';
+
+        function appendMsg(sender, text) {
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.justifyContent = sender === 'user' ? 'flex-end' : 'flex-start';
+
+            const b = document.createElement('div');
+            b.style.maxWidth = '80%';
+            b.style.padding = '10px 16px';
+            b.style.borderRadius = '16px';
+            b.style.fontSize = '14.5px';
+            b.style.lineHeight = '1.45';
+
+            if (sender === 'user') {
+                b.style.background = 'var(--accent-color, #6366f1)';
+                b.style.color = '#fff';
+                b.textContent = text;
+            } else {
+                b.style.background = 'var(--bg-color, #fff)';
+                b.style.border = '1px solid var(--border-color)';
+                b.style.color = 'var(--text-primary)';
+                b.innerHTML = `<span>${text}</span> <button type="button" class="btn-icon" style="display:inline-flex; width:22px; height:22px; margin-left:6px; font-size:12px; vertical-align:middle;">🔊</button>`;
+                b.querySelector('button').addEventListener('click', () => speakGerman(text));
+            }
+            row.appendChild(b);
+            chatBox.appendChild(row);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function loadScenario(k) {
+            currentKey = k;
+            step = 0;
+            const scen = TANDEM_SCENARIOS[k];
+            partnerLabel.textContent = scen.partner;
+            chatBox.innerHTML = '';
+            appendMsg('ai', scen.intro);
+            speakGerman(scen.intro);
+            tipBox.textContent = "💡 Maslahat: Nemischa suhbat boshlandi. Namunaga qarab javob bering.";
+        }
+
+        loadScenario('cafe');
+
+        select.addEventListener('change', (e) => loadScenario(e.target.value));
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = input.value.trim();
+            if (!val) return;
+            input.value = '';
+            appendMsg('user', val);
+
+            const scen = TANDEM_SCENARIOS[currentKey];
+            setTimeout(() => {
+                if (step < scen.responses.length) {
+                    const r = scen.responses[step];
+                    appendMsg('ai', r.reply);
+                    speakGerman(r.reply);
+                    if (r.tip) tipBox.textContent = r.tip;
+                    step++;
+                } else {
+                    const bye = "Ausgezeichnet! Das Gespräch war sehr erfolgreich.";
+                    appendMsg('ai', bye);
+                    speakGerman(bye);
+                    tipBox.textContent = "🎉 Suhbat yakunlandi! Boshqa ssenariyni sinab ko'ring.";
+                }
+            }, 600);
+        });
+
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRec) {
+            const recognizer = new SpeechRec();
+            recognizer.lang = 'de-DE';
+            recognizer.continuous = false;
+            recognizer.interimResults = false;
+
+            micBtn.addEventListener('click', () => {
+                micBtn.style.background = '#ef4444';
+                recognizer.start();
+            });
+
+            recognizer.onresult = (ev) => {
+                micBtn.style.background = '';
+                input.value = ev.results[0][0].transcript;
+                form.dispatchEvent(new Event('submit'));
+            };
+            recognizer.onerror = () => { micBtn.style.background = ''; };
+        }
+    }
+
+    function initPronounceInline() {
+        const wrap = document.getElementById('pronounce-inline-content');
+        if (!wrap) return;
+        wrap.innerHTML = `
+            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:18px; padding:26px; box-shadow:var(--shadow-sm); max-width:760px; margin:0 auto; text-align:center;">
+                <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:14px;">
+                    <span style="font-size:32px;">🎙️</span>
+                    <h2 style="margin:0; font-size:1.4rem;">AI Talaffuz Murabbiyi (Pronunciation Coach)</h2>
+                </div>
+                <p style="color:var(--text-secondary); font-size:14px; margin:0 auto 20px; max-width:540px;">Nemischa so'z va jumlalarni to'g'ri urg'u bilan aytishni real vaqtda mashq qiling</p>
+
+                <div style="margin-bottom:20px; text-align:left;">
+                    <label style="font-size:13px; color:var(--text-secondary); display:block; margin-bottom:6px;">Mashq iborasini tanlang:</label>
+                    <select id="inline-phrase-select" class="form-input" style="width:100%; font-size:14px;">
+                        ${PRONUNCIATION_PHRASES.map((p, i) => `<option value="${i}">[${p.level}] ${p.de}</option>`).join('')}
+                    </select>
+                </div>
+
+                <div style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:14px; padding:24px; margin-bottom:20px;">
+                    <h3 id="inline-target-de" style="font-size:1.4rem; color:var(--text-primary); margin:0 0 8px 0;">${PRONUNCIATION_PHRASES[0].de}</h3>
+                    <p id="inline-target-uz" style="color:var(--text-secondary); font-size:14.5px; margin:0 0 16px 0;">${PRONUNCIATION_PHRASES[0].uz}</p>
+                    <div style="display:flex; justify-content:center; gap:12px;">
+                        <button type="button" class="btn-secondary" id="inline-pron-listen">🔊 Namunani tinglash</button>
+                        <button type="button" class="btn-primary" id="inline-pron-rec">🎤 Gapirishni boshlash</button>
+                    </div>
+                </div>
+
+                <div id="inline-pron-res" style="display:none; background:rgba(99,102,241,0.06); border:1px dashed var(--accent-color); border-radius:12px; padding:18px; text-align:left;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <strong style="font-size:14px;">Sizning talaffuzingiz:</strong>
+                        <span id="inline-pron-score" style="padding:4px 12px; border-radius:20px; font-weight:700; font-size:14px; color:#fff;">--%</span>
+                    </div>
+                    <p id="inline-pron-heard" style="font-style:italic; font-size:15px; margin:0 0 8px 0; color:var(--text-primary);"></p>
+                    <p id="inline-pron-tip" style="font-size:13px; margin:0; color:var(--text-secondary);"></p>
+                </div>
+            </div>
+        `;
+
+        const sel = wrap.querySelector('#inline-phrase-select');
+        const deEl = wrap.querySelector('#inline-target-de');
+        const uzEl = wrap.querySelector('#inline-target-uz');
+        const listenBtn = wrap.querySelector('#inline-pron-listen');
+        const recBtn = wrap.querySelector('#inline-pron-rec');
+        const resBox = wrap.querySelector('#inline-pron-res');
+        const scoreBadge = wrap.querySelector('#inline-pron-score');
+        const heardEl = wrap.querySelector('#inline-pron-heard');
+        const tipEl = wrap.querySelector('#inline-pron-tip');
+
+        sel.addEventListener('change', () => {
+            const p = PRONUNCIATION_PHRASES[sel.value];
+            deEl.textContent = p.de;
+            uzEl.textContent = p.uz;
+            resBox.style.display = 'none';
+        });
+
+        listenBtn.addEventListener('click', () => speakGerman(PRONUNCIATION_PHRASES[sel.value].de));
+
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRec) {
+            const r = new SpeechRec();
+            r.lang = 'de-DE';
+            recBtn.addEventListener('click', () => {
+                recBtn.style.background = '#ef4444';
+                recBtn.textContent = '🔴 Tinglanmoqda... Gapiring!';
+                r.start();
+            });
+            r.onresult = (ev) => {
+                recBtn.style.background = '';
+                recBtn.textContent = '🎤 Qayta gapirish';
+                const heard = ev.results[0][0].transcript;
+                const target = PRONUNCIATION_PHRASES[sel.value].de;
+                const score = calculateSimilarity(target, heard);
+                resBox.style.display = 'block';
+                heardEl.textContent = `"${heard}"`;
+                scoreBadge.textContent = `${score}%`;
+                if (score >= 85) {
+                    scoreBadge.style.background = '#10b981';
+                    tipEl.textContent = "🌟 Ajoyib talaffuz! Fonetik urg'u me'yorlarga deyarli to'liq mos.";
+                } else if (score >= 60) {
+                    scoreBadge.style.background = '#f59e0b';
+                    tipEl.textContent = "👍 Yaxshi natija! Ayrim tovushlarni yana ham aniqroq talaffuz qiling.";
+                } else {
+                    scoreBadge.style.background = '#ef4444';
+                    tipEl.textContent = "⚠️ Talaffuzda xatoliklar bor. Namunani qayta tinglab sinab ko'ring.";
+                }
+            };
+            r.onerror = () => {
+                recBtn.style.background = '';
+                recBtn.textContent = '🎤 Gapirishni boshlash';
+            };
+        }
+    }
+
+    function initIdiomsInline() {
+        const wrap = document.getElementById('idioms-inline-content');
+        if (!wrap) return;
+        wrap.innerHTML = `
+            <div style="max-width:900px; margin:0 auto;">
+                <div style="text-align:center; margin-bottom:28px;">
+                    <div style="font-size:36px; margin-bottom:6px;">🥨</div>
+                    <h2 style="margin:0 0 6px 0; font-size:1.6rem;">Nemischa Xalq Iboralari &amp; Slenglari (Redewendungen)</h2>
+                    <p style="color:var(--text-secondary); font-size:14px; margin:0;">Og'zaki nutqda eng ko'p ishlatiladigan qiziqarli iboralar va audio talaffuz</p>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+                    ${GERMAN_IDIOMS.map((item, idx) => `
+                        <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:14px; padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                                    <strong style="font-size:16px; color:var(--accent-color);">${item.phrase}</strong>
+                                    <button type="button" class="btn-icon idiom-inline-audio" data-idx="${idx}" style="width:28px; height:28px; font-size:13px;" title="Talaffuz">🔊</button>
+                                </div>
+                                <div style="font-size:13px; color:var(--text-muted); margin-bottom:4px;">🔤 So'zma-so'z: <em>"${item.literal}"</em></div>
+                                <div style="font-size:13.5px; font-weight:500; color:var(--text-primary); margin-bottom:4px;">💡 Ma'nosi: ${item.meaning}</div>
+                                <div style="font-size:13px; color:var(--text-secondary); margin-bottom:10px;">🇺🇿 O'zbekcha: <b>${item.uzbek}</b></div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.03); border-left:2px solid var(--border-color); padding:8px 10px; font-size:12px; font-style:italic; color:var(--text-secondary); border-radius:4px;">
+                                ${item.example}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        wrap.querySelectorAll('.idiom-inline-audio').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const i = parseInt(btn.dataset.idx, 10);
+                speakGerman(GERMAN_IDIOMS[i].phrase);
+            });
+        });
+    }
+
+    function initCorrectorInline() {
+        const wrap = document.getElementById('corrector-inline-content');
+        if (!wrap) return;
+        wrap.innerHTML = `
+            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:18px; padding:26px; box-shadow:var(--shadow-sm); max-width:820px; margin:0 auto;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+                    <span style="font-size:32px;">✍️</span>
+                    <div>
+                        <h2 style="margin:0; font-size:1.4rem;">AI Nemis Tili Insho &amp; Xat Tahrirchisi</h2>
+                        <small style="color:var(--text-secondary);">B1/B2 Goethe imtihon xatlari uchun grammatik va orfografik tekshiruv</small>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <textarea id="inline-corrector-input" class="form-input" rows="6" placeholder="Nemischa matningizni bu yerga yozing..." style="width:100%; font-size:14px; line-height:1.6;"></textarea>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; margin-bottom:18px;">
+                    <button type="button" class="btn-primary" id="inline-corrector-run">🔍 Matnni Tekshirish</button>
+                    <button type="button" class="btn-secondary" id="inline-corrector-sample">Namuna yuklash</button>
+                </div>
+
+                <div id="inline-corrector-res" style="display:none; border-top:1px dashed var(--border-color); padding-top:16px;"></div>
+            </div>
+        `;
+
+        const input = wrap.querySelector('#inline-corrector-input');
+        const runBtn = wrap.querySelector('#inline-corrector-run');
+        const sampleBtn = wrap.querySelector('#inline-corrector-sample');
+        const resBox = wrap.querySelector('#inline-corrector-res');
+
+        sampleBtn.addEventListener('click', () => {
+            input.value = "Sehr geehrte Damen und herren, ich schreibe ihnen weil ich habe ein problem mit dem kurs. Ich lerne deutsch seit drei monat und möchte mit den lehrer sprechen.";
+        });
+
+        runBtn.addEventListener('click', () => {
+            const val = input.value.trim();
+            if (!val) return;
+            const issues = checkGermanWriting(val);
+            resBox.style.display = 'block';
+
+            if (issues.length === 0) {
+                resBox.innerHTML = '<div style="background:rgba(16,185,129,0.1); border:1px solid #10b981; border-radius:10px; padding:14px; color:#10b981;"><strong>✅ Ajoyib!</strong> Jiddiy grammatik yoki bosh harf xatolari topilmadi.</div>';
+            } else {
+                resBox.innerHTML = `
+                    <h4 style="margin:0 0 10px 0; color:#f59e0b;">⚠️ Topilgan qoidabuzarliklar (${issues.length} ta):</h4>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        ${issues.map(iss => `
+                            <div style="background:var(--bg-color); border-left:3px solid #f59e0b; padding:10px 14px; border-radius:6px; font-size:13px;">
+                                <strong style="color:var(--text-primary);">${iss.type}:</strong>
+                                <span style="color:var(--text-secondary);">${iss.desc}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        });
+    }
+
+    // ------------------------------------------------------------
+    // 9. GLOBAL EXPOSURE & INITIALIZATION
     // ------------------------------------------------------------
     window.AIInnovations = {
         openTandem: () => {
@@ -837,7 +1164,11 @@
         openIdioms: () => {
             const m = renderIdiomsModal();
             m.style.display = 'flex';
-        }
+        },
+        initTandemInline,
+        initPronounceInline,
+        initIdiomsInline,
+        initCorrectorInline
     };
 
 })();

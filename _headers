@@ -9,7 +9,7 @@
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   Cross-Origin-Resource-Policy: same-site
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=(), display-capture=()
+  Permissions-Policy: geolocation=(), camera=(), microphone=(self), payment=(), usb=(), display-capture=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   X-Permitted-Cross-Domain-Policies: none
   Reporting-Endpoints: csp-endpoint="https://abdugofforov.uz/csp-report"
