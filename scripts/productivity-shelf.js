@@ -150,8 +150,19 @@
         `;
         document.body.appendChild(modal);
 
-        modal.querySelector('#close-changelog-modal').addEventListener('click', () => {
+        const closeChangelog = () => {
+            modal.classList.remove('active');
             modal.style.display = 'none';
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
+            modal.style.pointerEvents = 'none';
+            document.body.style.overflow = '';
+        };
+
+        const closeBtn = modal.querySelector('#close-changelog-modal');
+        if (closeBtn) closeBtn.addEventListener('click', closeChangelog);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeChangelog();
         });
 
         return modal;
@@ -201,8 +212,19 @@
         `;
         document.body.appendChild(modal);
 
-        modal.querySelector('#close-bookshelf-modal').addEventListener('click', () => {
+        const closeBookshelf = () => {
+            modal.classList.remove('active');
             modal.style.display = 'none';
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
+            modal.style.pointerEvents = 'none';
+            document.body.style.overflow = '';
+        };
+
+        const closeBtn = modal.querySelector('#close-bookshelf-modal');
+        if (closeBtn) closeBtn.addEventListener('click', closeBookshelf);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeBookshelf();
         });
 
         return modal;
@@ -297,20 +319,72 @@
         }
     });
 
+    function bindEcosystemButtons() {
+        const bsBtn = document.getElementById('btn-ecosystem-bookshelf');
+        if (bsBtn) bsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.ProductivitySuite) window.ProductivitySuite.openBookshelf();
+        });
+
+        const certBtn = document.getElementById('btn-ecosystem-certificate');
+        if (certBtn) certBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.CommunitySuite) window.CommunitySuite.openCertificate();
+        });
+
+        const amaBtn = document.getElementById('btn-ecosystem-ama');
+        if (amaBtn) amaBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.CommunitySuite) window.CommunitySuite.openAma();
+        });
+
+        const capBtn = document.getElementById('btn-ecosystem-capsule');
+        if (capBtn) capBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.AestheticSuite) window.AestheticSuite.openTimeCapsule();
+        });
+
+        const clBtn = document.getElementById('btn-ecosystem-changelog');
+        if (clBtn) clBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.ProductivitySuite) window.ProductivitySuite.openChangelog();
+        });
+
+        const termBtn = document.getElementById('btn-ecosystem-terminal');
+        if (termBtn) termBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.AestheticSuite) window.AestheticSuite.toggleTerminal();
+        });
+    }
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', injectMetricsAndNewsletter);
+        document.addEventListener('DOMContentLoaded', () => {
+            injectMetricsAndNewsletter();
+            bindEcosystemButtons();
+        });
     } else {
         injectMetricsAndNewsletter();
+        bindEcosystemButtons();
     }
 
     window.ProductivitySuite = {
         openChangelog: () => {
             const m = renderChangelogModal();
+            m.classList.add('active');
             m.style.display = 'flex';
+            m.style.opacity = '1';
+            m.style.visibility = 'visible';
+            m.style.pointerEvents = 'auto';
+            document.body.style.overflow = 'hidden';
         },
         openBookshelf: () => {
             const m = renderBookshelfModal();
+            m.classList.add('active');
             m.style.display = 'flex';
+            m.style.opacity = '1';
+            m.style.visibility = 'visible';
+            m.style.pointerEvents = 'auto';
+            document.body.style.overflow = 'hidden';
         }
     };
 

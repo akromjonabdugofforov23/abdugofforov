@@ -126,11 +126,15 @@
         terminalEl.style.display = 'none';
         terminalEl.style.position = 'fixed';
         terminalEl.style.inset = '0';
-        terminalEl.style.background = 'rgba(5, 10, 18, 0.96)';
-        terminalEl.style.zIndex = '99999';
+        terminalEl.style.width = '100vw';
+        terminalEl.style.height = '100vh';
+        terminalEl.style.background = 'rgba(5, 10, 18, 0.98)';
+        terminalEl.style.backdropFilter = 'blur(10px)';
+        terminalEl.style.zIndex = '999999';
         terminalEl.style.fontFamily = '"JetBrains Mono", Consolas, monospace';
         terminalEl.style.color = '#10b981';
         terminalEl.style.padding = '24px';
+        terminalEl.style.boxSizing = 'border-box';
         terminalEl.style.overflow = 'hidden';
         terminalEl.style.flexDirection = 'column';
 
@@ -169,11 +173,17 @@ Xush kelibsiz! Buyruqlar ro'yxatini ko'rish uchun "help" deb yozing.
 
     function toggleTerminal() {
         const term = renderTerminal();
-        if (term.style.display === 'none') {
+        const isHidden = !term.style.display || term.style.display === 'none';
+        if (isHidden) {
             term.style.display = 'flex';
-            term.querySelector('#cli-input').focus();
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                const input = term.querySelector('#cli-input');
+                if (input) input.focus();
+            }, 50);
         } else {
             term.style.display = 'none';
+            document.body.style.overflow = '';
         }
     }
 
@@ -361,8 +371,19 @@ Xush kelibsiz! Buyruqlar ro'yxatini ko'rish uchun "help" deb yozing.
         `;
         document.body.appendChild(modal);
 
-        modal.querySelector('#close-capsule-modal').addEventListener('click', () => {
+        const closeCapsule = () => {
+            modal.classList.remove('active');
             modal.style.display = 'none';
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
+            modal.style.pointerEvents = 'none';
+            document.body.style.overflow = '';
+        };
+
+        const closeBtn = modal.querySelector('#close-capsule-modal');
+        if (closeBtn) closeBtn.addEventListener('click', closeCapsule);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeCapsule();
         });
 
         // Set default min date to tomorrow
@@ -439,7 +460,12 @@ Xush kelibsiz! Buyruqlar ro'yxatini ko'rish uchun "help" deb yozing.
         openTimeCapsule: () => {
             const m = renderTimeCapsuleModal();
             renderCapsuleList();
+            m.classList.add('active');
             m.style.display = 'flex';
+            m.style.opacity = '1';
+            m.style.visibility = 'visible';
+            m.style.pointerEvents = 'auto';
+            document.body.style.overflow = 'hidden';
         }
     };
 

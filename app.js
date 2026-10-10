@@ -2921,6 +2921,24 @@ document.addEventListener('click', (e) => {
     const action = el.dataset.action;
 
     switch (action) {
+        case 'open-bookshelf':
+            if (window.ProductivitySuite) window.ProductivitySuite.openBookshelf();
+            break;
+        case 'open-certificate':
+            if (window.CommunitySuite) window.CommunitySuite.openCertificate();
+            break;
+        case 'open-ama':
+            if (window.CommunitySuite) window.CommunitySuite.openAma();
+            break;
+        case 'open-capsule':
+            if (window.AestheticSuite) window.AestheticSuite.openTimeCapsule();
+            break;
+        case 'open-changelog':
+            if (window.ProductivitySuite) window.ProductivitySuite.openChangelog();
+            break;
+        case 'open-terminal':
+            if (window.AestheticSuite) window.AestheticSuite.toggleTerminal();
+            break;
         case 'scroll-to-tests':
             window.scrollTo({ top: 350, behavior: 'smooth' });
             break;

@@ -194,8 +194,19 @@
         `;
         document.body.appendChild(modal);
 
-        modal.querySelector('#close-cert-modal').addEventListener('click', () => {
+        const closeCert = () => {
+            modal.classList.remove('active');
             modal.style.display = 'none';
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
+            modal.style.pointerEvents = 'none';
+            document.body.style.overflow = '';
+        };
+
+        const closeBtn = modal.querySelector('#close-cert-modal');
+        if (closeBtn) closeBtn.addEventListener('click', closeCert);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeCert();
         });
 
         modal.querySelector('#cert-generate-btn').addEventListener('click', () => {
@@ -299,8 +310,19 @@
         `;
         document.body.appendChild(modal);
 
-        modal.querySelector('#close-ama-modal').addEventListener('click', () => {
+        const closeAma = () => {
+            modal.classList.remove('active');
             modal.style.display = 'none';
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
+            modal.style.pointerEvents = 'none';
+            document.body.style.overflow = '';
+        };
+
+        const closeBtn = modal.querySelector('#close-ama-modal');
+        if (closeBtn) closeBtn.addEventListener('click', closeAma);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeAma();
         });
 
         modal.querySelector('#ama-form').addEventListener('submit', (e) => {
@@ -358,12 +380,22 @@
     window.CommunitySuite = {
         openCertificate: () => {
             const m = renderCertificateModal();
+            m.classList.add('active');
             m.style.display = 'flex';
+            m.style.opacity = '1';
+            m.style.visibility = 'visible';
+            m.style.pointerEvents = 'auto';
+            document.body.style.overflow = 'hidden';
         },
         openAma: () => {
             const m = renderAmaModal();
             renderAmaList();
+            m.classList.add('active');
             m.style.display = 'flex';
+            m.style.opacity = '1';
+            m.style.visibility = 'visible';
+            m.style.pointerEvents = 'auto';
+            document.body.style.overflow = 'hidden';
         },
         triggerHaptic
     };
