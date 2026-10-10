@@ -1036,6 +1036,4 @@ function openService(service) {
 }
 
 document.getElementById('admin-tools-link')?.addEventListener('click', () => openService('tools'));
-document.getElementById('admin-cv-link')?.addEventListener('click', () => openService('cv'));
 document.getElementById('dash-btn-tools')?.addEventListener('click', () => openService('tools'));
-document.getElementById('dash-btn-cv')?.addEventListener('click', () => openService('cv'));

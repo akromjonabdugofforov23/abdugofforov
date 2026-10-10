@@ -1191,7 +1191,7 @@ const deutschTests = {
 
     // ===== B1 — TO'PLAM 10 (B1 Imtihoniga tayyorgarlik) =====
     b1_t10: {
-        title: "B1 — 10-to'plam (B1 Goethe Yakuniy test)",
+        title: "B1 — 10-to'plam (B1 telc Yakuniy test)",
         level: "B1",
         testNo: 10,
         parts: [{
@@ -1214,7 +1214,7 @@ const deutschTests = {
                     name: "🖼️ Rasmli — B1 Imtihon vaziyatlari",
                     type: "image",
                     questions: [
-                        { q: "Bu xalqaro nemis tili sertifikati qanday ataladi?", image: emojiImage("📜🇩🇪"), imageAlt: "Goethe Sertifikat", options: ["das Goethe-Zertifikat", "der Führerschein", "der Mietvertrag", "die Rechnung"], answer: 0, explanation: "'das Goethe-Zertifikat' = xalqaro tan olingan nemis tili sertifikati." },
+                        { q: "Bu xalqaro nemis tili sertifikati qanday ataladi?", image: emojiImage("📜🇩🇪"), imageAlt: "telc Sertifikat", options: ["das telc-Zertifikat", "der Führerschein", "der Mietvertrag", "die Rechnung"], answer: 0, explanation: "'das telc-Zertifikat' = xalqaro tan olingan nemis tili sertifikati." },
                         { q: "Bu ommaviy axborot vositasi nima?", image: emojiImage("📰"), imageAlt: "Gazeta", options: ["die Zeitung / die Presse", "das Radio", "das Fernsehen", "das Plakat"], answer: 0, explanation: "'die Zeitung' = gazeta; 'die Presse' = matbuot." },
                         { q: "Bu muhim davlat binosi nima?", image: emojiImage("🏛️⚖️"), imageAlt: "Sud / Adliya", options: ["das Gericht", "das Rathaus", "die Bank", "die Post"], answer: 0, explanation: "'das Gericht' = sud idorasi." },
                         { q: "Bu ilmiy laboratoriya jarayoni nima?", image: emojiImage("🧪"), imageAlt: "Tajriba", options: ["das Experiment", "die Kunst", "die Musik", "der Sport"], answer: 0, explanation: "'das Experiment' / 'der Versuch' = ilmiy tajriba." },
@@ -1407,7 +1407,7 @@ const deutschTests = {
 
     // ===== B2 — TO'PLAM 10 (B2 Daraja Sinovi) =====
     b2_t10: {
-        title: "B2 — 10-to'plam (B2 Goethe Keng qamrovli test)",
+        title: "B2 — 10-to'plam (B2 telc Keng qamrovli test)",
         level: "B2",
         testNo: 10,
         parts: [{

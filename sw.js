@@ -63,7 +63,7 @@ self.addEventListener('fetch', (event) => {
     if (url.origin !== self.location.origin) return;
 
     // Admin, maxfiy servislar va API funksiyalarini mutlaqo keshlamaymiz
-    const noCachePaths = ['/kay', '/kay.html', '/cv', '/cv.html', '/tools', '/tools.html', '/deutsch', '/deutsch.html'];
+    const noCachePaths = ['/kay', '/kay.html', '/tools', '/tools.html', '/deutsch', '/deutsch.html'];
     if (url.pathname.startsWith('/functions') || url.pathname.startsWith('/admin') || noCachePaths.includes(url.pathname)) return;
 
     // Navigatsiya (HTML) — tarmoq birinchi, keyin kesh (faqat asosiy sahifa oflayn ishlashi uchun)

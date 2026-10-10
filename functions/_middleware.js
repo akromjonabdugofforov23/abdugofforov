@@ -47,25 +47,6 @@ export async function onRequest(context) {
     }
   }
 
-  // 3. Subdomain routing: cv.abdugofforov.uz -> serve cv.html (Ommaviy)
-  if (url.hostname.startsWith('cv.') || url.searchParams.get('subdomain') === 'cv') {
-    if (url.pathname === '/' || url.pathname === '/index.html' || url.pathname === '/cv' || url.pathname === '/cv.html') {
-      const resp = await context.env.ASSETS.fetch(new URL('/cv.html', context.request.url));
-      return applySecurityHeaders(resp, context, url);
-    }
-  }
-
-  // Redirect abdugofforov.uz/cv to subdomain if accessed directly on production
-  if (url.pathname === '/cv' || url.pathname === '/cv/') {
-    if (!url.hostname.startsWith('cv.')) {
-      if (url.hostname.includes('abdugofforov.uz')) {
-        return Response.redirect(`https://cv.abdugofforov.uz/`, 301);
-      }
-      const resp = await context.env.ASSETS.fetch(new URL('/cv.html', context.request.url));
-      return applySecurityHeaders(resp, context, url);
-    }
-  }
-
   const response = await context.next();
   return applySecurityHeaders(response, context, url);
 }
@@ -85,8 +66,7 @@ function applySecurityHeaders(response, context, url) {
         allowed.push(
           'https://abdugofforov.uz',
           'https://deutsch.abdugofforov.uz',
-          'https://tools.abdugofforov.uz',
-          'https://cv.abdugofforov.uz'
+          'https://tools.abdugofforov.uz'
         );
       }
     } catch (e) {}

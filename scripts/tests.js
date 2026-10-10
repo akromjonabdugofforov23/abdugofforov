@@ -120,7 +120,7 @@ function renderDeutschLevelsHTML() {
     const sectionsHTML = filteredLevels.map(lv => {
         const matchingCards = lv.tests.filter(t => {
             if (!q) return true;
-            const fields = [t.name, t.note, lv.label, lv.sub, lv.key, 'goethe', 'test', 'nemis tili'];
+            const fields = [t.name, t.note, lv.label, lv.sub, lv.key, 'telc', 'test', 'nemis tili'];
             return fields.some(f => {
                 if (!f) return false;
                 const fNorm = typeof window.SearchEngine !== 'undefined' ? window.SearchEngine.normalize(f) : f.toLowerCase();
@@ -204,7 +204,7 @@ function renderDeutschHome() {
                 <div class="deutsch-mode-card mode-tests active" data-action="scroll-to-tests" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(59, 130, 246, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.18);">
                     <span class="dm-icon" style="font-size: 38px; display: block; margin-bottom: 8px;">📝</span>
                     <div class="dm-title" style="font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 4px;">${t('de.mode.tests', 'Mavzuli Testlar')}</div>
-                    <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.tests_sub', 'A1-B2 Goethe (40 ta to\'plam)')}</div>
+                    <div class="dm-sub" style="font-size: 12px; color: #94a3b8;">${t('de.mode.tests_sub', 'A1-B2 telc (40 ta to\'plam)')}</div>
                 </div>
 
                 <div class="deutsch-mode-card mode-flashcards" data-action="open-flashcards" style="flex: 1; min-width: 180px; max-width: 230px; background: rgba(139, 92, 246, 0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 20px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.35s ease; box-shadow: 0 8px 24px rgba(139, 92, 246, 0.18);">

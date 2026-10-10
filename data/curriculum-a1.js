@@ -1,5 +1,5 @@
 // ========================================================================
-// DEUTSCH AKADEMIYASI — GOETHE A1 O'QUV DASTURI (CURRICULUM)
+// DEUTSCH AKADEMIYASI — TELC A1 O'QUV DASTURI (CURRICULUM)
 // Start Deutsch A1 — Boshlang'ich daraja uchun 7 ta interaktiv modul
 // ========================================================================
 

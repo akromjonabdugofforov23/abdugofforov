@@ -18,11 +18,6 @@ router.get(['/tools', '/tools/', '/tools.html'], (req, res) => {
     res.sendFile(path.join(__dirname, '../tools.html'));
 });
 
-// Interaktiv CV & Portfolio
-router.get(['/cv', '/cv/', '/cv.html'], (req, res) => {
-    res.sendFile(path.join(__dirname, '../cv.html'));
-});
-
 // Kay Admin Paneli
 router.get(['/kay', '/kay/', '/kay.html'], (req, res) => {
     res.sendFile(path.join(__dirname, '../kay.html'));
@@ -55,7 +50,6 @@ router.get('/sitemap.xml', (req, res) => {
         { loc: '/', priority: '1.0', changefreq: 'daily' },
         { loc: '/deutsch', priority: '0.9', changefreq: 'weekly' },
         { loc: '/tools', priority: '0.8', changefreq: 'monthly' },
-        { loc: '/cv', priority: '0.8', changefreq: 'monthly' },
         { loc: '/3d-lab', priority: '0.7', changefreq: 'monthly' }
     ];
 

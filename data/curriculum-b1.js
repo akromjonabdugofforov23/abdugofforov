@@ -12,7 +12,7 @@ window.deutschCurriculum['B1'] = {
     level: 'B1',
     badge: '🌳 O\'rta',
     title: 'B1 — Zertifikat Deutsch (O\'rta daraja)',
-    description: 'Mustaqil til egasi bo\'lish, fikr bildirish, hikoya qilish va Goethe B1 imtihoniga tayyorgarlik.',
+    description: 'Mustaqil til egasi bo\'lish, fikr bildirish, hikoya qilish va telc B1 imtihoniga tayyorgarlik.',
     topics: [
         // ============================================================
         // MAVZU 1: Präteritum — Hikoya o'tgan zamoni
@@ -1300,7 +1300,7 @@ window.deutschCurriculum['B1'] = {
             icon: '💼',
             description: 'Nemis tilida rezyume (Lebenslauf), ariza xati (Anschreiben), ish suhbati (Vorstellungsgespräch) va mehnat sharoitlari bo\'yicha muhim leksika hamda iboralar.',
             theory: {
-                summary: 'B1 Goethe imtihonining yozma (Schreiben - rasmiy xat) va og\'zaki (Sprechen - o\'zini tanishtirish va suhbat) bo\'limlarida eng ko\'p uchraydigan, Germaniyada yashash, ishlash yoki Ausbildung qilish uchun o\'ta muhim amaliy mavzu — bu ish qidirish (Jobsuche), hujjat topshirish (Bewerbung) va ish suhbati (Vorstellungsgespräch) hisoblanadi.',
+                summary: 'B1 telc imtihonining yozma (Schreiben - rasmiy xat) va og\'zaki (Sprechen - o\'zini tanishtirish va suhbat) bo\'limlarida eng ko\'p uchraydigan, Germaniyada yashash, ishlash yoki Ausbildung qilish uchun o\'ta muhim amaliy mavzu — bu ish qidirish (Jobsuche), hujjat topshirish (Bewerbung) va ish suhbati (Vorstellungsgespräch) hisoblanadi.',
                 sections: [
                     {
                         heading: '1. Ish arizasi hujjatlari (Die Bewerbungsunterlagen)',

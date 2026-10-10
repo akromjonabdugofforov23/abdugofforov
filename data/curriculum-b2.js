@@ -637,7 +637,7 @@ window.deutschCurriculum['B2'] = {
                     'Nomen-Verb-Verbindungen tarkibidagi predloglar va kelishiklar qat\'iydir (in Betracht ziehen, zur Verfügung stehen).',
                     'Aktiv va passiv juftliklarni adashtirmang: stellen (aktiv boshqarish) vs. stehen (mavjud holat).',
                     'FVG tarkibidagi ot odatda sifat orqali kengaytirilishi mumkin: eine wichtige Entscheidung treffen, scharfe Kritik üben.',
-                    'Goethe va telc B2 imtihonlarining "Schreiben" qismida FVG qo\'llash eng yuqori baholash mezonlaridan biri sanaladi.'
+                    'telc B2 imtihonining "Schreiben" qismida FVG qo\'llash eng yuqori baholash mezonlaridan biri sanaladi.'
                 ]
             },
             flashcards: [
@@ -1127,9 +1127,9 @@ window.deutschCurriculum['B2'] = {
             title: 'Rasmiy muzokara, munozara va Taqdimot vositalari',
             germanTitle: 'Redemittel für Diskussion, Argumentation und Präsentation',
             icon: '🎙️',
-            description: 'Goethe va telc B2 imtihonlari uchun professional nutq qoliplari: ilmiy taqdimot, dalillarni asoslash, muloyim e\'tiroz bildirish va murosaga kelish san\'ati.',
+            description: 'telc B2 imtihoni uchun professional nutq qoliplari: ilmiy taqdimot, dalillarni asoslash, muloyim e\'tiroz bildirish va murosaga kelish san\'ati.',
             theory: {
-                summary: 'B2 darajasi bo\'yicha sertifikat imtihonlarida (Goethe-Zertifikat B2, telc B2, TestDaF) muvaffaqiyat qozonish uchun shunchaki so\'zlashuv tili yetarli emas. Talabadan ilmiy va rasmiy uslubdagi nutqiy qoliplardan (Redemittel) mohirona foydalana olish, taqdimotni aniq tuzilish asosida olib borish va professional bahs-munozara olib borish talab qilinadi.',
+                summary: 'B2 darajasi bo\'yicha sertifikat imtihonlarida (telc Deutsch B2, TestDaF) muvaffaqiyat qozonish uchun shunchaki so\'zlashuv tili yetarli emas. Talabadan ilmiy va rasmiy uslubdagi nutqiy qoliplardan (Redemittel) mohirona foydalana olish, taqdimotni aniq tuzilish asosida olib borish va professional bahs-munozara olib borish talab qilinadi.',
                 sections: [
                     {
                         heading: '1. Taqdimot (Präsentation) tuzilishi va boshqaruvi',

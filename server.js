@@ -30,8 +30,7 @@ app.use((req, res, next) => {
         req.headers.host ? `${req.protocol}://${req.headers.host}` : '',
         'https://abdugofforov.uz',
         'https://deutsch.abdugofforov.uz',
-        'https://tools.abdugofforov.uz',
-        'https://cv.abdugofforov.uz'
+        'https://tools.abdugofforov.uz'
     ];
     if (process.env.ALLOWED_ORIGINS) {
         process.env.ALLOWED_ORIGINS.split(',').forEach(o => {

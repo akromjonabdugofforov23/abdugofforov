@@ -49,7 +49,7 @@ const SearchEngine = {
             'suhbat': ['dialog', 'sprechen', 'muloqot', 'tandem'],
             'gaplashish': ['dialog', 'sprechen', 'suhbat'],
             'fel': ['verb', 'grammatika', 'trenajyor'],
-            'imtihon': ['goethe', 'test', 'daraja', 'b1', 'a1', 'a2', 'b2'],
+            'imtihon': ['telc', 'test', 'daraja', 'b1', 'a1', 'a2', 'b2'],
             'suniy': ['ai', 'intellekt', 'agent', 'llm'],
             'nemis': ['deutsch', 'germaniya', 'almon'],
             'asbob': ['tool', 'laboratoriya', 'converter'],
@@ -2349,7 +2349,7 @@ function init3DTilt() {
 }
 
 const DUMMY_POST_IDS = new Set([
-    'post_goethe_guide_1',
+    'post_telc_guide_1',
     'post_roadmap_2026',
     'post_articles_grammar_3',
     'post_travel_budget_4'
@@ -2376,7 +2376,7 @@ function getHighValueDefaultPosts() {
             id: 'post_germany_chancenkarte_2026',
             title: "Germaniyada Ausbildung va Chancenkarte: 2026-yilgi Yangi Imkoniyatlar",
             excerpt: "Nemis tilini o'rganayotgan yoshlar uchun Germaniyaga qonuniy yo'l bilan borish, kasb o'rganish va ishlash bo'yicha eng so'nggi yangilanishlar.",
-            content: "Germaniya mehnat bozori har yili minglab xorijiy mutaxassislarga ehtiyoj sezmoqda. 2026-yilda kuchga kirgan yangi migratsiya qoidalari o'zbekistonlik iqtidorli yoshlar uchun keng imkoniyatlar eshigini ochdi.\\n\\n### 1. Chancenkarte (Imkoniyat kartasi)\\nBu ballar tizimiga asoslangan viza bo'lib, quyidagi mezonlar bo'yicha beriladi:\\n- Nemis tili (A2 daraja - 2 ball, B1 daraja - 3 ball);\\n- Yosh (35 yoshgacha bo'lganlarga qo'shimcha ball);\\n- Oliy yoki o'rta-maxsus ta'lim diplomi;\\n- Ish tajribasi.\\nUshbu karta bilan Germaniyaga borib, 1 yil davomida to'liq ish topish imkoniyati mavjud.\\n\\n### 2. Duale Ausbildung (Kasbiy ta'lim)\\nEng katta afzalligi — o'qish mutlaqo bepul va har oy 1000€ dan 1400€ gacha oylik stipendiya to'lanadi. Asosiy talab — nemis tilini **B1 yoki B2** darajasida bilish.\\n\\nPlatformamizdagi A1–B2 interaktiv darsliklar va Goethe testlari sizning bu maqsadingiz yo'lidagi eng ishonchli yordamchingizdir!",
+            content: "Germaniya mehnat bozori har yili minglab xorijiy mutaxassislarga ehtiyoj sezmoqda. 2026-yilda kuchga kirgan yangi migratsiya qoidalari o'zbekistonlik iqtidorli yoshlar uchun keng imkoniyatlar eshigini ochdi.\\n\\n### 1. Chancenkarte (Imkoniyat kartasi)\\nBu ballar tizimiga asoslangan viza bo'lib, quyidagi mezonlar bo'yicha beriladi:\\n- Nemis tili (A2 daraja - 2 ball, B1 daraja - 3 ball);\\n- Yosh (35 yoshgacha bo'lganlarga qo'shimcha ball);\\n- Oliy yoki o'rta-maxsus ta'lim diplomi;\\n- Ish tajribasi.\\nUshbu karta bilan Germaniyaga borib, 1 yil davomida to'liq ish topish imkoniyati mavjud.\\n\\n### 2. Duale Ausbildung (Kasbiy ta'lim)\\nEng katta afzalligi — o'qish mutlaqo bepul va har oy 1000€ dan 1400€ gacha oylik stipendiya to'lanadi. Asosiy talab — nemis tilini **B1 yoki B2** darajasida bilish.\\n\\nPlatformamizdagi A1–B2 interaktiv darsliklar va telc testlari sizning bu maqsadingiz yo'lidagi eng ishonchli yordamchingizdir!",
             category: 'Nemis tili',
             image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1200',
             date: '2026-10-09',
@@ -2391,7 +2391,7 @@ function getHighValueDefaultPosts() {
             id: 'post_ecosystem_release_2_0',
             title: "Abdugofforov Ekotizimi 2.0: Zen Studio va Yangilangan Tools Lab",
             excerpt: "Saytimiz yangilandi: chalg'itmaydigan ijodiy muharrir, interaktiv testlar va yangi amaliy asboblar xizmatingizda!",
-            content: "Foydalanuvchilarimizga yanada qulay, yengil va tezkor platforma taqdim etish maqsadida saytimizni yangiladik! Ushbu relizda quyidagi yirik yangiliklar amalga oshirildi:\\n\\n- **Zen Writing Studio:** Qoralamalarni avtomatik saqlash, rasm yuklash va jonli Markdown ko'rinishi.\\n- **Deutsch Akademiyasi:** A1–B2 interaktiv darsliklar, mashqlar va Goethe testlari.\\n- **Tools Lab:** Lotin-Kirill, WebP kompressor, JSON formatlovchi, Diff checker, QR va Hash generator laboratoriyasi.\\n\\nBiz bilan birga bo'lganingiz uchun rahmat!",
+            content: "Foydalanuvchilarimizga yanada qulay, yengil va tezkor platforma taqdim etish maqsadida saytimizni yangiladik! Ushbu relizda quyidagi yirik yangiliklar amalga oshirildi:\\n\\n- **Zen Writing Studio:** Qoralamalarni avtomatik saqlash, rasm yuklash va jonli Markdown ko'rinishi.\\n- **Deutsch Akademiyasi:** A1–B2 interaktiv darsliklar, mashqlar va telc testlari.\\n- **Tools Lab:** Lotin-Kirill, WebP kompressor, JSON formatlovchi, Diff checker, QR va Hash generator laboratoriyasi.\\n\\nBiz bilan birga bo'lganingiz uchun rahmat!",
             category: 'Yangiliklar',
             image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1200',
             date: '2026-10-08',
