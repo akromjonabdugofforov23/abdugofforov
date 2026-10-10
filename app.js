@@ -2366,7 +2366,7 @@ function getHighValueDefaultPosts() {
             image: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?q=80&w=1200',
             date: '2026-10-10',
             tags: ['AI', 'Agent', 'Dasturlash', 'Kelajak'],
-            likes: 42,
+            likes: 0,
             liked: false,
             comments: [],
             author: "Abdug'offorov",
@@ -2381,7 +2381,7 @@ function getHighValueDefaultPosts() {
             image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1200',
             date: '2026-10-09',
             tags: ['Deutsch', 'Germaniya', 'Ausbildung', 'Chancenkarte'],
-            likes: 58,
+            likes: 0,
             liked: false,
             comments: [],
             author: "Abdug'offorov",
@@ -2389,14 +2389,14 @@ function getHighValueDefaultPosts() {
         },
         {
             id: 'post_ecosystem_release_2_0',
-            title: "Abdugofforov Ekotizimi 2.0: Zen Studio, Lofi Focus va Yangilangan Tools Lab",
-            excerpt: "Saytimiz tubdan yangilandi: endi chalg'itmaydigan ijodiy muharrir, Lofi/Ambient audio pleyer va yangi asboblar sizning xizmatingizda!",
-            content: "Foydalanuvchilarimizga yanada qulay va estetik platforma taqdim etish maqsadida saytimizni 2.0 versiyaga yangiladik! Ushbu relizda quyidagi yirik yangiliklar amalga oshirildi:\\n\\n- **Zen Writing Studio:** Notion va Medium uslubidagi chalg'itmaydigan, toza muharrir. Qoralamalarni avtomatik saqlash, rasm yuklash va jonli Markdown ko'rinishi.\\n- **Lofi & Ambient Soundscapes:** Hech qanday tashqi kutubxonalarsiz, 100% toza Web Audio API da ishlovchi lofi to'lqinlari, binaural beats va yomg'ir ovozlari.\\n- **Bionic Reading & AI TL;DR:** Matnlarni 2 barobar tez o'qish uchun bionik rejim va bir zumda 3 nuqtali avtomatik xulosa.\\n- **Tools Lab:** Lotin-Kirill, WebP kompressor, JSON formatlovchi, Diff checker, QR va Hash generator laboratoriyasi.\\n\\nBiz bilan birga bo'lganingiz uchun rahmat!",
+            title: "Abdugofforov Ekotizimi 2.0: Zen Studio va Yangilangan Tools Lab",
+            excerpt: "Saytimiz yangilandi: chalg'itmaydigan ijodiy muharrir, interaktiv testlar va yangi amaliy asboblar xizmatingizda!",
+            content: "Foydalanuvchilarimizga yanada qulay, yengil va tezkor platforma taqdim etish maqsadida saytimizni yangiladik! Ushbu relizda quyidagi yirik yangiliklar amalga oshirildi:\\n\\n- **Zen Writing Studio:** Qoralamalarni avtomatik saqlash, rasm yuklash va jonli Markdown ko'rinishi.\\n- **Deutsch Akademiyasi:** A1–B2 interaktiv darsliklar, mashqlar va Goethe testlari.\\n- **Tools Lab:** Lotin-Kirill, WebP kompressor, JSON formatlovchi, Diff checker, QR va Hash generator laboratoriyasi.\\n\\nBiz bilan birga bo'lganingiz uchun rahmat!",
             category: 'Yangiliklar',
             image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1200',
             date: '2026-10-08',
             tags: ['Yangilik', 'Reliz', 'Dizayn', 'Platforma'],
-            likes: 67,
+            likes: 0,
             liked: false,
             comments: [],
             author: "Abdug'offorov",
@@ -2404,14 +2404,14 @@ function getHighValueDefaultPosts() {
         },
         {
             id: 'post_bionic_reading_speed',
-            title: "Qanday qilib 3 Barobar Tezroq O'rganish Mumkin? (Bionik O'qish va Spaced Repetition)",
+            title: "Qanday qilib Tezroq va Mustahkam O'rganish Mumkin? (Spaced Repetition Metodikasi)",
             excerpt: "Miya axborotni qanday qabul qilishi va ilmiy isbotlangan intervalli takrorlash metodikasi haqida to'liq qo'llanma.",
-            content: "Inson xotirasi har kuni behisob axborotni o'chirib tashlaydi. Nemis psixologi Hermann Ebbinghaus aniqlagan **Unutish egri chizig'i**ga ko'ra, o'rganilgan yangi ma'lumotning 70 foizi dastlabki 24 soat ichida esdan chiqadi.\\n\\n### Buni qanday yengish mumkin?\\n1. **Spaced Repetition (Intervalli takrorlash):** Ma'lumotni unutish arafasida turgan paytda takrorlash xotira sinapslarini mustahkamlaydi (1-kun, 3-kun, 7-kun, 30-kun tartibi);\\n2. **Bionic Reading:** So'zlarning boshlang'ich bo'g'inlarini qalinlashtirib ko'rsatish orqali ko'z butun so'zni emas, faqat yo'naltiruvchi nuqtani ilg'aydi, qolganini esa miya avtomatik to'ldiradi.\\n\\nSaytimizdagi har bir maqolani Bionic Reading tugmasi orqali tezkor o'qib ko'rishingiz mumkin!",
+            content: "Inson xotirasi har kuni behisob axborotni o'chirib tashlaydi. Nemis psixologi Hermann Ebbinghaus aniqlagan **Unutish egri chizig'i**ga ko'ra, o'rganilgan yangi ma'lumotning 70 foizi dastlabki 24 soat ichida esdan chiqadi.\\n\\n### Buni qanday yengish mumkin?\\n1. **Spaced Repetition (Intervalli takrorlash):** Ma'lumotni unutish arafasida turgan paytda takrorlash xotira sinapslarini mustahkamlaydi (1-kun, 3-kun, 7-kun, 30-kun tartibi);\\n2. **Faol eslash (Active Recall):** Shunchaki o'qib chiqish emas, o'zini o'zi sinash orqali bilimlarni mustahkamlash.\\n\\nSaytimizdagi har bir test va so'z kartochkalari aynan shu ilmiy tamoyilga asoslangan!",
             category: 'Mahsuldorlik',
             image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=1200',
             date: '2026-10-07',
-            tags: ['Unumdorlik', 'Xotira', 'BionicReading', 'Miya'],
-            likes: 51,
+            tags: ['Unumdorlik', 'Xotira', 'O\'rganish', 'Miya'],
+            likes: 0,
             liked: false,
             comments: [],
             author: "Abdug'offorov",
@@ -2421,12 +2421,12 @@ function getHighValueDefaultPosts() {
             id: 'post_digital_silence_philosophy',
             title: "Raqamli Shovqin Davrida Ichki Xotirjamlikni Topish San'ati",
             excerpt: "Doimiy bildirishnomalar va xabarlar oqimida diqqatni saqlab qolish va ongli yashash bo'yicha shaxsiy mulohazalar.",
-            content: "Har kuni minglab axborot parchalari ongimizga yog'iladi. Qachon so'nggi bor bir piyola choy bilan, hech qanday ekransiz, shunchaki o'z fikrlaringiz bilan yolg'iz qoldingiz?\\n\\nBiz yaratgan **Luxury Clock** va **Ambient Focus** sahifalari ortidagi asosiy falsafa ham aynan shu — shoshilmaslik, lahzani his qilish va chuqur diqqat (**Deep Work**) holatiga erishishdir.\\n\\nKuniga atigi 30 daqiqa barcha telefon bildirishnomalarini o'chirib, kitob o'qish yoki diqqat bilan bitta vazifani bajarish ruhiy xotirjamlikning eng oliy kalitidir.",
+            content: "Har kuni minglab axborot parchalari ongimizga yog'iladi. Qachon so'nggi bor bir piyola choy bilan, hech qanday ekransiz, shunchaki o'z fikrlaringiz bilan yolg'iz qoldingiz?\\n\\nAsosiy falsafa — shoshilmaslik, lahzani his qilish va chuqur diqqat (**Deep Work**) holatiga erishishdir.\\n\\nKuniga atigi 30 daqiqa barcha telefon bildirishnomalarini o'chirib, kitob o'qish yoki diqqat bilan bitta vazifani bajarish ruhiy xotirjamlikning eng oliy kalitidir.",
             category: 'Kundalik',
             image: 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?q=80&w=1200',
             date: '2026-10-06',
             tags: ['Falsafa', 'Sokinlik', 'Diqqat', 'Hayot'],
-            likes: 39,
+            likes: 0,
             liked: false,
             comments: [],
             author: "Abdug'offorov",
@@ -2541,11 +2541,7 @@ function loadAuxiliaryModules() {
     if (_auxLoaded) return;
     _auxLoaded = true;
     const auxScripts = [
-        'scripts/claps-reactions.js?v=4',
-        'scripts/luxury-clock-modal.js?v=4',
-        'scripts/community-gamification.js?v=4',
-        'scripts/aesthetic-features.js?v=4',
-        'scripts/productivity-shelf.js?v=4'
+        'scripts/claps-reactions.js?v=4'
     ];
     auxScripts.forEach(src => {
         if (!document.querySelector(`script[src*="${src.split('?')[0]}"]`)) {
@@ -2558,9 +2554,9 @@ function loadAuxiliaryModules() {
     });
 }
 
-// Foydalanuvchi biror tugmani bosganda darhol yuklash
+// Foydalanuvchi biror tugmani bosganda yuklash
 document.addEventListener('click', (e) => {
-    if (e.target.closest('[data-action]') || e.target.closest('.atelier-clock')) {
+    if (e.target.closest('[data-action]')) {
         loadAuxiliaryModules();
     }
 }, { capture: true, passive: true });

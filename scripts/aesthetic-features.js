@@ -179,19 +179,9 @@ Xush kelibsiz! Buyruqlar ro'yxatini ko'rish uchun "help" deb yozing.
         }
     });
 
-    // ------------------------------------------------------------
-    // 3. SPATIAL AUDIO (FAZOYIY 8D OVOZ) ENGINE (#26)
-    // ------------------------------------------------------------
-    let spatialPanner = null;
-    let spatialOsc = null;
-    let isSpatialActive = false;
-
+    // Spatial audio placeholder (plasebo ovoz olib tashlandi)
     function toggleSpatialAudio() {
-        isSpatialActive = !isSpatialActive;
-        if (window.showToast) {
-            window.showToast(isSpatialActive ? '🎧 8D Fazoiy Ovoz faollashtirildi!' : '🎧 Standart stereo rejimiga qaytildi', 'info');
-        }
-        return isSpatialActive;
+        return false;
     }
 
     // ------------------------------------------------------------
