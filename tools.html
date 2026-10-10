@@ -534,8 +534,26 @@
             <button class="tool-tab-btn active" data-tool="translit">
                 <span>🇺🇿</span> Lotin ⇄ Kirill
             </button>
+            <button class="tool-tab-btn" data-tool="spellcheck">
+                <span>✍️</span> Imlo Tuzatuvchi
+            </button>
             <button class="tool-tab-btn" data-tool="image">
                 <span>🖼️</span> WebP &amp; Rasm Siquvchi
+            </button>
+            <button class="tool-tab-btn" data-tool="icon">
+                <span>🎨</span> Favicon Generator
+            </button>
+            <button class="tool-tab-btn" data-tool="codeshot">
+                <span>📸</span> Code to Image
+            </button>
+            <button class="tool-tab-btn" data-tool="pdfclean">
+                <span>📄</span> Text ➔ Markdown
+            </button>
+            <button class="tool-tab-btn" data-tool="regex">
+                <span>🔍</span> RegEx Tester
+            </button>
+            <button class="tool-tab-btn" data-tool="ocr">
+                <span>👁️</span> Rasm Matnini Ajratish
             </button>
             <button class="tool-tab-btn" data-tool="json">
                 <span>📋</span> JSON Formatter
@@ -786,6 +804,182 @@
                 </div>
             </div>
         </section>
+
+        <!-- 7. O'ZBEK IMLO TUZATUVCHI -->
+        <section class="tool-panel" id="panel-spellcheck">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>✍️</span>
+                    <div>
+                        <h2>O'zbek Tili Imlo Tuzatuvchi (Spellchecker)</h2>
+                        <small style="color:var(--text-secondary);">Tez-tez uchraydigan orfografik va harfiy xatoliklarni aniqlash hamda tuzatish</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <span id="spell-count-badge" style="font-size:12px; font-weight:600; padding:4px 10px; border-radius:12px; background:rgba(239,68,68,0.1); color:#ef4444;">0 ta xato</span>
+                    <button class="tool-btn tool-btn-primary" id="spell-fix-btn">Barchasini to'g'rilash</button>
+                    <button class="tool-btn" id="spell-copy-btn">Nusxa olish</button>
+                </div>
+            </div>
+            <div class="converter-grid">
+                <div class="converter-box">
+                    <div class="box-label"><span>Tekshiriladigan matn:</span></div>
+                    <textarea class="tool-textarea" id="spell-input" placeholder="Matnni bu yerga yozing yoki tashlang... Masalan: 'Bugun xursand bo'ldim, hamma xarakatlar besamar ketmadi...'"></textarea>
+                </div>
+                <div class="converter-box">
+                    <div class="box-label"><span>Xatolar tahlili va ko'rinishi:</span></div>
+                    <div class="tool-textarea" id="spell-result" style="overflow-y:auto; line-height:1.6; white-space:pre-wrap;"><span style="color:var(--text-secondary);">Natija bu yerda ko'rinadi...</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. FAVICON & APP ICON GENERATOR -->
+        <section class="tool-panel" id="panel-icon">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>🎨</span>
+                    <div>
+                        <h2>Favicon &amp; PWA App Icon Generator</h2>
+                        <small style="color:var(--text-secondary);">Bitta rasmdan 16x16, 32x32, 180x180 va PWA 192x192, 512x512 ikonkalar yasash</small>
+                    </div>
+                </div>
+            </div>
+            <div id="icon-dropzone" style="border: 2px dashed var(--tools-border); border-radius: 16px; padding: 40px 20px; text-align: center; cursor: pointer; margin-bottom: 24px; transition: border-color 0.2s;">
+                <div style="font-size: 36px; margin-bottom: 8px;">🖼️</div>
+                <h3 style="margin: 0 0 6px 0; font-size: 1.1rem;">Rasmni bu yerga tashlang yoki tanlang (PNG, SVG, JPG)</h3>
+                <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">Brauzer avtomatik barcha standart o'lchamdagi ikonkalar generatsiya qiladi</p>
+                <input type="file" id="icon-file-input" accept="image/*" style="display: none;">
+            </div>
+            <div id="icon-previews" style="display: none; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px;"></div>
+        </section>
+
+        <!-- 9. CODE SNIPPET TO IMAGE -->
+        <section class="tool-panel" id="panel-codeshot">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>📸</span>
+                    <div>
+                        <h2>Code Snippet to Image (Carbon stili)</h2>
+                        <small style="color:var(--text-secondary);">Dasturlash kodini ijtimoiy tarmoqlar uchun hashamatli rasmga aylantirish</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <select id="code-bg-theme" class="tool-btn" style="background:var(--card-bg);">
+                        <option value="aurora">🌌 Aurora Gradient</option>
+                        <option value="prism">💎 Prism Lux</option>
+                        <option value="matrix">🟩 Matrix Green</option>
+                        <option value="dark">🌑 Deep Slate</option>
+                    </select>
+                    <button class="tool-btn tool-btn-primary" id="code-render-btn">Yangilash</button>
+                    <button class="tool-btn tool-btn-primary" id="code-dl-btn" style="display:none;">📥 Yuklab olish</button>
+                </div>
+            </div>
+            <div class="converter-grid">
+                <div class="converter-box">
+                    <div class="box-label"><span>Dasturlash kodi:</span></div>
+                    <textarea class="tool-textarea code-font" id="code-input" rows="8">// JavaScript misoli
+function salomDunyo(ism) {
+    console.log(`Salom, ${ism}! Kelajak bugundan boshlanadi.`);
+}
+
+salomDunyo("Abdugofforov");</textarea>
+                </div>
+                <div class="converter-box" style="display:flex; justify-content:center; align-items:center; overflow-x:auto;">
+                    <canvas id="code-canvas" style="max-width:100%; border-radius:12px; box-shadow:var(--shadow-lg);"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. TEXT TO MARKDOWN -->
+        <section class="tool-panel" id="panel-pdfclean">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>📄</span>
+                    <div>
+                        <h2>PDF &amp; Xom Matndan Toza Markdown</h2>
+                        <small style="color:var(--text-secondary);">Buzilgan qatorlarni birlashtirish, sarlavhalarni to'g'rilash va .md formatiga o'tkazish</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <button class="tool-btn tool-btn-primary" id="pdf-clean-btn">Tozalash &amp; Formatlash</button>
+                    <button class="tool-btn" id="pdf-copy-btn">Nusxa olish</button>
+                    <button class="tool-btn" id="pdf-dl-btn">📥 .md Yuklab olish</button>
+                </div>
+            </div>
+            <div class="converter-grid">
+                <div class="converter-box">
+                    <div class="box-label"><span>PDF yoki xom matn (Input):</span></div>
+                    <textarea class="tool-textarea" id="pdf-input" placeholder="PDF dan nusxalangan matnni bu yerga tashlang..."></textarea>
+                </div>
+                <div class="converter-box">
+                    <div class="box-label"><span>Toza Markdown (Output):</span></div>
+                    <textarea class="tool-textarea code-font" id="pdf-output" placeholder="Formatlangan Markdown bu yerda chiqadi..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. REGEX TESTER -->
+        <section class="tool-panel" id="panel-regex">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>🔍</span>
+                    <div>
+                        <h2>Smart RegEx Tester &amp; Vizualizator</h2>
+                        <small style="color:var(--text-secondary);">Muntazam ifodalarni real vaqtda tekshirish va tayyor andozalar</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <span id="regex-count" style="font-size:12px; font-weight:600; padding:4px 10px; border-radius:12px; background:rgba(99,102,241,0.1); color:var(--tools-accent);">0 ta moslik</span>
+                </div>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+                <span style="font-size:12px; color:var(--text-secondary); align-self:center;">Tayyor andozalar:</span>
+                <button type="button" class="tool-btn regex-preset-btn" data-preset="phone" style="font-size:11px; padding:3px 8px;">🇺🇿 Tel (+998)</button>
+                <button type="button" class="tool-btn regex-preset-btn" data-preset="email" style="font-size:11px; padding:3px 8px;">📧 Email</button>
+                <button type="button" class="tool-btn regex-preset-btn" data-preset="url" style="font-size:11px; padding:3px 8px;">🔗 URL</button>
+                <button type="button" class="tool-btn regex-preset-btn" data-preset="date" style="font-size:11px; padding:3px 8px;">📅 Sana (YYYY-MM-DD)</button>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 100px; gap:10px; margin-bottom:14px;">
+                <input type="text" id="regex-pattern" class="tool-textarea code-font" style="min-height:44px; padding:8px 12px;" placeholder="Muntazam ifoda (Pattern), masalan: \b\w+@\w+\.\w+\b">
+                <input type="text" id="regex-flags" class="tool-textarea code-font" style="min-height:44px; padding:8px 12px;" value="gi" placeholder="Flags (gi)">
+            </div>
+            <div class="converter-grid">
+                <div class="converter-box">
+                    <div class="box-label"><span>Tekshiriluvchi matn:</span></div>
+                    <textarea class="tool-textarea code-font" id="regex-text" placeholder="Matnni kiriting..."></textarea>
+                </div>
+                <div class="converter-box">
+                    <div class="box-label"><span>Mos kelgan qismlar (Matches):</span></div>
+                    <div class="tool-textarea code-font" id="regex-matches" style="overflow-y:auto; line-height:1.6; white-space:pre-wrap;"><span style="color:var(--text-secondary);">Mosliklar bu yerda ko'rsatiladi...</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 12. IMAGE OCR TEXT EXTRACTOR -->
+        <section class="tool-panel" id="panel-ocr">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>👁️</span>
+                    <div>
+                        <h2>Rasm Matnini Ajratish (Client-side Image OCR)</h2>
+                        <small style="color:var(--text-secondary);">Skrinshot yoki rasmdagi matnlarni xavfsiz brauzer xotirasida o'qib berish</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <button class="tool-btn tool-btn-primary" id="ocr-copy-btn">Nusxa olish</button>
+                </div>
+            </div>
+            <div id="ocr-dropzone" style="border: 2px dashed var(--tools-border); border-radius: 16px; padding: 36px 20px; text-align: center; cursor: pointer; margin-bottom: 20px;">
+                <div style="font-size: 34px; margin-bottom: 8px;">📸</div>
+                <h3 style="margin: 0 0 6px 0; font-size: 1.1rem;">Skrinshot yoki rasmni tanlang</h3>
+                <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">100% maxfiy, rasm serverga yuborilmaydi</p>
+                <input type="file" id="ocr-file-input" accept="image/*" style="display: none;">
+            </div>
+            <div class="converter-box">
+                <div class="box-label"><span>Ajratilgan matn:</span></div>
+                <textarea class="tool-textarea" id="ocr-result" rows="6" readonly placeholder="Rasm tanlaganingizdan so'ng matn bu yerda chiqadi..."></textarea>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
@@ -803,6 +997,7 @@
 
     <!-- Skript -->
     <script src="tools.js"></script>
+    <script src="scripts/tools-extended.js" defer></script>
     <script src="scripts/ambient-player.js" defer></script>
 </body>
 </html>

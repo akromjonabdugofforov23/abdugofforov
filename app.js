@@ -43,7 +43,23 @@ const SearchEngine = {
 
     tokenize(str) {
         const norm = this.normalize(str);
-        return norm ? norm.split(' ').filter(t => t.length > 0) : [];
+        if (!norm) return [];
+        const tokens = norm.split(' ').filter(t => t.length > 0);
+        const synonyms = {
+            'suhbat': ['dialog', 'sprechen', 'muloqot', 'tandem'],
+            'gaplashish': ['dialog', 'sprechen', 'suhbat'],
+            'fel': ['verb', 'grammatika', 'trenajyor'],
+            'imtihon': ['goethe', 'test', 'daraja', 'b1', 'a1', 'a2', 'b2'],
+            'suniy': ['ai', 'intellekt', 'agent', 'llm'],
+            'nemis': ['deutsch', 'germaniya', 'almon'],
+            'asbob': ['tool', 'laboratoriya', 'converter'],
+            'lugat': ['flashcard', 'kartochka', 'soz']
+        };
+        const expanded = new Set(tokens);
+        tokens.forEach(t => {
+            if (synonyms[t]) synonyms[t].forEach(s => expanded.add(s));
+        });
+        return Array.from(expanded);
     },
 
     levenshtein(a, b) {
@@ -2368,7 +2384,83 @@ const DUMMY_POST_IDS = new Set([
 ]);
 
 function getHighValueDefaultPosts() {
-    return [];
+    return [
+        {
+            id: 'post_ai_agentic_2026',
+            title: "2026-yilgi Sun'iy Intellekt Inqilobi: Chatbotlardan Avtonom Agentlargacha",
+            excerpt: "LLM modellari endi oddiy suhbatdosh emas, balki murakkab vazifalarni mustaqil rejalashtirib, kod yozib, natija beruvchi avtonom agentlarga aylandi.",
+            content: "So'nggi yillarda sun'iy intellekt taraqqiyoti misli ko'rilmagan tezlikda ildamlamoqda. Agar 2023–2024-yillarda biz matn generatsiya qiluvchi oddiy modellar bilan qanoatlangan bo'lsak, bugungi kunda **Agentic AI** (avtonom agentlar) davri boshlandi.\\n\\n### Agentic AI nima degani?\\nOddiy sun'iy intellekt faqat siz bergan savolga javob yozadi. Agent esa maqsadni tushunadi va unga erishish uchun bir qator ketma-ket harakatlarni o'zi bajaradi:\\n1. **Rejalashtirish (Planning):** Murakkab muammoni kichik qismlarga bo'ladi;\\n2. **Asboblardan foydalanish (Tool Calling):** Brauzer orqali qidiradi, ma'lumotlar bazasini tekshiradi, terminalda kod ishga tushiradi;\\n3. **Xatolarni tahlil qilish (Self-reflection):** Ish bermagan usulni o'zgartirib, muqobil yechim izlaydi.\\n\\n### Dasturchilar uchun nimani anglatadi?\\nDasturlash olamida sintaksis yodlash ahamiyati kamayib, **arxitektura**, **muammoga to'g'ri yondashish** va **AI bilan hamkorlikda ishlash** (Pair Programming) birinchi o'ringa chiqdi. Kelajak texnologiyalaridan orqada qolmaslik uchun har bir mutaxassis avtonom agentlar bilan ishlashni o'rganishi zarur!",
+            category: 'Texnologiya',
+            image: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?q=80&w=1200',
+            date: '2026-10-10',
+            tags: ['AI', 'Agent', 'Dasturlash', 'Kelajak'],
+            likes: 42,
+            liked: false,
+            comments: [],
+            author: "Abdug'offorov",
+            readTime: '4 daqiqa'
+        },
+        {
+            id: 'post_germany_chancenkarte_2026',
+            title: "Germaniyada Ausbildung va Chancenkarte: 2026-yilgi Yangi Imkoniyatlar",
+            excerpt: "Nemis tilini o'rganayotgan yoshlar uchun Germaniyaga qonuniy yo'l bilan borish, kasb o'rganish va ishlash bo'yicha eng so'nggi yangilanishlar.",
+            content: "Germaniya mehnat bozori har yili minglab xorijiy mutaxassislarga ehtiyoj sezmoqda. 2026-yilda kuchga kirgan yangi migratsiya qoidalari o'zbekistonlik iqtidorli yoshlar uchun keng imkoniyatlar eshigini ochdi.\\n\\n### 1. Chancenkarte (Imkoniyat kartasi)\\nBu ballar tizimiga asoslangan viza bo'lib, quyidagi mezonlar bo'yicha beriladi:\\n- Nemis tili (A2 daraja - 2 ball, B1 daraja - 3 ball);\\n- Yosh (35 yoshgacha bo'lganlarga qo'shimcha ball);\\n- Oliy yoki o'rta-maxsus ta'lim diplomi;\\n- Ish tajribasi.\\nUshbu karta bilan Germaniyaga borib, 1 yil davomida to'liq ish topish imkoniyati mavjud.\\n\\n### 2. Duale Ausbildung (Kasbiy ta'lim)\\nEng katta afzalligi — o'qish mutlaqo bepul va har oy 1000€ dan 1400€ gacha oylik stipendiya to'lanadi. Asosiy talab — nemis tilini **B1 yoki B2** darajasida bilish.\\n\\nPlatformamizdagi A1–B2 interaktiv darsliklar va Goethe testlari sizning bu maqsadingiz yo'lidagi eng ishonchli yordamchingizdir!",
+            category: 'Nemis tili',
+            image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1200',
+            date: '2026-10-09',
+            tags: ['Deutsch', 'Germaniya', 'Ausbildung', 'Chancenkarte'],
+            likes: 58,
+            liked: false,
+            comments: [],
+            author: "Abdug'offorov",
+            readTime: '5 daqiqa'
+        },
+        {
+            id: 'post_ecosystem_release_2_0',
+            title: "Abdugofforov Ekotizimi 2.0: Zen Studio, Lofi Focus va Yangilangan Tools Lab",
+            excerpt: "Saytimiz tubdan yangilandi: endi chalg'itmaydigan ijodiy muharrir, Lofi/Ambient audio pleyer va yangi asboblar sizning xizmatingizda!",
+            content: "Foydalanuvchilarimizga yanada qulay va estetik platforma taqdim etish maqsadida saytimizni 2.0 versiyaga yangiladik! Ushbu relizda quyidagi yirik yangiliklar amalga oshirildi:\\n\\n- **Zen Writing Studio:** Notion va Medium uslubidagi chalg'itmaydigan, toza muharrir. Qoralamalarni avtomatik saqlash, rasm yuklash va jonli Markdown ko'rinishi.\\n- **Lofi & Ambient Soundscapes:** Hech qanday tashqi kutubxonalarsiz, 100% toza Web Audio API da ishlovchi lofi to'lqinlari, binaural beats va yomg'ir ovozlari.\\n- **Bionic Reading & AI TL;DR:** Matnlarni 2 barobar tez o'qish uchun bionik rejim va bir zumda 3 nuqtali avtomatik xulosa.\\n- **Tools Lab:** Lotin-Kirill, WebP kompressor, JSON formatlovchi, Diff checker, QR va Hash generator laboratoriyasi.\\n\\nBiz bilan birga bo'lganingiz uchun rahmat!",
+            category: 'Yangiliklar',
+            image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1200',
+            date: '2026-10-08',
+            tags: ['Yangilik', 'Reliz', 'Dizayn', 'Platforma'],
+            likes: 67,
+            liked: false,
+            comments: [],
+            author: "Abdug'offorov",
+            readTime: '3 daqiqa'
+        },
+        {
+            id: 'post_bionic_reading_speed',
+            title: "Qanday qilib 3 Barobar Tezroq O'rganish Mumkin? (Bionik O'qish va Spaced Repetition)",
+            excerpt: "Miya axborotni qanday qabul qilishi va ilmiy isbotlangan intervalli takrorlash metodikasi haqida to'liq qo'llanma.",
+            content: "Inson xotirasi har kuni behisob axborotni o'chirib tashlaydi. Nemis psixologi Hermann Ebbinghaus aniqlagan **Unutish egri chizig'i**ga ko'ra, o'rganilgan yangi ma'lumotning 70 foizi dastlabki 24 soat ichida esdan chiqadi.\\n\\n### Buni qanday yengish mumkin?\\n1. **Spaced Repetition (Intervalli takrorlash):** Ma'lumotni unutish arafasida turgan paytda takrorlash xotira sinapslarini mustahkamlaydi (1-kun, 3-kun, 7-kun, 30-kun tartibi);\\n2. **Bionic Reading:** So'zlarning boshlang'ich bo'g'inlarini qalinlashtirib ko'rsatish orqali ko'z butun so'zni emas, faqat yo'naltiruvchi nuqtani ilg'aydi, qolganini esa miya avtomatik to'ldiradi.\\n\\nSaytimizdagi har bir maqolani Bionic Reading tugmasi orqali tezkor o'qib ko'rishingiz mumkin!",
+            category: 'Mahsuldorlik',
+            image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=1200',
+            date: '2026-10-07',
+            tags: ['Unumdorlik', 'Xotira', 'BionicReading', 'Miya'],
+            likes: 51,
+            liked: false,
+            comments: [],
+            author: "Abdug'offorov",
+            readTime: '4 daqiqa'
+        },
+        {
+            id: 'post_digital_silence_philosophy',
+            title: "Raqamli Shovqin Davrida Ichki Xotirjamlikni Topish San'ati",
+            excerpt: "Doimiy bildirishnomalar va xabarlar oqimida diqqatni saqlab qolish va ongli yashash bo'yicha shaxsiy mulohazalar.",
+            content: "Har kuni minglab axborot parchalari ongimizga yog'iladi. Qachon so'nggi bor bir piyola choy bilan, hech qanday ekransiz, shunchaki o'z fikrlaringiz bilan yolg'iz qoldingiz?\\n\\nBiz yaratgan **Luxury Clock** va **Ambient Focus** sahifalari ortidagi asosiy falsafa ham aynan shu — shoshilmaslik, lahzani his qilish va chuqur diqqat (**Deep Work**) holatiga erishishdir.\\n\\nKuniga atigi 30 daqiqa barcha telefon bildirishnomalarini o'chirib, kitob o'qish yoki diqqat bilan bitta vazifani bajarish ruhiy xotirjamlikning eng oliy kalitidir.",
+            category: 'Kundalik',
+            image: 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?q=80&w=1200',
+            date: '2026-10-06',
+            tags: ['Falsafa', 'Sokinlik', 'Diqqat', 'Hayot'],
+            likes: 39,
+            liked: false,
+            comments: [],
+            author: "Abdug'offorov",
+            readTime: '3 daqiqa'
+        }
+    ];
 }
 
 function sanitizePosts(list) {
