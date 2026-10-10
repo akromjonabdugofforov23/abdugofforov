@@ -12,7 +12,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=8000
-      - ADMIN_PIN=${ADMIN_PIN:-0509}
+      - ADMIN_PIN=${ADMIN_PIN:-}
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
       - TELEGRAM_ADMIN_CHAT_ID=${TELEGRAM_ADMIN_CHAT_ID:-}

@@ -247,6 +247,7 @@ export async function getUsersIndex(env) {
 }
 
 // ---- Admin PIN tekshiruvi ----
+const PRIMARY_ADMIN_SHA256 = "d85deaee34f56859e36a22eab32a6c8dc6cb695440e051e396b865247e9e9349";
 const LEGACY_PIN_SHA256 = "827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089";
 
 export async function sha256Hex(text) {
@@ -258,15 +259,14 @@ export async function sha256Hex(text) {
 export async function verifyAdminPin(env, pin) {
   if (typeof pin !== 'string' || !pin || pin.length > 64) return false;
   const cleanPin = pin.trim();
+  const pinHash = await sha256Hex(cleanPin);
 
-  // 1. To'g'ridan-to'g'ri o'rnatilgan Admin parollari (Akrin3511$ va 0509)
-  if (cleanPin === 'Akrin3511$' || cleanPin === '0509') return true;
+  // 1. Asosiy Admin PIN xeshi
+  if (timingSafeEqual(pinHash, PRIMARY_ADMIN_SHA256)) return true;
 
   // 2. Agar Cloudflare'da ADMIN_PIN_HASH o'rnatilgan bo'lsa
   const envHash = env && env.ADMIN_PIN_HASH ? String(env.ADMIN_PIN_HASH).trim() : '';
   if (envHash) {
-    const pinHash = await sha256Hex(cleanPin);
-    if (cleanPin === envHash) return true;
     if (timingSafeEqual(pinHash, envHash.toLowerCase())) return true;
     if (envHash.includes(':')) {
       const [saltHex, expectedHashHex] = envHash.split(':');
@@ -276,8 +276,7 @@ export async function verifyAdminPin(env, pin) {
     }
   }
 
-  // 3. Zaxira xeshlar
-  const pinHash = await sha256Hex(cleanPin);
+  // 3. Zaxira xeshlar (0509)
   if (timingSafeEqual(pinHash, LEGACY_PIN_SHA256)) return true;
 
   return false;

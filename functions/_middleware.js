@@ -6,8 +6,30 @@
 export async function onRequest(context) {
   const url = new URL(context.request.url);
 
-  const ADMIN_GATE_KEY = 'kay_admin_7904cc18';
-  const hasGateParam = url.searchParams.get('gate') === ADMIN_GATE_KEY;
+  // 1. Shubhali avtomatlashtirilgan skanerlar va ekspluatatsiya vositalarini bloklash (Edge WAF)
+  const userAgent = (context.request.headers.get('User-Agent') || '').toLowerCase();
+  const scannerPattern = /(sqlmap|nikto|acunetix|dirbuster|gobuster|wpscan|masscan|zgrab|censys|shodan|nmap|nessus|openvas|nuclei|projectdiscovery|burpcollaborator|ffuf|hydra|metasploit|whatweb)/i;
+  if (scannerPattern.test(userAgent)) {
+    return new Response('403 Forbidden: Automated scan detected and blocked by edge shield.', {
+      status: 403,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Robots-Tag': 'noindex, nofollow, noarchive'
+      }
+    });
+  }
+
+  // 2. Yashirin tizim fayllari va umumiy xakerlik yo'llarini (reconnaissance probing) to'sish
+  const blockedProbes = /(\.env|\.git|\.aws|\.svn|\.htaccess|wp-admin|wp-login|phpmyadmin|cgi-bin|web\.config|xmlrpc\.php)/i;
+  if (blockedProbes.test(url.pathname)) {
+    return new Response('Not Found', {
+      status: 404,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Robots-Tag': 'noindex, nofollow, noarchive'
+      }
+    });
+  }
 
   // 1. Subdomain routing: deutsch.abdugofforov.uz -> serve deutsch.html
   if (url.hostname.startsWith('deutsch.') || url.searchParams.get('subdomain') === 'deutsch') {
@@ -148,6 +170,12 @@ function applySecurityHeaders(response, context, url) {
       "report-to csp-endpoint"
     ];
     newResponse.headers.set('Content-Security-Policy', cspDirectives.join('; '));
+  }
+
+  // Admin boshqaruv paneli qidiruv tizimlari va tashqi keshlardan berkitiladi
+  if (url.pathname === '/kay' || url.pathname === '/kay.html' || url.pathname.startsWith('/kay/')) {
+    newResponse.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+    newResponse.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
   }
   
   return newResponse;

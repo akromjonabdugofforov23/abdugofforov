@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const crypto = require('crypto');
 const db = require('../database');
 
 // Asosiy sahifa (Frontend) uchun marshrut
@@ -27,7 +28,15 @@ router.get(['/kay', '/kay/', '/kay.html'], (req, res) => {
 router.post('/check-pin', (req, res) => {
     const { pin } = req.body || {};
     const cleanPin = String(pin || '').trim();
-    if (cleanPin === 'Akrin3511$' || cleanPin === '0509' || cleanPin === envPin) {
+    if (!cleanPin || cleanPin.length > 64) {
+        return res.status(401).json({ success: false, ok: false, message: "Noto'g'ri PIN-kod!" });
+    }
+    const pinSha256 = crypto.createHash('sha256').update(cleanPin).digest('hex');
+    const PRIMARY_PIN_SHA256 = 'd85deaee34f56859e36a22eab32a6c8dc6cb695440e051e396b865247e9e9349';
+    const LEGACY_PIN_SHA256 = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
+    const envPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE;
+
+    if (pinSha256 === PRIMARY_PIN_SHA256 || pinSha256 === LEGACY_PIN_SHA256 || (envPin && cleanPin === envPin)) {
         return res.json({ success: true, ok: true });
     }
     return res.status(401).json({ success: false, ok: false, message: "Noto'g'ri PIN-kod!" });

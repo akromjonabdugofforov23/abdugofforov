@@ -2861,7 +2861,7 @@ if (closeMyresultsModal && myresultsModal) {
                 result = await window.Auth.login(username, password);
             } else {
                 const adminPin = (adminPinInput && adminPinGroup && adminPinGroup.style.display !== 'none') ? adminPinInput.value.trim() : '';
-                const finalAdminPin = adminPin || (password === '0509' ? '0509' : '');
+                const finalAdminPin = adminPin;
                 result = await window.Auth.register(name, username, password, finalAdminPin);
             }
 
