@@ -487,8 +487,6 @@ async function syncPostsToServer() {
 function updateHeroContent() {
     const heroSection = document.querySelector('.hero');
     if (heroSection) {
-        heroSection.classList.remove('animate-fade-in');
-        void heroSection.offsetWidth;
         heroSection.classList.add('animate-fade-in');
     }
     if (heroSub) {
@@ -515,8 +513,6 @@ function renderPosts(instant) {
         _renderTimer = null;
         if (!blogGrid) return;
         blogGrid.innerHTML = '';
-        blogGrid.classList.remove('animate-fade-in');
-        void blogGrid.offsetWidth;
         blogGrid.classList.add('animate-fade-in');
 
         // ==========================================
@@ -2029,6 +2025,9 @@ function safeImageUrl(url) {
 function cssUrl(url, fallback) {
     let u = safeImageUrl(url);
     if (!u || u === '#') u = fallback || '';
+    if (u && typeof u === 'string' && u.includes('images.unsplash.com') && !u.includes('auto=format')) {
+        u += (u.includes('?') ? '&' : '?') + 'auto=format&fit=crop&q=75&w=600';
+    }
     return String(u).replace(/['"()<>\\]/g, c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0'));
 }
 
@@ -2093,48 +2092,14 @@ function getYouTubeId(url) {
 
 function playMusic(post) {
     // Lokal audio fayl (data URL)
-    if (post && post.musicData) {
-        const player = document.getElementById('mini-player');
-        const frame = document.getElementById('mini-player-frame');
-        if (!player || !frame) return;
-        document.getElementById('mini-player-title').textContent = post.title || 'Musiqa';
-        document.getElementById('mini-player-artist').textContent = post.artist || '';
-        frame.innerHTML = `<audio controls autoplay style="width:100%; height:100%;" src="${post.musicData}"></audio>`;
-        player.classList.add('active');
-        return;
-    }
-
-    const link = post && post.link;
-    if (!link) return;
-    const ytId = getYouTubeId(link);
-
-    // Telefon/planshet yoki YouTube bo'lmagan havola — yangi oynada ochiladi
-    if (!isDesktopPlayer() || !ytId) {
+    const link = post && (post.link || post.musicData);
+    if (link) {
         window.open(safeUrl(link), '_blank', 'noopener');
-        return;
     }
-
-    const player = document.getElementById('mini-player');
-    const frame = document.getElementById('mini-player-frame');
-    if (!player || !frame) return;
-    document.getElementById('mini-player-title').textContent = post.title || 'Musiqa';
-    document.getElementById('mini-player-artist').textContent = post.artist || '';
-    frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0" title="YouTube player" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen credentialless style="width:100%; height:100%;"></iframe>`;
-
-    player.classList.add('active');
 }
 
-function stopMusic() {
-    const player = document.getElementById('mini-player');
-    const frame = document.getElementById('mini-player-frame');
-    if (frame) frame.innerHTML = '';
-    if (player) player.classList.remove('active');
-}
-
-function initMiniPlayer() {
-    const closeBtn = document.getElementById('mini-player-close');
-    if (closeBtn) closeBtn.addEventListener('click', stopMusic);
-}
+function stopMusic() {}
+function initMiniPlayer() {}
 
 // ===== KARTOCHKALAR (FLASHCARDS) MA'LUMOTLARI =====
 // ===== FLASHCARDS MOVED TO data-flashcards.js =====
@@ -2166,16 +2131,7 @@ function getRevealObserver() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('in-view');
-            } else {
-                // Element ko'rinishdan chiqqanda yo'nalishni belgilaymiz
-                entry.target.classList.remove('in-view');
-                if (entry.boundingClientRect.top > 0) {
-                    entry.target.classList.remove('reveal-down');
-                    entry.target.classList.add('reveal-up');
-                } else {
-                    entry.target.classList.remove('reveal-up');
-                    entry.target.classList.add('reveal-down');
-                }
+                revealObserver.unobserve(entry.target);
             }
         });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
@@ -2500,7 +2456,6 @@ async function bootstrap() {
 
     // Yangi imkoniyatlar
     initLightbox();
-    initMiniPlayer();
 
     // Postlarni yuklash strategiyasi:
     //   1. Avval serverdan (Cloudflare KV) o'qiymiz — bu admin yuborgan
@@ -2587,11 +2542,7 @@ function loadAuxiliaryModules() {
     _auxLoaded = true;
     const auxScripts = [
         'scripts/claps-reactions.js?v=4',
-        'scripts/ambient-player.js?v=4',
-        'scripts/reader-mode.js?v=4',
-        'scripts/ai-summary-bookmarks.js?v=4',
         'scripts/luxury-clock-modal.js?v=4',
-        'scripts/ai-innovations.js?v=4',
         'scripts/community-gamification.js?v=4',
         'scripts/aesthetic-features.js?v=4',
         'scripts/productivity-shelf.js?v=4'
@@ -2601,6 +2552,7 @@ function loadAuxiliaryModules() {
             const s = document.createElement('script');
             s.src = src;
             s.defer = true;
+            s.async = true;
             document.body.appendChild(s);
         }
     });
@@ -2608,7 +2560,7 @@ function loadAuxiliaryModules() {
 
 // Foydalanuvchi biror tugmani bosganda darhol yuklash
 document.addEventListener('click', (e) => {
-    if (e.target.closest('[data-action]') || e.target.closest('.atelier-clock') || e.target.closest('.atelier-mini-audio-btn')) {
+    if (e.target.closest('[data-action]') || e.target.closest('.atelier-clock')) {
         loadAuxiliaryModules();
     }
 }, { capture: true, passive: true });

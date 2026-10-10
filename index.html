@@ -38,11 +38,11 @@
     <meta name="apple-mobile-web-app-title" content="Abdugofforov">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="stylesheet" href="style.min.css?v=12">
-    <!-- Google Fonts: Asynchronous & Non-blocking with display=optional to eliminate CLS -->
+    <link rel="stylesheet" href="style.min.css?v=17">
+    <!-- Google Fonts: Asynchronous & Non-blocking with display=swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=optional">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap">
 
     <!-- ===== Structured Data (SEO) ===== -->
     <script type="application/ld+json">
@@ -62,9 +62,6 @@
 
     <!-- Minimal background ambient glow -->
     <div class="site-ambient-bg" aria-hidden="true"></div>
-
-    <!-- 3D PRO BACKGROUND CANVAS (Tranquil Stars & Shooting Star) -->
-    <canvas id="pro-3d-canvas" class="pro-3d-canvas" aria-hidden="true"></canvas>
 
 
     <!-- Navigatsiya — bitta qatorli, zamonaviy shaffof navbar -->
@@ -171,7 +168,7 @@
 
     <!-- Bespoke Kun Iqtibosi Widget (Atelier Quote - Compact Edition) -->
     <div class="fortune-widget-wrap atelier-quote-wrap container" id="fortune-widget-wrap">
-        <article class="fortune-card-3d atelier-quote-card" id="fortune-card">
+        <article class="atelier-quote-card" id="fortune-card">
             <header class="atelier-card-header">
                 <span class="fortune-quote-badge atelier-tag" id="quote-category-badge">✦ KUN HIKMATI · ILHOM</span>
                 <div class="atelier-header-actions">
@@ -204,14 +201,6 @@
                     <span class="atelier-flag-badge">🇩🇪 DE</span>
                     <p class="atelier-german-text" id="quote-de-text">„Logik bringt dich von A nach B. Fantasie bringt dich überall hin.“</p>
                 </div>
-                <button class="atelier-mini-audio-btn" id="quote-audio-btn" type="button" aria-label="Nemischa audioni eshitish" title="Talaffuzni eshitish" data-action="quote-audio">
-                    <span class="play-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-                    </span>
-                    <span class="atelier-soundwave" aria-hidden="true">
-                        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-                    </span>
-                </button>
             </div>
         </article>
     </div>
@@ -597,47 +586,9 @@
         <img src="" alt="" id="lightbox-img">
     </div>
 
-    <!-- ===== DOIMIY MUSIQA PLEYERI (faqat kompyuter/noutbook) ===== -->
-    <div class="mini-player" id="mini-player" aria-live="polite">
-        <div class="mini-player-info">
-            <span class="mini-player-icon">🎵</span>
-            <div class="mini-player-meta">
-                <strong id="mini-player-title">—</strong>
-                <small id="mini-player-artist"></small>
-            </div>
-        </div>
-        <div class="mini-player-frame" id="mini-player-frame"></div>
-        <button class="mini-player-close" id="mini-player-close" aria-label="Yopish">&times;</button>
-    </div>
 
 
-    <!-- ===== PRO AI DESIGN LAB (LOCALHOST SWITCHER) ===== -->
-    <aside class="ai-lab-fab" id="ai-lab-fab" aria-label="AI Design Lab">
-        <button class="ai-lab-trigger" id="ai-lab-trigger" type="button" title="Pro AI Dizayn Laboratoriyasi">
-            <span class="ai-sparkle">✦</span>
-            <span>AI Design Lab</span>
-        </button>
-        <div class="ai-lab-drawer" id="ai-lab-drawer">
-            <div class="ai-lab-head">
-                <strong>✦ Kunduzgi Rejim Namunalari</strong>
-                <a href="prototype.html" class="ai-lab-proto-link" title="To'liq taqqoslash sahifasi">Katta Lab ↗</a>
-            </div>
-            <div class="ai-lab-buttons">
-                <button type="button" class="ai-variant-btn" data-v="prism">
-                    <strong>✦ Prism Lux</strong>
-                    <small>Apple Vision Pro &amp; Linear</small>
-                </button>
-                <button type="button" class="ai-variant-btn" data-v="aurora">
-                    <strong>🌌 Quantum Aurora</strong>
-                    <small>OpenAI &amp; Perplexity</small>
-                </button>
-                <button type="button" class="ai-variant-btn" data-v="atelier">
-                    <strong>🏛️ Swiss Atelier</strong>
-                    <small>Stripe Press &amp; Arc</small>
-                </button>
-            </div>
-        </div>
-    </aside>
+
 
     <!-- Dinamik element andozalari (Andoza va bog'liqliklar) -->
     <template id="dynamic-app-templates">
@@ -661,13 +612,9 @@
     <script src="auth.js?v=6" defer></script>
     <script src="scripts/gamification.js?v=2" defer></script>
     <script src="scripts/quote-widget.js?v=14" defer></script>
-    <script src="app.js?v=15" defer></script>
+    <script src="app.js?v=17" defer></script>
 
-    <!-- Pro AI 3D Cosmic Background (Tranquil Stars & Shooting Star) -->
-    <script src="scripts/pro-3d-background.js?v=15" defer></script>
 
-    <!-- Pro AI Interactive Enhancements (CSP Compliant) -->
-    <script src="scripts/pro-ai-lab.js?v=15" defer></script>
 </body>
 </html>
 

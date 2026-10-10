@@ -200,3 +200,47 @@ a {
     animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* ============================================================
+   MOBIL VA ZAIF QURILMALAR UCHUN GPU RENDER OPTIMIZATSIYASI
+   Mobil ekranlarda (<=768px) og'ir 20px-28px backdrop-filter larni
+   yengil, GPU ni qiynamaydigan rgba(...) fonlariga almashtirish
+   ============================================================ */
+@media (max-width: 768px) {
+    :root {
+        --glass-blur: 0px;
+        --backdrop-blur: none;
+        --atelier-glass-blur: none;
+        --glass-bg: rgba(13, 18, 29, 0.94);
+        --glass-bg-strong: rgba(18, 24, 38, 0.98);
+        --atelier-surface: rgba(14, 19, 31, 0.94);
+        --atelier-surface-raised: rgba(20, 27, 44, 0.98);
+        --card-bg: rgba(18, 24, 38, 0.95);
+    }
+
+    [data-theme="light"] {
+        --glass-blur: 0px;
+        --backdrop-blur: none;
+        --atelier-glass-blur: none;
+        --glass-bg: rgba(255, 255, 255, 0.94);
+        --glass-bg-strong: rgba(255, 255, 255, 0.98);
+        --atelier-surface: rgba(255, 255, 255, 0.94);
+        --atelier-surface-raised: rgba(255, 255, 255, 0.98);
+        --card-bg: rgba(255, 255, 255, 0.96);
+    }
+
+    .glass-card,
+    .stat-card,
+    .contact-card-wrapper,
+    .navbar,
+    .desktop-dock,
+    .hero-card-surface,
+    .post-card,
+    .atelier-quote-card,
+    .glass-panel,
+    .fortune-card-3d,
+    .modal-content,
+    .user-dropdown {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}

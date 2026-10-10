@@ -29,26 +29,10 @@
     opacity: 1;
 }
 
-/* 2. AURORA MESH DRIFT ANIMATION (Ambient living background) */
-@keyframes auroraDrift {
-    0% {
-        transform: translate3d(0, 0, 0) scale(1);
-        opacity: 0.95;
-    }
-    50% {
-        transform: translate3d(0, -12px, 0) scale(1.04);
-        opacity: 1;
-    }
-    100% {
-        transform: translate3d(0, 0, 0) scale(1);
-        opacity: 0.95;
-    }
-}
-
+/* 2. STATIK RADIAL-GRADIENT FON (GPU ni qizdirmaydigan statik rejim) */
 .site-ambient-bg {
-    animation: auroraDrift 20s ease-in-out infinite alternate;
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
+    animation: none !important;
+    will-change: auto;
 }
 
 /* 3. CARD 3D TILT PHYSICS (Zero-Lag: Transform transitions only on exit, GPU accelerated) */
@@ -156,8 +140,6 @@ html {
     height: 100vh !important;
     pointer-events: none !important;
     z-index: -1 !important;
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
 }
 
 /* Foreground page sections float above canvas */
@@ -191,8 +173,6 @@ footer,
 
 /* 9. HIGH-PERFORMANCE GPU COMPOSITED HOVER ENGINE */
 .post-card,
-.fortune-card-3d,
-.atelier-quote-card,
 .hero-card-surface {
     will-change: transform;
     transform: translateZ(0);

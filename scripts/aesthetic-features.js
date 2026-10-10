@@ -14,103 +14,17 @@
     'use strict';
 
     // ------------------------------------------------------------
-    // 1. DYNAMIC WEATHER AMBIENT CANVAS (#24)
+    // 1. DYNAMIC WEATHER AMBIENT (#24 - YENGIL REJIM / ZERO GPU LOAD)
+    // Ikkinchi og'ir to'liq ekranli weather-canvas GPU/CPU ni bo'g'ib qo'ymasligi uchun butunlay olib tashlandi
     // ------------------------------------------------------------
-    let activeWeather = 'cosmic'; // 'cosmic', 'rain', 'snow', 'sun'
-    let weatherAnimId = null;
-    let weatherCanvas = null;
-    let weatherCtx = null;
-    let weatherParticles = [];
-
-    function initWeatherCanvas() {
-        weatherCanvas = document.getElementById('weather-canvas');
-        if (!weatherCanvas) {
-            weatherCanvas = document.createElement('canvas');
-            weatherCanvas.id = 'weather-canvas';
-            weatherCanvas.style.position = 'fixed';
-            weatherCanvas.style.top = '0';
-            weatherCanvas.style.left = '0';
-            weatherCanvas.style.width = '100vw';
-            weatherCanvas.style.height = '100vh';
-            weatherCanvas.style.pointerEvents = 'none';
-            weatherCanvas.style.zIndex = '0';
-            document.body.prepend(weatherCanvas);
-        }
-        weatherCtx = weatherCanvas.getContext('2d');
-        resizeWeather();
-        window.addEventListener('resize', resizeWeather);
-        spawnWeatherParticles();
-        animateWeather();
-    }
-
-    function resizeWeather() {
-        if (!weatherCanvas) return;
-        weatherCanvas.width = window.innerWidth;
-        weatherCanvas.height = window.innerHeight;
-    }
-
-    function spawnWeatherParticles() {
-        weatherParticles = [];
-        const count = activeWeather === 'rain' ? 120 : (activeWeather === 'snow' ? 80 : 0);
-        for (let i = 0; i < count; i++) {
-            weatherParticles.push({
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                len: Math.random() * 20 + 10,
-                speed: activeWeather === 'rain' ? Math.random() * 8 + 12 : Math.random() * 1.5 + 0.8,
-                radius: Math.random() * 3 + 1,
-                opacity: Math.random() * 0.5 + 0.3,
-                drift: (Math.random() - 0.5) * 1.2
-            });
-        }
-    }
+    let activeWeather = 'cosmic';
 
     function setWeather(mode) {
         activeWeather = mode;
-        spawnWeatherParticles();
         if (window.showToast) {
             const names = { cosmic: '🌌 Yulduzli fazo', rain: '🌧️ Mayin yomg\'ir', snow: '❄️ Sokin qor', sun: '☀️ Tiniq quyosh' };
-            window.showToast(`Ob-havo foni: ${names[mode] || mode}`, 'info');
+            window.showToast(`Ob-havo: ${names[mode] || mode}`, 'info');
         }
-    }
-
-    function animateWeather() {
-        if (!weatherCtx || !weatherCanvas) return;
-        weatherCtx.clearRect(0, 0, weatherCanvas.width, weatherCanvas.height);
-
-        if (activeWeather === 'rain') {
-            weatherCtx.strokeStyle = 'rgba(147, 197, 253, 0.45)';
-            weatherCtx.lineWidth = 1.4;
-            weatherParticles.forEach(p => {
-                weatherCtx.beginPath();
-                weatherCtx.moveTo(p.x, p.y);
-                weatherCtx.lineTo(p.x - 2, p.y + p.len);
-                weatherCtx.stroke();
-
-                p.y += p.speed;
-                p.x -= 1;
-                if (p.y > weatherCanvas.height) {
-                    p.y = -20;
-                    p.x = Math.random() * weatherCanvas.width;
-                }
-            });
-        } else if (activeWeather === 'snow') {
-            weatherCtx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-            weatherParticles.forEach(p => {
-                weatherCtx.beginPath();
-                weatherCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                weatherCtx.fill();
-
-                p.y += p.speed;
-                p.x += p.drift;
-                if (p.y > weatherCanvas.height) {
-                    p.y = -10;
-                    p.x = Math.random() * weatherCanvas.width;
-                }
-            });
-        }
-
-        weatherAnimId = requestAnimationFrame(animateWeather);
     }
 
     // ------------------------------------------------------------
@@ -446,10 +360,9 @@ Xush kelibsiz! Buyruqlar ro'yxatini ko'rish uchun "help" deb yozing.
         }).join('');
     }
 
-    // ------------------------------------------------------------
-    // 6. INITIALIZATION & EXPORTS
-    // ------------------------------------------------------------
-    initWeatherCanvas();
+    // Ortiqcha weather-canvas DOM da qolmasligini ta'minlaymiz
+    const oldWeatherCanvas = document.getElementById('weather-canvas');
+    if (oldWeatherCanvas) oldWeatherCanvas.remove();
 
     window.AestheticSuite = {
         setWeather,

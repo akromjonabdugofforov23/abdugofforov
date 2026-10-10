@@ -1153,7 +1153,7 @@
             wrap.className = 'fortune-widget-wrap atelier-quote-wrap container';
             hero.parentNode.insertBefore(wrap, hero.nextSibling);
             wrap.innerHTML = `
-                <article class="fortune-card-3d atelier-quote-card" id="fortune-card">
+                <article class="atelier-quote-card" id="fortune-card">
                     <header class="atelier-card-header">
                         <span class="fortune-quote-badge atelier-tag" id="quote-category-badge">✦ KUN HIKMATI · ILHOM</span>
                         <div class="atelier-header-actions">
@@ -1186,14 +1186,6 @@
                             <span class="atelier-flag-badge">🇩🇪 DE</span>
                             <p class="atelier-german-text" id="quote-de-text"></p>
                         </div>
-                        <button class="atelier-mini-audio-btn" id="quote-audio-btn" type="button" aria-label="Nemischa audioni eshitish" title="Talaffuzni eshitish" data-action="quote-audio">
-                            <span class="play-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-                            </span>
-                            <span class="atelier-soundwave" aria-hidden="true">
-                                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-                            </span>
-                        </button>
                     </div>
                 </article>
             `;
@@ -1218,23 +1210,8 @@
     }
 
     function speakCurrent(text) {
-        const audioBtn = document.getElementById('quote-audio-btn');
-        if (audioBtn && audioBtn.classList.contains('playing')) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-            }
-            audioBtn.classList.remove('playing');
-            return;
-        }
-
-        const deEl = document.getElementById('quote-de-text');
-        const toSpeak = (text || (currentQuoteItem ? currentQuoteItem.de : (deEl ? deEl.textContent : ''))).replace(/^[\"“”„]+|[\"“”„]+$/g, '').trim();
-        if (toSpeak) {
-            speakGermanText(toSpeak);
-            if (window.App && window.App.Gamification && typeof window.App.Gamification.addXP === 'function') {
-                window.App.Gamification.addXP(10);
-            }
-        }
+        // Audio funksiyasi foydalanuvchi talabiga ko'ra o'chirildi
+        return;
     }
 
     // 9. Iqtibosni Yuqori Sifatli Rasm Qilib Generatsiya Qilish (Canvas 1080x1080)

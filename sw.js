@@ -2,7 +2,7 @@
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
 // CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
 // bilan qorishib qolmasligi uchun
-const CACHE = 'abdu-cache-v9';
+const CACHE = 'abdu-cache-v11';
 const SHELL = [
     '/',
     '/index.html',
@@ -13,8 +13,6 @@ const SHELL = [
     '/css/horror.css',
     '/css/claps-reactions.css',
     '/css/ambient-player.css',
-    '/css/reader-mode.css',
-    '/css/ai-summary-bookmarks.css',
     '/css/luxury-clock-modal.css',
     '/app.js',
     '/i18n.js',
@@ -32,10 +30,7 @@ const SHELL = [
     '/scripts/bg-worker.js',
     '/scripts/claps-reactions.js',
     '/scripts/ambient-player.js',
-    '/scripts/reader-mode.js',
-    '/scripts/ai-summary-bookmarks.js',
     '/scripts/luxury-clock-modal.js',
-    '/scripts/ai-innovations.js',
     '/scripts/community-gamification.js',
     '/scripts/aesthetic-features.js',
     '/scripts/productivity-shelf.js',

@@ -470,9 +470,9 @@
         width: min(300px, 84vw);
         height: 100vh;
         height: 100dvh;
-        background: var(--card-bg, #0f172a);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        background: rgba(15, 23, 42, 0.96);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
         border: none;
         border-left: 1px solid var(--border-color);
         border-radius: 0;
@@ -485,6 +485,10 @@
         transform: translateX(100%);
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         overflow-y: auto;
+    }
+
+    [data-theme="light"] .hamburger-overlay {
+        background: rgba(255, 255, 255, 0.98);
     }
 
     .hamburger-overlay.active {
@@ -512,14 +516,14 @@
         align-items: center;
         gap: 2px;
         box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
-        background: rgba(15, 23, 42, 0.88);
-        backdrop-filter: blur(12px) saturate(160%);
-        -webkit-backdrop-filter: blur(12px) saturate(160%);
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
         z-index: 990;
     }
 
     [data-theme="light"] .desktop-dock {
-        background: rgba(255, 255, 255, 0.94);
+        background: rgba(255, 255, 255, 0.96);
         border-top-color: rgba(124, 58, 237, 0.15);
         box-shadow: 0 -8px 24px rgba(124, 58, 237, 0.12);
     }
