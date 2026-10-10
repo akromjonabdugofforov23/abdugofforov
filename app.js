@@ -1323,7 +1323,11 @@ function openPostDetail(postId) {
                 : `<div class="modal-post-image zoomable-bg" data-zoom-src="${escapeHTML(safeImageUrl(post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000'))}" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000')}'); cursor: zoom-in;"></div>`
         }
 
-        <div class="modal-post-text markdown-body" style="line-height:1.6;">${post.type === 'music' ? renderMarkdown(post.content || post.excerpt) : renderMarkdown(post.content)}</div>
+        ${(post.excerpt && post.content && post.excerpt.trim() !== post.content.trim()) 
+            ? `<div class="modal-post-excerpt">${escapeHTML(post.excerpt)}</div>` 
+            : ''}
+
+        <div class="modal-post-text markdown-body" style="line-height:1.8;">${post.type === 'music' ? renderMarkdown(post.content || post.excerpt) : renderMarkdown(post.content || post.excerpt || '*Ushbu maqolada matn mavjud emas.*')}</div>
         ${renderTags(post)}
         
         <div class="comments-section">
@@ -1635,7 +1639,7 @@ function openZenEditor(postId = null) {
             if (zenPublishLabel) zenPublishLabel.textContent = "Saqlash";
             if (zenTitle) zenTitle.value = post.title || '';
             if (zenExcerpt) zenExcerpt.value = post.excerpt || '';
-            if (zenContent) zenContent.value = post.content || '';
+            if (zenContent) zenContent.value = post.content || post.excerpt || '';
             if (zenTags) zenTags.value = (post.tags || []).join(', ');
             setZenCover(post.image || null);
         }
@@ -1859,10 +1863,22 @@ if (zenPublishBtn) {
             return;
         }
 
-        const content = zenContent ? zenContent.value.trim() : '';
+        let content = zenContent ? zenContent.value.trim() : '';
         let excerpt = zenExcerpt ? zenExcerpt.value.trim() : '';
-        if (!excerpt && content) {
-            excerpt = content.split('\n')[0].substring(0, 110);
+
+        // Agar foydalanuvchi butun matnni excerpt (qisqacha ta'rif) maydoniga yozgan bo'lsa
+        if (!content && excerpt) {
+            content = excerpt;
+            excerpt = content.split('\n')[0].substring(0, 140);
+        } else if (!excerpt && content) {
+            excerpt = content.split('\n')[0].substring(0, 140);
+        }
+
+        if (!content) {
+            if (typeof showToast === 'function') showToast("⚠️ Iltimos, maqola matnini kiriting!", "warn");
+            else alert("Iltimos, maqola matnini kiriting!");
+            if (zenContent) zenContent.focus();
+            return;
         }
 
         const tagsRaw = zenTags ? zenTags.value : '';
@@ -2465,7 +2481,14 @@ function getHighValueDefaultPosts() {
 
 function sanitizePosts(list) {
     if (!Array.isArray(list)) return [];
-    return list.filter(p => p && p.id && String(p.id) !== '1710000' && !DUMMY_POST_IDS.has(String(p.id)) && p.title && p.category);
+    return list
+        .filter(p => p && p.id && String(p.id) !== '1710000' && !DUMMY_POST_IDS.has(String(p.id)) && p.title && p.category)
+        .map(p => {
+            if (!p.content && p.excerpt) {
+                p.content = p.excerpt;
+            }
+            return p;
+        });
 }
 
 async function bootstrap() {

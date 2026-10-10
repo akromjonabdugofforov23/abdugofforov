@@ -24,6 +24,8 @@
     const STORAGE_KEY_BIONIC = 'reader_bionic_enabled';
     const STORAGE_KEY_VOICE = 'reader_tts_voice_name';
     const STORAGE_KEY_RATE = 'reader_tts_rate';
+    const MADINA_VOICE_ID = 'ai_ms_madina_uz';
+    const SARDOR_VOICE_ID = 'ai_ms_sardor_uz';
 
     let isBionicActive = false;
     let bionicOriginalMap = new WeakMap();
@@ -259,8 +261,10 @@
 
         // Apply to open detail modal
         const modalTitle = document.querySelector('#detail-modal-body .modal-post-title');
+        const modalExcerpt = document.querySelector('#detail-modal-body .modal-post-excerpt');
         const modalText = document.querySelector('#detail-modal-body .modal-post-text');
         if (modalTitle) applyBionicToElement(modalTitle);
+        if (modalExcerpt) applyBionicToElement(modalExcerpt);
         if (modalText) applyBionicToElement(modalText);
 
         updateBionicUI(true);
@@ -328,49 +332,101 @@
         return availableVoices;
     }
 
+    function findNativeUzbekVoice(preferredName) {
+        if (!availableVoices.length) loadVoices();
+        if (preferredName && preferredName !== MADINA_VOICE_ID && preferredName !== SARDOR_VOICE_ID) {
+            const exact = availableVoices.find(v => v.name === preferredName);
+            if (exact) return exact;
+        }
+        // 1. Native Microsoft Madina Online (Natural) or any voice containing Madina
+        const madina = availableVoices.find(v => 
+            v.name.toLowerCase().includes('madina') || 
+            (v.name.toLowerCase().includes('uzbek') && v.name.toLowerCase().includes('natural'))
+        );
+        if (madina) return madina;
+
+        // 2. Any other Uzbek voice (uz, uz-UZ, uz_UZ, uzbek)
+        const uz = availableVoices.find(v => 
+            v.lang.toLowerCase().startsWith('uz') || 
+            v.name.toLowerCase().includes('uzbek')
+        );
+        if (uz) return uz;
+
+        return null;
+    }
+
+    function findNativeTurkishPhoneticVoice() {
+        if (!availableVoices.length) loadVoices();
+        return availableVoices.find(v => v.lang.toLowerCase().startsWith('tr')) || null;
+    }
+
+    function setVoiceByName(voiceName) {
+        if (!voiceName || voiceName === MADINA_VOICE_ID || voiceName.toLowerCase().includes('madina')) {
+            const nativeMadina = findNativeUzbekVoice(voiceName);
+            selectedVoice = nativeMadina || {
+                name: "Microsoft Madina Online (Natural) - Uzbek (Uzbekistan)",
+                lang: 'uz-UZ',
+                isMadinaAI: true,
+                virtualId: MADINA_VOICE_ID
+            };
+            try { localStorage.setItem(STORAGE_KEY_VOICE, MADINA_VOICE_ID); } catch(err) {}
+            return selectedVoice;
+        }
+
+        if (voiceName === SARDOR_VOICE_ID || voiceName.toLowerCase().includes('sardor')) {
+            const nativeSardor = availableVoices.find(v => v.name.toLowerCase().includes('sardor'));
+            selectedVoice = nativeSardor || {
+                name: "Microsoft Sardor Online (Natural) - Uzbek (Uzbekistan)",
+                lang: 'uz-UZ',
+                isSardorAI: true,
+                virtualId: SARDOR_VOICE_ID
+            };
+            try { localStorage.setItem(STORAGE_KEY_VOICE, SARDOR_VOICE_ID); } catch(err) {}
+            return selectedVoice;
+        }
+
+        selectedVoice = availableVoices.find(v => v.name === voiceName) || null;
+        if (selectedVoice) {
+            try { localStorage.setItem(STORAGE_KEY_VOICE, selectedVoice.name); } catch(err) {}
+        }
+        return selectedVoice;
+    }
+
     function getBestVoice(langPreference) {
         if (!availableVoices.length) loadVoices();
-        if (!availableVoices.length) return null;
 
         // 1. Try to find saved voice from localStorage
         const savedName = localStorage.getItem(STORAGE_KEY_VOICE);
         if (savedName) {
-            const savedVoice = availableVoices.find(v => v.name === savedName);
-            if (savedVoice) return savedVoice;
+            const resolved = setVoiceByName(savedName);
+            if (resolved) return resolved;
         }
 
-        // 2. Try match preferred language
-        if (langPreference) {
-            const match = availableVoices.find(v => v.lang.toLowerCase().startsWith(langPreference.toLowerCase()));
-            if (match) return match;
-        }
+        // 2. Default to Microsoft Madina!
+        return setVoiceByName(MADINA_VOICE_ID);
+    }
 
-        // 3. Look for Uzbek voices (uz, uz-UZ)
-        const uzVoice = availableVoices.find(v => v.lang.toLowerCase().startsWith('uz'));
-        if (uzVoice) return uzVoice;
-
-        // 4. Look for Turkish (phonetically closest to Uzbek Latin)
-        const trVoice = availableVoices.find(v => v.lang.toLowerCase().startsWith('tr'));
-        if (trVoice) return trVoice;
-
-        // 5. Look for Russian voices (ru, ru-RU)
-        const ruVoice = availableVoices.find(v => v.lang.toLowerCase().startsWith('ru'));
-        if (ruVoice) return ruVoice;
-
-        // 6. Look for English voices (en, en-US, en-GB)
-        const enVoice = availableVoices.find(v => v.lang.toLowerCase().startsWith('en'));
-        if (enVoice) return enVoice;
-
-        // 7. System default
-        return availableVoices.find(v => v.default) || availableVoices[0];
+    function prepareTextForUzbekSpeech(text) {
+        if (!text) return '';
+        return text
+            // O'zbek tilidagi tutuq belgisi va apostroflar (o', g', sh, ch)
+            .replace(/([oOgG])['`ʻ’‘]/g, '$1')
+            .replace(/['`ʻ’‘]([sStT])/g, '$1')
+            .replace(/['`ʻ’‘]/g, '')
+            .replace(/[\*\_\#\~\`]/g, '')
+            .replace(/\.{2,}/g, '.')
+            .replace(/--+/g, ' ')
+            .trim();
     }
 
     function extractPostText() {
         const titleEl = document.querySelector('#detail-modal-body .modal-post-title');
+        const excerptEl = document.querySelector('#detail-modal-body .modal-post-excerpt');
         const textEl = document.querySelector('#detail-modal-body .modal-post-text');
 
         let raw = '';
         if (titleEl) raw += titleEl.textContent + '. ';
+        if (excerptEl) raw += excerptEl.textContent + '. ';
         if (textEl) {
             // Clone and strip unwanted tags
             const clone = textEl.cloneNode(true);
@@ -448,15 +504,40 @@
             return;
         }
 
-        const sentence = ttsSentences[ttsSentenceIndex];
-        const utterance = new SpeechSynthesisUtterance(sentence);
+        const rawSentence = ttsSentences[ttsSentenceIndex];
+        const speechSentence = prepareTextForUzbekSpeech(rawSentence);
+        const utterance = new SpeechSynthesisUtterance(speechSentence);
 
-        if (selectedVoice) {
+        const isMadina = selectedVoice && (
+            selectedVoice.isMadinaAI || 
+            selectedVoice.virtualId === MADINA_VOICE_ID || 
+            (selectedVoice.name && selectedVoice.name.toLowerCase().includes('madina'))
+        );
+        const isSardor = selectedVoice && (
+            selectedVoice.isSardorAI || 
+            selectedVoice.virtualId === SARDOR_VOICE_ID || 
+            (selectedVoice.name && selectedVoice.name.toLowerCase().includes('sardor'))
+        );
+
+        if (isMadina || isSardor) {
+            utterance.lang = 'uz-UZ';
+            const nativeVoice = findNativeUzbekVoice(selectedVoice?.name);
+            if (nativeVoice) {
+                utterance.voice = nativeVoice;
+            } else {
+                const phoneticVoice = findNativeTurkishPhoneticVoice();
+                if (phoneticVoice) {
+                    utterance.voice = phoneticVoice;
+                }
+            }
+            utterance.pitch = isSardor ? 0.92 : 1.05;
+        } else if (selectedVoice) {
             utterance.voice = selectedVoice;
-            utterance.lang = selectedVoice.lang;
+            utterance.lang = selectedVoice.lang || 'uz-UZ';
+            utterance.pitch = 1.0;
         }
+
         utterance.rate = selectedRate;
-        utterance.pitch = 1.0;
 
         utterance.onend = () => {
             if (ttsState === 'playing') {
@@ -537,7 +618,21 @@
 
         if (ttsState === 'playing') {
             card.classList.add('is-playing');
-            if (statusText) statusText.textContent = "O'qilmoqda...";
+            const isMadina = selectedVoice && (
+                selectedVoice.isMadinaAI || 
+                selectedVoice.virtualId === MADINA_VOICE_ID || 
+                (selectedVoice.name && selectedVoice.name.toLowerCase().includes('madina'))
+            );
+            const isSardor = selectedVoice && (
+                selectedVoice.isSardorAI || 
+                selectedVoice.virtualId === SARDOR_VOICE_ID || 
+                (selectedVoice.name && selectedVoice.name.toLowerCase().includes('sardor'))
+            );
+            if (statusText) {
+                if (isMadina) statusText.textContent = "O'qilmoqda (Microsoft Madina AI)...";
+                else if (isSardor) statusText.textContent = "O'qilmoqda (Microsoft Sardor AI)...";
+                else statusText.textContent = "O'qilmoqda...";
+            }
             if (playBtn) playBtn.classList.add('active');
             if (pauseBtn) pauseBtn.classList.remove('active');
             if (stopBtn) stopBtn.disabled = false;
@@ -564,21 +659,46 @@
             loadVoices();
         }
 
-        if (!availableVoices.length) {
-            const opt = document.createElement('option');
-            opt.value = '';
-            opt.textContent = "Standart ovoz";
-            selectEl.appendChild(opt);
-            return;
-        }
+        // 1. O'ZBEKCHA GURUHI (DOIM BIRINCHI O'RINDA VA MICROSOFT MADINA BILAN)
+        const uzGroup = document.createElement('optgroup');
+        uzGroup.label = "🇺🇿 O'zbekcha (Microsoft AI & Tabiiy)";
 
-        // Filter / prioritize: UZ, TR, RU, EN
-        const uzVoices = availableVoices.filter(v => v.lang.toLowerCase().startsWith('uz'));
+        // Microsoft Madina Online (Natural) - O'zbekcha AI ovozi
+        const optMadina = document.createElement('option');
+        optMadina.value = MADINA_VOICE_ID;
+        optMadina.textContent = "✨ Microsoft Madina Online (Natural) - uz-UZ (AI)";
+        uzGroup.appendChild(optMadina);
+
+        // Microsoft Sardor Online (Natural) - O'zbekcha AI ovozi
+        const optSardor = document.createElement('option');
+        optSardor.value = SARDOR_VOICE_ID;
+        optSardor.textContent = "✨ Microsoft Sardor Online (Natural) - uz-UZ (AI)";
+        uzGroup.appendChild(optSardor);
+
+        // Qo'shimcha tizimdagi o'zbekcha ovozlar (agar brauzerda mavjud bo'lsa)
+        const nativeUzVoices = availableVoices.filter(v => {
+            const n = v.name.toLowerCase();
+            const l = v.lang.toLowerCase();
+            return (l.startsWith('uz') || n.includes('uzbek')) && !n.includes('madina') && !n.includes('sardor');
+        });
+        nativeUzVoices.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v.name;
+            opt.textContent = `${v.name} (${v.lang})`;
+            uzGroup.appendChild(opt);
+        });
+
+        selectEl.appendChild(uzGroup);
+
+        // Boshqa tillar
         const trVoices = availableVoices.filter(v => v.lang.toLowerCase().startsWith('tr'));
         const ruVoices = availableVoices.filter(v => v.lang.toLowerCase().startsWith('ru'));
         const enVoices = availableVoices.filter(v => v.lang.toLowerCase().startsWith('en'));
         const otherVoices = availableVoices.filter(v => 
             !v.lang.toLowerCase().startsWith('uz') &&
+            !v.name.toLowerCase().includes('uzbek') &&
+            !v.name.toLowerCase().includes('madina') &&
+            !v.name.toLowerCase().includes('sardor') &&
             !v.lang.toLowerCase().startsWith('tr') &&
             !v.lang.toLowerCase().startsWith('ru') &&
             !v.lang.toLowerCase().startsWith('en')
@@ -592,7 +712,7 @@
                 const opt = document.createElement('option');
                 opt.value = v.name;
                 opt.textContent = `${v.name} (${v.lang})`;
-                if (selectedVoice && selectedVoice.name === v.name) {
+                if (selectedVoice && (selectedVoice.name === v.name || selectedVoice.virtualId === v.name)) {
                     opt.selected = true;
                 }
                 group.appendChild(opt);
@@ -600,7 +720,6 @@
             selectEl.appendChild(group);
         }
 
-        addGroup("🇺🇿 O'zbekcha", uzVoices);
         addGroup("🇹🇷 Turkcha (Fonetika)", trVoices);
         addGroup("🇷🇺 Ruscha", ruVoices);
         addGroup("🇬🇧 Inglizcha", enVoices);
@@ -611,7 +730,13 @@
             selectedVoice = getBestVoice();
         }
         if (selectedVoice) {
-            selectEl.value = selectedVoice.name;
+            const val = selectedVoice.virtualId || selectedVoice.name;
+            selectEl.value = val;
+            if (!selectEl.value) {
+                selectEl.value = MADINA_VOICE_ID;
+            }
+        } else {
+            selectEl.value = MADINA_VOICE_ID;
         }
     }
 
@@ -724,10 +849,7 @@
                     populateVoicesDropdown(voiceSelect);
                     voiceSelect.addEventListener('change', (e) => {
                         const voiceName = e.target.value;
-                        selectedVoice = availableVoices.find(v => v.name === voiceName) || null;
-                        if (selectedVoice) {
-                            try { localStorage.setItem(STORAGE_KEY_VOICE, selectedVoice.name); } catch(err) {}
-                        }
+                        setVoiceByName(voiceName);
                         if (ttsState === 'playing') {
                             // Restart with new voice
                             playTTS();
@@ -751,10 +873,10 @@
                 }
             }
 
-            // Insert above .modal-post-text
-            const postText = modalBody.querySelector('.modal-post-text');
-            if (postText) {
-                modalBody.insertBefore(ttsCard, postText);
+            // Insert above .modal-post-excerpt or .modal-post-text
+            const insertTarget = modalBody.querySelector('.modal-post-excerpt') || modalBody.querySelector('.modal-post-text');
+            if (insertTarget) {
+                modalBody.insertBefore(ttsCard, insertTarget);
             } else {
                 modalBody.appendChild(ttsCard);
             }
@@ -763,8 +885,10 @@
         // If Bionic is enabled, apply to newly injected modal content
         if (isBionicActive) {
             const modalTitle = modalBody.querySelector('.modal-post-title');
+            const modalExcerpt = modalBody.querySelector('.modal-post-excerpt');
             const modalText = modalBody.querySelector('.modal-post-text');
             if (modalTitle) applyBionicToElement(modalTitle);
+            if (modalExcerpt) applyBionicToElement(modalExcerpt);
             if (modalText) applyBionicToElement(modalText);
         }
 
@@ -873,9 +997,15 @@
         if (!isTTSSupported()) return;
 
         loadVoices();
+        if (!selectedVoice) {
+            selectedVoice = getBestVoice();
+        }
         if (typeof window.speechSynthesis.onvoiceschanged !== 'undefined') {
             window.speechSynthesis.onvoiceschanged = () => {
                 loadVoices();
+                if (!selectedVoice) {
+                    selectedVoice = getBestVoice();
+                }
                 const selectEl = document.getElementById('reader-voice-select');
                 if (selectEl) {
                     populateVoicesDropdown(selectEl);
