@@ -2755,6 +2755,13 @@ if (userLogoutBtn) {
     });
 }
 
+const userAdminLinkEl = document.getElementById('user-admin-link');
+if (userAdminLinkEl) {
+    userAdminLinkEl.addEventListener('click', () => {
+        if (userDropdown) userDropdown.classList.remove('open', 'active');
+    });
+}
+
 if (closeMyresultsModal && myresultsModal) {
     closeMyresultsModal.addEventListener('click', () => {
         myresultsModal.classList.remove('active');

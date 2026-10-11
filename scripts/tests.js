@@ -1124,33 +1124,37 @@ function openMyResults(tab) {
     document.body.style.overflow = 'hidden';
 }
 
-window.openMyResults = openMyResults;
+window.openMyResults = window.openMyResults || openMyResults;
 
-window.toggleEditProfileForm = function() {
-    const sec = document.getElementById('profile-edit-section');
-    if (sec) sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
-};
+if (!window.toggleEditProfileForm) {
+    window.toggleEditProfileForm = function() {
+        const sec = document.getElementById('profile-edit-section');
+        if (sec) sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+    };
+}
 
-window.saveProfileChanges = async function(e) {
-    if (e) e.preventDefault();
-    const nameInput = document.getElementById('edit-profile-name');
-    const photoInput = document.getElementById('edit-profile-photo');
-    const name = nameInput ? nameInput.value.trim() : '';
-    const photo = photoInput ? photoInput.value.trim() : '';
+if (!window.saveProfileChanges) {
+    window.saveProfileChanges = async function(e) {
+        if (e) e.preventDefault();
+        const nameInput = document.getElementById('edit-profile-name');
+        const photoInput = document.getElementById('edit-profile-photo');
+        const name = nameInput ? nameInput.value.trim() : '';
+        const photo = photoInput ? photoInput.value.trim() : '';
 
-    if (!name) {
-        if (typeof showToast === 'function') showToast("Ismingizni kiriting", "error");
-        return;
-    }
-
-    if (window.Auth) {
-        const res = await Auth.updateProfile(name, photo);
-        if (res.ok) {
-            if (typeof showToast === 'function') showToast("✏️ Profil muvaffaqiyatli yangilandi!", "success");
-            openMyResults(); // Refresh modal
+        if (!name) {
+            if (typeof showToast === 'function') showToast("Ismingizni kiriting", "error");
+            return;
         }
-    }
-};
+
+        if (window.Auth) {
+            const res = await Auth.updateProfile(name, photo);
+            if (res.ok) {
+                if (typeof showToast === 'function') showToast("✏️ Profil muvaffaqiyatli yangilandi!", "success");
+                window.openMyResults(); // Refresh modal
+            }
+        }
+    };
+}
 
 window.emojiImage = emojiImage;
 window.renderDeutschHome = renderDeutschHome;

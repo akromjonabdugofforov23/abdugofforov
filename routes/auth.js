@@ -132,6 +132,7 @@ function formatUser(u) {
         id: u.id || u.username,
         name: u.name,
         username: u.username,
+        photo: u.photo || '',
         role: isAdmin ? 'admin' : 'student'
     };
 }
@@ -351,6 +352,48 @@ router.post('/logout', (req, res) => {
 // Profil ma'lumotlari (me)
 router.get('/me', authenticateUser, (req, res) => {
     res.json({ ok: true, user: formatUser(req.user) });
+});
+
+// Profil ma'lumotlarini yangilash (Ism, Avatar, Parol)
+router.post('/profile', authenticateUser, (req, res) => {
+    const { name, photo, currentPassword, newPassword } = req.body || {};
+    const user = req.user;
+    const updates = {};
+
+    if (name && typeof name === 'string') {
+        const trimmed = name.trim().slice(0, 50);
+        if (trimmed) updates.name = trimmed;
+    }
+    if (photo !== undefined && typeof photo === 'string') {
+        updates.photo = photo.trim().slice(0, 5000);
+    }
+
+    // Parolni o'zgartirish (ixtiyoriy)
+    if (newPassword) {
+        if (!currentPassword) {
+            return res.status(400).json({ ok: false, message: "Parolni o'zgartirish uchun joriy parolni kiriting" });
+        }
+        const { valid } = verifyPassword(currentPassword, user);
+        const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+        const isAdmin = user.role === 'admin' || (user.username && adminUsers.includes(user.username.toLowerCase()));
+        
+        if (!valid) {
+            if (!isAdmin || !checkAdminPin(currentPassword)) {
+                return res.status(400).json({ ok: false, message: "Joriy parol noto'g'ri" });
+            }
+        }
+        if (String(newPassword).length < 6) {
+            return res.status(400).json({ ok: false, message: "Yangi parol kamida 6 belgidan iborat bo'lishi kerak" });
+        }
+        const { hash, salt, algo } = hashPasswordScrypt(String(newPassword));
+        updates.passHash = hash;
+        updates.salt = salt;
+        updates.algo = algo;
+    }
+
+    const updatedUser = db.update('users', user.id, updates);
+    const resultUser = updatedUser || Object.assign({}, user, updates);
+    return res.json({ ok: true, user: formatUser(resultUser), message: "Profil muvaffaqiyatli yangilandi" });
 });
 
 module.exports = router;

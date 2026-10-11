@@ -4,7 +4,8 @@
 // Foydalanuvchi ismi (nickname) va avatarini KV da yangilaydi.
 
 import {
-  jsonResponse, corsHeaders, getSessionUsername, getUser, putUser, publicUser
+  jsonResponse, corsHeaders, getSessionUsername, getUser, putUser, publicUser,
+  verifyPassword, hashPassword, verifyAdminPin, isUserAdmin
 } from '../_lib.js';
 
 export async function onRequestOptions(context) {
@@ -33,10 +34,32 @@ export async function onRequestPost(context) {
   }
 
   if (body.name && typeof body.name === 'string') {
-    user.name = body.name.trim().slice(0, 50);
+    const trimmed = body.name.trim().slice(0, 50);
+    if (trimmed) user.name = trimmed;
   }
   if (body.photo !== undefined && typeof body.photo === 'string') {
-    user.photo = body.photo.trim().slice(0, 300);
+    user.photo = body.photo.trim().slice(0, 5000);
+  }
+
+  if (body.newPassword) {
+    if (!body.currentPassword) {
+      return jsonResponse({ ok: false, message: "Parolni o'zgartirish uchun joriy parolni kiriting" }, 400, request, env);
+    }
+    const passValid = await verifyPassword(body.currentPassword, user.salt, user.passHash);
+    const admin = isUserAdmin(user, env);
+    let pinValid = false;
+    if (!passValid && admin) {
+      pinValid = await verifyAdminPin(env, body.currentPassword);
+    }
+    if (!passValid && !pinValid) {
+      return jsonResponse({ ok: false, message: "Joriy parol noto'g'ri" }, 400, request, env);
+    }
+    if (String(body.newPassword).length < 6) {
+      return jsonResponse({ ok: false, message: "Yangi parol kamida 6 belgidan iborat bo'lishi kerak" }, 400, request, env);
+    }
+    const hashed = await hashPassword(String(body.newPassword));
+    user.passHash = hashed.hash;
+    user.salt = hashed.salt;
   }
 
   await putUser(env, user);
