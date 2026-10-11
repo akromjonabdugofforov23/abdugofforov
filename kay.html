@@ -511,6 +511,299 @@
             border: 1px solid rgba(248, 113, 113, 0.35);
             color: #fca5a5;
         }
+
+        /* ----- ASOSIY FUNKSIYALAR & ECOSYSTEM HUB ----- */
+        .hub-shortcuts-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 22px;
+        }
+        .hub-shortcuts-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .hub-shortcuts-head h3 {
+            margin: 0;
+            font-size: 13px;
+            color: var(--accent-color);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+        .hub-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .hub-item:hover {
+            background: rgba(45, 212, 191, 0.12);
+            border-color: rgba(45, 212, 191, 0.35);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+        .hub-item .hub-icon {
+            font-size: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+        }
+        .hub-item .hub-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .hub-item .hub-title {
+            font-size: 12.5px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .hub-item .hub-desc {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ----- MUQOVA RASMI & ASBOBLAR PANELI ----- */
+        .image-attach-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed rgba(255, 255, 255, 0.16);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            transition: border-color 0.2s;
+        }
+        .image-attach-card:focus-within {
+            border-color: var(--accent-color);
+        }
+        .image-presets-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .image-preset-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-secondary);
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .image-preset-btn:hover {
+            background: rgba(45, 212, 191, 0.2);
+            color: var(--accent-color);
+            border-color: rgba(45, 212, 191, 0.4);
+        }
+        .image-preview-box {
+            position: relative;
+            margin-top: 12px;
+            border-radius: 12px;
+            overflow: hidden;
+            max-height: 200px;
+            border: 1px solid var(--border-color);
+            background: #000;
+        }
+        .image-preview-box img {
+            width: 100%;
+            height: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        .image-remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #f87171;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+        }
+
+        /* Mini Editor Toolbar */
+        .editor-mini-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            padding: 8px 12px;
+        }
+        .tb-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 9px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .tb-btn:hover {
+            background: rgba(45, 212, 191, 0.2);
+            color: #fff;
+            border-color: rgba(45, 212, 191, 0.4);
+        }
+
+        /* Post Cards List View */
+        .posts-toolbar-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .posts-search-box {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+        .posts-search-box input {
+            width: 100%;
+            padding: 8px 14px 8px 34px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 13px;
+            outline: none;
+        }
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 14px;
+        }
+        .post-card-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
+        }
+        .post-card-item:hover {
+            transform: translateY(-2px);
+            border-color: rgba(45, 212, 191, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+        .post-card-thumb {
+            height: 130px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .post-card-body {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .post-card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 6px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .post-card-excerpt {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0 0 10px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+        .post-card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .post-card-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .post-card-actions button, .post-card-actions a {
+            flex: 1;
+            text-align: center;
+            padding: 6px 8px;
+            font-size: 11.5px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .post-card-actions button:hover, .post-card-actions a:hover {
+            background: rgba(45, 212, 191, 0.2);
+            color: var(--accent-color);
+            border-color: rgba(45, 212, 191, 0.4);
+        }
+        .post-card-actions button.btn-del:hover {
+            background: rgba(244, 63, 94, 0.2);
+            color: #f87171;
+            border-color: rgba(244, 63, 94, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -709,6 +1002,58 @@
 
                 <!-- CREATOR STUDIO / POST EDITOR TAB -->
                 <div class="tab-content" id="tab-posts">
+                    <!-- SAYTNING ASOSIY FUNKSIYALARI & EKOTIZIM MARKAZI -->
+                    <div class="hub-shortcuts-card">
+                        <div class="hub-shortcuts-head">
+                            <h3><span>⚡ Saytning Asosiy Funksiyalari &amp; Boshqaruv Markazi</span></h3>
+                            <span style="font-size:11px; color:var(--text-muted);">Barcha bo'limlarga 1-klik bilan tezkor o'tish</span>
+                        </div>
+                        <div class="hub-grid">
+                            <a href="/deutsch" target="_blank" rel="noopener" class="hub-item" title="Nemis Tili Akademiyasi">
+                                <span class="hub-icon">🇩🇪</span>
+                                <div class="hub-info">
+                                    <span class="hub-title">Deutsch Akademiya</span>
+                                    <span class="hub-desc">Testlar &amp; Lug'at ↗</span>
+                                </div>
+                            </a>
+                            <a href="/tools" target="_blank" rel="noopener" class="hub-item" title="Tools Lab (Mikro-asboblar)">
+                                <span class="hub-icon">🛠️</span>
+                                <div class="hub-info">
+                                    <span class="hub-title">Tools Lab</span>
+                                    <span class="hub-desc">WebP, JSON &amp; Kod ↗</span>
+                                </div>
+                            </a>
+                            <a href="/3d-lab" target="_blank" rel="noopener" class="hub-item" title="3D Vizual Lab">
+                                <span class="hub-icon">🌌</span>
+                                <div class="hub-info">
+                                    <span class="hub-title">3D Lab &amp; Koinot</span>
+                                    <span class="hub-desc">Kosmik tajribalar ↗</span>
+                                </div>
+                            </a>
+                            <div class="hub-item admin-tab" data-tab="students" style="cursor:pointer;" title="O'quvchilar va test natijalari">
+                                <span class="hub-icon">👥</span>
+                                <div class="hub-info">
+                                    <span class="hub-title">O'quvchilar &amp; Test</span>
+                                    <span class="hub-desc">Jonli natijalar</span>
+                                </div>
+                            </div>
+                            <div class="hub-item admin-tab" data-tab="tasks" style="cursor:pointer;" title="Admin Vazifalar va Rejalar">
+                                <span class="hub-icon">📋</span>
+                                <div class="hub-info">
+                                    <span class="hub-title">Rejalar &amp; Tasklar</span>
+                                    <span class="hub-desc">Kundalik ishlar</span>
+                                </div>
+                            </div>
+                            <a href="/" target="_blank" rel="noopener" class="hub-item" title="Asosiy blog sahifasi">
+                                <span class="hub-icon">🌐</span>
+                                <div class="hub-info">
+                                    <span class="hub-title">Asosiy Blog</span>
+                                    <span class="hub-desc">Jonli saytni ko'rish ↗</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
                     <div class="glz-card" style="margin-bottom: 22px;">
                         <div class="glz-card-title">
                             <span>✍️ Post Muharriri (Creator Studio)</span>
@@ -730,10 +1075,50 @@
                                     <input type="text" id="post-tags-input" class="form-input" placeholder="AI, Dasturlash, Yangiliklar, Deutsch..." style="width:100%; box-sizing:border-box;">
                                 </div>
                             </div>
-                            <div style="margin-bottom: 14px;">
-                                <label for="post-content-input" style="display:block; font-size:12px; color:var(--text-secondary); margin-bottom:6px;">Maqola Matni (Markdown / HTML qo'llab-quvvatlanadi) *</label>
-                                <textarea id="post-content-input" class="form-input" rows="9" placeholder="Postning to'liq matnini shu yerga yozing..." required style="width:100%; box-sizing:border-box; font-family:inherit;"></textarea>
+
+                            <!-- MUQOVA RASMI (COVER IMAGE) -->
+                            <div class="image-attach-card">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                                    <label for="post-image-input" style="font-size:12px; color:var(--text-secondary); font-weight:600; display:flex; align-items:center; gap:6px;">
+                                        <span>🖼️ Post Muqova Rasmi (Cover Image)</span>
+                                    </label>
+                                    <label class="btn-secondary" style="font-size:11.5px; padding:5px 12px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                                        <span>📁 Qurilmadan rasm yuklash</span>
+                                        <input type="file" id="post-image-file" accept="image/*" style="display:none;">
+                                    </label>
+                                </div>
+                                <div style="display:flex; gap:10px;">
+                                    <input type="text" id="post-image-input" class="form-input" placeholder="Rasm URL havolasi (Unsplash yoki to'g'ridan-to'g'ri URL)..." style="width:100%; box-sizing:border-box;">
+                                </div>
+                                <div class="image-presets-row">
+                                    <span style="font-size:11px; color:var(--text-muted);">✨ Tayyor muqovalar:</span>
+                                    <button type="button" class="image-preset-btn" data-url="https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200">🤖 AI &amp; Innovatsiya</button>
+                                    <button type="button" class="image-preset-btn" data-url="https://images.unsplash.com/photo-1527866959252-deab85ef7d1b?q=80&w=1200">🇩🇪 Nemis Tili</button>
+                                    <button type="button" class="image-preset-btn" data-url="https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1200">💻 Dasturlash</button>
+                                    <button type="button" class="image-preset-btn" data-url="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=1200">📚 Kitoblar</button>
+                                    <button type="button" class="image-preset-btn" data-url="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200">🌿 Tabiat</button>
+                                </div>
+                                <div id="post-image-preview-wrap" class="image-preview-box" style="display:none;">
+                                    <img id="post-image-preview" src="" alt="Muqova rasmi">
+                                    <button type="button" id="post-image-remove-btn" class="image-remove-btn">❌ Rasmni olib tashlash</button>
+                                </div>
                             </div>
+
+                            <!-- Mini Formatlash va Rasm qo'yish Toolbar -->
+                            <div class="editor-mini-toolbar">
+                                <button type="button" class="tb-btn" data-action="tb-bold" title="Qalin matn"><b>B</b></button>
+                                <button type="button" class="tb-btn" data-action="tb-italic" title="Kursiv matn"><i>I</i></button>
+                                <button type="button" class="tb-btn" data-action="tb-h2" title="Sarlavha 2">H2</button>
+                                <button type="button" class="tb-btn" data-action="tb-h3" title="Sarlavha 3">H3</button>
+                                <button type="button" class="tb-btn" data-action="tb-quote" title="Iqtibos">💡 Iqtibos</button>
+                                <button type="button" class="tb-btn" data-action="tb-code" title="Kod bloki">💻 Kod</button>
+                                <button type="button" class="tb-btn" data-action="tb-link" title="Havola (Link)">🔗 Havola</button>
+                                <button type="button" class="tb-btn" data-action="tb-img" title="Matn ichiga rasm joylash" style="color:var(--accent-color); background:rgba(45,212,191,0.15); border-color:rgba(45,212,191,0.35);">🖼️ Matnga Rasm Joylash</button>
+                            </div>
+                            <div style="margin-bottom: 14px;">
+                                <textarea id="post-content-input" class="form-input" rows="9" placeholder="Postning to'liq matnini shu yerga yozing..." required style="width:100%; box-sizing:border-box; font-family:inherit; border-radius:0 0 12px 12px;"></textarea>
+                            </div>
+
                             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border-color);">
                                 <label class="creator-checkbox-label" for="post-telegram-notify">
                                     <input type="checkbox" id="post-telegram-notify" checked>
@@ -748,12 +1133,21 @@
                         </form>
                     </div>
 
+                    <!-- BARCHA MAQOLALAR & POSTLAR (JONLI RO'YXAT) -->
                     <div class="glz-card">
-                        <div class="glz-card-title">
-                            <span>📚 Barcha Maqolalar &amp; Postlar</span>
-                            <span id="posts-count-badge" style="font-size:12px; padding:2px 8px; border-radius:10px; background:rgba(45,212,191,0.15); color:var(--accent-color);">0 ta</span>
+                        <div class="posts-toolbar-row">
+                            <div class="glz-card-title" style="margin:0;">
+                                <span>📚 Barcha Maqolalar &amp; Postlar</span>
+                                <span id="posts-count-badge" style="font-size:12px; padding:2px 8px; border-radius:10px; background:rgba(45,212,191,0.15); color:var(--accent-color);">0 ta</span>
+                            </div>
+                            <div style="display:flex; gap:10px; align-items:center; flex:1; max-width:440px;">
+                                <div class="posts-search-box">
+                                    <input type="text" id="creator-posts-search" placeholder="🔍 Postlarni sarlavha yoki teg bo'yicha qidirish...">
+                                </div>
+                                <button type="button" id="refresh-posts-btn" class="btn-secondary" style="font-size:12px; padding:8px 14px;" title="Yangilash">🔄 Yangilash</button>
+                            </div>
                         </div>
-                        <div id="creator-posts-list" class="glz-list">
+                        <div id="creator-posts-list" class="posts-grid">
                             <div class="glz-empty">Postlar yuklanmoqda...</div>
                         </div>
                     </div>
@@ -948,7 +1342,7 @@
     <div class="glz-overlay" id="glz-overlay"></div>
 
 <script src="storage.js?v=2"></script>
-<script src="kay.js?v=4" defer></script>
+<script src="kay.js?v=5" defer></script>
 </body>
 </html>
 

@@ -1172,16 +1172,30 @@ async function loadCreatorPosts() {
 
     try {
         let posts = [];
+        // 1. Server admin posts API
         try {
             const res = await fetch('/api/admin/posts', { headers: _adminHeaders() });
             if (res.ok) {
                 const data = await res.json();
-                if (data.ok && Array.isArray(data.posts)) {
+                if (data.ok && Array.isArray(data.posts) && data.posts.length) {
                     posts = data.posts;
                 }
             }
         } catch (_) {}
 
+        // 2. Ommaviy /posts API dan yuklash
+        if (!posts.length) {
+            try {
+                const resPub = await fetch('/posts');
+                if (resPub.ok) {
+                    const dataPub = await resPub.json();
+                    if (Array.isArray(dataPub) && dataPub.length) posts = dataPub;
+                    else if (dataPub.posts && Array.isArray(dataPub.posts) && dataPub.posts.length) posts = dataPub.posts;
+                }
+            } catch (_) {}
+        }
+
+        // 3. LocalStorage
         if (!posts.length) {
             try {
                 const local = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
@@ -1189,47 +1203,93 @@ async function loadCreatorPosts() {
             } catch (_) {}
         }
 
+        // 4. Standart asosiy maqolalar zaxirasi (saytda doim mavjud postlar)
+        if (!posts.length) {
+            posts = [
+                {
+                    id: 'post_ai_agentic_2026',
+                    title: "2026-yilgi Sun'iy Intellekt Inqilobi: Chatbotlardan Avtonom Agentlargacha",
+                    excerpt: "LLM modellari endi oddiy suhbatdosh emas, balki murakkab vazifalarni mustaqil rejalashtirib, kod yozib, natija beruvchi avtonom agentlarga aylandi.",
+                    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200",
+                    tags: ['AI', 'Texnologiya', 'Agentlar'],
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'post_germany_chancenkarte_2026',
+                    title: "Germaniya Chancenkarte (Imkoniyat Kartasi) 2026: Dasturchilar uchun Yangi Qoidalar",
+                    excerpt: "Germaniyada ish qidirish uchun yangi ball tizimi qanday ishlaydi? Nemis tili darajasi va diplomni tasdiqlashning oson yo'llari.",
+                    image: "https://images.unsplash.com/photo-1527866959252-deab85ef7d1b?q=80&w=1200",
+                    tags: ['Germaniya', 'Chancenkarte', 'Karyera'],
+                    createdAt: new Date(Date.now() - 86400000).toISOString()
+                },
+                {
+                    id: 'post_ecosystem_release_2_0',
+                    title: "Abdugofforov Ekotizimi 2.0: Zen Studio, Lofi Focus va Yangilangan Tools Lab",
+                    excerpt: "Saytimiz tubdan yangilandi: endi chalg'itmaydigan ijodiy muharrir, Lofi/Ambient audio pleyer va yangi asboblar sizning xizmatingizda!",
+                    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1200",
+                    tags: ['Yangiliklar', 'Ekotizim', 'Release'],
+                    createdAt: new Date(Date.now() - 172800000).toISOString()
+                }
+            ];
+            try { localStorage.setItem('abdu_posts', JSON.stringify(posts)); } catch (_) {}
+        }
+
         cachedPosts = posts;
         if (badgeEl) badgeEl.textContent = `${posts.length} ta`;
         const quickPostsEl = document.getElementById('quick-stat-posts');
         if (quickPostsEl) quickPostsEl.textContent = posts.length;
 
-        if (!posts.length) {
-            listEl.innerHTML = '<div class="glz-empty">Hozircha maqolalar mavjud emas. Yuqoridagi formadan yangi post yarating!</div>';
-            return;
-        }
-
-        const sorted = [...posts].reverse();
-        listEl.innerHTML = sorted.map(post => {
-            const title = _esc(post.title || 'Nomsiz post');
-            const excerpt = _esc(post.excerpt || (post.content ? post.content.slice(0, 140) : ''));
-            const dateStr = post.createdAt ? new Date(post.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Yaqinda';
-            const tags = Array.isArray(post.tags) && post.tags.length 
-                ? post.tags.map(t => `<span style="font-size:10px;padding:2px 7px;border-radius:6px;background:rgba(45,212,191,0.15);color:var(--accent-color);">${_esc(t)}</span>`).join(' ')
-                : '';
-
-            return `
-                <div class="glz-row" data-post-id="${_esc(post.id)}">
-                    <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,rgba(45,212,191,0.2),rgba(56,189,248,0.2));display:grid;place-items:center;font-size:22px;flex-shrink:0;">✍️</div>
-                    <div class="info">
-                        <div class="t">${title}</div>
-                        <div class="m" style="margin-bottom:4px;">${excerpt}</div>
-                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                            <span style="font-size:11px;color:var(--text-muted);">📅 ${dateStr}</span>
-                            ${tags}
-                        </div>
-                    </div>
-                    <div class="acts">
-                        <button type="button" class="icon-btn" data-action="edit-post" data-id="${_esc(post.id)}" title="Tahrirlash">✏️</button>
-                        <button type="button" class="icon-btn danger" data-action="delete-post" data-id="${_esc(post.id)}" title="O'chirish">🗑️</button>
-                    </div>
-                </div>
-            `;
-        }).join('');
+        renderCreatorPostsList(posts);
     } catch (e) {
         console.warn('Postlarni yuklashda xato:', e);
         listEl.innerHTML = '<div class="glz-empty" style="color:#f87171;">Postlarni yuklashda xatolik yuz berdi</div>';
     }
+}
+
+function renderCreatorPostsList(posts) {
+    const listEl = document.getElementById('creator-posts-list');
+    const badgeEl = document.getElementById('posts-count-badge');
+    if (!listEl) return;
+    if (badgeEl) badgeEl.textContent = `${posts.length} ta`;
+
+    if (!posts.length) {
+        listEl.innerHTML = '<div class="glz-empty">Hech qanday maqola topilmadi. Yuqoridagi formadan yangi post yarating!</div>';
+        return;
+    }
+
+    const sorted = [...posts].reverse();
+    listEl.innerHTML = sorted.map(post => {
+        const title = _esc(post.title || 'Nomsiz post');
+        const excerpt = _esc(post.excerpt || (post.content ? post.content.slice(0, 120) : ''));
+        const dateStr = post.createdAt ? new Date(post.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Yaqinda';
+        const image = post.image ? _esc(post.image) : '';
+        const tags = Array.isArray(post.tags) && post.tags.length 
+            ? post.tags.map(t => `<span style="font-size:10px;padding:2px 7px;border-radius:6px;background:rgba(45,212,191,0.15);color:var(--accent-color);">${_esc(t)}</span>`).join(' ')
+            : '';
+
+        const thumbHtml = image
+            ? `<div class="post-card-thumb" style="background-image: url('${image}');"></div>`
+            : `<div class="post-card-thumb" style="background: linear-gradient(135deg, rgba(45,212,191,0.25), rgba(56,189,248,0.25)); font-size:32px;">✍️</div>`;
+
+        return `
+            <div class="post-card-item" data-post-id="${_esc(post.id)}">
+                ${thumbHtml}
+                <div class="post-card-body">
+                    <h4 class="post-card-title">${title}</h4>
+                    <p class="post-card-excerpt">${excerpt}</p>
+                    <div class="post-card-meta">
+                        <span>📅 ${dateStr}</span>
+                        <div>${tags}</div>
+                    </div>
+                    <div class="post-card-actions">
+                        <button type="button" data-action="edit-post" data-id="${_esc(post.id)}" title="Tahrirlash">✏️ Tahrirlash</button>
+                        <a href="/#post-${_esc(post.id)}" target="_blank" rel="noopener" title="Saytda ko'rish">👁️ Ko'rish ↗</a>
+                        <button type="button" class="btn-del" data-action="delete-post" data-id="${_esc(post.id)}" title="O'chirish">🗑️ O'chirish</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 function editCreatorPost(id) {
@@ -1241,6 +1301,7 @@ function editCreatorPost(id) {
     const titleInput = document.getElementById('post-title-input');
     const excerptInput = document.getElementById('post-excerpt-input');
     const tagsInput = document.getElementById('post-tags-input');
+    const imageInput = document.getElementById('post-image-input');
     const contentInput = document.getElementById('post-content-input');
     const modeBadge = document.getElementById('post-editor-mode-badge');
     const saveBtn = document.getElementById('post-save-btn');
@@ -1250,6 +1311,10 @@ function editCreatorPost(id) {
     if (excerptInput) excerptInput.value = post.excerpt || '';
     if (tagsInput) tagsInput.value = Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || '');
     if (contentInput) contentInput.value = post.content || '';
+    if (imageInput) {
+        imageInput.value = post.image || '';
+        updatePostImagePreview(post.image || '');
+    }
     if (modeBadge) modeBadge.textContent = 'Tahrirlash: ' + (post.title ? post.title.slice(0, 20) + '...' : '');
     if (saveBtn) saveBtn.textContent = '💾 O\'zgarishlarni saqlash';
 
@@ -1288,6 +1353,7 @@ async function handlePostEditorSubmit(e) {
     const titleInput = document.getElementById('post-title-input');
     const excerptInput = document.getElementById('post-excerpt-input');
     const tagsInput = document.getElementById('post-tags-input');
+    const imageInput = document.getElementById('post-image-input');
     const contentInput = document.getElementById('post-content-input');
     const tgCheckbox = document.getElementById('post-telegram-notify');
     const saveBtn = document.getElementById('post-save-btn');
@@ -1302,6 +1368,7 @@ async function handlePostEditorSubmit(e) {
     const postId = idInput?.value || ('post_' + Date.now());
     const excerpt = excerptInput?.value.trim() || title.slice(0, 150);
     const tags = tagsInput?.value ? tagsInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const image = imageInput?.value.trim() || '';
     const isTelegramChecked = !!tgCheckbox?.checked;
 
     if (saveBtn) {
@@ -1314,6 +1381,7 @@ async function handlePostEditorSubmit(e) {
         title,
         excerpt,
         content,
+        image,
         tags,
         published: true,
         notifyTelegram: isTelegramChecked,
@@ -1377,6 +1445,9 @@ async function handlePostEditorSubmit(e) {
         if (excerptInput) excerptInput.value = '';
         if (tagsInput) tagsInput.value = '';
         if (contentInput) contentInput.value = '';
+        if (imageInput) { imageInput.value = ''; updatePostImagePreview(''); }
+        const fileInput = document.getElementById('post-image-file');
+        if (fileInput) fileInput.value = '';
         const modeBadge = document.getElementById('post-editor-mode-badge');
         if (modeBadge) modeBadge.textContent = 'Yangi Post';
 
@@ -1400,6 +1471,132 @@ async function handlePostEditorSubmit(e) {
     }
 }
 
+// Rasm va matn muharriri yordamchilari
+function updatePostImagePreview(url) {
+    const wrap = document.getElementById('post-image-preview-wrap');
+    const img = document.getElementById('post-image-preview');
+    if (!wrap || !img) return;
+    if (url) {
+        img.src = url;
+        wrap.style.display = 'block';
+    } else {
+        img.src = '';
+        wrap.style.display = 'none';
+    }
+}
+
+function insertAtCursor(textarea, textToInsert) {
+    if (!textarea) return;
+    const start = textarea.selectionStart || 0;
+    const end = textarea.selectionEnd || 0;
+    const oldVal = textarea.value;
+    textarea.value = oldVal.substring(0, start) + textToInsert + oldVal.substring(end);
+    textarea.selectionStart = textarea.selectionEnd = start + textToInsert.length;
+    textarea.focus();
+}
+
+function wrapSelection(textarea, before, after) {
+    if (!textarea) return;
+    const start = textarea.selectionStart || 0;
+    const end = textarea.selectionEnd || 0;
+    const selected = textarea.value.substring(start, end) || 'matn';
+    const replacement = before + selected + after;
+    textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+    textarea.selectionStart = start + before.length;
+    textarea.selectionEnd = start + before.length + selected.length;
+    textarea.focus();
+}
+
+function initPostEditorHelpers() {
+    const imgInput = document.getElementById('post-image-input');
+    const fileInput = document.getElementById('post-image-file');
+    const removeBtn = document.getElementById('post-image-remove-btn');
+    const contentTextarea = document.getElementById('post-content-input');
+    const searchInput = document.getElementById('creator-posts-search');
+    const refreshBtn = document.getElementById('refresh-posts-btn');
+
+    imgInput?.addEventListener('input', (e) => {
+        updatePostImagePreview(e.target.value.trim());
+    });
+
+    fileInput?.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const base64 = ev.target.result;
+                if (imgInput) imgInput.value = base64;
+                updatePostImagePreview(base64);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    removeBtn?.addEventListener('click', () => {
+        if (imgInput) imgInput.value = '';
+        if (fileInput) fileInput.value = '';
+        updatePostImagePreview('');
+    });
+
+    document.querySelectorAll('.image-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const url = btn.dataset.url;
+            if (url && imgInput) {
+                imgInput.value = url;
+                updatePostImagePreview(url);
+            }
+        });
+    });
+
+    // Toolbar tugmalari
+    document.querySelector('.editor-mini-toolbar')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('.tb-btn');
+        if (!btn || !contentTextarea) return;
+        e.preventDefault();
+        const action = btn.dataset.action;
+
+        if (action === 'tb-bold') wrapSelection(contentTextarea, '**', '**');
+        else if (action === 'tb-italic') wrapSelection(contentTextarea, '*', '*');
+        else if (action === 'tb-h2') insertAtCursor(contentTextarea, '\n## Sarlavha 2\n');
+        else if (action === 'tb-h3') insertAtCursor(contentTextarea, '\n### Sarlavha 3\n');
+        else if (action === 'tb-quote') insertAtCursor(contentTextarea, '\n> Muhim iqtibos...\n');
+        else if (action === 'tb-code') wrapSelection(contentTextarea, '\n```javascript\n', '\n```\n');
+        else if (action === 'tb-link') {
+            const url = prompt('Havola URL manzilini kiriting:', 'https://');
+            if (url) wrapSelection(contentTextarea, '[', `](${url})`);
+        } else if (action === 'tb-img') {
+            const url = prompt('Matn ichiga joylash uchun rasm havolasini kiriting:', 'https://images.unsplash.com/...');
+            if (url) {
+                const alt = prompt('Rasm tavsifi (alt):', 'Rasm') || 'Rasm';
+                insertAtCursor(contentTextarea, `\n![${alt}](${url})\n`);
+            }
+        }
+    });
+
+    // Real-time Post Qidirish
+    searchInput?.addEventListener('input', (e) => {
+        const query = (e.target.value || '').trim().toLowerCase();
+        if (!query) {
+            renderCreatorPostsList(cachedPosts);
+            return;
+        }
+        const filtered = cachedPosts.filter(p => {
+            const t = (p.title || '').toLowerCase();
+            const ex = (p.excerpt || '').toLowerCase();
+            const tags = Array.isArray(p.tags) ? p.tags.join(' ').toLowerCase() : '';
+            return t.includes(query) || ex.includes(query) || tags.includes(query);
+        });
+        renderCreatorPostsList(filtered);
+    });
+
+    refreshBtn?.addEventListener('click', () => {
+        loadCreatorPosts();
+        if (typeof showPostFeedback === 'function') {
+            showPostFeedback('🔄 Postlar ro\'yxati yangilandi', 'success');
+        }
+    });
+}
+
 // Global hodisalar va tinglovchilar
 document.getElementById('quick-new-post-btn')?.addEventListener('click', focusNewPostEditor);
 document.getElementById('post-editor-form')?.addEventListener('submit', handlePostEditorSubmit);
@@ -1408,6 +1605,8 @@ document.getElementById('post-reset-btn')?.addEventListener('click', () => {
     const titleInput = document.getElementById('post-title-input');
     const excerptInput = document.getElementById('post-excerpt-input');
     const tagsInput = document.getElementById('post-tags-input');
+    const imageInput = document.getElementById('post-image-input');
+    const fileInput = document.getElementById('post-image-file');
     const contentInput = document.getElementById('post-content-input');
     const modeBadge = document.getElementById('post-editor-mode-badge');
     const saveBtn = document.getElementById('post-save-btn');
@@ -1416,11 +1615,39 @@ document.getElementById('post-reset-btn')?.addEventListener('click', () => {
     if (excerptInput) excerptInput.value = '';
     if (tagsInput) tagsInput.value = '';
     if (contentInput) contentInput.value = '';
+    if (imageInput) { imageInput.value = ''; updatePostImagePreview(''); }
+    if (fileInput) fileInput.value = '';
     if (modeBadge) modeBadge.textContent = 'Yangi Post';
     if (saveBtn) saveBtn.textContent = '🚀 Chop etish & Saqlash';
 });
 
+// Postlar ro'yxatidagi delegatsiyalangan harakatlar (Tahrirlash / O'chirish)
+document.getElementById('creator-posts-list')?.addEventListener('click', (e) => {
+    const editBtn = e.target.closest('[data-action="edit-post"]');
+    if (editBtn) {
+        e.preventDefault();
+        const id = editBtn.dataset.id;
+        if (id) editCreatorPost(id);
+        return;
+    }
+    const delBtn = e.target.closest('[data-action="delete-post"]');
+    if (delBtn) {
+        e.preventDefault();
+        const id = delBtn.dataset.id;
+        if (id) deleteCreatorPost(id);
+        return;
+    }
+});
+
+// Yordamchilarni ishga tushirish
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPostEditorHelpers);
+} else {
+    initPostEditorHelpers();
+}
+
 window.editCreatorPost = editCreatorPost;
 window.deleteCreatorPost = deleteCreatorPost;
 window.focusNewPostEditor = focusNewPostEditor;
+window.updatePostImagePreview = updatePostImagePreview;
 
