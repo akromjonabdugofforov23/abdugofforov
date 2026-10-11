@@ -501,6 +501,69 @@ function setSearchCategoryTab(tab) {
     renderPosts(true);
 }
 
+// ===== BOOKMARK (XATCHO'P) YORDAMCHILARI =====
+function getBookmarkBtnHtml(postId) {
+    const isSaved = (typeof isBookmarked === 'function') 
+        ? isBookmarked(postId) 
+        : (window.Bookmarks && typeof window.Bookmarks.isBookmarked === 'function' ? window.Bookmarks.isBookmarked(postId) : false);
+    return `
+        <button class="post-stat bookmark-btn ${isSaved ? 'bookmarked' : ''}" data-id="${postId}" title="${isSaved ? "Saqlanganlardan o'chirish" : "Saqlab qo'yish"}" aria-label="Xatcho'p" type="button">
+            <svg class="bookmark-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${isSaved ? 'var(--color-purple-light, #8b5cf6)' : 'none'}" stroke="${isSaved ? 'var(--color-purple-light, #8b5cf6)' : 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        </button>
+    `;
+}
+
+function handleBookmarkToggle(postId, btnEl) {
+    const fn = (typeof isBookmarked === 'function') ? isBookmarked : (window.Bookmarks && window.Bookmarks.isBookmarked);
+    const addFn = (typeof addBookmark === 'function') ? addBookmark : (window.Bookmarks && window.Bookmarks.addBookmark);
+    const remFn = (typeof removeBookmark === 'function') ? removeBookmark : (window.Bookmarks && window.Bookmarks.removeBookmark);
+
+    if (!fn) return;
+
+    const isSaved = fn(postId);
+    if (isSaved) {
+        if (remFn) remFn(postId);
+        if (typeof showToast === 'function') showToast("🔖 Maqola saqlanganlardan olib tashlandi", "info");
+        updateBookmarkUI(postId, false);
+    } else {
+        if (addFn) addFn(postId);
+        if (typeof showToast === 'function') showToast("🔖 Maqola saqlanganlarga qo'shildi!", "success");
+        updateBookmarkUI(postId, true);
+    }
+}
+
+function updateBookmarkUI(postId, isSaved) {
+    const buttons = document.querySelectorAll(`.bookmark-btn[data-id="${postId}"]`);
+    buttons.forEach(btn => {
+        if (isSaved) {
+            btn.classList.add('bookmarked');
+            btn.title = "Saqlanganlardan o'chirish";
+            const svg = btn.querySelector('svg');
+            if (svg) {
+                svg.setAttribute('fill', 'var(--color-purple-light, #8b5cf6)');
+                svg.setAttribute('stroke', 'var(--color-purple-light, #8b5cf6)');
+            }
+            if (btn.classList.contains('modal-detail-bookmark-btn')) {
+                btn.innerHTML = `🔖 Saqlangan`;
+            }
+        } else {
+            btn.classList.remove('bookmarked');
+            btn.title = "Saqlab qo'yish";
+            const svg = btn.querySelector('svg');
+            if (svg) {
+                svg.setAttribute('fill', 'none');
+                svg.setAttribute('stroke', 'currentColor');
+            }
+            if (btn.classList.contains('modal-detail-bookmark-btn')) {
+                btn.innerHTML = `🔖 Saqlab qo'yish`;
+            }
+        }
+    });
+}
+window.getBookmarkBtnHtml = getBookmarkBtnHtml;
+window.handleBookmarkToggle = handleBookmarkToggle;
+window.updateBookmarkUI = updateBookmarkUI;
+
 // 8. Postlarni filtrlash va render qilish
 let _renderTimer = null;
 function renderPosts(instant) {
@@ -609,6 +672,7 @@ function renderPosts(instant) {
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                                         <span>${(post.comments || []).length}</span>
                                     </div>
+                                    ${getBookmarkBtnHtml(post.id)}
                                 </div>
                             </div>
                         </div>
@@ -617,6 +681,9 @@ function renderPosts(instant) {
                     card.addEventListener('click', (e) => {
                         if (e.target.closest('.like-btn')) {
                             handleLike(post.id);
+                        } else if (e.target.closest('.bookmark-btn')) {
+                            e.stopPropagation();
+                            handleBookmarkToggle(post.id, e.target.closest('.bookmark-btn'));
                         } else if (post.type === 'music') {
                             playMusic(post);
                         } else {
@@ -758,6 +825,7 @@ function renderPosts(instant) {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                                     <span>${(post.comments || []).length}</span>
                                 </div>
+                                ${getBookmarkBtnHtml(post.id)}
                             </div>
                         </div>
                     </div>
@@ -783,6 +851,7 @@ function renderPosts(instant) {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                                     <span>${(post.comments || []).length}</span>
                                 </div>
+                                ${getBookmarkBtnHtml(post.id)}
                             </div>
                         </div>
                     </div>
@@ -813,6 +882,7 @@ function renderPosts(instant) {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                                     <span>${(post.comments || []).length}</span>
                                 </div>
+                                ${getBookmarkBtnHtml(post.id)}
                             </div>
                         </div>
                     </div>
@@ -837,6 +907,7 @@ function renderPosts(instant) {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                                     <span>${(post.comments || []).length}</span>
                                 </div>
+                                ${getBookmarkBtnHtml(post.id)}
                             </div>
                         </div>
                     </div>
@@ -846,6 +917,9 @@ function renderPosts(instant) {
             card.addEventListener('click', (e) => {
                 if (e.target.closest('.like-btn')) {
                     handleLike(post.id);
+                } else if (e.target.closest('.bookmark-btn')) {
+                    e.stopPropagation();
+                    handleBookmarkToggle(post.id, e.target.closest('.bookmark-btn'));
                 } else if (e.target.closest('.zoomable-bg')) {
                     const z = e.target.closest('.zoomable-bg');
                     openLightbox(z.getAttribute('data-zoom-src'));
@@ -1279,6 +1353,9 @@ function openPostDetail(postId) {
     detailModalBody.innerHTML = `
         <div class="modal-actions-bar">
             <button class="btn-secondary btn-sm share-post-btn">🔗 Ulashish</button>
+            <button class="btn-secondary btn-sm modal-detail-bookmark-btn bookmark-btn ${(typeof isBookmarked === 'function' ? isBookmarked(post.id) : (window.Bookmarks && window.Bookmarks.isBookmarked(post.id))) ? 'bookmarked' : ''}" data-id="${post.id}">
+                ${(typeof isBookmarked === 'function' ? isBookmarked(post.id) : (window.Bookmarks && window.Bookmarks.isBookmarked(post.id))) ? '🔖 Saqlangan' : '🔖 Saqlab qo\'yish'}
+            </button>
             ${isAdmin ? `<button class="btn-secondary btn-sm edit-post-btn">✏️ Tahrirlash</button>
             <button class="btn-secondary btn-sm delete-post-btn" style="color: #ff4d4d; border-color: rgba(255, 77, 77, 0.2);">🗑️ O'chirish</button>` : ''}
         </div>
@@ -1365,6 +1442,13 @@ function openPostDetail(postId) {
                 renderPosts();
                 closePostDetailModal();
             }
+        });
+    }
+
+    const detailBmBtn = detailModalBody.querySelector('.modal-detail-bookmark-btn');
+    if (detailBmBtn) {
+        detailBmBtn.addEventListener('click', () => {
+            handleBookmarkToggle(post.id, detailBmBtn);
         });
     }
 
@@ -3181,9 +3265,179 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Cmd/Ctrl + K shortcut to focus command bar search input
+// ===== STEALTH ADMIN GATE ('SECRET KNOCK') =====
+let _secretGateModalEl = null;
+
+function ensureSecretGateModal() {
+    if (_secretGateModalEl && document.body.contains(_secretGateModalEl)) {
+        return _secretGateModalEl;
+    }
+    const modal = document.createElement('div');
+    modal.id = 'secret-gate-modal';
+    modal.className = 'modal-overlay stealth-gate-overlay';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'secret-gate-title');
+    modal.style.cssText = 'position:fixed; inset:0; z-index:999999; display:flex; align-items:center; justify-content:center; background:rgba(6, 16, 26, 0.88); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); opacity:0; pointer-events:none; transition:opacity 0.25s ease;';
+
+    modal.innerHTML = `
+        <div class="modal-container stealth-gate-box" style="background:#0e1e2f; border:1px solid rgba(45,212,191,0.3); border-radius:20px; padding:32px 28px; width:92%; max-width:400px; box-shadow:0 24px 60px rgba(0,0,0,0.6); text-align:center; position:relative; transform:scale(0.96); transition:transform 0.25s ease;">
+            <button type="button" class="modal-close" id="close-secret-gate-modal" aria-label="Yopish" style="position:absolute; top:14px; right:16px; background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer; line-height:1; padding:4px;">&times;</button>
+            <div style="width:52px; height:52px; margin:0 auto 14px; border-radius:14px; background:linear-gradient(135deg, rgba(45,212,191,0.2), rgba(20,184,166,0.25)); border:1px solid rgba(45,212,191,0.4); display:flex; align-items:center; justify-content:center; font-size:24px;">🔐</div>
+            <h3 id="secret-gate-title" style="font-family:'Playfair Display',serif; font-size:22px; color:#f1f5f9; margin:0 0 6px;">Stealth Admin Gate</h3>
+            <p style="font-size:13px; color:#94a3b8; margin:0 0 20px; line-height:1.5;">Secret Knock faollashdi. Admin PIN yoki maxfiy tokenni kiriting.</p>
+            <form id="secret-gate-form" style="display:flex; flex-direction:column; gap:12px;">
+                <input type="password" id="secret-gate-input" placeholder="PIN yoki maxfiy token..." autocomplete="off" autofocus required
+                       style="width:100%; box-sizing:border-box; padding:14px 16px; border-radius:12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.18); color:#f8fafc; font-size:15px; text-align:center; outline:none; transition:border-color 0.2s;" />
+                <div id="secret-gate-error" style="display:none; color:#f87171; font-size:13px; margin-top:-4px;"></div>
+                <button type="submit" id="secret-gate-submit-btn" class="btn-primary"
+                        style="width:100%; padding:13px; border-radius:12px; background:linear-gradient(135deg, #14b8a6, #0d9488); border:none; color:#ffffff; font-weight:600; font-size:15px; cursor:pointer; transition:all 0.2s;">
+                    Kirish
+                </button>
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    _secretGateModalEl = modal;
+
+    // Hodisalarni ulash
+    const closeBtn = modal.querySelector('#close-secret-gate-modal');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeSecretGateModal);
+    }
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeSecretGateModal();
+    });
+
+    const form = modal.querySelector('#secret-gate-form');
+    if (form) {
+        form.addEventListener('submit', handleSecretGateSubmit);
+    }
+
+    return modal;
+}
+
+function openSecretGateModal() {
+    const modal = ensureSecretGateModal();
+    const input = modal.querySelector('#secret-gate-input');
+    const errEl = modal.querySelector('#secret-gate-error');
+    const submitBtn = modal.querySelector('#secret-gate-submit-btn');
+
+    if (errEl) errEl.style.display = 'none';
+    if (input) {
+        input.value = '';
+        input.style.borderColor = 'rgba(255,255,255,0.18)';
+    }
+    if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Kirish';
+    }
+
+    modal.style.opacity = '1';
+    modal.style.pointerEvents = 'auto';
+    const box = modal.querySelector('.stealth-gate-box');
+    if (box) box.style.transform = 'scale(1)';
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+        if (input) input.focus();
+    }, 100);
+}
+
+function closeSecretGateModal() {
+    if (!_secretGateModalEl) return;
+    _secretGateModalEl.style.opacity = '0';
+    _secretGateModalEl.style.pointerEvents = 'none';
+    const box = _secretGateModalEl.querySelector('.stealth-gate-box');
+    if (box) box.style.transform = 'scale(0.96)';
+    document.body.style.overflow = '';
+}
+
+async function handleSecretGateSubmit(e) {
+    e.preventDefault();
+    const modal = _secretGateModalEl;
+    if (!modal) return;
+    const input = modal.querySelector('#secret-gate-input');
+    const errEl = modal.querySelector('#secret-gate-error');
+    const submitBtn = modal.querySelector('#secret-gate-submit-btn');
+    const val = input ? input.value.trim() : '';
+
+    if (!val) return;
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Tekshirilmoqda...';
+    }
+    if (errEl) errEl.style.display = 'none';
+
+    try {
+        const res = await fetch('/auth/magic-gate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: val, pin: val })
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && (data.ok || data.success)) {
+            sessionStorage.setItem('kay_admin', 'true');
+            if (data.token) sessionStorage.setItem('kay_admin_token', data.token);
+            sessionStorage.setItem('kay_admin_pin', val);
+
+            if (submitBtn) submitBtn.textContent = '✅ Tasdiqlandi!';
+            setTimeout(() => {
+                closeSecretGateModal();
+                window.location.href = data.redirectUrl || '/kay.html';
+            }, 350);
+            return;
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Kirish';
+        }
+        if (errEl) {
+            errEl.textContent = data.message || "Noto'g'ri PIN yoki maxfiy token";
+            errEl.style.display = 'block';
+        }
+        if (input) {
+            input.style.borderColor = '#f87171';
+            input.select();
+        }
+    } catch (err) {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Kirish';
+        }
+        if (errEl) {
+            errEl.textContent = "Server bilan bog'lanishda xatolik";
+            errEl.style.display = 'block';
+        }
+    }
+}
+
+window.openSecretGateModal = openSecretGateModal;
+window.closeSecretGateModal = closeSecretGateModal;
+
+// Hotkeys: Ctrl+Alt+K (Secret Knock) va Cmd/Ctrl+K (Search)
 document.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    // 1. Secret Knock hotkey: Ctrl + Alt + K (yoki Cmd + Alt + K)
+    if ((e.metaKey || e.ctrlKey) && e.altKey && (e.key === 'k' || e.key === 'K' || e.code === 'KeyK')) {
+        e.preventDefault();
+        e.stopPropagation();
+        openSecretGateModal();
+        return;
+    }
+
+    // Modal ochiq bo'lganda Escape bosilsa yopish
+    if (e.key === 'Escape' && _secretGateModalEl && _secretGateModalEl.style.pointerEvents === 'auto') {
+        closeSecretGateModal();
+        return;
+    }
+
+    // 2. Cmd/Ctrl + K shortcut to focus command bar search input (faqat Alt bosilmaganda)
+    if ((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
@@ -3192,4 +3446,39 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+// Secret Knock: Logo 5 marta ketma-ket bosilganda (3 soniya ichida)
+let _logoKnockClicks = [];
+function handleLogoKnockClick(e) {
+    const now = Date.now();
+    _logoKnockClicks.push(now);
+    // Faqat so'nggi 3000ms ichidagi bosishlarni saqlaymiz
+    _logoKnockClicks = _logoKnockClicks.filter(t => now - t <= 3000);
+    if (_logoKnockClicks.length >= 5) {
+        _logoKnockClicks = [];
+        if (e && typeof e.preventDefault === 'function') e.preventDefault();
+        openSecretGateModal();
+    }
+}
+
+document.addEventListener('click', (e) => {
+    const logoEl = e.target.closest('#nav-logo, .logo, .logo-mark, .logo-name');
+    if (logoEl) {
+        handleLogoKnockClick(e);
+    }
+}, true);
+
+// Stealth redirect notice (agar ruxsatsiz admin kirishga urinish bo'lgan bo'lsa)
+try {
+    const stealthNotice = sessionStorage.getItem('stealth_notice');
+    if (stealthNotice) {
+        sessionStorage.removeItem('stealth_notice');
+        setTimeout(() => {
+            if (typeof showToast === 'function') {
+                showToast(stealthNotice, 'warn');
+            }
+        }, 500);
+    }
+} catch (_) {}
+
 

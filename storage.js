@@ -231,6 +231,82 @@
         },
     };
 
+    // ============================================================
+    // BOOKMARKS MANAGEMENT (Saqlangan maqolalar / Xatcho'plar)
+    // ============================================================
+    const BOOKMARKS_KEY = 'abdu_bookmarks';
+
+    function getBookmarks() {
+        try {
+            const raw = localStorage.getItem(BOOKMARKS_KEY);
+            if (!raw) return [];
+            const parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+            console.warn('Bookmarks getBookmarks error:', e);
+            return [];
+        }
+    }
+
+    function addBookmark(id) {
+        if (id === undefined || id === null) return getBookmarks();
+        try {
+            const list = getBookmarks();
+            const idStr = String(id);
+            if (!list.some(item => String(item) === idStr)) {
+                list.push(id);
+                localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(list));
+            }
+            return list;
+        } catch (e) {
+            console.error('Bookmarks addBookmark error:', e);
+            return getBookmarks();
+        }
+    }
+
+    function removeBookmark(id) {
+        if (id === undefined || id === null) return getBookmarks();
+        try {
+            const list = getBookmarks();
+            const idStr = String(id);
+            const filtered = list.filter(item => String(item) !== idStr);
+            localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(filtered));
+            return filtered;
+        } catch (e) {
+            console.error('Bookmarks removeBookmark error:', e);
+            return getBookmarks();
+        }
+    }
+
+    function isBookmarked(id) {
+        if (id === undefined || id === null) return false;
+        const list = getBookmarks();
+        const idStr = String(id);
+        return list.some(item => String(item) === idStr);
+    }
+
+    const Bookmarks = {
+        get: getBookmarks,
+        getBookmarks,
+        add: addBookmark,
+        addBookmark,
+        remove: removeBookmark,
+        removeBookmark,
+        has: isBookmarked,
+        isBookmarked
+    };
+
+    Store.getBookmarks = getBookmarks;
+    Store.addBookmark = addBookmark;
+    Store.removeBookmark = removeBookmark;
+    Store.isBookmarked = isBookmarked;
+
+    window.getBookmarks = getBookmarks;
+    window.addBookmark = addBookmark;
+    window.removeBookmark = removeBookmark;
+    window.isBookmarked = isBookmarked;
+    window.Bookmarks = Bookmarks;
+
     window.Store = Store;
     window.Sync = Sync;
 })();

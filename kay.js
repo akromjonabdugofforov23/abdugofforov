@@ -6,22 +6,68 @@
 // Global keshlar
 let cachedUsers = [];
 let cachedResults = [];
+let cachedPosts = [];
+let cachedLiveStats = null;
 let currentTaskFilter = 'all';
 
 // DOM tayyor bo'lgach admin holatini tekshiramiz
-function initKay() {
+async function initKay() {
+    // 1. URL orqali token uzatilgan bo'lsa (Magic Gate redirect yoki havola)
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get('token');
+
+    if (urlToken) {
+        try {
+            const res = await fetch('/auth/magic-gate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: urlToken })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (data && (data.ok || data.success)) {
+                sessionStorage.setItem('kay_admin', 'true');
+                if (data.token) sessionStorage.setItem('kay_admin_token', data.token);
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+                document.documentElement.style.display = '';
+                showAdminPanel();
+                return;
+            }
+        } catch (_) {}
+
+        // Token yaroqsiz bo'lsa — darhol / ga yo'naltiramiz
+        sessionStorage.removeItem('kay_admin');
+        sessionStorage.removeItem('kay_admin_token');
+        document.documentElement.style.display = 'none';
+        try { sessionStorage.setItem('stealth_notice', "Sahifa topilmadi (404)"); } catch (_) {}
+        window.location.replace('/');
+        return;
+    }
+
+    // 2. Foydalanuvchi ma'lumotlaridan adminlikni tekshirish
     try {
         const u = JSON.parse(localStorage.getItem('abdu_user_data') || localStorage.getItem('kay_auth_user') || 'null');
         if (u && (u.role === 'admin' || (u.username && u.username.toLowerCase() === 'abdugofforov'))) {
             sessionStorage.setItem('kay_admin', 'true');
+            if (u.token && !sessionStorage.getItem('kay_admin_token')) {
+                sessionStorage.setItem('kay_admin_token', u.token);
+            }
         }
     } catch (_) {}
 
-    if (sessionStorage.getItem('kay_admin') === 'true') {
+    // 3. Agar sessionStorage 'kay_admin' yoki faol token bo'lsa
+    const hasAdmin = sessionStorage.getItem('kay_admin') === 'true';
+    const adminToken = sessionStorage.getItem('kay_admin_token');
+
+    if (hasAdmin || adminToken) {
+        document.documentElement.style.display = '';
         showAdminPanel();
     } else {
-        const pinScreen = document.getElementById('pin-screen');
-        if (pinScreen) pinScreen.style.display = 'block';
+        // Ruxsatsiz foydalanuvchini darhol yashirib, / ga yo'naltiramiz (Stealth 404)
+        document.documentElement.style.display = 'none';
+        try { sessionStorage.setItem('stealth_notice', "Sahifa topilmadi (404)"); } catch (_) {}
+        window.location.replace('/');
     }
 }
 
@@ -364,16 +410,36 @@ function showAdminPanel() {
     }
 }
 
-document.getElementById('logout-btn')?.addEventListener('click', () => {
-    sessionStorage.removeItem('kay_admin');
-    sessionStorage.removeItem('kay_admin_token');
-    sessionStorage.removeItem('kay_admin_pin');
-    document.getElementById('admin-screen')?.classList.remove('show');
-    const pinScreen = document.getElementById('pin-screen');
-    if (pinScreen) pinScreen.style.display = 'block';
-    if (pinInput) pinInput.value = '';
-    if (pinError) pinError.style.display = 'none';
-});
+// ===== PANIC LOGOUT (FAVQULODDA CHIQISH) =====
+async function triggerPanicLogout() {
+    try {
+        // Sessiya va mahalliy tokenlarni to'liq tozalash
+        sessionStorage.removeItem('kay_admin');
+        sessionStorage.removeItem('kay_admin_token');
+        sessionStorage.removeItem('kay_admin_pin');
+        sessionStorage.removeItem('abdu_user_token');
+        localStorage.removeItem('kay_admin');
+        localStorage.removeItem('kay_admin_token');
+        localStorage.removeItem('kay_admin_pin');
+        localStorage.removeItem('abdu_user_token');
+
+        // Serverda sessiyani bekor qilish
+        try {
+            await fetch('/auth/logout', {
+                method: 'POST',
+                headers: _adminHeaders({ 'Content-Type': 'application/json' })
+            });
+        } catch (_) {}
+    } catch (e) {
+        console.warn('Panic logout xatosi:', e);
+    } finally {
+        // Bosh sahifaga yo'naltirish
+        window.location.replace('/');
+    }
+}
+
+document.getElementById('panic-logout-btn')?.addEventListener('click', triggerPanicLogout);
+document.getElementById('logout-btn')?.addEventListener('click', triggerPanicLogout);
 
 // ===== REAL DATA & DASHBOARD STATISTIKA =====
 function _adminHeaders(extra) {
@@ -395,11 +461,20 @@ async function loadDashboardAndRealData(forceRefresh = false) {
     const testsStatusEl = document.getElementById('dash-status-tests');
 
     try {
-        // Parallel so'rov: Foydalanuvchilar va Test natijalari
-        const [usersRes, resultsRes] = await Promise.all([
-            fetch('/admin/users', { headers: _adminHeaders() }).catch(() => null),
+        // Parallel so'rov: Tizim statistikasi (/api/admin/stats), Foydalanuvchilar, Postlar va Natijalar
+        const [statsRes, usersRes, postsRes, resultsRes] = await Promise.all([
+            fetch('/api/admin/stats', { headers: _adminHeaders() }).catch(() => null),
+            fetch('/api/admin/users', { headers: _adminHeaders() }).catch(() => fetch('/admin/users', { headers: _adminHeaders() }).catch(() => null)),
+            fetch('/api/admin/posts', { headers: _adminHeaders() }).catch(() => null),
             fetch('/results', { headers: _adminHeaders() }).catch(() => null)
         ]);
+
+        if (statsRes && statsRes.ok) {
+            const sData = await statsRes.json().catch(() => ({}));
+            if (sData.ok && sData.stats) {
+                cachedLiveStats = sData.stats;
+            }
+        }
 
         if (usersRes && usersRes.ok) {
             const uData = await usersRes.json().catch(() => ({}));
@@ -407,6 +482,18 @@ async function loadDashboardAndRealData(forceRefresh = false) {
                 cachedUsers = uData.users;
                 if (dbStatusEl) { dbStatusEl.textContent = 'Ulangan'; dbStatusEl.className = 'glz-ok'; }
             }
+        }
+
+        if (postsRes && postsRes.ok) {
+            const pData = await postsRes.json().catch(() => ({}));
+            if (pData.ok && Array.isArray(pData.posts)) {
+                cachedPosts = pData.posts;
+            }
+        } else {
+            try {
+                const lp = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
+                if (Array.isArray(lp)) cachedPosts = lp;
+            } catch (_) {}
         }
 
         if (resultsRes && resultsRes.ok) {
@@ -429,9 +516,16 @@ async function loadDashboardAndRealData(forceRefresh = false) {
 function renderRealDataMetrics() {
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
 
-    const totalStudents = cachedUsers.length;
-    const totalTests = cachedResults.length;
-    const avgScore = totalTests ? Math.round(cachedResults.reduce((s, r) => s + (r.pct || 0), 0) / totalTests) : 0;
+    const totalStudents = cachedLiveStats?.usersCount ?? cachedUsers.length;
+    const totalPosts = cachedLiveStats?.postsCount ?? cachedPosts.length;
+    const totalTests = cachedLiveStats?.testsCount ?? cachedLiveStats?.resultsCount ?? cachedResults.length;
+    const avgScore = totalTests && cachedResults.length ? Math.round(cachedResults.reduce((s, r) => s + (r.pct || 0), 0) / cachedResults.length) : 0;
+
+    // Creator Studio Quick Actions: Jonli Statistika (Users, Posts, Tests)
+    set('quick-stat-users', totalStudents);
+    set('quick-stat-posts', totalPosts);
+    set('quick-stat-tests', totalTests);
+    set('posts-count-badge', `${totalPosts} ta`);
 
     // Sidebar ko'rsatkichlari
     set('side-students', totalStudents);
@@ -887,6 +981,8 @@ function switchTab(targetTab) {
         renderResultsTable();
     } else if (targetTab === 'tasks') {
         loadTasks();
+    } else if (targetTab === 'posts') {
+        loadCreatorPosts();
     } else if (targetTab === 'dashboard') {
         renderRealDataMetrics();
     }
@@ -1011,6 +1107,10 @@ document.addEventListener('click', (e) => {
         openResetPasswordModal(btn.dataset.username, btn.dataset.name);
     } else if (action === 'close-reset-password') {
         closeResetPasswordModal();
+    } else if (action === 'edit-post') {
+        editCreatorPost(btn.dataset.id);
+    } else if (action === 'delete-post') {
+        deleteCreatorPost(btn.dataset.id);
     }
 });
 
@@ -1037,3 +1137,293 @@ function openService(service) {
 
 document.getElementById('admin-tools-link')?.addEventListener('click', () => openService('tools'));
 document.getElementById('dash-btn-tools')?.addEventListener('click', () => openService('tools'));
+
+// ===== CREATOR STUDIO: POST EDITOR & TELEGRAM AUTO-POST =====
+function focusNewPostEditor() {
+    switchTab('posts');
+    const form = document.getElementById('post-editor-form');
+    if (form) {
+        const idInput = document.getElementById('post-id');
+        const modeBadge = document.getElementById('post-editor-mode-badge');
+        const saveBtn = document.getElementById('post-save-btn');
+        if (idInput) idInput.value = '';
+        if (modeBadge) modeBadge.textContent = 'Yangi Post';
+        if (saveBtn) saveBtn.textContent = '🚀 Chop etish & Saqlash';
+    }
+    const titleInput = document.getElementById('post-title-input');
+    if (titleInput) {
+        titleInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => titleInput.focus(), 150);
+    }
+}
+
+function showPostFeedback(message, type = 'success') {
+    const el = document.getElementById('post-feedback-msg');
+    if (!el) return;
+    el.className = `post-feedback ${type}`;
+    el.innerHTML = message;
+    el.style.display = 'flex';
+    setTimeout(() => {
+        if (el) el.style.display = 'none';
+    }, 4500);
+}
+
+async function loadCreatorPosts() {
+    const listEl = document.getElementById('creator-posts-list');
+    const badgeEl = document.getElementById('posts-count-badge');
+    if (!listEl) return;
+
+    try {
+        let posts = [];
+        try {
+            const res = await fetch('/api/admin/posts', { headers: _adminHeaders() });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.ok && Array.isArray(data.posts)) {
+                    posts = data.posts;
+                }
+            }
+        } catch (_) {}
+
+        if (!posts.length) {
+            try {
+                const local = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
+                if (Array.isArray(local) && local.length) posts = local;
+            } catch (_) {}
+        }
+
+        cachedPosts = posts;
+        if (badgeEl) badgeEl.textContent = `${posts.length} ta`;
+        const quickPostsEl = document.getElementById('quick-stat-posts');
+        if (quickPostsEl) quickPostsEl.textContent = posts.length;
+
+        if (!posts.length) {
+            listEl.innerHTML = '<div class="glz-empty">Hozircha maqolalar mavjud emas. Yuqoridagi formadan yangi post yarating!</div>';
+            return;
+        }
+
+        const sorted = [...posts].reverse();
+        listEl.innerHTML = sorted.map(post => {
+            const title = _esc(post.title || 'Nomsiz post');
+            const excerpt = _esc(post.excerpt || (post.content ? post.content.slice(0, 140) : ''));
+            const dateStr = post.createdAt ? new Date(post.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Yaqinda';
+            const tags = Array.isArray(post.tags) && post.tags.length 
+                ? post.tags.map(t => `<span style="font-size:10px;padding:2px 7px;border-radius:6px;background:rgba(45,212,191,0.15);color:var(--accent-color);">${_esc(t)}</span>`).join(' ')
+                : '';
+
+            return `
+                <div class="glz-row" data-post-id="${_esc(post.id)}">
+                    <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,rgba(45,212,191,0.2),rgba(56,189,248,0.2));display:grid;place-items:center;font-size:22px;flex-shrink:0;">✍️</div>
+                    <div class="info">
+                        <div class="t">${title}</div>
+                        <div class="m" style="margin-bottom:4px;">${excerpt}</div>
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <span style="font-size:11px;color:var(--text-muted);">📅 ${dateStr}</span>
+                            ${tags}
+                        </div>
+                    </div>
+                    <div class="acts">
+                        <button type="button" class="icon-btn" data-action="edit-post" data-id="${_esc(post.id)}" title="Tahrirlash">✏️</button>
+                        <button type="button" class="icon-btn danger" data-action="delete-post" data-id="${_esc(post.id)}" title="O'chirish">🗑️</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (e) {
+        console.warn('Postlarni yuklashda xato:', e);
+        listEl.innerHTML = '<div class="glz-empty" style="color:#f87171;">Postlarni yuklashda xatolik yuz berdi</div>';
+    }
+}
+
+function editCreatorPost(id) {
+    const post = cachedPosts.find(p => String(p.id) === String(id));
+    if (!post) return;
+
+    switchTab('posts');
+    const idInput = document.getElementById('post-id');
+    const titleInput = document.getElementById('post-title-input');
+    const excerptInput = document.getElementById('post-excerpt-input');
+    const tagsInput = document.getElementById('post-tags-input');
+    const contentInput = document.getElementById('post-content-input');
+    const modeBadge = document.getElementById('post-editor-mode-badge');
+    const saveBtn = document.getElementById('post-save-btn');
+
+    if (idInput) idInput.value = post.id;
+    if (titleInput) titleInput.value = post.title || '';
+    if (excerptInput) excerptInput.value = post.excerpt || '';
+    if (tagsInput) tagsInput.value = Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags || '');
+    if (contentInput) contentInput.value = post.content || '';
+    if (modeBadge) modeBadge.textContent = 'Tahrirlash: ' + (post.title ? post.title.slice(0, 20) + '...' : '');
+    if (saveBtn) saveBtn.textContent = '💾 O\'zgarishlarni saqlash';
+
+    if (titleInput) {
+        titleInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => titleInput.focus(), 150);
+    }
+}
+
+async function deleteCreatorPost(id) {
+    if (!confirm('Haqiqatan ham ushbu maqolani o\'chirmoqchimisiz?')) return;
+
+    try {
+        await fetch(`/api/admin/posts/${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+            headers: _adminHeaders()
+        }).catch(() => {});
+
+        try {
+            let local = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
+            local = local.filter(p => String(p.id) !== String(id));
+            localStorage.setItem('abdu_posts', JSON.stringify(local));
+        } catch (_) {}
+
+        await loadDashboardAndRealData(true);
+        loadCreatorPosts();
+    } catch (e) {
+        console.error('Postni o\'chirishda xato:', e);
+        alert('O\'chirishda xatolik yuz berdi');
+    }
+}
+
+async function handlePostEditorSubmit(e) {
+    e.preventDefault();
+    const idInput = document.getElementById('post-id');
+    const titleInput = document.getElementById('post-title-input');
+    const excerptInput = document.getElementById('post-excerpt-input');
+    const tagsInput = document.getElementById('post-tags-input');
+    const contentInput = document.getElementById('post-content-input');
+    const tgCheckbox = document.getElementById('post-telegram-notify');
+    const saveBtn = document.getElementById('post-save-btn');
+
+    const title = titleInput?.value.trim();
+    const content = contentInput?.value.trim();
+    if (!title || !content) {
+        showPostFeedback('Sarlavha va maqola matnini kiritish shart!', 'error');
+        return;
+    }
+
+    const postId = idInput?.value || ('post_' + Date.now());
+    const excerpt = excerptInput?.value.trim() || title.slice(0, 150);
+    const tags = tagsInput?.value ? tagsInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const isTelegramChecked = !!tgCheckbox?.checked;
+
+    if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = '⏳ Saqlanmoqda...';
+    }
+
+    const postPayload = {
+        id: postId,
+        title,
+        excerpt,
+        content,
+        tags,
+        published: true,
+        notifyTelegram: isTelegramChecked,
+        sendTelegram: isTelegramChecked,
+        createdAt: new Date().toISOString()
+    };
+
+    try {
+        // 1. Serverga saqlash (CMS API)
+        try {
+            await fetch('/api/admin/posts', {
+                method: 'POST',
+                headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify(postPayload)
+            });
+        } catch (apiErr) {
+            console.warn('Server posts API ga yuborishda ogohlantirish:', apiErr);
+        }
+
+        // 2. Telegram kanalga avtomatik e'lon yuborish (agar checkbox belgilangan bo'lsa)
+        if (isTelegramChecked) {
+            try {
+                await fetch('/api/admin/notify/telegram', {
+                    method: 'POST',
+                    headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify({ post: postPayload })
+                });
+            } catch (tgErr) {
+                console.warn('Telegram bildirishnoma yuborishda ogohlantirish:', tgErr);
+            }
+        }
+
+        // 3. LocalStorage va Cloudflare KV ga saqlash
+        try {
+            let local = [];
+            try { local = JSON.parse(localStorage.getItem('abdu_posts') || '[]'); } catch (_) { local = []; }
+            if (!Array.isArray(local)) local = [];
+            const idx = local.findIndex(p => String(p.id) === String(postPayload.id));
+            if (idx >= 0) {
+                local[idx] = Object.assign({}, local[idx], postPayload);
+            } else {
+                local.unshift(postPayload);
+            }
+            localStorage.setItem('abdu_posts', JSON.stringify(local));
+
+            const pin = sessionStorage.getItem('kay_admin_pin');
+            if (pin) {
+                fetch('/posts', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-pin': pin },
+                    body: JSON.stringify(local)
+                }).catch(() => {});
+            }
+        } catch (locErr) {
+            console.warn('Local/KV saqlashda ogohlantirish:', locErr);
+        }
+
+        // Formani tozalash
+        if (idInput) idInput.value = '';
+        if (titleInput) titleInput.value = '';
+        if (excerptInput) excerptInput.value = '';
+        if (tagsInput) tagsInput.value = '';
+        if (contentInput) contentInput.value = '';
+        const modeBadge = document.getElementById('post-editor-mode-badge');
+        if (modeBadge) modeBadge.textContent = 'Yangi Post';
+
+        showPostFeedback(
+            isTelegramChecked 
+                ? '✅ Post muvaffaqiyatli saqlandi va Telegram kanalga e\'lon qilindi!' 
+                : '✅ Post muvaffaqiyatli saqlandi va chop etildi!',
+            'success'
+        );
+
+        await loadDashboardAndRealData(true);
+        loadCreatorPosts();
+    } catch (err) {
+        console.error('Post saqlash xatosi:', err);
+        showPostFeedback('Xatolik: ' + (err.message || 'Saqlab bo\'lmadi'), 'error');
+    } finally {
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.textContent = '🚀 Chop etish & Saqlash';
+        }
+    }
+}
+
+// Global hodisalar va tinglovchilar
+document.getElementById('quick-new-post-btn')?.addEventListener('click', focusNewPostEditor);
+document.getElementById('post-editor-form')?.addEventListener('submit', handlePostEditorSubmit);
+document.getElementById('post-reset-btn')?.addEventListener('click', () => {
+    const idInput = document.getElementById('post-id');
+    const titleInput = document.getElementById('post-title-input');
+    const excerptInput = document.getElementById('post-excerpt-input');
+    const tagsInput = document.getElementById('post-tags-input');
+    const contentInput = document.getElementById('post-content-input');
+    const modeBadge = document.getElementById('post-editor-mode-badge');
+    const saveBtn = document.getElementById('post-save-btn');
+    if (idInput) idInput.value = '';
+    if (titleInput) titleInput.value = '';
+    if (excerptInput) excerptInput.value = '';
+    if (tagsInput) tagsInput.value = '';
+    if (contentInput) contentInput.value = '';
+    if (modeBadge) modeBadge.textContent = 'Yangi Post';
+    if (saveBtn) saveBtn.textContent = '🚀 Chop etish & Saqlash';
+});
+
+window.editCreatorPost = editCreatorPost;
+window.deleteCreatorPost = deleteCreatorPost;
+window.focusNewPostEditor = focusNewPostEditor;
+

@@ -101,7 +101,10 @@ router.post('/posts', (req, res) => {
         likes: 0
     });
 
-    if (newPost.published) broadcastPost(newPost).catch(() => {});
+    const shouldNotifyTg = req.body.telegram === true || req.body.sendTelegram === true || req.body.notifyTelegram === true;
+    if (newPost.published && (shouldNotifyTg || (req.body.notifyTelegram !== false && req.body.sendTelegram !== false && req.body.telegram !== false))) {
+        broadcastPost(newPost).catch(() => {});
+    }
     res.json({ ok: true, post: newPost });
 });
 
@@ -111,6 +114,22 @@ router.delete('/posts/:id', (req, res) => {
         return res.status(404).json({ ok: false, error: "Post topilmadi" });
     }
     res.json({ ok: true, message: "Post muvaffaqiyatli o'chirildi" });
+});
+
+// 6. Telegram kanalga xabarnoma yuborish xizmati
+router.post('/notify/telegram', async (req, res) => {
+    try {
+        const { post, message } = req.body || {};
+        const targetPost = post || {
+            title: message || 'Yangi xabar',
+            excerpt: message ? message.slice(0, 160) : '',
+            content: message || ''
+        };
+        const result = await broadcastPost(targetPost);
+        res.json({ ok: true, result });
+    } catch (err) {
+        res.status(500).json({ ok: false, error: err.message });
+    }
 });
 
 // 6. Zaxira nusxa (Backup) yuklab olish

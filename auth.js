@@ -412,6 +412,7 @@
         const content = document.getElementById('myresults-content');
         if (!modal || !content) return;
 
+        const activeTab = ['results', 'bookmarks', 'badges', 'edit'].includes(tab) ? tab : 'results';
         const user = (window.Auth && Auth.user) ? Auth.user : { name: 'Foydalanuvchi', username: 'mehmon' };
         const isAdmin = window.Auth ? Auth.isAdmin() : false;
         const hist = (window.Auth && Auth.getLocalResults) ? Auth.getLocalResults() : [];
@@ -431,7 +432,14 @@
 
         const avgPct = totalQuestions ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
         const xp = localStorage.getItem('abdu_xp') || '0';
-        const streak = localStorage.getItem('abdu_streak') || '1';
+        
+        let streakNum = 1;
+        try {
+            const ug = JSON.parse(localStorage.getItem('user_gamification') || '{}');
+            streakNum = parseInt(localStorage.getItem('abdu_streak') || ug.count || '1', 10);
+        } catch (e) {
+            streakNum = parseInt(localStorage.getItem('abdu_streak') || '1', 10);
+        }
 
         const nameStr = user.name || user.username || 'Foydalanuvchi';
         const initial = safeEscape(nameStr.charAt(0).toUpperCase());
@@ -443,13 +451,16 @@
             avatarHtml = `<div id="profile-avatar-display" style="width:58px;height:58px;border-radius:50%;background:var(--glass-bg-strong,rgba(255,255,255,0.08));display:flex;align-items:center;justify-content:center;font-size:30px;border:1px solid var(--glass-border);box-shadow:0 4px 14px rgba(0,0,0,0.15);flex-shrink:0;">${safeEscape(user.photo)}</div>`;
         }
 
+        // ==========================================
+        // 1. NATIJALAR TABI (German test history)
+        // ==========================================
         let historyRows = '';
         if (!hist.length) {
             historyRows = `
                 <div style="text-align:center;padding:22px;color:var(--text-secondary);background:var(--glass-bg);border-radius:12px;border:1px solid var(--glass-border);font-size:13px;">
                     <div style="font-size:26px;margin-bottom:6px;">📚</div>
                     <div>Hali biror test ishlanmadi. Bilimingizni sinash uchun Nemis tili testlaridan boshlang!</div>
-                    <a href="https://deutsch.abdugofforov.uz/" target="_blank" rel="noopener noreferrer" class="btn-primary" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:7px 16px;font-size:12px;text-decoration:none;">
+                    <a href="deutsch.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:7px 16px;font-size:12px;text-decoration:none;">
                         🇩🇪 Nemis tili bo'limiga o'tish
                     </a>
                 </div>
@@ -500,44 +511,193 @@
             }).join('');
         }
 
-        const roleBadge = isAdmin
-            ? `<span style="font-size:11px;background:linear-gradient(135deg,#8b5cf6,#38bdf8);color:#fff;padding:2px 8px;border-radius:999px;font-weight:700;box-shadow:0 2px 6px rgba(139,92,246,0.3);">👑 Admin</span>`
-            : `<span style="font-size:11px;background:rgba(56,189,248,0.15);color:#38bdf8;padding:2px 8px;border-radius:999px;font-weight:600;border:1px solid rgba(56,189,248,0.3);">🎓 O'quvchi</span>`;
-
-        const adminActions = isAdmin ? `
-            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-                <a href="kay.html" class="btn-secondary" style="padding:6px 12px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;border-radius:8px;">
-                    ⚙️ Admin paneli
-                </a>
-                <button type="button" data-action="profile-zen-write" class="btn-primary" style="padding:6px 12px;font-size:12px;display:inline-flex;align-items:center;gap:4px;border-radius:8px;">
-                    ✍️ Yangi maqola
-                </button>
-            </div>
-        ` : '';
-
-        content.innerHTML = `
-            <!-- Profile Header Card -->
-            <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:16px;margin-bottom:18px;flex-wrap:wrap;text-align:left;">
-                ${avatarHtml}
-                <div style="flex:1;min-width:180px;">
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                        <h3 style="font-family:'Playfair Display',serif;font-size:20px;margin:0;color:var(--text-primary);font-weight:700;">${safeEscape(nameStr)}</h3>
-                        ${roleBadge}
-                        <button type="button" data-action="toggle-edit-profile" class="btn-secondary" style="padding:4px 10px;font-size:12px;border-radius:6px;cursor:pointer;" title="Profilni tahrirlash">✏️ Tahrirlash</button>
-                    </div>
-                    <p style="color:var(--text-secondary);font-size:13px;margin:3px 0 0 0;">@${safeEscape(user.username || 'user')}</p>
-                    <div style="display:flex;gap:8px;margin-top:8px;font-size:12px;flex-wrap:wrap;">
-                        <span style="background:rgba(147,51,234,0.15);color:var(--color-purple-light,#a855f7);padding:3px 8px;border-radius:8px;font-weight:600;">🔥 ${streak} Kunlik Streak</span>
-                        <span style="background:rgba(59,130,246,0.15);color:#60a5fa;padding:3px 8px;border-radius:8px;font-weight:600;">⭐ ${xp} XP</span>
-                    </div>
-                    ${adminActions}
+        const tab1Content = `
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;">
+                <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:10px;text-align:center;">
+                    <div style="font-size:18px;font-weight:700;color:var(--color-purple-light,#8b5cf6);">${totalTests}</div>
+                    <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Testlar</div>
+                </div>
+                <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:10px;text-align:center;">
+                    <div style="font-size:18px;font-weight:700;color:#22c55e;">${totalCorrect}</div>
+                    <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">To'g'ri 🟢</div>
+                </div>
+                <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:10px;text-align:center;">
+                    <div style="font-size:18px;font-weight:700;color:#ef4444;">${totalWrong}</div>
+                    <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Xatolar 🔴</div>
+                </div>
+                <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:10px;text-align:center;">
+                    <div style="font-size:18px;font-weight:700;color:#fbbf24;">${avgPct}%</div>
+                    <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">O'rtacha</div>
                 </div>
             </div>
 
-            <!-- Inline Profile Edit Section -->
-            <div id="profile-edit-section" style="display:${tab === 'edit' ? 'block' : 'none'};padding:18px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.25);border-radius:16px;margin-bottom:20px;text-align:left;">
+            <h4 style="text-align:left;font-size:14px;margin:0 0 10px 0;color:var(--text-primary);font-weight:600;">
+                📜 Ishlangan Testlar va Faollik:
+            </h4>
+            <div style="max-height:280px;overflow-y:auto;padding-right:4px;">
+                ${historyRows}
+            </div>
+        `;
+
+        // ==========================================
+        // 2. SAQLANGANLAR TABI (Bookmarks)
+        // ==========================================
+        const bookmarkedIds = (window.Bookmarks && typeof window.Bookmarks.getBookmarks === 'function')
+            ? window.Bookmarks.getBookmarks()
+            : (typeof getBookmarks === 'function' ? getBookmarks() : []);
+
+        let allPosts = [];
+        if (Array.isArray(window.posts) && window.posts.length) {
+            allPosts = window.posts;
+        } else if (window.Store && window.Store.cache && Array.isArray(window.Store.cache.abdu_posts)) {
+            allPosts = window.Store.cache.abdu_posts;
+        } else {
+            try {
+                const ls = localStorage.getItem('abdu_posts');
+                if (ls) allPosts = JSON.parse(ls);
+            } catch (e) {}
+        }
+
+        let tab2Content = '';
+        if (!bookmarkedIds.length) {
+            tab2Content = `
+                <div style="text-align:center;padding:32px 16px;background:var(--glass-bg);border:1px dashed var(--glass-border);border-radius:14px;">
+                    <div style="font-size:36px;margin-bottom:8px;">🔖</div>
+                    <h4 style="margin:0 0 6px 0;font-size:15px;color:var(--text-primary);font-weight:700;">Hozircha saqlangan maqolalar yo'q</h4>
+                    <p style="margin:0 auto 14px;max-width:360px;font-size:12.5px;color:var(--text-secondary);line-height:1.5;">O'zingizga yoqqan maqolalardagi xatcho'p (🔖) tugmasini bosib, ularni keyinroq o'qish uchun bu yerda to'plashingiz mumkin.</p>
+                    <button type="button" data-action="close-profile-modal" class="btn-primary" style="padding:6px 16px;font-size:12px;">Maqolalarni ko'rish</button>
+                </div>
+            `;
+        } else {
+            const savedItems = bookmarkedIds.map(bmId => {
+                const found = allPosts.find(p => String(p.id) === String(bmId));
+                if (found) return found;
+                return { id: bmId, title: "Saqlangan maqola #" + bmId, category: "Maqola", date: new Date().toISOString() };
+            });
+
+            tab2Content = `
+                <div style="display:flex;flex-direction:column;gap:10px;max-height:360px;overflow-y:auto;padding-right:4px;">
+                    ${savedItems.map(p => {
+                        const pImg = p.image ? safeEscape(p.image) : '';
+                        const thumb = pImg
+                            ? `<div style="width:48px;height:48px;border-radius:10px;background-image:url('${pImg}');background-size:cover;background-position:center;flex-shrink:0;"></div>`
+                            : `<div style="width:48px;height:48px;border-radius:10px;background:var(--tag-bg,rgba(139,92,246,0.15));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📖</div>`;
+                        const pDate = p.date ? new Date(p.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short' }) : '';
+                        return `
+                            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;transition:all 0.2s ease;">
+                                ${thumb}
+                                <div style="flex:1;min-width:0;text-align:left;">
+                                    <div style="font-size:11px;color:var(--color-purple-light,#8b5cf6);font-weight:600;margin-bottom:2px;">${safeEscape(p.category || 'Maqola')} • ${pDate}</div>
+                                    <h5 style="margin:0;font-size:13.5px;color:var(--text-primary);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${safeEscape(p.title || 'Sarlavhasiz')}</h5>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                                    <button type="button" data-action="modal-open-bookmark" data-id="${p.id}" class="btn-primary" style="padding:6px 12px;font-size:11.5px;border-radius:8px;cursor:pointer;">O'qish &rarr;</button>
+                                    <button type="button" data-action="modal-remove-bookmark" data-id="${p.id}" title="Olib tashlash" class="btn-icon" style="width:32px;height:32px;border-radius:8px;border:1px solid var(--glass-border);background:transparent;color:#ef4444;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 3. YUTUQLAR TABI (Gamification Badges)
+        // ==========================================
+        const badges = [
+            {
+                id: 'first_test',
+                icon: '⚡',
+                name: 'Birinchi test',
+                desc: 'Birinchi nemis tili testini muvaffaqiyatli topshirdingiz',
+                unlocked: totalTests >= 1,
+                progress: `${Math.min(totalTests, 1)} / 1 test`
+            },
+            {
+                id: 'streak_7',
+                icon: '🔥',
+                name: '7 kunlik streak',
+                desc: 'Ketma-ket 7 kun davomida faol bilim oldingiz',
+                unlocked: streakNum >= 7,
+                progress: `${streakNum} / 7 kun`
+            },
+            {
+                id: 'avid_reader',
+                icon: '📚',
+                name: 'Faol kitobxon',
+                desc: 'Maqolalarni mutolaa qilib, 3 yoki undan ko\'p maqolani saqlab qo\'ydingiz',
+                unlocked: bookmarkedIds.length >= 3,
+                progress: `${bookmarkedIds.length} / 3 maqola`
+            },
+            {
+                id: 'scholar',
+                icon: '👑',
+                name: 'Bilimdon',
+                desc: 'Testlarda a\'lo natijalarga erishgan intiluvchan o\'quvchi',
+                unlocked: (totalCorrect >= 20) || (avgPct >= 80 && totalTests >= 2) || (totalTests >= 5),
+                progress: `${totalCorrect} / 20 to'g'ri`
+            },
+            {
+                id: 'explorer',
+                icon: '🌟',
+                name: 'Yangi sayohatchi',
+                desc: 'Platformaga a\'zo bo\'lib shaxsiy profilingizni yaratdingiz',
+                unlocked: true,
+                progress: 'Erishildi ✓'
+            }
+        ];
+        const unlockedCount = badges.filter(b => b.unlocked).length;
+
+        const tab3Content = `
+            <div style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;background:var(--tag-bg,rgba(139,92,246,0.1));padding:10px 14px;border-radius:12px;border:1px solid var(--glass-border);">
+                <div>
+                    <span style="font-weight:700;color:var(--text-primary);font-size:14px;">Erishilgan yutuqlar:</span>
+                    <span style="font-size:13px;color:var(--color-purple-light,#8b5cf6);font-weight:700;margin-left:6px;">${unlockedCount} / ${badges.length}</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);">Gamifikatsiya nishonlari</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));gap:12px;max-height:360px;overflow-y:auto;padding-right:4px;">
+                ${badges.map(b => {
+                    if (b.unlocked) {
+                        return `
+                            <div style="display:flex;gap:12px;padding:12px;background:linear-gradient(135deg, rgba(139,92,246,0.12), rgba(56,189,248,0.08));border:1px solid rgba(139,92,246,0.35);border-radius:14px;text-align:left;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(139,92,246,0.1);">
+                                <div style="font-size:28px;line-height:1;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:rgba(139,92,246,0.2);flex-shrink:0;">${b.icon}</div>
+                                <div style="flex:1;min-width:0;">
+                                    <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:3px;">
+                                        <h5 style="margin:0;font-size:13.5px;font-weight:700;color:var(--text-primary);">${safeEscape(b.name)}</h5>
+                                        <span style="font-size:10px;padding:2px 6px;border-radius:6px;background:rgba(34,197,94,0.15);color:#22c55e;font-weight:700;">✓ Ochiq</span>
+                                    </div>
+                                    <p style="margin:0 0 6px 0;font-size:11.5px;color:var(--text-secondary);line-height:1.4;">${safeEscape(b.desc)}</p>
+                                    <div style="font-size:10.5px;font-weight:600;color:var(--color-purple-light,#8b5cf6);">${safeEscape(b.progress)}</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div style="display:flex;gap:12px;padding:12px;background:var(--glass-bg);border:1px dashed var(--glass-border);border-radius:14px;text-align:left;opacity:0.65;position:relative;">
+                                <div style="font-size:26px;line-height:1;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:var(--tag-bg,rgba(0,0,0,0.1));filter:grayscale(1);flex-shrink:0;">${b.icon}</div>
+                                <div style="flex:1;min-width:0;">
+                                    <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:3px;">
+                                        <h5 style="margin:0;font-size:13.5px;font-weight:700;color:var(--text-primary);">${safeEscape(b.name)}</h5>
+                                        <span style="font-size:10px;padding:2px 6px;border-radius:6px;background:rgba(148,163,184,0.15);color:var(--text-muted);font-weight:600;">🔒 Qulflangan</span>
+                                    </div>
+                                    <p style="margin:0 0 6px 0;font-size:11.5px;color:var(--text-secondary);line-height:1.4;">${safeEscape(b.desc)}</p>
+                                    <div style="font-size:10.5px;font-weight:600;color:var(--text-muted);">Jarayon: ${safeEscape(b.progress)}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }).join('')}
+            </div>
+        `;
+
+        // ==========================================
+        // 4. TAHRIRLASH TABI (Profile Edit)
+        // ==========================================
+        const tab4Content = `
+            <div id="profile-edit-section" style="padding:18px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.25);border-radius:16px;text-align:left;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-                    <h4 style="margin:0;font-size:16px;color:var(--text-primary);font-weight:600;">✏️ Profilni Tahrirlash</h4>
+                    <h4 style="margin:0;font-size:16px;color:var(--text-primary);font-weight:600;">✏️ Profil Ma'lumotlarini Tahrirlash</h4>
                     <span style="font-size:12px;color:var(--text-muted);">${isAdmin ? '👑 Admin profili' : '🎓 Foydalanuvchi'}</span>
                 </div>
                 
@@ -577,37 +737,77 @@
                     </div>
 
                     <div style="display:flex;gap:10px;justify-content:flex-end;">
-                        <button type="button" data-action="toggle-edit-profile" class="btn-secondary" style="padding:8px 16px;font-size:13px;">Bekor qilish</button>
+                        <button type="button" data-action="switch-learner-tab" data-tab="results" class="btn-secondary" style="padding:8px 16px;font-size:13px;">Bekor qilish</button>
                         <button type="submit" id="save-profile-btn" class="btn-primary" style="padding:8px 20px;font-size:13px;font-weight:600;">Saqlash</button>
                     </div>
                 </form>
             </div>
+        `;
 
-            <!-- Statistics Grid -->
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;">
-                <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:10px;text-align:center;">
-                    <div style="font-size:18px;font-weight:700;color:var(--color-purple-light,#8b5cf6);">${totalTests}</div>
-                    <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Testlar</div>
-                </div>
-                <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:10px;text-align:center;">
-                    <div style="font-size:18px;font-weight:700;color:#22c55e;">${totalCorrect}</div>
-                    <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">To'g'ri 🟢</div>
-                </div>
-                <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:10px;text-align:center;">
-                    <div style="font-size:18px;font-weight:700;color:#ef4444;">${totalWrong}</div>
-                    <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Xatolar 🔴</div>
-                </div>
-                <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:12px;padding:10px;text-align:center;">
-                    <div style="font-size:18px;font-weight:700;color:#fbbf24;">${avgPct}%</div>
-                    <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">O'rtacha</div>
+        const roleBadge = isAdmin
+            ? `<span style="font-size:11px;background:linear-gradient(135deg,#8b5cf6,#38bdf8);color:#fff;padding:2px 8px;border-radius:999px;font-weight:700;box-shadow:0 2px 6px rgba(139,92,246,0.3);">👑 Admin</span>`
+            : `<span style="font-size:11px;background:rgba(56,189,248,0.15);color:#38bdf8;padding:2px 8px;border-radius:999px;font-weight:600;border:1px solid rgba(56,189,248,0.3);">🎓 O'quvchi</span>`;
+
+        const adminActions = isAdmin ? `
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+                <a href="kay.html" class="btn-secondary" style="padding:6px 12px;font-size:12px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;border-radius:8px;">
+                    ⚙️ Admin paneli
+                </a>
+                <button type="button" data-action="profile-zen-write" class="btn-primary" style="padding:6px 12px;font-size:12px;display:inline-flex;align-items:center;gap:4px;border-radius:8px;">
+                    ✍️ Yangi maqola
+                </button>
+            </div>
+        ` : '';
+
+        // Tab tugmalari navigatsiyasi
+        const tabNavHtml = `
+            <div class="learner-hub-tabs" style="display:flex;gap:6px;padding:4px;background:var(--tag-bg,rgba(0,0,0,0.15));border:1px solid var(--glass-border);border-radius:12px;margin-bottom:18px;overflow-x:auto;">
+                <button type="button" data-action="switch-learner-tab" data-tab="results" class="learner-tab-btn ${activeTab === 'results' ? 'active' : ''}" style="flex:1;padding:8px 10px;border:none;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all 0.2s ease;white-space:nowrap;${activeTab === 'results' ? 'background:var(--color-purple-light,#8b5cf6);color:#fff;box-shadow:0 2px 8px rgba(139,92,246,0.35);' : 'background:transparent;color:var(--text-secondary);'}">
+                    <span>📊</span> <span>Natijalar</span>
+                </button>
+                <button type="button" data-action="switch-learner-tab" data-tab="bookmarks" class="learner-tab-btn ${activeTab === 'bookmarks' ? 'active' : ''}" style="flex:1;padding:8px 10px;border:none;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all 0.2s ease;white-space:nowrap;${activeTab === 'bookmarks' ? 'background:var(--color-purple-light,#8b5cf6);color:#fff;box-shadow:0 2px 8px rgba(139,92,246,0.35);' : 'background:transparent;color:var(--text-secondary);'}">
+                    <span>🔖</span> <span>Saqlanganlar (${bookmarkedIds.length})</span>
+                </button>
+                <button type="button" data-action="switch-learner-tab" data-tab="badges" class="learner-tab-btn ${activeTab === 'badges' ? 'active' : ''}" style="flex:1;padding:8px 10px;border:none;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all 0.2s ease;white-space:nowrap;${activeTab === 'badges' ? 'background:var(--color-purple-light,#8b5cf6);color:#fff;box-shadow:0 2px 8px rgba(139,92,246,0.35);' : 'background:transparent;color:var(--text-secondary);'}">
+                    <span>🏆</span> <span>Yutuqlar (${unlockedCount}/${badges.length})</span>
+                </button>
+                <button type="button" data-action="switch-learner-tab" data-tab="edit" class="learner-tab-btn ${activeTab === 'edit' ? 'active' : ''}" style="flex:1;padding:8px 10px;border:none;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all 0.2s ease;white-space:nowrap;${activeTab === 'edit' ? 'background:var(--color-purple-light,#8b5cf6);color:#fff;box-shadow:0 2px 8px rgba(139,92,246,0.35);' : 'background:transparent;color:var(--text-secondary);'}">
+                    <span>✏️</span> <span>Tahrirlash</span>
+                </button>
+            </div>
+        `;
+
+        let currentTabBody = tab1Content;
+        if (activeTab === 'bookmarks') currentTabBody = tab2Content;
+        else if (activeTab === 'badges') currentTabBody = tab3Content;
+        else if (activeTab === 'edit') currentTabBody = tab4Content;
+
+        content.innerHTML = `
+            <!-- Profile Header Card -->
+            <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:16px;margin-bottom:18px;flex-wrap:wrap;text-align:left;">
+                ${avatarHtml}
+                <div style="flex:1;min-width:180px;">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <h3 style="font-family:'Playfair Display',serif;font-size:20px;margin:0;color:var(--text-primary);font-weight:700;">${safeEscape(nameStr)}</h3>
+                        ${roleBadge}
+                        <button type="button" data-action="switch-learner-tab" data-tab="edit" class="btn-secondary" style="padding:4px 10px;font-size:12px;border-radius:6px;cursor:pointer;" title="Profilni tahrirlash">✏️ Tahrirlash</button>
+                    </div>
+                    <p style="color:var(--text-secondary);font-size:13px;margin:3px 0 0 0;">@${safeEscape(user.username || 'user')}</p>
+                    <div style="display:flex;gap:8px;margin-top:8px;font-size:12px;flex-wrap:wrap;">
+                        <span style="background:rgba(147,51,234,0.15);color:var(--color-purple-light,#a855f7);padding:3px 8px;border-radius:8px;font-weight:600;">🔥 ${streakNum} Kunlik Streak</span>
+                        <span style="background:rgba(59,130,246,0.15);color:#60a5fa;padding:3px 8px;border-radius:8px;font-weight:600;">⭐ ${xp} XP</span>
+                        <span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 8px;border-radius:8px;font-weight:600;">🔖 ${bookmarkedIds.length} Saqlangan</span>
+                    </div>
+                    ${adminActions}
                 </div>
             </div>
 
-            <h4 style="text-align:left;font-size:14px;margin:0 0 10px 0;color:var(--text-primary);font-weight:600;">
-                📜 Ishlangan Testlar va Faollik:
-            </h4>
-            <div style="max-height:260px;overflow-y:auto;padding-right:4px;">
-                ${historyRows}
+            <!-- Learner Hub Tab Bar -->
+            ${tabNavHtml}
+
+            <!-- Tab Content Panel -->
+            <div class="learner-tab-content-panel">
+                ${currentTabBody}
             </div>
 
             <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;">
@@ -621,9 +821,9 @@
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        if (tab === 'edit') {
+        if (activeTab === 'edit') {
             const nameInput = document.getElementById('edit-profile-name');
-            if (nameInput) setTimeout(() => nameInput.focus(), 150);
+            if (nameInput && typeof nameInput.focus === 'function') setTimeout(() => nameInput.focus(), 150);
         }
     }
 
@@ -634,8 +834,10 @@
             sec.style.display = isHidden ? 'block' : 'none';
             if (isHidden) {
                 const nameInput = document.getElementById('edit-profile-name');
-                if (nameInput) nameInput.focus();
+                if (nameInput && typeof nameInput.focus === 'function') nameInput.focus();
             }
+        } else {
+            openMyResults('edit');
         }
     }
 
@@ -690,7 +892,7 @@
         const res = await Auth.updateProfile(name, photo, extra);
         if (res.ok) {
             notifyToast("✏️ Profil muvaffaqiyatli yangilandi!", "success");
-            openMyResults(); // Yangilangan holatda modalni qayta chizamiz
+            openMyResults('edit'); // Yangilangan holatda modalni qayta chizamiz
         } else {
             notifyToast(res.message || "Profilni yangilashda xatolik yuz berdi", "error");
         }
@@ -705,6 +907,63 @@
     document.addEventListener('click', (e) => {
         const target = e.target;
         if (!target) return;
+
+        // Tab almashtirish
+        const switchTabBtn = target.closest('[data-action="switch-learner-tab"]');
+        if (switchTabBtn) {
+            e.preventDefault();
+            const tabName = switchTabBtn.dataset.tab;
+            openMyResults(tabName);
+            return;
+        }
+
+        // Bookmark maqolani ochish
+        const openBmBtn = target.closest('[data-action="modal-open-bookmark"]');
+        if (openBmBtn) {
+            e.preventDefault();
+            const postId = openBmBtn.dataset.id;
+            const modal = document.getElementById('myresults-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            if (typeof window.openPostDetail === 'function') {
+                window.openPostDetail(isNaN(postId) ? postId : Number(postId));
+            } else {
+                window.location.href = `/?post=${postId}`;
+            }
+            return;
+        }
+
+        // Bookmark maqolani o'chirish
+        const removeBmBtn = target.closest('[data-action="modal-remove-bookmark"]');
+        if (removeBmBtn) {
+            e.preventDefault();
+            const postId = removeBmBtn.dataset.id;
+            if (window.Bookmarks && typeof window.Bookmarks.removeBookmark === 'function') {
+                window.Bookmarks.removeBookmark(postId);
+            } else if (typeof window.removeBookmark === 'function') {
+                window.removeBookmark(postId);
+            }
+            notifyToast("🔖 Xatcho'p olib tashlandi", "info");
+            if (typeof window.updateBookmarkUI === 'function') {
+                window.updateBookmarkUI(postId, false);
+            }
+            openMyResults('bookmarks');
+            return;
+        }
+
+        // Modalni bekor qilish / yopish
+        const closeProfileBtn = target.closest('[data-action="close-profile-modal"]');
+        if (closeProfileBtn) {
+            e.preventDefault();
+            const modal = document.getElementById('myresults-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            return;
+        }
 
         // Emoji tanlash
         const emojiBtn = target.closest('[data-action="select-profile-photo"]');

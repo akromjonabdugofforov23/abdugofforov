@@ -154,7 +154,8 @@ class Database {
             usersCount: this.getCollection('users').length,
             postsCount: this.getCollection('posts').length,
             commentsCount: this.getCollection('comments').length,
-            resultsCount: this.getCollection('results').length
+            resultsCount: this.getCollection('results').length,
+            testsCount: this.getCollection('results').length
         };
     }
 }
