@@ -3335,6 +3335,8 @@ function openSecretGateModal() {
         submitBtn.textContent = 'Kirish';
     }
 
+    modal.style.display = 'flex';
+    modal.style.visibility = 'visible';
     modal.style.opacity = '1';
     modal.style.pointerEvents = 'auto';
     const box = modal.querySelector('.stealth-gate-box');
@@ -3420,10 +3422,20 @@ async function handleSecretGateSubmit(e) {
 window.openSecretGateModal = openSecretGateModal;
 window.closeSecretGateModal = closeSecretGateModal;
 
-// Hotkeys: Ctrl+Alt+K (Secret Knock) va Cmd/Ctrl+K (Search)
+// Hotkeys: Ctrl+Shift+K, Ctrl+Alt+K, Alt+K (Secret Knock) va Cmd/Ctrl+K (Search)
 document.addEventListener('keydown', (e) => {
-    // 1. Secret Knock hotkey: Ctrl + Alt + K (yoki Cmd + Alt + K)
-    if ((e.metaKey || e.ctrlKey) && e.altKey && (e.key === 'k' || e.key === 'K' || e.code === 'KeyK')) {
+    const isK = (e.key === 'k' || e.key === 'K' || e.key === 'л' || e.key === 'Л' || e.code === 'KeyK');
+    const isCtrlOrCmd = e.metaKey || e.ctrlKey;
+
+    // 1. Secret Knock hotkey:
+    //  - Ctrl + Shift + K (eng qulay va Windows/drayverlar to'smaydi)
+    //  - Ctrl + Alt + K (yoki Cmd + Alt + K)
+    //  - Alt + K
+    const isSecretKnock = (isCtrlOrCmd && e.shiftKey && isK) ||
+                          (isCtrlOrCmd && e.altKey && isK) ||
+                          (!isCtrlOrCmd && e.altKey && isK);
+
+    if (isSecretKnock) {
         e.preventDefault();
         e.stopPropagation();
         openSecretGateModal();
@@ -3436,8 +3448,8 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-    // 2. Cmd/Ctrl + K shortcut to focus command bar search input (faqat Alt bosilmaganda)
-    if ((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === 'k' || e.key === 'K')) {
+    // 2. Cmd/Ctrl + K shortcut to focus command bar search input (faqat Alt va Shift bosilmaganda)
+    if (isCtrlOrCmd && !e.altKey && !e.shiftKey && isK) {
         e.preventDefault();
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
@@ -3445,16 +3457,15 @@ document.addEventListener('keydown', (e) => {
             searchInput.select();
         }
     }
-});
+}, true);
 
-// Secret Knock: Logo 5 marta ketma-ket bosilganda (3 soniya ichida)
+// Secret Knock: Logo 3 marta ketma-ket bosilganda (3.5 soniya ichida)
 let _logoKnockClicks = [];
 function handleLogoKnockClick(e) {
     const now = Date.now();
     _logoKnockClicks.push(now);
-    // Faqat so'nggi 3000ms ichidagi bosishlarni saqlaymiz
-    _logoKnockClicks = _logoKnockClicks.filter(t => now - t <= 3000);
-    if (_logoKnockClicks.length >= 5) {
+    _logoKnockClicks = _logoKnockClicks.filter(t => now - t <= 3500);
+    if (_logoKnockClicks.length >= 3) {
         _logoKnockClicks = [];
         if (e && typeof e.preventDefault === 'function') e.preventDefault();
         openSecretGateModal();
