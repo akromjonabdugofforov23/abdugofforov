@@ -38,6 +38,10 @@
                 this.user = data.user;
                 localStorage.setItem(TOKEN_KEY, data.token);
                 localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+                if (this.isAdmin()) {
+                    sessionStorage.setItem('kay_admin', 'true');
+                    sessionStorage.setItem('kay_admin_token', data.token);
+                }
                 this.updateUIState();
             }
             return data;
@@ -55,6 +59,10 @@
                 this.user = data.user;
                 localStorage.setItem(TOKEN_KEY, data.token);
                 localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+                if (this.isAdmin()) {
+                    sessionStorage.setItem('kay_admin', 'true');
+                    sessionStorage.setItem('kay_admin_token', data.token);
+                }
                 this.updateUIState();
             }
             return data;

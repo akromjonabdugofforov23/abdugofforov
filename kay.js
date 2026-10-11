@@ -36,19 +36,18 @@ async function initKay() {
             }
         } catch (_) {}
 
-        // Token yaroqsiz bo'lsa — darhol / ga yo'naltiramiz
+        // Token yaroqsiz bo'lsa — PIN ekranga o'tamiz
         sessionStorage.removeItem('kay_admin');
         sessionStorage.removeItem('kay_admin_token');
-        document.documentElement.style.display = 'none';
-        try { sessionStorage.setItem('stealth_notice', "Sahifa topilmadi (404)"); } catch (_) {}
-        window.location.replace('/');
+        showPinScreen();
         return;
     }
 
     // 2. Foydalanuvchi ma'lumotlaridan adminlikni tekshirish
     try {
         const u = JSON.parse(localStorage.getItem('abdu_user_data') || localStorage.getItem('kay_auth_user') || 'null');
-        if (u && (u.role === 'admin' || (u.username && u.username.toLowerCase() === 'abdugofforov'))) {
+        const adminNames = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+        if (u && (u.role === 'admin' || (u.username && adminNames.includes(u.username.toLowerCase())))) {
             sessionStorage.setItem('kay_admin', 'true');
             if (u.token && !sessionStorage.getItem('kay_admin_token')) {
                 sessionStorage.setItem('kay_admin_token', u.token);
@@ -64,10 +63,8 @@ async function initKay() {
         document.documentElement.style.display = '';
         showAdminPanel();
     } else {
-        // Ruxsatsiz foydalanuvchini darhol yashirib, / ga yo'naltiramiz (Stealth 404)
-        document.documentElement.style.display = 'none';
-        try { sessionStorage.setItem('stealth_notice', "Sahifa topilmadi (404)"); } catch (_) {}
-        window.location.replace('/');
+        document.documentElement.style.display = '';
+        showPinScreen();
     }
 }
 

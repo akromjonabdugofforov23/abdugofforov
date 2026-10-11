@@ -38,6 +38,7 @@ export async function onRequestPost(context) {
       try {
         if (env.POSTS_KV) {
           token = await createSession(env, 'abdugofforov', { ip: getClientIp(request) });
+          await env.POSTS_KV.put(`auth:token:${token}`, 'abdugofforov', { expirationTtl: 30 * 24 * 3600 }).catch(() => {});
         }
       } catch (_) {}
       return jsonResponse({ success: true, ok: true, token }, 200, request, env);

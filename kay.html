@@ -5,23 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kay — Boshqaruv Paneli</title>
     <meta name="robots" content="noindex, nofollow">
-    <script>
-        (function() {
-            try {
-                var params = new URLSearchParams(window.location.search);
-                var urlToken = params.get('token');
-                var hasAdmin = sessionStorage.getItem('kay_admin') === 'true';
-                var adminToken = sessionStorage.getItem('kay_admin_token');
-                if (!hasAdmin && !urlToken && !adminToken) {
-                    document.documentElement.style.display = 'none';
-                    sessionStorage.setItem('stealth_notice', 'Sahifa topilmadi (404)');
-                    window.location.replace('/');
-                }
-            } catch (_) {
-                window.location.replace('/');
-            }
-        })();
-    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap">
@@ -532,7 +516,7 @@
 <body>
 
     <!-- ===== PIN EKRANI ===== -->
-    <div class="pin-screen" id="pin-screen" style="display:none;">
+    <div class="pin-screen" id="pin-screen">
         <div class="pin-avatar">A</div>
         <div class="pin-logo">Kay<span>.</span></div>
         <div class="pin-subtitle">Boshqaruv paneli — faqat siz uchun</div>

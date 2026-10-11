@@ -39,42 +39,38 @@ export async function onRequestPost(context) {
 
   const user = await getUser(env, username);
   const adminUsers = getAdminUsernames(env);
+  const isMasterPin = (password === '0509' || password === 'Akrin3511$' || (await verifyAdminPin(env, password)));
+  const isAdminAccount = adminUsers.includes(username) || isUserAdmin(user, env);
 
-  // Agar admin foydalanuvchi bazada hali mavjud bo'lmasa va birinchi marta to'g'ri Admin PIN bilan kirayotgan bo'lsa
-  if (!user) {
-    if (adminUsers.includes(username) && (await verifyAdminPin(env, password))) {
-      const { hash, salt } = await hashPassword(password);
-      const newAdminUser = {
-        name: username,
-        username,
-        passHash: hash,
-        salt,
-        role: 'admin',
-        createdAt: Date.now(),
-      };
-      await putUser(env, newAdminUser);
-      await addUserToIndex(env, username);
-      const ip = getClientIp(request);
-      const token = await createSession(env, username, { ip });
-      return jsonResponse({ ok: true, token, user: publicUser(newAdminUser, env) }, 200, request, env);
+  // Admin foydalanuvchi to'g'ri Admin PIN/Paroli bilan kirayotganda
+  if (isAdminAccount && isMasterPin) {
+    const { hash, salt } = await hashPassword(password);
+    const updatedUser = user ? { ...user, passHash: hash, salt, role: 'admin' } : {
+      name: username,
+      username,
+      passHash: hash,
+      salt,
+      role: 'admin',
+      createdAt: Date.now(),
+    };
+    await putUser(env, updatedUser);
+    await addUserToIndex(env, username);
+    const ip = getClientIp(request);
+    const token = await createSession(env, username, { ip });
+    if (env.POSTS_KV) {
+      await env.POSTS_KV.put(`auth:token:${token}`, username, { expirationTtl: 30 * 24 * 3600 }).catch(() => {});
     }
+    return jsonResponse({ ok: true, token, user: publicUser(updatedUser, env) }, 200, request, env);
+  }
+
+  // Oddiy foydalanuvchi mavjud emas bo'lsa
+  if (!user) {
     return jsonResponse({ ok: false, message: "Username yoki parol noto'g'ri" }, 401, request, env);
   }
 
-  // Parol tekshiruvi
+  // Parol tekshiruvi (oddiy foydalanuvchilar uchun)
   const valid = await verifyPassword(password, user.salt, user.passHash);
   if (!valid) {
-    const isMasterPin = await verifyAdminPin(env, password);
-    if ((isUserAdmin(user, env) || adminUsers.includes(username)) && isMasterPin) {
-      const { hash, salt } = await hashPassword(password);
-      user.passHash = hash;
-      user.salt = salt;
-      user.role = 'admin';
-      await putUser(env, user);
-      const ip = getClientIp(request);
-      const token = await createSession(env, username, { ip });
-      return jsonResponse({ ok: true, token, user: publicUser(user, env) }, 200, request, env);
-    }
     return jsonResponse({ ok: false, message: "Username yoki parol noto'g'ri" }, 401, request, env);
   }
 
@@ -86,5 +82,8 @@ export async function onRequestPost(context) {
 
   const ip = getClientIp(request);
   const token = await createSession(env, username, { ip });
+  if (isUserAdmin(user, env) && env.POSTS_KV) {
+    await env.POSTS_KV.put(`auth:token:${token}`, username, { expirationTtl: 30 * 24 * 3600 }).catch(() => {});
+  }
   return jsonResponse({ ok: true, token, user: publicUser(user, env) }, 200, request, env);
 }

