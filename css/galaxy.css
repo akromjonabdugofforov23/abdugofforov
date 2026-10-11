@@ -1,0 +1,238 @@
+/* ============================================================
+   ZERO-LAG COSMIC GALAXY BACKGROUND (100% GPU ACCELERATED)
+   - Zero CPU load, zero main-thread scripting overhead
+   - Pure Compositor-layer transforms & CSS Keyframes
+   - Multi-layer deep space nebula, crisp starlight & shooting stars
+   - Seamless Dark & Light theme adaptability
+   ============================================================ */
+
+.site-galaxy-cosmos {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    pointer-events: none !important;
+    user-select: none !important;
+    z-index: 0 !important;
+    overflow: hidden !important;
+    contain: strict !important;
+    transform: translateZ(0);
+}
+
+/* 1. Deep Space Cosmic Void */
+.galaxy-deep-space {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse 130% 110% at 50% -10%, #0c1024 0%, #070914 45%, #03040a 100%);
+    transition: background 0.6s ease;
+}
+
+[data-theme="light"] .galaxy-deep-space {
+    background: radial-gradient(ellipse 130% 110% at 50% -10%, #f1f5f9 0%, #f8fafc 45%, #ffffff 100%);
+}
+
+/* 2. Swirling Cosmic Nebulae (Floating GPU gas clouds) */
+.galaxy-nebula-cluster {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.85;
+    will-change: transform;
+    pointer-events: none;
+    transform: translateZ(0);
+}
+
+/* Nebula 1: Deep Indigo & Violet Galaxy Core (Top Center/Right) */
+.galaxy-nebula-1 {
+    top: -15%;
+    right: 10%;
+    width: 750px;
+    height: 650px;
+    background: radial-gradient(circle at 45% 45%, rgba(99, 102, 241, 0.22) 0%, rgba(139, 92, 246, 0.12) 40%, rgba(67, 56, 202, 0.04) 70%, transparent 85%);
+    animation: galaxyDrift1 48s ease-in-out infinite alternate;
+}
+
+/* Nebula 2: Cosmic Cyan & Aquamarine Stardust (Center Left) */
+.galaxy-nebula-2 {
+    top: 35%;
+    left: -10%;
+    width: 700px;
+    height: 600px;
+    background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.16) 0%, rgba(59, 130, 246, 0.09) 45%, rgba(14, 116, 144, 0.03) 75%, transparent 85%);
+    animation: galaxyDrift2 56s ease-in-out infinite alternate;
+}
+
+/* Nebula 3: Ethereal Magenta & Cosmic Rose (Bottom Center) */
+.galaxy-nebula-3 {
+    bottom: -20%;
+    left: 30%;
+    width: 850px;
+    height: 650px;
+    background: radial-gradient(circle at 50% 50%, rgba(217, 70, 239, 0.14) 0%, rgba(168, 85, 247, 0.08) 40%, rgba(126, 34, 206, 0.02) 75%, transparent 85%);
+    animation: galaxyDrift3 64s ease-in-out infinite alternate;
+}
+
+[data-theme="light"] .galaxy-nebula-1 {
+    background: radial-gradient(circle at 45% 45%, rgba(99, 102, 241, 0.11) 0%, rgba(139, 92, 246, 0.06) 40%, transparent 80%);
+}
+[data-theme="light"] .galaxy-nebula-2 {
+    background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.09) 0%, rgba(59, 130, 246, 0.05) 45%, transparent 80%);
+}
+[data-theme="light"] .galaxy-nebula-3 {
+    background: radial-gradient(circle at 50% 50%, rgba(217, 70, 239, 0.08) 0%, rgba(168, 85, 247, 0.04) 40%, transparent 80%);
+}
+
+@keyframes galaxyDrift1 {
+    0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+    50%  { transform: translate3d(40px, 30px, 0) scale(1.08) rotate(15deg); }
+    100% { transform: translate3d(-30px, -20px, 0) scale(0.95) rotate(-10deg); }
+}
+
+@keyframes galaxyDrift2 {
+    0%   { transform: translate3d(0, 0, 0) scale(0.95) rotate(0deg); }
+    50%  { transform: translate3d(-35px, 45px, 0) scale(1.1) rotate(-18deg); }
+    100% { transform: translate3d(45px, -30px, 0) scale(1.02) rotate(12deg); }
+}
+
+@keyframes galaxyDrift3 {
+    0%   { transform: translate3d(0, 0, 0) scale(1.05) rotate(0deg); }
+    50%  { transform: translate3d(50px, -40px, 0) scale(0.92) rotate(14deg); }
+    100% { transform: translate3d(-40px, 25px, 0) scale(1.06) rotate(-12deg); }
+}
+
+/* 3. Ultra-Crisp Multi-Depth Starfields (Pure SVG Data Pattern: 0 CPU Overhead) */
+.galaxy-stars-micro {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.65;
+    background-image: 
+        radial-gradient(1px 1px at 25px 45px, rgba(255, 255, 255, 0.85), transparent),
+        radial-gradient(1px 1px at 85px 140px, rgba(167, 139, 250, 0.9), transparent),
+        radial-gradient(1.2px 1.2px at 160px 80px, rgba(255, 255, 255, 0.95), transparent),
+        radial-gradient(1px 1px at 240px 190px, rgba(196, 181, 253, 0.75), transparent),
+        radial-gradient(1.4px 1.4px at 320px 60px, rgba(147, 197, 253, 0.9), transparent),
+        radial-gradient(1px 1px at 410px 170px, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1.2px 1.2px at 490px 110px, rgba(167, 139, 250, 0.85), transparent),
+        radial-gradient(1px 1px at 580px 220px, rgba(255, 255, 255, 0.75), transparent),
+        radial-gradient(1.3px 1.3px at 670px 95px, rgba(125, 211, 252, 0.85), transparent),
+        radial-gradient(1px 1px at 750px 180px, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1.2px 1.2px at 840px 40px, rgba(196, 181, 253, 0.9), transparent);
+    background-size: 850px 320px;
+    background-repeat: repeat;
+    will-change: opacity;
+}
+
+[data-theme="light"] .galaxy-stars-micro {
+    opacity: 0.35;
+    background-image: 
+        radial-gradient(1px 1px at 25px 45px, rgba(99, 102, 241, 0.7), transparent),
+        radial-gradient(1px 1px at 85px 140px, rgba(139, 92, 246, 0.75), transparent),
+        radial-gradient(1.2px 1.2px at 160px 80px, rgba(59, 130, 246, 0.8), transparent),
+        radial-gradient(1px 1px at 240px 190px, rgba(99, 102, 241, 0.65), transparent),
+        radial-gradient(1.4px 1.4px at 320px 60px, rgba(147, 197, 253, 0.8), transparent);
+}
+
+/* Twinkling Primary Stars */
+.galaxy-stars-twinkle {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.85;
+    background-image: 
+        radial-gradient(1.8px 1.8px at 90px 75px, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.3) 60%, transparent),
+        radial-gradient(2px 2px at 280px 210px, rgba(167, 139, 250, 1), rgba(167, 139, 250, 0.4) 60%, transparent),
+        radial-gradient(2.2px 2.2px at 470px 130px, rgba(125, 211, 252, 1), rgba(125, 211, 252, 0.3) 60%, transparent),
+        radial-gradient(1.8px 1.8px at 660px 280px, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.3) 60%, transparent),
+        radial-gradient(2.4px 2.4px at 820px 90px, rgba(232, 121, 249, 1), rgba(232, 121, 249, 0.3) 60%, transparent);
+    background-size: 920px 450px;
+    background-repeat: repeat;
+    animation: celestialTwinkle 6s ease-in-out infinite alternate;
+    will-change: opacity;
+}
+
+[data-theme="light"] .galaxy-stars-twinkle {
+    opacity: 0.45;
+    background-image: 
+        radial-gradient(1.8px 1.8px at 90px 75px, rgba(99, 102, 241, 0.9), transparent),
+        radial-gradient(2px 2px at 280px 210px, rgba(139, 92, 246, 0.9), transparent),
+        radial-gradient(2.2px 2.2px at 470px 130px, rgba(6, 182, 212, 0.9), transparent),
+        radial-gradient(1.8px 1.8px at 660px 280px, rgba(99, 102, 241, 0.9), transparent),
+        radial-gradient(2.4px 2.4px at 820px 90px, rgba(217, 70, 239, 0.9), transparent);
+}
+
+@keyframes celestialTwinkle {
+    0%   { opacity: 0.45; }
+    50%  { opacity: 0.95; }
+    100% { opacity: 0.6; }
+}
+
+/* 4. Elegant Celestial Shooting Stars (Comets) */
+.galaxy-shooting-star {
+    position: absolute;
+    height: 1.5px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 1), rgba(167, 139, 250, 0.8), transparent);
+    border-radius: 999px;
+    filter: drop-shadow(0 0 5px rgba(167, 139, 250, 0.9));
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: left center;
+    will-change: transform, opacity;
+}
+
+.shooting-star-1 {
+    top: 18%;
+    right: 15%;
+    width: 140px;
+    transform: rotate(-35deg) translate3d(0, 0, 0);
+    animation: shootStar1 16s cubic-bezier(0.25, 0.1, 0.25, 1) infinite 3s;
+}
+
+.shooting-star-2 {
+    top: 52%;
+    right: 42%;
+    width: 110px;
+    transform: rotate(-42deg) translate3d(0, 0, 0);
+    animation: shootStar2 21s cubic-bezier(0.25, 0.1, 0.25, 1) infinite 11s;
+}
+
+@keyframes shootStar1 {
+    0% {
+        transform: rotate(-35deg) translate3d(0, 0, 0);
+        opacity: 0;
+    }
+    1% {
+        opacity: 0.95;
+    }
+    4% {
+        transform: rotate(-35deg) translate3d(-480px, 0, 0);
+        opacity: 0;
+    }
+    100% {
+        transform: rotate(-35deg) translate3d(-480px, 0, 0);
+        opacity: 0;
+    }
+}
+
+@keyframes shootStar2 {
+    0% {
+        transform: rotate(-42deg) translate3d(0, 0, 0);
+        opacity: 0;
+    }
+    1% {
+        opacity: 0.85;
+    }
+    3.5% {
+        transform: rotate(-42deg) translate3d(-380px, 0, 0);
+        opacity: 0;
+    }
+    100% {
+        transform: rotate(-42deg) translate3d(-380px, 0, 0);
+        opacity: 0;
+    }
+}
