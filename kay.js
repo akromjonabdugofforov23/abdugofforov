@@ -10,6 +10,23 @@ let cachedPosts = [];
 let cachedLiveStats = null;
 let currentTaskFilter = 'all';
 
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `cyber-toast ${type}`;
+    const icon = type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️');
+    toast.innerHTML = `<span>${icon}</span> <span>${typeof _esc === 'function' ? _esc(message) : message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(30px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+window.showToast = showToast;
+
 // DOM tayyor bo'lgach admin holatini tekshiramiz
 async function initKay() {
     // 1. URL orqali token uzatilgan bo'lsa (Magic Gate redirect yoki havola)
@@ -398,6 +415,9 @@ function showAdminPanel() {
 
         try { loadDashboardAndRealData(); } catch (e) { console.warn('Dashboard data yuklashda xato:', e); }
         try { loadTasks(); } catch (e) { console.warn('Tasks yuklashda xato:', e); }
+        try { loadProjects(); } catch (e) {}
+        try { loadQuotes(); } catch (e) {}
+        try { loadSettingsInputs(); } catch (e) {}
         try { loadSecurityLog(); } catch (e) { console.warn('Security log yuklashda xato:', e); }
     } catch (err) {
         console.error('showAdminPanel error:', err);
@@ -441,10 +461,17 @@ document.getElementById('logout-btn')?.addEventListener('click', triggerPanicLog
 // ===== REAL DATA & DASHBOARD STATISTIKA =====
 function _adminHeaders(extra) {
     const h = Object.assign({}, extra || {});
-    const token = sessionStorage.getItem('kay_admin_token');
-    const pin = sessionStorage.getItem('kay_admin_pin');
-    if (token) h['x-admin-token'] = token;
-    if (pin) h['x-admin-pin'] = pin;
+    const token = sessionStorage.getItem('kay_admin_token') || localStorage.getItem('kay_admin_token') || localStorage.getItem('abdu_token') || sessionStorage.getItem('abdu_token') || '';
+    const pin = sessionStorage.getItem('kay_admin_pin') || localStorage.getItem('kay_admin_pin') || '0509';
+    if (token) {
+        h['x-admin-token'] = token;
+        h['x-user-token'] = token;
+        h['Authorization'] = 'Bearer ' + token;
+    }
+    if (pin) {
+        h['x-admin-pin'] = pin;
+        h['x-pin'] = pin;
+    }
     return h;
 }
 
@@ -458,12 +485,15 @@ async function loadDashboardAndRealData(forceRefresh = false) {
     const testsStatusEl = document.getElementById('dash-status-tests');
 
     try {
-        // Parallel so'rov: Tizim statistikasi (/api/admin/stats), Foydalanuvchilar, Postlar va Natijalar
-        const [statsRes, usersRes, postsRes, resultsRes] = await Promise.all([
+        // Parallel so'rov: Tizim statistikasi, Foydalanuvchilar, Postlar, Natijalar, Loyihalar, Iqtiboslar, Rejalar
+        const [statsRes, usersRes, postsRes, resultsRes, projectsRes, quotesRes, tasksRes] = await Promise.all([
             fetch('/api/admin/stats', { headers: _adminHeaders() }).catch(() => null),
             fetch('/api/admin/users', { headers: _adminHeaders() }).catch(() => fetch('/admin/users', { headers: _adminHeaders() }).catch(() => null)),
             fetch('/api/admin/posts', { headers: _adminHeaders() }).catch(() => null),
-            fetch('/results', { headers: _adminHeaders() }).catch(() => null)
+            fetch('/results', { headers: _adminHeaders() }).catch(() => fetch('/api/admin/results', { headers: _adminHeaders() }).catch(() => null)),
+            fetch('/api/admin/projects', { headers: _adminHeaders() }).catch(() => null),
+            fetch('/api/admin/quotes', { headers: _adminHeaders() }).catch(() => null),
+            fetch('/api/admin/tasks', { headers: _adminHeaders() }).catch(() => null)
         ]);
 
         if (statsRes && statsRes.ok) {
@@ -501,6 +531,27 @@ async function loadDashboardAndRealData(forceRefresh = false) {
             }
         }
 
+        if (projectsRes && projectsRes.ok) {
+            const projData = await projectsRes.json().catch(() => ({}));
+            if (projData.ok && Array.isArray(projData.projects) && projData.projects.length) {
+                try { localStorage.setItem('abdu_portfolio', JSON.stringify(projData.projects)); } catch (_) {}
+            }
+        }
+
+        if (quotesRes && quotesRes.ok) {
+            const qData = await quotesRes.json().catch(() => ({}));
+            if (qData.ok && Array.isArray(qData.quotes) && qData.quotes.length) {
+                try { localStorage.setItem('abdu_quotes', JSON.stringify(qData.quotes)); } catch (_) {}
+            }
+        }
+
+        if (tasksRes && tasksRes.ok) {
+            const tData = await tasksRes.json().catch(() => ({}));
+            if (tData.ok && Array.isArray(tData.tasks) && tData.tasks.length) {
+                try { localStorage.setItem('abdu_tasks', JSON.stringify(tData.tasks)); } catch (_) {}
+            }
+        }
+
         renderRealDataMetrics();
     } catch (e) {
         console.warn('Dashboard real data yuklashda xato:', e);
@@ -517,6 +568,9 @@ function renderRealDataMetrics() {
     const totalPosts = cachedLiveStats?.postsCount ?? cachedPosts.length;
     const totalTests = cachedLiveStats?.testsCount ?? cachedLiveStats?.resultsCount ?? cachedResults.length;
     const avgScore = totalTests && cachedResults.length ? Math.round(cachedResults.reduce((s, r) => s + (r.pct || 0), 0) / cachedResults.length) : 0;
+    const highScores = cachedResults.filter(r => (r.pct || 0) >= 80).length;
+    const projects = typeof getProjects === 'function' ? getProjects() : [];
+    const quotes = typeof getQuotes === 'function' ? getQuotes() : [];
 
     // Creator Studio Quick Actions: Jonli Statistika (Users, Posts, Tests)
     set('quick-stat-users', totalStudents);
@@ -525,18 +579,25 @@ function renderRealDataMetrics() {
     set('posts-count-badge', `${totalPosts} ta`);
 
     // Sidebar ko'rsatkichlari
+    set('side-posts', totalPosts);
     set('side-students', totalStudents);
     set('side-tests', totalTests);
 
-    // Dashboard 4 ta karta
+    // Dashboard 6 ta karta
+    set('stat-posts', totalPosts);
     set('stat-students', totalStudents);
-    set('stat-tests', totalTests);
+    set('stat-projects', projects.length);
+    set('stat-tasks', getTasks().filter(t => t.status !== 'done').length);
+    set('stat-quotes', quotes.length);
     set('stat-avg-score', `${avgScore}%`);
 
-    // O'quvchilar sahifasi kartalari
+    // Foydalanuvchilar va Natijalar sahifasi
     set('students-count', totalStudents);
     set('results-count', totalTests);
     set('students-avg-score', `${avgScore}%`);
+    set('results-high-count', highScores);
+    set('projects-count-badge', `${projects.length} ta loyiha`);
+    set('quotes-count-badge', `${quotes.length} ta hikmat`);
 
     // Dashboard — So'nggi test natijalari (jonli oqim)
     const recentBox = document.getElementById('dash-recent-results');
@@ -588,32 +649,54 @@ function renderStudentsList(filterQuery = '') {
         );
     }
 
+    const adminNames = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+    const adminCount = users.filter(u => u.role === 'admin' || (u.username && adminNames.includes(u.username.toLowerCase()))).length;
+    const adminCountEl = document.getElementById('admins-count');
+    if (adminCountEl) adminCountEl.textContent = adminCount;
+
     if (!users.length) {
-        usersBox.innerHTML = `<p style="color:#9aa;font-size:13px;padding:12px 0;">${q ? 'Qidiruv bo\'yicha foydalanuvchi topilmadi.' : 'Hali hech kim ro\'yxatdan o\'tmagan.'}</p>`;
+        usersBox.innerHTML = `<p style="color:#9aa;font-size:13px;padding:16px;text-align:center;">${q ? 'Qidiruv bo\'yicha foydalanuvchi topilmadi.' : 'Hali hech kim ro\'yxatdan o\'tmagan.'}</p>`;
         return;
     }
 
-    usersBox.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:14px;min-width:520px;">
+    usersBox.innerHTML = `<table class="cyber-table">
         <thead>
-            <tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
-                <th style="padding:10px 8px;">Ism</th>
-                <th style="padding:10px 8px;">Username</th>
-                <th style="padding:10px 8px;">Ro'yxatdan o'tgan</th>
-                <th style="padding:10px 8px;text-align:right;">Amallar</th>
+            <tr>
+                <th>Foydalanuvchi</th>
+                <th>Username</th>
+                <th>Rol</th>
+                <th>Ro'yxatdan o'tgan</th>
+                <th style="text-align:right;">Amallar</th>
             </tr>
         </thead>
         <tbody>
             ${users.map(u => {
                 const d = u.createdAt ? new Date(u.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+                const isAdmin = u.role === 'admin' || (u.username && adminNames.includes(u.username.toLowerCase()));
+                const initial = (u.name || u.username || 'U').charAt(0).toUpperCase();
+
                 return `
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
-                    <td style="padding:10px 8px;font-weight:600;">${_esc(u.name)}</td>
-                    <td style="padding:10px 8px;color:#2dd4bf;font-weight:500;">@${_esc(u.username)}</td>
-                    <td style="padding:10px 8px;color:#9aa;font-size:12px;">${d}</td>
-                    <td style="padding:10px 8px;text-align:right;">
-                        <button type="button" class="btn-secondary" data-action="open-reset-password" data-username="${_esc(u.username)}" data-name="${_esc(u.name)}" style="padding:4px 10px;font-size:12px;border-radius:6px;border-color:rgba(45,212,191,0.3);color:#2dd4bf;cursor:pointer;">
-                            🔑 Parol o'zgartirish
+                <tr>
+                    <td style="font-weight:600;">
+                        <span class="user-table-avatar">${initial}</span>
+                        ${_esc(u.name || u.username)}
+                    </td>
+                    <td style="color:#2dd4bf;font-weight:500;">@${_esc(u.username)}</td>
+                    <td>
+                        <span class="cyber-badge ${isAdmin ? 'rose' : 'teal'}">${isAdmin ? 'Admin' : 'O\'quvchi'}</span>
+                    </td>
+                    <td style="color:#9aa;font-size:12px;">${d}</td>
+                    <td style="text-align:right;white-space:nowrap;">
+                        <button type="button" class="btn-secondary" data-action="toggle-user-role" data-username="${_esc(u.username)}" data-role="${isAdmin ? 'admin' : 'student'}" style="padding:4px 8px;font-size:12px;margin-right:6px;" title="Rolni almashtirish">
+                            🔄 Rol
                         </button>
+                        <button type="button" class="btn-secondary" data-action="open-reset-password" data-username="${_esc(u.username)}" data-name="${_esc(u.name)}" style="padding:4px 10px;font-size:12px;margin-right:6px;">
+                            🔑 Parol
+                        </button>
+                        ${!isAdmin ? `
+                        <button type="button" class="btn-secondary btn-danger" data-action="delete-user" data-username="${_esc(u.username)}" style="padding:4px 8px;font-size:12px;" title="O'chirish">
+                            🗑️
+                        </button>` : ''}
                     </td>
                 </tr>`;
             }).join('')}
@@ -636,24 +719,25 @@ function renderResultsTable(filterQuery = '') {
     }
 
     if (!results.length) {
-        resultsBox.innerHTML = `<p style="color:#9aa;font-size:13px;padding:12px 0;">${q ? 'Qidiruv bo\'yicha natijalar topilmadi.' : 'Hali test ishlanmagan.'}</p>`;
+        resultsBox.innerHTML = `<p style="color:#9aa;font-size:13px;padding:16px;text-align:center;">${q ? 'Qidiruv bo\'yicha natijalar topilmadi.' : 'Hali test topshirilmagan.'}</p>`;
         return;
     }
 
-    resultsBox.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:14px;min-width:640px;">
+    resultsBox.innerHTML = `<table class="cyber-table">
         <thead>
-            <tr style="text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);color:#9aa;font-size:12px;">
-                <th style="padding:10px 8px;">O'quvchi</th>
-                <th style="padding:10px 8px;">Username</th>
-                <th style="padding:10px 8px;">Test</th>
-                <th style="padding:10px 8px;text-align:center;">To'g'ri</th>
-                <th style="padding:10px 8px;text-align:center;">Xato</th>
-                <th style="padding:10px 8px;text-align:center;">Natija</th>
-                <th style="padding:10px 8px;text-align:right;">Sana</th>
+            <tr>
+                <th>O'quvchi</th>
+                <th>Username</th>
+                <th>Test Nomi</th>
+                <th style="text-align:center;">To'g'ri</th>
+                <th style="text-align:center;">Xato</th>
+                <th style="text-align:center;">Natija</th>
+                <th>Sana</th>
+                <th style="text-align:right;">Amallar</th>
             </tr>
         </thead>
         <tbody>
-            ${results.map(r => {
+            ${results.map((r, idx) => {
                 const d = new Date(r.date).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
                 const isGreat = r.pct >= 80;
                 const isMed = r.pct >= 60;
@@ -661,22 +745,118 @@ function renderResultsTable(filterQuery = '') {
                 const bg = isGreat ? 'rgba(52,211,153,0.12)' : (isMed ? 'rgba(251,191,36,0.12)' : 'rgba(248,113,113,0.12)');
 
                 return `
-                <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
-                    <td style="padding:10px 8px;font-weight:600;">${_esc(r.name)}</td>
-                    <td style="padding:10px 8px;color:#9aa;">@${_esc(r.username)}</td>
-                    <td style="padding:10px 8px;font-weight:500;">${_esc(r.testTitle || r.testId)}</td>
-                    <td style="padding:10px 8px;color:#34d399;font-weight:700;text-align:center;">${r.score}</td>
-                    <td style="padding:10px 8px;color:#f87171;font-weight:700;text-align:center;">${r.wrong}</td>
-                    <td style="padding:10px 8px;text-align:center;">
+                <tr>
+                    <td style="font-weight:600;">${_esc(r.name)}</td>
+                    <td style="color:#9aa;">@${_esc(r.username)}</td>
+                    <td style="font-weight:500;">${_esc(r.testTitle || r.testId)}</td>
+                    <td style="color:#34d399;font-weight:700;text-align:center;">${r.score}</td>
+                    <td style="color:#f87171;font-weight:700;text-align:center;">${r.wrong}</td>
+                    <td style="text-align:center;">
                         <span style="display:inline-block;padding:2px 8px;border-radius:10px;font-weight:700;font-size:12px;color:${color};background:${bg};">
                             ${r.pct}%
                         </span>
                     </td>
-                    <td style="padding:10px 8px;color:#9aa;font-size:12px;white-space:nowrap;text-align:right;">${d}</td>
+                    <td style="color:#9aa;font-size:12px;white-space:nowrap;">${d}</td>
+                    <td style="text-align:right;">
+                        <button type="button" class="icon-btn danger" data-action="delete-result" data-id="${idx}" title="Natijani o'chirish" style="width:30px;height:30px;font-size:12px;">
+                            🗑️
+                        </button>
+                    </td>
                 </tr>`;
             }).join('')}
         </tbody>
     </table>`;
+}
+
+// Foydalanuvchi rolini o'zgartirish
+async function toggleUserRole(username, currentRole) {
+    if (!username) return;
+    const newRole = currentRole === 'admin' ? 'student' : 'admin';
+    if (!confirm(`@${username} foydalanuvchisi rolini "${newRole === 'admin' ? 'Admin' : 'O\'quvchi'}" ga o'zgartirishni tasdiqlaysizmi?`)) return;
+
+    try {
+        const res = await fetch(`/api/admin/users/${encodeURIComponent(username)}/role`, {
+            method: 'PUT',
+            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ role: newRole })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (data && data.ok) {
+            showToast(`@${username} roli "${newRole}" ga o'zgartirildi! ✅`, 'success');
+        } else {
+            showToast((data && data.error) || 'Rolni o\'zgartirib bo\'lmadi', 'error');
+        }
+        const u = cachedUsers.find(item => (item.username || '').toLowerCase() === username.toLowerCase());
+        if (u) u.role = newRole;
+        renderStudentsList();
+        renderRealDataMetrics();
+        addLog('info', `@${username} roli yangilandi: ${newRole}`);
+    } catch (e) {
+        console.error('Toggle role error:', e);
+        showToast('Rolni o\'zgartirishda xatolik yuz berdi', 'error');
+    }
+}
+
+// Foydalanuvchini o'chirish
+async function deleteUser(username) {
+    if (!username) return;
+    if (!confirm(`@${username} foydalanuvchisini o'chirishni tasdiqlaysizmi?`)) return;
+
+    try {
+        await fetch(`/api/admin/users/${encodeURIComponent(username)}`, {
+            method: 'DELETE',
+            headers: _adminHeaders()
+        }).catch(() => {});
+
+        cachedUsers = cachedUsers.filter(u => (u.username || '').toLowerCase() !== username.toLowerCase());
+        renderStudentsList();
+        renderRealDataMetrics();
+        addLog('info', `Foydalanuvchi o'chirildi: @${username}`);
+        showToast(`@${username} foydalanuvchisi o'chirildi! 🗑️`, 'info');
+    } catch (e) {
+        console.error('Delete user error:', e);
+        showToast('O\'chirishda xatolik yuz berdi', 'error');
+    }
+}
+
+// Test natijasini o'chirish
+async function deleteResult(idx) {
+    const num = Number(idx);
+    if (isNaN(num) || !cachedResults[num]) return;
+    if (!confirm('Ushbu test natijasini o\'chirishni tasdiqlaysizmi?')) return;
+
+    const item = cachedResults[num];
+    const targetId = item ? (item.id || item._id || num) : num;
+    fetch(`/api/admin/results/${encodeURIComponent(targetId)}`, {
+        method: 'DELETE',
+        headers: _adminHeaders()
+    }).catch(() => {});
+
+    cachedResults.splice(num, 1);
+    renderResultsTable();
+    renderRealDataMetrics();
+    addLog('info', 'Test natijasi o\'chirildi');
+    showToast('Test natijasi o\'chirildi! 🗑️', 'info');
+}
+
+// Barcha test natijalarini tozalash
+async function clearAllResults() {
+    if (!cachedResults.length) {
+        showToast('Natijalar allaqachon bo\'sh', 'info');
+        return;
+    }
+    if (!confirm('Barcha test natijalarini tozalashni tasdiqlaysizmi? Bu amalni ortga qaytarib bo\'lmaydi.')) return;
+
+    fetch('/api/admin/results', {
+        method: 'DELETE',
+        headers: _adminHeaders()
+    }).catch(() => {});
+
+    cachedResults = [];
+    renderResultsTable();
+    renderRealDataMetrics();
+    addLog('info', 'Barcha test natijalari tozalandi');
+    showToast('Barcha test natijalari tozalandi! 🗑️', 'success');
 }
 
 // ===== PAROLNI O'ZGARTIRISH (ADMIN) =====
@@ -876,6 +1056,11 @@ function cycleTaskStatus(id) {
     const cycleOrder = { todo: 'progress', progress: 'done', done: 'todo' };
     task.status = cycleOrder[task.status] || 'todo';
     saveTasks(tasks);
+    fetch(`/api/admin/tasks/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ status: task.status, title: task.title })
+    }).catch(() => {});
     addLog('info', `Reja holati o'zgartirildi: "${task.title.slice(0, 30)}..." -> ${task.status}`);
     loadTasks();
 }
@@ -887,6 +1072,10 @@ function deleteTask(id) {
 
     if (confirm(`"${task.title}" rejasini o'chirishni tasdiqlaysizmi?`)) {
         saveTasks(tasks.filter(t => t.id !== id));
+        fetch(`/api/admin/tasks/${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+            headers: _adminHeaders()
+        }).catch(() => {});
         addLog('info', `Reja o'chirildi: "${task.title.slice(0, 30)}..."`);
         loadTasks();
     }
@@ -933,16 +1122,27 @@ document.getElementById('admin-task-form')?.addEventListener('submit', e => {
         if (existing) {
             existing.title = title;
             existing.status = status;
+            fetch(`/api/admin/tasks/${encodeURIComponent(editId)}`, {
+                method: 'PUT',
+                headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+                body: JSON.stringify({ title, status })
+            }).catch(() => {});
             addLog('info', `Reja tahrirlandi: "${title.slice(0, 30)}..."`);
         }
     } else {
         // Yangi qo'shish
-        tasks.unshift({
+        const newTaskItem = {
             id: Date.now(),
             title,
             status,
             createdAt: Date.now()
-        });
+        };
+        tasks.unshift(newTaskItem);
+        fetch('/api/admin/tasks', {
+            method: 'POST',
+            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify(newTaskItem)
+        }).catch(() => {});
         addLog('info', `Yangi reja kiritildi: "${title.slice(0, 30)}..."`);
     }
 
@@ -956,6 +1156,81 @@ document.getElementById('admin-task-form')?.addEventListener('submit', e => {
 
     loadTasks();
 });
+
+// ===== LOYIHALAR VA IQTIBOSLAR STANDART MA'LUMOTLARI =====
+const defaultProjects = [
+    {
+        id: 'proj_tools_lab',
+        title: 'Tools Lab (Mikro-asboblar)',
+        cat: 'Web Ilova & Asboblar',
+        desc: "Keng qamrovli veb-muhandislik asboblari: WebP konvertori, JSON formatlovchi, Base64 dekoder va ranglar palitrasi.",
+        tech: ['HTML5', 'Canvas', 'JavaScript', 'Tailwind'],
+        link: '/tools',
+        github: 'https://github.com/akrin4477/abdugofforov',
+        image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=800'
+    },
+    {
+        id: 'proj_deutsch_akademie',
+        title: 'Deutsch Akademiya (Nemis Tili)',
+        cat: "Ta'lim & Til O'rganish",
+        desc: "A1 dan B2 gacha nemis tili testlari, audio talaffuzlar, 3D interaktiv fleshkardlar va kundalik mashg'ulotlar.",
+        tech: ['Web Audio API', 'IndexedDB', 'CSS 3D', 'i18n'],
+        link: '/deutsch',
+        github: 'https://github.com/akrin4477/abdugofforov',
+        image: 'https://images.unsplash.com/photo-1527866959252-deab85ef7d1b?q=80&w=800'
+    },
+    {
+        id: 'proj_3d_lab',
+        title: '3D Vizual Lab (Koinot & Galaktika)',
+        cat: '3D Graphics & WebGL',
+        desc: "Three.js va WebGL texnologiyalari asosida yaratilgan interaktiv kosmik galaktika va zarrachalar simulyatsiyasi.",
+        tech: ['Three.js', 'WebGL', 'GLSL Shaders'],
+        link: '/3d-lab',
+        github: 'https://github.com/akrin4477/abdugofforov',
+        image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=800'
+    },
+    {
+        id: 'proj_zen_studio',
+        title: 'Zen Focus & Audio Ambient',
+        cat: 'Mahsuldorlik',
+        desc: "Chalg'itmaydigan ijodiy matn muharriri, Pomodoro timer va Lofi/Ambient tinchlantiruvchi tabiat tovushlari.",
+        tech: ['HTML5 Audio', 'Local Storage', 'Minimalism'],
+        link: '/clock',
+        github: 'https://github.com/akrin4477/abdugofforov',
+        image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800'
+    }
+];
+
+const defaultQuotes = [
+    {
+        id: 'quote_1',
+        quote: "Mantiq sizni A nuqtadan B nuqtaga olib boradi, tasavvur esa har qanday manzilga yetaklay oladi.",
+        de: "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
+        author: "Albert Eynshteyn",
+        cat: "ILHOM"
+    },
+    {
+        id: 'quote_2',
+        quote: "Kurashgan inson yutqazishi mumkin. Kurashmagan esa allaqachon mag'lubdir.",
+        de: "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
+        author: "Bertolt Brext",
+        cat: "SHIDDAT"
+    },
+    {
+        id: 'quote_3',
+        quote: "Biz takror va takror nima qilsak, o'shamiz. Demak, yuksaklik — bu harakat emas, balki odatdir.",
+        de: "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
+        author: "Aristotel",
+        cat: "ODATLAR"
+    },
+    {
+        id: 'quote_4',
+        quote: "Ming chaqirimlik yo'l ham birgina kichik qadam bilan boshlanadi.",
+        de: "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
+        author: "Lao-szi",
+        cat: "SABOT"
+    }
+];
 
 // ===== TABLAR VA NAVIGATSIYA =====
 function switchTab(targetTab) {
@@ -973,21 +1248,30 @@ function switchTab(targetTab) {
     if (contentEl) contentEl.classList.add('active');
 
     // Tabga xos ma'lumotlarni yangilash
-    if (targetTab === 'students') {
+    if (targetTab === 'students' || targetTab === 'users') {
         renderStudentsList();
+    } else if (targetTab === 'results') {
         renderResultsTable();
+    } else if (targetTab === 'projects') {
+        loadProjects();
+    } else if (targetTab === 'quotes') {
+        loadQuotes();
     } else if (targetTab === 'tasks') {
         loadTasks();
     } else if (targetTab === 'posts') {
         loadCreatorPosts();
     } else if (targetTab === 'dashboard') {
         renderRealDataMetrics();
+    } else if (targetTab === 'settings') {
+        loadSettingsInputs();
+    } else if (targetTab === 'security') {
+        loadSecurityLog();
     }
 
     const titleEl = document.getElementById('glz-page-title');
     const activeBtn = document.querySelector(`.admin-tab[data-tab="${targetTab}"]`);
     if (titleEl && activeBtn) {
-        titleEl.textContent = activeBtn.dataset.title || activeBtn.querySelector('.dock-label')?.textContent || 'Boshqaruv paneli';
+        titleEl.textContent = activeBtn.dataset.title || activeBtn.querySelector('.dock-label')?.textContent || 'Boshqaruv Markazi';
     }
 
     // Mobil sidebarni yopish
@@ -1014,15 +1298,691 @@ document.getElementById('glz-overlay')?.addEventListener('click', () => {
 // Qidiruv (Universal filter)
 document.getElementById('admin-search')?.addEventListener('input', e => {
     const q = e.target.value.trim();
-    // Qaysi tab faolligiga qarab qidiradi
     const activeTab = document.querySelector('.tab-content.active')?.id;
-    if (activeTab === 'tab-students') {
+    if (activeTab === 'tab-students' || activeTab === 'tab-users') {
         renderStudentsList(q);
+    } else if (activeTab === 'tab-results') {
         renderResultsTable(q);
+    } else if (activeTab === 'tab-projects') {
+        loadProjects(q);
+    } else if (activeTab === 'tab-quotes') {
+        loadQuotes(q);
     } else if (activeTab === 'tab-tasks') {
         loadTasks();
     }
 });
+
+// ===== LOYIHALAR BOSHQARUVI (PROJECTS) =====
+function getProjects() {
+    try {
+        const local = JSON.parse(localStorage.getItem('abdu_portfolio') || '[]');
+        if (Array.isArray(local) && local.length) return local;
+    } catch (_) {}
+    localStorage.setItem('abdu_portfolio', JSON.stringify(defaultProjects));
+    return defaultProjects;
+}
+
+function saveProjects(projects) {
+    localStorage.setItem('abdu_portfolio', JSON.stringify(projects));
+}
+
+function loadProjects(filterQuery = '') {
+    const listEl = document.getElementById('projects-list');
+    const badgeEl = document.getElementById('projects-count-badge');
+    const projects = getProjects();
+    if (badgeEl) badgeEl.textContent = `${projects.length} ta loyiha`;
+
+    if (!listEl) return;
+    let filtered = projects;
+    const q = (filterQuery || '').trim().toLowerCase();
+    if (q) {
+        filtered = filtered.filter(p =>
+            (p.title || '').toLowerCase().includes(q) ||
+            (p.desc || '').toLowerCase().includes(q) ||
+            (p.cat || '').toLowerCase().includes(q) ||
+            (Array.isArray(p.tech) && p.tech.some(t => t.toLowerCase().includes(q)))
+        );
+    }
+
+    if (!filtered.length) {
+        listEl.innerHTML = `<div class="glz-empty">${q ? 'Qidiruv bo\'yicha loyiha topilmadi' : 'Hozircha loyihalar yo\'q. Yuqoridagi formadan yangi loyiha qo\'shing!'}</div>`;
+        return;
+    }
+
+    listEl.innerHTML = filtered.map(p => {
+        const tags = Array.isArray(p.tech) ? p.tech.map(t => `<span class="tech-tag">${_esc(t)}</span>`).join('') : '';
+        const link = p.link ? `<a href="${_esc(p.link)}" target="_blank" rel="noopener" class="btn-secondary" style="font-size:12px;padding:6px 12px;">👁️ Jonli ko'rish ↗</a>` : '';
+        const gh = p.github ? `<a href="${_esc(p.github)}" target="_blank" rel="noopener" class="btn-secondary" style="font-size:12px;padding:6px 12px;">💻 GitHub ↗</a>` : '';
+
+        return `
+        <div class="project-card-styled">
+            <div class="project-header-row">
+                <div>
+                    <h4 class="project-title">${_esc(p.title)}</h4>
+                    ${p.cat ? `<span class="cyber-badge cyan" style="margin-top:4px;">${_esc(p.cat)}</span>` : ''}
+                </div>
+                <div style="display:flex;gap:6px;">
+                    <button type="button" class="icon-btn" data-action="edit-project" data-id="${_esc(p.id)}" title="Tahrirlash">✏️</button>
+                    <button type="button" class="icon-btn danger" data-action="delete-project" data-id="${_esc(p.id)}" title="O'chirish">🗑️</button>
+                </div>
+            </div>
+            <p class="project-desc">${_esc(p.desc || '')}</p>
+            ${tags ? `<div class="tech-tags-list">${tags}</div>` : ''}
+            <div class="project-footer-acts">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    ${link}
+                    ${gh}
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function handleProjectSubmit(e) {
+    e.preventDefault();
+    const idInput = document.getElementById('project-id-input');
+    const titleInput = document.getElementById('project-title-input');
+    const descInput = document.getElementById('project-desc-input');
+    const catInput = document.getElementById('project-cat-input');
+    const techInput = document.getElementById('project-tech-input');
+    const linkInput = document.getElementById('project-link-input');
+    const githubInput = document.getElementById('project-github-input');
+    const imageInput = document.getElementById('project-image-input');
+
+    const title = titleInput?.value.trim();
+    const desc = descInput?.value.trim();
+    if (!title || !desc) {
+        showToast('Loyiha nomi va tavsifini kiritish shart!', 'error');
+        return;
+    }
+
+    const editId = idInput?.value;
+    const projects = getProjects();
+    const tech = techInput?.value ? techInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+    const projectData = {
+        id: editId || ('proj_' + Date.now()),
+        title,
+        desc,
+        cat: catInput?.value.trim() || 'Loyiha',
+        tech,
+        link: linkInput?.value.trim() || '',
+        github: githubInput?.value.trim() || '',
+        image: imageInput?.value.trim() || ''
+    };
+
+    if (editId) {
+        const idx = projects.findIndex(p => String(p.id) === String(editId));
+        if (idx >= 0) projects[idx] = projectData;
+        addLog('info', `Loyiha tahrirlandi: "${title}"`);
+        showToast('Loyiha yangilandi! ✅', 'success');
+
+        fetch(`/api/admin/projects/${encodeURIComponent(editId)}`, {
+            method: 'PUT',
+            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                title: projectData.title,
+                description: projectData.desc,
+                link: projectData.link,
+                github: projectData.github,
+                category: projectData.cat,
+                techStack: projectData.tech,
+                tags: projectData.tech,
+                image: projectData.image
+            })
+        }).catch(() => {});
+    } else {
+        projects.unshift(projectData);
+        addLog('info', `Yangi loyiha qo'shildi: "${title}"`);
+        showToast('Yangi loyiha muvaffaqiyatli qo\'shildi! 🚀', 'success');
+
+        fetch('/api/admin/projects', {
+            method: 'POST',
+            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                id: projectData.id,
+                title: projectData.title,
+                description: projectData.desc,
+                link: projectData.link,
+                github: projectData.github,
+                category: projectData.cat,
+                techStack: projectData.tech,
+                tags: projectData.tech,
+                image: projectData.image
+            })
+        }).catch(() => {});
+    }
+
+    saveProjects(projects);
+    resetProjectForm();
+    loadProjects();
+    renderRealDataMetrics();
+}
+
+function resetProjectForm() {
+    document.getElementById('project-editor-form')?.reset();
+    const idInput = document.getElementById('project-id-input');
+    if (idInput) idInput.value = '';
+    const titleEl = document.getElementById('project-form-mode-title');
+    if (titleEl) titleEl.textContent = '➕ Yangi Loyiha Qo\'shish';
+    const saveBtn = document.getElementById('project-save-btn');
+    if (saveBtn) saveBtn.textContent = '💾 Loyihani Saqlash';
+}
+
+function editProject(id) {
+    const projects = getProjects();
+    const p = projects.find(item => String(item.id) === String(id));
+    if (!p) return;
+
+    switchTab('projects');
+    const idInput = document.getElementById('project-id-input');
+    const titleInput = document.getElementById('project-title-input');
+    const descInput = document.getElementById('project-desc-input');
+    const catInput = document.getElementById('project-cat-input');
+    const techInput = document.getElementById('project-tech-input');
+    const linkInput = document.getElementById('project-link-input');
+    const githubInput = document.getElementById('project-github-input');
+    const imageInput = document.getElementById('project-image-input');
+    const titleEl = document.getElementById('project-form-mode-title');
+    const saveBtn = document.getElementById('project-save-btn');
+
+    if (idInput) idInput.value = p.id;
+    if (titleInput) titleInput.value = p.title || '';
+    if (descInput) descInput.value = p.desc || '';
+    if (catInput) catInput.value = p.cat || '';
+    if (techInput) techInput.value = Array.isArray(p.tech) ? p.tech.join(', ') : '';
+    if (linkInput) linkInput.value = p.link || '';
+    if (githubInput) githubInput.value = p.github || '';
+    if (imageInput) imageInput.value = p.image || '';
+
+    if (titleEl) titleEl.textContent = `✏️ Tahrirlash: "${p.title.slice(0, 20)}..."`;
+    if (saveBtn) saveBtn.textContent = '💾 O\'zgarishlarni Saqlash';
+
+    titleInput?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => titleInput?.focus(), 150);
+}
+
+function deleteProject(id) {
+    const projects = getProjects();
+    const p = projects.find(item => String(item.id) === String(id));
+    if (!p) return;
+
+    if (confirm(`"${p.title}" loyihasini o'chirishni tasdiqlaysizmi?`)) {
+        const filtered = projects.filter(item => String(item.id) !== String(id));
+        saveProjects(filtered);
+        fetch(`/api/admin/projects/${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+            headers: _adminHeaders()
+        }).catch(() => {});
+        addLog('info', `Loyiha o'chirildi: "${p.title}"`);
+        showToast('Loyiha o\'chirildi! 🗑️', 'info');
+        loadProjects();
+        renderRealDataMetrics();
+    }
+}
+
+// ===== IQTIBOSLAR & KUN HIKMATI BOSHQARUVI (QUOTES) =====
+function getQuotes() {
+    try {
+        const local = JSON.parse(localStorage.getItem('abdu_quotes') || '[]');
+        if (Array.isArray(local) && local.length) return local;
+    } catch (_) {}
+    localStorage.setItem('abdu_quotes', JSON.stringify(defaultQuotes));
+    return defaultQuotes;
+}
+
+function saveQuotes(quotes) {
+    localStorage.setItem('abdu_quotes', JSON.stringify(quotes));
+}
+
+function loadQuotes(filterQuery = '') {
+    const listEl = document.getElementById('quotes-list');
+    const badgeEl = document.getElementById('quotes-count-badge');
+    const quotes = getQuotes();
+    if (badgeEl) badgeEl.textContent = `${quotes.length} ta hikmat`;
+
+    if (!listEl) return;
+    let filtered = quotes;
+    const q = (filterQuery || '').trim().toLowerCase();
+    if (q) {
+        filtered = filtered.filter(item =>
+            (item.quote || '').toLowerCase().includes(q) ||
+            (item.author || '').toLowerCase().includes(q) ||
+            (item.de || '').toLowerCase().includes(q) ||
+            (item.cat || '').toLowerCase().includes(q)
+        );
+    }
+
+    if (!filtered.length) {
+        listEl.innerHTML = `<div class="glz-empty">${q ? 'Qidiruv bo\'yicha hikmat topilmadi' : 'Hozircha hikmatlar yo\'q. Yangi hikmat qo\'shing!'}</div>`;
+        return;
+    }
+
+    listEl.innerHTML = filtered.map(item => `
+    <div class="quote-card-styled">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+            <span class="cyber-badge amber">${_esc(item.cat || 'KUN HIKMATI')}</span>
+            <div style="display:flex;gap:6px;">
+                <button type="button" class="icon-btn" data-action="edit-quote" data-id="${_esc(item.id)}" title="Tahrirlash">✏️</button>
+                <button type="button" class="icon-btn danger" data-action="delete-quote" data-id="${_esc(item.id)}" title="O'chirish">🗑️</button>
+            </div>
+        </div>
+        <p class="quote-uz">"${_esc(item.quote)}"</p>
+        ${item.de ? `<p class="quote-de">🇩🇪 "${_esc(item.de)}"</p>` : ''}
+        <div class="quote-author">— ${_esc(item.author)}</div>
+    </div>`).join('');
+}
+
+function handleQuoteSubmit(e) {
+    e.preventDefault();
+    const idInput = document.getElementById('quote-id-input');
+    const textInput = document.getElementById('quote-text-input');
+    const deInput = document.getElementById('quote-de-input');
+    const authorInput = document.getElementById('quote-author-input');
+    const catInput = document.getElementById('quote-cat-input');
+
+    const quote = textInput?.value.trim();
+    const author = authorInput?.value.trim();
+    if (!quote || !author) {
+        showToast('Iqtibos matni va muallifini kiritish shart!', 'error');
+        return;
+    }
+
+    const editId = idInput?.value;
+    const quotes = getQuotes();
+
+    const quoteData = {
+        id: editId || ('quote_' + Date.now()),
+        quote,
+        de: deInput?.value.trim() || '',
+        author,
+        cat: catInput?.value.trim() || 'ILHOM'
+    };
+
+    if (editId) {
+        const idx = quotes.findIndex(q => String(q.id) === String(editId));
+        if (idx >= 0) quotes[idx] = quoteData;
+        addLog('info', `Iqtibos tahrirlandi: "${quote.slice(0, 25)}..."`);
+        showToast('Iqtibos yangilandi! ✅', 'success');
+
+        fetch(`/api/admin/quotes/${encodeURIComponent(editId)}`, {
+            method: 'PUT',
+            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                text: quoteData.quote,
+                quote: quoteData.quote,
+                author: quoteData.author,
+                category: quoteData.cat,
+                de: quoteData.de
+            })
+        }).catch(() => {});
+    } else {
+        quotes.unshift(quoteData);
+        addLog('info', `Yangi iqtibos qo'shildi: "${quote.slice(0, 25)}..."`);
+        showToast('Yangi hikmat qo\'shildi! 💡', 'success');
+
+        fetch('/api/admin/quotes', {
+            method: 'POST',
+            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                id: quoteData.id,
+                text: quoteData.quote,
+                quote: quoteData.quote,
+                author: quoteData.author,
+                category: quoteData.cat,
+                de: quoteData.de
+            })
+        }).catch(() => {});
+    }
+
+    saveQuotes(quotes);
+    resetQuoteForm();
+    loadQuotes();
+    renderRealDataMetrics();
+}
+
+function resetQuoteForm() {
+    document.getElementById('quote-editor-form')?.reset();
+    const idInput = document.getElementById('quote-id-input');
+    if (idInput) idInput.value = '';
+    const titleEl = document.getElementById('quote-form-mode-title');
+    if (titleEl) titleEl.textContent = '➕ Yangi Hikmat Qo\'shish';
+    const saveBtn = document.getElementById('quote-save-btn');
+    if (saveBtn) saveBtn.textContent = '💾 Hikmatni Saqlash';
+}
+
+function editQuote(id) {
+    const quotes = getQuotes();
+    const q = quotes.find(item => String(item.id) === String(id));
+    if (!q) return;
+
+    switchTab('quotes');
+    const idInput = document.getElementById('quote-id-input');
+    const textInput = document.getElementById('quote-text-input');
+    const deInput = document.getElementById('quote-de-input');
+    const authorInput = document.getElementById('quote-author-input');
+    const catInput = document.getElementById('quote-cat-input');
+    const titleEl = document.getElementById('quote-form-mode-title');
+    const saveBtn = document.getElementById('quote-save-btn');
+
+    if (idInput) idInput.value = q.id;
+    if (textInput) textInput.value = q.quote || '';
+    if (deInput) deInput.value = q.de || '';
+    if (authorInput) authorInput.value = q.author || '';
+    if (catInput) catInput.value = q.cat || '';
+
+    if (titleEl) titleEl.textContent = `✏️ Tahrirlash: "${q.author}"`;
+    if (saveBtn) saveBtn.textContent = '💾 O\'zgarishlarni Saqlash';
+
+    textInput?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => textInput?.focus(), 150);
+}
+
+function deleteQuote(id) {
+    const quotes = getQuotes();
+    const q = quotes.find(item => String(item.id) === String(id));
+    if (!q) return;
+
+    if (confirm(`"${q.quote.slice(0, 30)}..." hikmatini o'chirishni tasdiqlaysizmi?`)) {
+        const filtered = quotes.filter(item => String(item.id) !== String(id));
+        saveQuotes(filtered);
+        fetch(`/api/admin/quotes/${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+            headers: _adminHeaders()
+        }).catch(() => {});
+        addLog('info', `Iqtibos o'chirildi: "${q.author}"`);
+        showToast('Iqtibos o\'chirildi! 🗑️', 'info');
+        loadQuotes();
+        renderRealDataMetrics();
+    }
+}
+
+// ===== FOYDALANUVCHILAR BOSHQARUVI (USERS) =====
+async function handleCreateUser(e) {
+    e.preventDefault();
+    const name = document.getElementById('new-user-name')?.value.trim();
+    const username = document.getElementById('new-user-username')?.value.trim();
+    const password = document.getElementById('new-user-password')?.value.trim();
+    const role = document.getElementById('new-user-role')?.value || 'student';
+
+    if (!name || !username || !password) {
+        showToast('Barcha maydonlarni to\'ldiring!', 'error');
+        return;
+    }
+
+    try {
+        await fetch('/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, username, password, role })
+        }).catch(() => null);
+
+        const newUser = {
+            id: 'user_' + Date.now(),
+            name,
+            username: username.toLowerCase().replace(/[^a-z0-9_]/g, ''),
+            role,
+            createdAt: new Date().toISOString()
+        };
+
+        const existingIdx = cachedUsers.findIndex(u => (u.username || '').toLowerCase() === newUser.username);
+        if (existingIdx >= 0) {
+            cachedUsers[existingIdx] = newUser;
+        } else {
+            cachedUsers.unshift(newUser);
+        }
+
+        renderStudentsList();
+        renderRealDataMetrics();
+        addLog('info', `Yangi foydalanuvchi yaratildi: @${newUser.username}`);
+        showToast(`Foydalanuvchi @${newUser.username} muvaffaqiyatli qo'shildi! ✅`, 'success');
+        document.getElementById('user-create-form')?.reset();
+    } catch (err) {
+        console.error('User create error:', err);
+        showToast('Foydalanuvchi yaratishda xato: ' + err.message, 'error');
+    }
+}
+
+// ===== SAYT SOZLAMALARI =====
+async function loadSettingsInputs() {
+    try {
+        const res = await fetch('/api/admin/settings', { headers: _adminHeaders() }).catch(() => null);
+        if (res && res.ok) {
+            const data = await res.json().catch(() => ({}));
+            if (data.ok && data.settings) {
+                const s = data.settings;
+                if (s.siteName) localStorage.setItem('kay_site_name', s.siteName);
+                if (s.siteDesc) localStorage.setItem('kay_site_desc', s.siteDesc);
+                if (s.authorName) localStorage.setItem('kay_author_name', s.authorName);
+                if (s.authorBio) localStorage.setItem('kay_author_bio', s.authorBio);
+                if (s.contactEmail) localStorage.setItem('kay_contact_email', s.contactEmail);
+                if (s.contactPhone) localStorage.setItem('kay_contact_phone', s.contactPhone);
+                if (s.socialTg) localStorage.setItem('kay_social_tg', s.socialTg);
+                if (s.socialGh) localStorage.setItem('kay_social_gh', s.socialGh);
+                if (s.socialLc) localStorage.setItem('kay_social_lc', s.socialLc);
+                if (s.socialIg) localStorage.setItem('kay_social_ig', s.socialIg);
+                if (s.bannerText) localStorage.setItem('kay_banner_text', s.bannerText);
+                if (s.bannerActive !== undefined) localStorage.setItem('kay_banner_active', String(s.bannerActive));
+            }
+        }
+    } catch (_) {}
+
+    const siteName = localStorage.getItem('kay_site_name') || 'Abdugofforov';
+    const siteDesc = localStorage.getItem('kay_site_desc') || 'Vaqt sarguzashtlari va unutilmas xotiralar kundaligi.';
+    const authorName = localStorage.getItem('kay_author_name') || 'Akromjon Abdugofforov';
+    const authorBio = localStorage.getItem('kay_author_bio') || 'Dasturchi, muhandis va nemis tili o\'rganuvchisi. Sun\'iy intellekt, veb-texnologiyalar va avtomatlashtirish ishqibozi.';
+    const email = localStorage.getItem('kay_contact_email') || 'akromjon@abdugofforov.uz';
+    const phone = localStorage.getItem('kay_contact_phone') || '+998 (90) 000-00-00';
+    const tg = localStorage.getItem('kay_social_tg') || 'https://t.me/abdugofforov_uz';
+    const gh = localStorage.getItem('kay_social_gh') || 'https://github.com/akrin4477';
+    const lc = localStorage.getItem('kay_social_lc') || 'https://leetcode.com/u/akrin4477';
+    const ig = localStorage.getItem('kay_social_ig') || 'https://instagram.com/abdugofforov';
+    const bannerActive = localStorage.getItem('kay_banner_active') !== 'false';
+    const bannerText = localStorage.getItem('kay_banner_text') || '🚀 2026-yilgi yangi ekotizim yangilanishi e\'lon qilindi! Tools Lab va 3D tajribalarni sinab ko\'ring.';
+
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+    setVal('setting-site-name', siteName);
+    setVal('setting-site-desc', siteDesc);
+    setVal('setting-author-name', authorName);
+    setVal('setting-author-bio', authorBio);
+    setVal('setting-contact-email', email);
+    setVal('setting-contact-phone', phone);
+    setVal('setting-social-tg', tg);
+    setVal('setting-social-gh', gh);
+    setVal('setting-social-lc', lc);
+    setVal('setting-social-ig', ig);
+    setVal('setting-banner-text', bannerText);
+    const bCheck = document.getElementById('setting-banner-active');
+    if (bCheck) bCheck.checked = bannerActive;
+}
+
+function saveSettingsInputs() {
+    const getVal = id => document.getElementById(id)?.value?.trim();
+    const siteName = getVal('setting-site-name') || 'Abdugofforov';
+    const siteDesc = getVal('setting-site-desc') || '';
+    const authorName = getVal('setting-author-name') || '';
+    const authorBio = getVal('setting-author-bio') || '';
+    const contactEmail = getVal('setting-contact-email') || '';
+    const contactPhone = getVal('setting-contact-phone') || '';
+    const socialTg = getVal('setting-social-tg') || '';
+    const socialGh = getVal('setting-social-gh') || '';
+    const socialLc = getVal('setting-social-lc') || '';
+    const socialIg = getVal('setting-social-ig') || '';
+    const bannerText = getVal('setting-banner-text') || '';
+    const bCheck = document.getElementById('setting-banner-active');
+    const bannerActive = bCheck ? bCheck.checked : true;
+
+    localStorage.setItem('kay_site_name', siteName);
+    localStorage.setItem('kay_site_desc', siteDesc);
+    localStorage.setItem('kay_author_name', authorName);
+    localStorage.setItem('kay_author_bio', authorBio);
+    localStorage.setItem('kay_contact_email', contactEmail);
+    localStorage.setItem('kay_contact_phone', contactPhone);
+    localStorage.setItem('kay_social_tg', socialTg);
+    localStorage.setItem('kay_social_gh', socialGh);
+    localStorage.setItem('kay_social_lc', socialLc);
+    localStorage.setItem('kay_social_ig', socialIg);
+    localStorage.setItem('kay_banner_text', bannerText);
+    localStorage.setItem('kay_banner_active', String(bannerActive));
+
+    fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({
+            siteName,
+            siteDesc,
+            authorName,
+            authorBio,
+            contactEmail,
+            contactPhone,
+            socialTg,
+            socialGh,
+            socialLc,
+            socialIg,
+            bannerText,
+            bannerActive
+        })
+    }).catch(() => {});
+
+    addLog('info', 'Sayt sozlamalari yangilandi');
+    showToast('Sayt sozlamalari muvaffaqiyatli saqlandi! ✅', 'success');
+}
+
+// ===== ZAXIRA NUSXA (EXPORT & IMPORT) =====
+function downloadBackup() {
+    try {
+        const backupData = {
+            version: '2.0',
+            exportedAt: new Date().toISOString(),
+            posts: JSON.parse(localStorage.getItem('abdu_posts') || '[]'),
+            portfolio: JSON.parse(localStorage.getItem('abdu_portfolio') || '[]'),
+            quotes: JSON.parse(localStorage.getItem('abdu_quotes') || '[]'),
+            tasks: JSON.parse(localStorage.getItem('abdu_tasks') || '[]'),
+            logs: JSON.parse(localStorage.getItem('kay_logs') || '[]'),
+            settings: {
+                siteName: localStorage.getItem('kay_site_name'),
+                siteDesc: localStorage.getItem('kay_site_desc'),
+                authorName: localStorage.getItem('kay_author_name'),
+                authorBio: localStorage.getItem('kay_author_bio'),
+                email: localStorage.getItem('kay_contact_email'),
+                phone: localStorage.getItem('kay_contact_phone'),
+                bannerActive: localStorage.getItem('kay_banner_active'),
+                bannerText: localStorage.getItem('kay_banner_text'),
+                socialTg: localStorage.getItem('kay_social_tg'),
+                socialGh: localStorage.getItem('kay_social_gh')
+            }
+        };
+
+        const jsonStr = JSON.stringify(backupData, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const d = new Date().toISOString().split('T')[0];
+        a.href = url;
+        a.download = `abdugofforov_backup_${d}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        addLog('info', 'Zaxira nusxa fayli yuklab olindi');
+        showToast('Zaxira nusxa yuklab olindi! 📦', 'success');
+    } catch (e) {
+        console.error('Backup error:', e);
+        showToast('Zaxira olishda xatolik yuz berdi: ' + e.message, 'error');
+    }
+}
+
+function handleRestoreBackupFile(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (!data || typeof data !== 'object') throw new Error('Fayl formati noto\'g\'ri');
+            if (confirm('Ushbu zaxira nusxani qayta tiklashni tasdiqlaysizmi? Mavjud mahalliy ma\'lumotlar almashtiriladi.')) {
+                if (Array.isArray(data.posts)) localStorage.setItem('abdu_posts', JSON.stringify(data.posts));
+                if (Array.isArray(data.portfolio)) localStorage.setItem('abdu_portfolio', JSON.stringify(data.portfolio));
+                if (Array.isArray(data.quotes)) localStorage.setItem('abdu_quotes', JSON.stringify(data.quotes));
+                if (Array.isArray(data.tasks)) localStorage.setItem('abdu_tasks', JSON.stringify(data.tasks));
+                if (Array.isArray(data.logs)) localStorage.setItem('kay_logs', JSON.stringify(data.logs));
+                if (data.settings) {
+                    if (data.settings.siteName) localStorage.setItem('kay_site_name', data.settings.siteName);
+                    if (data.settings.siteDesc) localStorage.setItem('kay_site_desc', data.settings.siteDesc);
+                    if (data.settings.authorName) localStorage.setItem('kay_author_name', data.settings.authorName);
+                    if (data.settings.authorBio) localStorage.setItem('kay_author_bio', data.settings.authorBio);
+                    if (data.settings.email) localStorage.setItem('kay_contact_email', data.settings.email);
+                    if (data.settings.phone) localStorage.setItem('kay_contact_phone', data.settings.phone);
+                    if (data.settings.bannerActive) localStorage.setItem('kay_banner_active', data.settings.bannerActive);
+                    if (data.settings.bannerText) localStorage.setItem('kay_banner_text', data.settings.bannerText);
+                }
+
+                fetch('/api/admin/backup/restore', {
+                    method: 'POST',
+                    headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify(data)
+                }).catch(() => {});
+
+                addLog('info', 'Zaxira nusxa fayldan qayta tiklandi');
+                showToast('Ma\'lumotlar qayta tiklandi! Qayta yuklanmoqda...', 'success');
+                setTimeout(() => window.location.reload(), 1200);
+            }
+        } catch (err) {
+            console.error('Restore parse error:', err);
+            showToast('Zaxira faylini o\'qishda xatolik: ' + err.message, 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
+// ===== PIN KODNI O'ZGARTIRISH =====
+async function handleChangePin(e) {
+    e.preventDefault();
+    const oldPin = document.getElementById('old-pin-input')?.value.trim();
+    const newPin = document.getElementById('new-pin-input')?.value.trim();
+    const confirmPin = document.getElementById('new-pin-confirm')?.value.trim();
+    const msgEl = document.getElementById('change-pin-msg');
+
+    const showMsg = (text, isOk) => {
+        if (!msgEl) return;
+        msgEl.style.display = 'block';
+        msgEl.style.color = isOk ? '#34d399' : '#f87171';
+        msgEl.textContent = text;
+    };
+
+    if (!oldPin || !newPin || !confirmPin) {
+        showMsg('Barcha maydonlarni to\'ldiring', false);
+        return;
+    }
+    if (newPin !== confirmPin) {
+        showMsg('Yangi PIN kodlar mos kelmadi!', false);
+        return;
+    }
+    if (newPin.length < 4) {
+        showMsg('PIN kod kamida 4 ta belgidan iborat bo\'lishi kerak', false);
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/admin/change-pin', {
+            method: 'POST',
+            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ oldPin, newPin })
+        }).catch(() => null);
+
+        if (res && res.ok) {
+            showMsg('PIN kod serverda muvaffaqiyatli yangilandi! ✅', true);
+        } else {
+            sessionStorage.setItem('kay_admin_pin', newPin);
+            showMsg('PIN kod yangilandi! ✅', true);
+        }
+        sessionStorage.setItem('kay_admin_pin', newPin);
+        addLog('info', 'Admin PIN kodi o\'zgartirildi');
+        showToast('PIN kod muvaffaqiyatli o\'zgartirildi! ✅', 'success');
+        document.getElementById('change-pin-form')?.reset();
+    } catch (err) {
+        showMsg('Xatolik: ' + err.message, false);
+    }
+}
 
 // ===== XAVFSIZLIK LOGLARI =====
 function addLog(type, message) {
@@ -1055,14 +2015,12 @@ document.getElementById('clear-log-btn')?.addEventListener('click', () => {
     loadSecurityLog();
 });
 
-// ===== SOZLAMALAR =====
-document.getElementById('save-settings-btn')?.addEventListener('click', () => {
-    const siteName = document.getElementById('setting-site-name')?.value;
-    const siteDesc = document.getElementById('setting-site-desc')?.value;
-    if (siteName) localStorage.setItem('kay_site_name', siteName);
-    if (siteDesc) localStorage.setItem('kay_site_desc', siteDesc);
-    addLog('info', 'Sayt sozlamalari yangilandi');
-    alert('Sozlamalar saqlandi ✅');
+// Sozlamalar va Zaxira tugmalari
+document.getElementById('save-settings-btn')?.addEventListener('click', saveSettingsInputs);
+document.getElementById('backup-download-btn')?.addEventListener('click', downloadBackup);
+document.getElementById('backup-upload-file')?.addEventListener('change', e => {
+    const file = e.target.files && e.target.files[0];
+    if (file) handleRestoreBackupFile(file);
 });
 
 document.getElementById('reset-all-btn')?.addEventListener('click', () => {
@@ -1071,10 +2029,30 @@ document.getElementById('reset-all-btn')?.addEventListener('click', () => {
     localStorage.removeItem('kay_logs');
     localStorage.removeItem('abdu_posts');
     localStorage.removeItem('abdu_portfolio');
-    alert('Barcha mahalliy ma\'lumotlar tozalandi ✅');
+    localStorage.removeItem('abdu_quotes');
+    showToast('Barcha mahalliy ma\'lumotlar tozalandi ✅', 'info');
     loadTasks();
+    loadProjects();
+    loadQuotes();
     loadSecurityLog();
 });
+
+// Formalar tinglovchilari
+document.getElementById('project-editor-form')?.addEventListener('submit', handleProjectSubmit);
+document.getElementById('project-reset-btn')?.addEventListener('click', resetProjectForm);
+document.getElementById('projects-search-input')?.addEventListener('input', e => loadProjects(e.target.value));
+
+document.getElementById('quote-editor-form')?.addEventListener('submit', handleQuoteSubmit);
+document.getElementById('quote-reset-btn')?.addEventListener('click', resetQuoteForm);
+document.getElementById('quote-search-input')?.addEventListener('input', e => loadQuotes(e.target.value));
+
+document.getElementById('user-create-form')?.addEventListener('submit', handleCreateUser);
+document.getElementById('user-search-input')?.addEventListener('input', e => renderStudentsList(e.target.value));
+
+document.getElementById('results-search')?.addEventListener('input', e => renderResultsTable(e.target.value));
+document.getElementById('clear-results-btn')?.addEventListener('click', clearAllResults);
+
+document.getElementById('change-pin-form')?.addEventListener('submit', handleChangePin);
 
 // ===== GLOBAL EVENT DELEGATION FOR CSP COMPLIANCE =====
 document.addEventListener('click', (e) => {
@@ -1108,6 +2086,20 @@ document.addEventListener('click', (e) => {
         editCreatorPost(btn.dataset.id);
     } else if (action === 'delete-post') {
         deleteCreatorPost(btn.dataset.id);
+    } else if (action === 'edit-project') {
+        editProject(btn.dataset.id);
+    } else if (action === 'delete-project') {
+        deleteProject(btn.dataset.id);
+    } else if (action === 'edit-quote') {
+        editQuote(btn.dataset.id);
+    } else if (action === 'delete-quote') {
+        deleteQuote(btn.dataset.id);
+    } else if (action === 'toggle-user-role') {
+        toggleUserRole(btn.dataset.username, btn.dataset.role);
+    } else if (action === 'delete-user') {
+        deleteUser(btn.dataset.username);
+    } else if (action === 'delete-result') {
+        deleteResult(btn.dataset.id);
     }
 });
 

@@ -28,7 +28,10 @@ class Database {
             comments: [],
             results: [],
             gamification: [],
-            quotes: []
+            quotes: [],
+            projects: [],
+            tasks: [],
+            settings: {}
         };
         this.isSaving = false;
         this.saveQueue = false;
@@ -41,6 +44,14 @@ class Database {
                 const raw = fs.readFileSync(DB_FILE, 'utf8');
                 const parsed = JSON.parse(raw);
                 this.cache = Object.assign(this.cache, parsed);
+                ['users', 'posts', 'comments', 'results', 'gamification', 'quotes', 'projects', 'tasks'].forEach(col => {
+                    if (!Array.isArray(this.cache[col])) {
+                        this.cache[col] = [];
+                    }
+                });
+                if (!this.cache.settings || typeof this.cache.settings !== 'object' || Array.isArray(this.cache.settings)) {
+                    this.cache.settings = {};
+                }
             } else {
                 // Eski users.json dan foydalanuvchilarni migratsiya qilish
                 if (fs.existsSync(USERS_LEGACY_FILE)) {
@@ -112,14 +123,16 @@ class Database {
 
     insert(collectionName, doc) {
         const col = this.getCollection(collectionName);
-        const newDoc = {
-            id: doc.id || (Date.now().toString() + crypto.randomBytes(3).toString('hex')),
-            createdAt: doc.createdAt || Date.now(),
-            ...doc
-        };
-        col.push(newDoc);
+        const docCopy = { ...doc };
+        if (!docCopy.id) {
+            docCopy.id = Date.now().toString() + crypto.randomBytes(3).toString('hex');
+        }
+        if (!docCopy.createdAt) {
+            docCopy.createdAt = Date.now();
+        }
+        col.push(docCopy);
         this.persist();
-        return newDoc;
+        return docCopy;
     }
 
     update(collectionName, id, updates) {
@@ -153,10 +166,62 @@ class Database {
         return {
             usersCount: this.getCollection('users').length,
             postsCount: this.getCollection('posts').length,
-            commentsCount: this.getCollection('comments').length,
+            projectsCount: this.getCollection('projects').length,
+            quotesCount: this.getCollection('quotes').length,
+            tasksCount: this.getCollection('tasks').length,
             resultsCount: this.getCollection('results').length,
+            commentsCount: this.getCollection('comments').length,
             testsCount: this.getCollection('results').length
         };
+    }
+
+    // Sozlamalarni olish va yangilash
+    getSettings() {
+        if (!this.cache.settings || typeof this.cache.settings !== 'object' || Array.isArray(this.cache.settings)) {
+            this.cache.settings = {};
+        }
+        return this.cache.settings;
+    }
+
+    updateSettings(updates) {
+        this.cache.settings = {
+            ...this.getSettings(),
+            ...(updates || {}),
+            updatedAt: Date.now()
+        };
+        this.persist();
+        return this.cache.settings;
+    }
+
+    // Kolleksiyani tozalash
+    clear(collectionName) {
+        if (this.cache[collectionName] && Array.isArray(this.cache[collectionName])) {
+            this.cache[collectionName] = [];
+            this.persist();
+            return true;
+        }
+        return false;
+    }
+
+    // Zaxira nusxadan tiklash
+    restore(newData) {
+        if (!newData || typeof newData !== 'object') return false;
+        const targetData = (newData.data && typeof newData.data === 'object') ? newData.data : newData;
+        this.cache = {
+            users: Array.isArray(targetData.users) ? targetData.users : (this.cache.users || []),
+            posts: Array.isArray(targetData.posts) ? targetData.posts : [],
+            comments: Array.isArray(targetData.comments) ? targetData.comments : [],
+            results: Array.isArray(targetData.results) ? targetData.results : [],
+            gamification: Array.isArray(targetData.gamification) ? targetData.gamification : [],
+            quotes: Array.isArray(targetData.quotes) ? targetData.quotes : [],
+            projects: Array.isArray(targetData.projects) ? targetData.projects : [],
+            tasks: Array.isArray(targetData.tasks) ? targetData.tasks : [],
+            settings: (targetData.settings && typeof targetData.settings === 'object' && !Array.isArray(targetData.settings))
+                ? targetData.settings
+                : (this.cache.settings || {})
+        };
+        this.saveImmediate();
+        return true;
     }
 }
 

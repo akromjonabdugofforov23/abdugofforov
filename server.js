@@ -90,6 +90,7 @@ const noCacheMiddleware = (req, res, next) => {
 // Marshrutlarni ulash
 app.use('/auth', noCacheMiddleware, authRoutes);
 app.use('/api/admin', noCacheMiddleware, adminRoutes);
+app.use('/admin', noCacheMiddleware, adminRoutes);
 app.use('/api/ai', noCacheMiddleware, aiRoutes);
 
 // Statik fayllarni ilova manbalaridan o'qish
@@ -98,7 +99,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 
-app.listen(PORT, () => {
-    console.log(`Server ishga tushdi: http://localhost:${PORT}`);
-    console.log(`Himoya qatlamlari: FAOL (WAF, Helmet, RateLimiter, StrictAuth, Gemini AI, CMS)`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server ishga tushdi: http://localhost:${PORT}`);
+        console.log(`Himoya qatlamlari: FAOL (WAF, Helmet, RateLimiter, StrictAuth, Gemini AI, CMS)`);
+    });
+}
+
+module.exports = app;

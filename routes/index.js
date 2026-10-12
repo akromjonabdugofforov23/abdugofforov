@@ -122,6 +122,71 @@ router.get('/api/status', (req, res) => {
     });
 });
 
+// ============================================================
+// OMMAVIY API MARSHRUTLARI (PUBLIC API ENDPOINTS)
+// ============================================================
+
+// 1. Maqolalar (Faqat chop etilgan / published postlar)
+router.get(['/posts', '/api/posts'], (req, res) => {
+    const posts = db.find('posts', p => p.published !== false);
+    res.json({ ok: true, posts });
+});
+
+router.get(['/posts/:id', '/api/posts/:id'], (req, res) => {
+    const post = db.findById('posts', req.params.id) || db.findOne('posts', p => p.slug === req.params.id);
+    if (!post || post.published === false) {
+        return res.status(404).json({ ok: false, error: "Maqola topilmadi" });
+    }
+    // Ko'rishlar sonini oshirish (views count)
+    db.update('posts', post.id, { views: (post.views || 0) + 1 });
+    res.json({ ok: true, post: { ...post, views: (post.views || 0) + 1 } });
+});
+
+// 2. Kun hikmatlari / Iqtiboslar
+router.get(['/quotes', '/api/quotes'], (req, res) => {
+    const quotes = db.find('quotes');
+    res.json({ ok: true, quotes });
+});
+
+// 3. Loyihalar
+router.get(['/projects', '/api/projects'], (req, res) => {
+    const projects = db.find('projects', p => p.status !== 'archived');
+    res.json({ ok: true, projects });
+});
+
+// 4. Sayt sozlamalari
+router.get(['/settings', '/api/settings'], (req, res) => {
+    const settings = db.getSettings();
+    res.json({ ok: true, settings });
+});
+
+// 5. Test natijalari (Results)
+router.get(['/results', '/api/results'], (req, res) => {
+    const results = db.find('results');
+    res.json({ ok: true, results });
+});
+
+router.post(['/results', '/api/results'], (req, res) => {
+    const { testId, testTitle, score, total, wrong, name, username } = req.body || {};
+    const tTotal = Math.max(0, Math.min(200, parseInt(total, 10) || 0));
+    const tScore = Math.max(0, Math.min(tTotal, parseInt(score, 10) || 0));
+    const tWrong = wrong !== undefined ? parseInt(wrong, 10) : Math.max(0, tTotal - tScore);
+    const pct = tTotal ? Math.round((tScore / tTotal) * 100) : 0;
+
+    const entry = db.insert('results', {
+        username: username || 'mehmon',
+        name: name || username || 'Foydalanuvchi',
+        testId: String(testId || '').slice(0, 40),
+        testTitle: String(testTitle || '').slice(0, 80),
+        score: tScore,
+        total: tTotal,
+        wrong: tWrong,
+        pct,
+        date: new Date().toISOString()
+    });
+    res.json({ ok: true, result: entry, message: "Natija saqlandi" });
+});
+
 // CSP hisobotlarini qabul qilish endpointi
 router.all('/csp-report', (req, res) => {
     res.sendStatus(204);
