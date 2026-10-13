@@ -18,26 +18,29 @@ function timingSafeCompare(a, b) {
     return crypto.timingSafeEqual(bufA, bufB);
 }
 
-// Admin PIN kodini tekshirish (0509 yoki hash)
+// Admin PIN kodini tekshirish (Hash yoki ENV orqali)
 function checkAdminPin(pin) {
     if (!pin || typeof pin !== 'string') return false;
     const cleanPin = pin.trim();
-    if (cleanPin === '0509' || cleanPin === 'Akrin3511$') return true;
-    
+    if (!cleanPin || cleanPin.length > 64) return false;
+
     const pinSha256 = crypto.createHash('sha256').update(cleanPin).digest('hex');
     const PRIMARY_PIN_SHA256 = 'd85deaee34f56859e36a22eab32a6c8dc6cb695440e051e396b865247e9e9349';
     const LEGACY_PIN_SHA256 = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
 
+    // 1. Agar ADMIN_PIN_HASH muhit o'zgaruvchisi berilgan bo'lsa, u ustuvor
+    const envHash = process.env.ADMIN_PIN_HASH ? String(process.env.ADMIN_PIN_HASH).trim() : '';
+    if (envHash) {
+        if (timingSafeCompare(pinSha256, envHash.toLowerCase())) return true;
+        return false;
+    }
+
+    // 2. Standart SHA-256 xeshlar orqali tekshirish
     if (timingSafeCompare(pinSha256, PRIMARY_PIN_SHA256) || timingSafeCompare(pinSha256, LEGACY_PIN_SHA256)) {
         return true;
     }
 
-    const envHash = process.env.ADMIN_PIN_HASH ? String(process.env.ADMIN_PIN_HASH).trim() : '';
-    if (envHash) {
-        if (timingSafeCompare(cleanPin, envHash)) return true;
-        if (timingSafeCompare(pinSha256, envHash.toLowerCase())) return true;
-    }
-
+    // 3. ADMIN_PIN tekis kiritilgan bo'lsa
     const envPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE;
     if (envPin && timingSafeCompare(cleanPin, String(envPin).trim())) {
         return true;

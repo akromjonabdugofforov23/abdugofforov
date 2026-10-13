@@ -1,5 +1,26 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+
+// Nol-qaramlikli .env o'quvchi (agar mavjud bo'lsa)
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+    try {
+        const envContent = fs.readFileSync(envPath, 'utf8');
+        envContent.split('\n').forEach(line => {
+            const trimmed = line.trim();
+            if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+                const idx = trimmed.indexOf('=');
+                const key = trimmed.slice(0, idx).trim();
+                const val = trimmed.slice(idx + 1).trim().replace(/^['"]|['"]$/g, '');
+                if (key && !process.env[key]) {
+                    process.env[key] = val;
+                }
+            }
+        });
+    } catch (_) {}
+}
+
 const routes = require('./routes/index');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');

@@ -20,7 +20,7 @@ export async function onRequest(context) {
   }
 
   // 2. Yashirin tizim fayllari va umumiy xakerlik yo'llarini (reconnaissance probing) to'sish
-  const blockedProbes = /(\.env|\.git|\.aws|\.svn|\.htaccess|wp-admin|wp-login|phpmyadmin|cgi-bin|web\.config|xmlrpc\.php)/i;
+  const blockedProbes = /(\.env|\.git|\.aws|\.svn|\.htaccess|wp-admin|wp-login|phpmyadmin|cgi-bin|web\.config|xmlrpc\.php|db\.json|users\.json|package(-lock)?\.json)/i;
   if (blockedProbes.test(url.pathname)) {
     return new Response('Not Found', {
       status: 404,

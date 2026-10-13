@@ -98,6 +98,23 @@ Ushbu loyihada ishlovchi har qanday Gemini yoki AI Agent quyidagi qoidalarga qat
 
 ## 📝 4. Oxirgi O'zgarishlar Tarixi (Changelog)
 
+### [2026-10-13]
+- **Kritik Xavfsizlik va Arxitektura Muammolari To'liq Bartaraf Etildi**:
+  - **Data Leak To'xtatildi**: `build.mjs` da `copyDir` filtri o'rnatildi, `data/db.json` va `users.json` endi hech qachon `dist/` papkasiga ko'chirilmaydi.
+  - **WAF & Path Blocking**: `middlewares/aiBotDetector.js` va `functions/_middleware.js` da `db.json`, `users.json`, `package.json`, server kodlari va ichki modullar yo'llari 403/404 bilan to'liq to'sildi.
+  - **Hardcoded Parollar Tozalandi**: `routes/index.js`, `middlewares/auth.js`, `routes/auth.js`, va `functions/_lib.js` fayllaridan ochiq matndagi `'0509'` va `'Akrin3511$'` simvollari butunlay olib tashlandi; doimiy vaqtli (timing-safe) SHA-256 va `ADMIN_PIN_HASH` ustuvor tekshiruvi o'rnatildi.
+  - **Privilege Escalation Bartaraf Etildi**: `/auth/register` orqali begona foydalanuvchilar PIN kiritib `admin` bo'lib olishi taqiqlandi (faqat tizimda oldindan ruxsat berilgan `adminUsers` username'larigina admin bo'la oladi).
+  - **Loyihalar (Portfolio Projects) To'liq Sinxronlashtirildi**:
+    - `app.js` da `getPortfolioProjects()` yordamchisi va loyihalar tabini chiroyli Glassmorphism kartalarida render qilish tizimi qo'shildi. Bosh sahifa ochilganda `/projects` dan avtomatik sinxronlanadi.
+    - Cloudflare Pages Functions uchun `functions/projects.js` va `functions/tasks.js` yaratildi.
+    - `kay.js` dagi fetch so'rovlariga Cloudflare endpointlari zaxira sifatida ulandi.
+  - **Telegram 2FA (2-Bosqichli Kirish) To'liq Faollashtirildi**:
+    - `kay.js` dagi avvalgi `/check-pin` orqali to'g'ridan-to'g'ri kirish bypassi butunlay olib tashlandi. Endi PIN kiritilgandan so'ng darhol `/admin/request-code` orqali Telegram 2FA kodi talab qilinadi.
+    - Node.js Express serveriga (`routes/admin.js`) `/admin/request-code` va `/admin/verify-code` endpointlari qo'shildi (`services/telegram.js` orqali botga 6 xonali tasdiqlash kodi yuboriladi va tekshiriladi).
+    - `server.js` da nol-qaramlikli `.env` loaderi ulandi.
+    - `.env.example` shabloni yaratildi (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`).
+  - `npm test` va `npm run build` muvaffaqiyatli yakunlandi.
+
 ### [2026-10-12 / 2026-10-13]
 - **Admin Paneli Tubdan Yangilandi (`kay.html`, `kay.js`)**:
   - Dark Cyber Glassmorphism dizayni to'liq joriy etildi.

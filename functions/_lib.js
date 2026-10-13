@@ -259,13 +259,10 @@ export async function sha256Hex(text) {
 export async function verifyAdminPin(env, pin) {
   if (typeof pin !== 'string' || !pin || pin.length > 64) return false;
   const cleanPin = pin.trim();
-  if (cleanPin === '0509' || cleanPin === 'Akrin3511$') return true;
+  if (!cleanPin) return false;
   const pinHash = await sha256Hex(cleanPin);
 
-  // 1. Asosiy Admin PIN xeshi
-  if (timingSafeEqual(pinHash, PRIMARY_ADMIN_SHA256)) return true;
-
-  // 2. Agar Cloudflare'da ADMIN_PIN_HASH o'rnatilgan bo'lsa
+  // 1. Agar Cloudflare'da ADMIN_PIN_HASH o'rnatilgan bo'lsa (ustuvor)
   const envHash = env && env.ADMIN_PIN_HASH ? String(env.ADMIN_PIN_HASH).trim() : '';
   if (envHash) {
     if (timingSafeEqual(pinHash, envHash.toLowerCase())) return true;
@@ -275,9 +272,13 @@ export async function verifyAdminPin(env, pin) {
         if (await verifyPassword(cleanPin, saltHex, expectedHashHex)) return true;
       } catch (e) {}
     }
+    return false;
   }
 
-  // 3. Zaxira xeshlar (0509)
+  // 2. Asosiy Admin PIN xeshi
+  if (timingSafeEqual(pinHash, PRIMARY_ADMIN_SHA256)) return true;
+
+  // 3. Zaxira xeshlar
   if (timingSafeEqual(pinHash, LEGACY_PIN_SHA256)) return true;
 
   return false;

@@ -40,6 +40,11 @@ const BLOCKED_PATHS = [
     /\/(etc|proc|var|sys)\//i,
     /\/web\.config/i,
     /\/config\.(json|yaml|yml|ini)/i,
+    /\/(data\/)?db\.json/i,
+    /\/users\.json/i,
+    /\/package(-lock)?\.json/i,
+    /\/(server|database)\.js/i,
+    /\/(routes|middlewares|functions|services)\//i,
     /\.(bak|backup|old|save|swp|tmp|temp|orig|sql|tar|gz|zip|7z|rar|pem|key|crt)$/i,
     /(id_rsa|id_ed25519|credentials|authorized_keys)/i
 ];

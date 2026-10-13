@@ -34,9 +34,23 @@ router.post('/check-pin', (req, res) => {
     const pinSha256 = crypto.createHash('sha256').update(cleanPin).digest('hex');
     const PRIMARY_PIN_SHA256 = 'd85deaee34f56859e36a22eab32a6c8dc6cb695440e051e396b865247e9e9349';
     const LEGACY_PIN_SHA256 = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
+    const envHash = process.env.ADMIN_PIN_HASH ? String(process.env.ADMIN_PIN_HASH).trim().toLowerCase() : '';
     const envPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE;
 
-    if (cleanPin === '0509' || cleanPin === 'Akrin3511$' || pinSha256 === PRIMARY_PIN_SHA256 || pinSha256 === LEGACY_PIN_SHA256 || (envPin && cleanPin === envPin)) {
+    let isPinMatch = false;
+    const bufHash = Buffer.from(pinSha256);
+    if (envHash && envHash.length === 64) {
+        isPinMatch = crypto.timingSafeEqual(bufHash, Buffer.from(envHash));
+    } else {
+        if (crypto.timingSafeEqual(bufHash, Buffer.from(PRIMARY_PIN_SHA256)) ||
+            crypto.timingSafeEqual(bufHash, Buffer.from(LEGACY_PIN_SHA256))) {
+            isPinMatch = true;
+        } else if (envPin && cleanPin === String(envPin).trim()) {
+            isPinMatch = true;
+        }
+    }
+
+    if (isPinMatch) {
         const token = crypto.randomBytes(32).toString('hex');
         let adminUser = db.findOne('users', u => u.username && ['abdugofforov', 'admin', 'akrin4477', 'akrin'].includes(u.username.toLowerCase()));
         if (adminUser) {

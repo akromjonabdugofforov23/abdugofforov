@@ -10,8 +10,8 @@ const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 const db = require('../database');
-const { requireAdmin } = require('../middlewares/auth');
-const { broadcastPost } = require('../services/telegram');
+const { requireAdmin, checkAdminPin } = require('../middlewares/auth');
+const { broadcastPost, sendMessage } = require('../services/telegram');
 
 // Scrypt xavfsiz shifrlash parametrlari
 const SCRYPT_PARAMS = { N: 16384, r: 8, p: 1, maxmem: 32 * 1024 * 1024 };
@@ -26,7 +26,118 @@ function hashPassword(password) {
     };
 }
 
-// Barcha admin marshrutlarini himoyalash
+// ============================================================
+// 0. TELEGRAM 2FA TASDIQLASH (REQUEST-CODE & VERIFY-CODE)
+// Ushbu marshrutlar requireAdmin dan OLDIN turadi, chunki bu kirish bosqichi
+// ============================================================
+const twoFactorSessions = new Map(); // sessionId -> { pin, code, createdAt, attempts }
+
+// Eskirgan 2FA sessiyalarini tozalash (5 daqiqa)
+setInterval(() => {
+    const now = Date.now();
+    for (const [id, s] of twoFactorSessions.entries()) {
+        if (now - s.createdAt > 5 * 60 * 1000) {
+            twoFactorSessions.delete(id);
+        }
+    }
+}, 60 * 1000);
+
+// 1. PIN ni tekshirib, Telegramga 6 xonali tasdiqlash kodini yuborish
+router.post('/request-code', async (req, res) => {
+    const { pin } = req.body || {};
+    const cleanPin = String(pin || '').trim();
+    if (!cleanPin || cleanPin.length > 64) {
+        return res.status(400).json({ ok: false, message: "PIN topilmadi" });
+    }
+
+    if (!checkAdminPin(cleanPin)) {
+        return res.status(401).json({ ok: false, message: "Noto'g'ri PIN-kod!" });
+    }
+
+    const botToken = process.env.TELEGRAM_BOT_TOKEN || '';
+    const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || '';
+
+    if (!botToken || !adminChatId) {
+        return res.status(503).json({
+            ok: false,
+            configured: false,
+            message: "Telegram bot sozlanmagan. .env faylida TELEGRAM_BOT_TOKEN va TELEGRAM_CHAT_ID ni kiriting."
+        });
+    }
+
+    // 6-xonali tasodifiy xavfsiz kod
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    const sessionId = crypto.randomBytes(24).toString('hex');
+
+    twoFactorSessions.set(sessionId, {
+        pin: cleanPin,
+        code,
+        createdAt: Date.now(),
+        attempts: 0
+    });
+
+    const ip = req.headers['cf-connecting-ip'] || req.ip || 'unknown';
+    const tgText = `🔐 <b>Admin Boshqaruv Paneliga Kirish</b>\n\n` +
+                   `🔑 Tasdiqlash kodi: <code>${code}</code>\n\n` +
+                   `⏳ Amal qilish muddati: <b>5 daqiqa</b>\n` +
+                   `🌐 So'rov IP: <code>${ip}</code>\n` +
+                   `⚠️ Agar bu siz bo'lmasangiz, darhol PIN kodni yangilang!`;
+
+    const sent = await sendMessage(adminChatId, tgText);
+    if (!sent || sent.ok === false) {
+        return res.status(500).json({ ok: false, message: "Telegram bot orqali kod yuborishda xatolik yuz berdi" });
+    }
+
+    return res.json({ ok: true, sessionId, message: "Tasdiqlash kodi Telegramingizga yuborildi." });
+});
+
+// 2. Telegramdan kelgan kodni tekshirib, sessiya tokeni berish
+router.post('/verify-code', (req, res) => {
+    const { sessionId, code } = req.body || {};
+    const cleanSessionId = String(sessionId || '').trim();
+    const cleanCode = String(code || '').trim();
+
+    if (!cleanSessionId || !cleanCode || cleanCode.length !== 6) {
+        return res.status(400).json({ ok: false, message: "Noto'g'ri kod yoki sessiya" });
+    }
+
+    const session = twoFactorSessions.get(cleanSessionId);
+    if (!session) {
+        return res.status(400).json({ ok: false, message: "Sessiya eskirgan yoki topilmadi. Qaytadan PIN kiriting." });
+    }
+
+    if (Date.now() - session.createdAt > 5 * 60 * 1000) {
+        twoFactorSessions.delete(cleanSessionId);
+        return res.status(400).json({ ok: false, message: "Tasdiqlash kodi muddati tugagan (5 daqiqa). Qaytadan PIN kiriting." });
+    }
+
+    if (session.attempts >= 5) {
+        twoFactorSessions.delete(cleanSessionId);
+        return res.status(429).json({ ok: false, message: "5 marta xato kiritildi. Sessiya bekor qilindi." });
+    }
+
+    const bufCode = Buffer.from(cleanCode);
+    const bufExpected = Buffer.from(session.code);
+    const isCodeValid = bufCode.length === bufExpected.length && crypto.timingSafeEqual(bufCode, bufExpected);
+
+    if (!isCodeValid) {
+        session.attempts += 1;
+        return res.status(401).json({ ok: false, message: `Kod noto'g'ri (${session.attempts}/5 urinish)` });
+    }
+
+    // Kod to'g'ri — 2FA muvaffaqiyatli!
+    twoFactorSessions.delete(cleanSessionId);
+
+    const token = crypto.randomBytes(32).toString('hex');
+    let adminUser = db.findOne('users', u => u.role === 'admin' || (u.username && ['abdugofforov', 'admin', 'akrin4477', 'akrin'].includes(u.username.toLowerCase())));
+    if (adminUser) {
+        db.update('users', adminUser.id, { token, tokenCreatedAt: Date.now(), lastLoginAt: Date.now() });
+    }
+
+    return res.json({ ok: true, success: true, token });
+});
+
+// Barcha keyingi admin marshrutlarini himoyalash
 router.use(requireAdmin);
 
 // ============================================================

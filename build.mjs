@@ -53,9 +53,20 @@ async function copyFile(name) {
 
 async function copyDir(name) {
   const src = path.join(ROOT, name);
+  const dest = path.join(OUT, name);
   try {
     await fs.access(src);
-    await fs.cp(src, path.join(OUT, name), { recursive: true });
+    await fs.cp(src, dest, {
+      recursive: true,
+      filter: (source) => {
+        const basename = path.basename(source).toLowerCase();
+        // Xavfsizlik: Baza va maxfiy ma'lumotlar dist/ ga ko'chirilmasligi shart
+        if (basename === 'db.json' || basename.endsWith('.tmp') || basename === 'users.json') {
+          return false;
+        }
+        return true;
+      }
+    });
   } catch {}
 }
 

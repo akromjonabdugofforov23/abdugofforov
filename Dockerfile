@@ -11,6 +11,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8000
 
+# Paket fayllarini ko'chirish va o'rnatish
+COPY package*.json ./
+RUN npm ci --omit=dev
+
 # Loyiha fayllarini ko'chirish
 COPY . .
 

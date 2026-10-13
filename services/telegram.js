@@ -9,7 +9,7 @@
 const https = require('https');
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
-const ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || '';
+const ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID || '';
 const CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID || '';
 
 async function sendMessage(chatId, text, parseMode = 'HTML') {

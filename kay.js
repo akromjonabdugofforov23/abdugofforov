@@ -132,31 +132,9 @@ async function tryLogin() {
         pinInput.focus();
     }
 
-    // 1-qadam: To'g'ridan-to'g'ri /check-pin orqali PIN/parolni tekshirish (Tezkor va 2FA kutmasdan kirish)
-    try {
-        const cp = await fetch('/check-pin', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ pin })
-        });
-        const cpData = await cp.json().catch(() => ({}));
-        if (cpData && (cpData.success || cpData.ok)) {
-            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Kirish'; }
-            localStorage.removeItem('kay_attempts');
-            localStorage.removeItem('kay_lock');
-            localStorage.removeItem('kay_lockcount');
-            sessionStorage.setItem('kay_admin', 'true');
-            sessionStorage.setItem('kay_admin_pin', pin);
-            if (cpData.token) sessionStorage.setItem('kay_admin_token', cpData.token);
-            addLog('success', 'Admin paroli tasdiqlandi — panel ochildi');
-            showAdminPanel();
-            return;
-        }
-    } catch (_) {}
-
     let res, data;
     try {
-        // 2-qadam: Agar /check-pin qanoatlantirmasa, Telegram 2FA (/admin/request-code) ga murojaat
+        // 1-qadam: Telegram 2FA (/admin/request-code) orqali PIN tekshirish va tasdiqlash kodini so'rash
         res = await fetch('/admin/request-code', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -490,10 +468,9 @@ async function loadDashboardAndRealData(forceRefresh = false) {
             fetch('/api/admin/stats', { headers: _adminHeaders() }).catch(() => null),
             fetch('/api/admin/users', { headers: _adminHeaders() }).catch(() => fetch('/admin/users', { headers: _adminHeaders() }).catch(() => null)),
             fetch('/api/admin/posts', { headers: _adminHeaders() }).catch(() => null),
-            fetch('/results', { headers: _adminHeaders() }).catch(() => fetch('/api/admin/results', { headers: _adminHeaders() }).catch(() => null)),
-            fetch('/api/admin/projects', { headers: _adminHeaders() }).catch(() => null),
-            fetch('/api/admin/quotes', { headers: _adminHeaders() }).catch(() => null),
-            fetch('/api/admin/tasks', { headers: _adminHeaders() }).catch(() => null)
+            fetch('/api/admin/projects', { headers: _adminHeaders() }).catch(() => fetch('/projects', { headers: _adminHeaders() }).catch(() => null)),
+            fetch('/api/admin/quotes', { headers: _adminHeaders() }).catch(() => fetch('/quotes', { headers: _adminHeaders() }).catch(() => null)),
+            fetch('/api/admin/tasks', { headers: _adminHeaders() }).catch(() => fetch('/tasks', { headers: _adminHeaders() }).catch(() => null))
         ]);
 
         if (statsRes && statsRes.ok) {

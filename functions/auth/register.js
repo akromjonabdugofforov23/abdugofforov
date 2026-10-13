@@ -64,8 +64,6 @@ export async function onRequestPost(context) {
       }, 403, request, env);
     }
     isAdminUser = true;
-  } else if (adminPin && (await verifyAdminPin(env, adminPin))) {
-    isAdminUser = true;
   }
 
   const { hash, salt } = await hashPassword(password);

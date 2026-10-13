@@ -561,8 +561,43 @@ function updateBookmarkUI(postId, isSaved) {
     });
 }
 window.getBookmarkBtnHtml = getBookmarkBtnHtml;
-window.handleBookmarkToggle = handleBookmarkToggle;
-window.updateBookmarkUI = updateBookmarkUI;
+// 7.5. Loyihalar (Portfolio Projects) ro'yxatini olish
+function getPortfolioProjects() {
+    try {
+        const local = JSON.parse(localStorage.getItem('abdu_portfolio') || '[]');
+        if (Array.isArray(local) && local.length) return local;
+    } catch (_) {}
+    return [
+        {
+            id: 'proj_tools_lab',
+            title: 'Tools Lab (Mikro-asboblar)',
+            cat: 'Web Ilova & Asboblar',
+            desc: "Keng qamrovli veb-muhandislik asboblari: WebP konvertori, JSON formatlovchi, Base64 dekoder va ranglar palitrasi.",
+            tech: ['HTML5', 'Canvas', 'JavaScript', 'Tailwind'],
+            link: '/tools',
+            github: 'https://github.com/akrin4477/abdugofforov'
+        },
+        {
+            id: 'proj_deutsch_akademie',
+            title: 'Deutsch Akademiya (A1-B2)',
+            cat: 'Ta\'lim & Til',
+            desc: "Nemis tilini interaktiv o'rganish platformasi: darslar, grammatika, audio lug'at, testlar va SRS fleshkartalar.",
+            tech: ['Vanilla JS', 'IndexedDB', 'Audio API', 'CSS Grid'],
+            link: '/deutsch',
+            github: 'https://github.com/akrin4477/abdugofforov'
+        },
+        {
+            id: 'proj_3d_lab',
+            title: '3D Lab & Universe',
+            cat: 'Grafika & Three.js',
+            desc: "Three.js va WebGL texnologiyasiga asoslangan interaktiv kosmik fazo, sayyoralar va vizual 3D laboratoriyasi.",
+            tech: ['Three.js', 'WebGL', 'GLSL', 'Math'],
+            link: '/3d-lab',
+            github: 'https://github.com/akrin4477/abdugofforov'
+        }
+    ];
+}
+window.getPortfolioProjects = getPortfolioProjects;
 
 // 8. Postlarni filtrlash va render qilish
 let _renderTimer = null;
@@ -764,11 +799,61 @@ function renderPosts(instant) {
         }
 
         // ==========================================
-        // 2. ODDIY POSTLAR REJIMI (Category Filters)
+        // 2. LOYIHALAR REJIMI (Projects Tab)
+        // ==========================================
+        if (currentTab === 'projects') {
+            const projects = getPortfolioProjects();
+            if (!projects.length) {
+                blogGrid.style.display = 'grid';
+                blogGrid.innerHTML = `
+                    <div class="empty-blog-state" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-bg); border: 1px dashed var(--border-color); border-radius: 16px; margin: 10px 0 30px;">
+                        <div style="font-size: 42px; margin-bottom: 12px; line-height: 1;">🚀</div>
+                        <h3 style="font-size: 18px; font-weight: 700; color: var(--text-primary); margin: 0 0 8px 0;">Hozircha loyihalar mavjud emas</h3>
+                        <p style="font-size: 14px; color: var(--text-secondary); max-width: 440px; margin: 0 auto; line-height: 1.6;">Tez orada yangi innovatsion loyihalar joylanadi.</p>
+                    </div>
+                `;
+                setTimeout(() => { if (blogGrid) blogGrid.style.minHeight = ''; }, 100);
+                return;
+            }
+
+            blogGrid.style.display = '';
+            projects.forEach(p => {
+                const card = document.createElement('article');
+                card.className = 'post-card project-display-card';
+                const techList = p.tech || p.techStack;
+                const techTags = Array.isArray(techList)
+                    ? techList.map(t => `<span class="tech-tag" style="display:inline-block; font-size:11px; padding:3px 8px; border-radius:6px; background:rgba(45,212,191,0.12); color:var(--accent-color); margin-right:4px; margin-bottom:4px;">${escapeHTML(t)}</span>`).join('')
+                    : '';
+                const demoLink = p.link ? `<a href="${safeUrl(p.link)}" ${String(p.link).startsWith('http') ? 'target="_blank" rel="noopener noreferrer"' : ''} class="btn-primary btn-sm" style="font-size:12px; padding:6px 14px; text-decoration:none;">👁️ Jonli ko'rish ↗</a>` : '';
+                const ghLink = p.github ? `<a href="${safeUrl(p.github)}" target="_blank" rel="noopener noreferrer" class="btn-secondary btn-sm" style="font-size:12px; padding:6px 14px; text-decoration:none;">💻 GitHub ↗</a>` : '';
+
+                card.innerHTML = `
+                    <div class="post-content" style="padding:24px; display:flex; flex-direction:column; height:100%;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <span class="post-meta" style="margin-bottom:0;">🚀 ${escapeHTML(p.cat || p.category || 'Loyiha')}</span>
+                            ${p.status ? `<span style="font-size:11px; color:#2dd4bf; background:rgba(45,212,191,0.15); padding:2px 8px; border-radius:10px;">${escapeHTML(p.status)}</span>` : ''}
+                        </div>
+                        <h2 class="post-title" style="margin-bottom:10px; font-size:20px;">${escapeHTML(p.title)}</h2>
+                        <p class="post-excerpt" style="flex-grow:1; margin-bottom:16px; line-height:1.6;">${escapeHTML(p.desc || p.description || '')}</p>
+                        ${techTags ? `<div style="margin-bottom:16px;">${techTags}</div>` : ''}
+                        <div style="display:flex; gap:10px; margin-top:auto; padding-top:14px; border-top:1px solid var(--border-color);">
+                            ${demoLink}
+                            ${ghLink}
+                        </div>
+                    </div>
+                `;
+                blogGrid.appendChild(card);
+                observeReveal(card);
+            });
+            setTimeout(() => { if (blogGrid) blogGrid.style.minHeight = ''; }, 100);
+            return;
+        }
+
+        // ==========================================
+        // 3. ODDIY POSTLAR REJIMI (Category Filters)
         // ==========================================
         const filtered = posts.filter(post => {
             if (filterType === 'none') return false;
-            if (currentTab === 'projects' && post.type !== 'project') return false;
 
             if (filterType !== 'all') {
                 const postCat = (post && post.category ? post.category : '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -2597,6 +2682,14 @@ async function bootstrap() {
     if (window.location.hash) {
         applyAppRoute(window.location.hash);
     }
+
+    // Loyihalarni serverdan sinxronlash
+    fetch('/projects').then(r => r.json()).then(data => {
+        if (data && data.ok && Array.isArray(data.projects) && data.projects.length) {
+            localStorage.setItem('abdu_portfolio', JSON.stringify(data.projects));
+            if (currentTab === 'projects') renderPosts(true);
+        }
+    }).catch(() => {});
 
     initHeroCta();
     initFloatingAddBtn();
