@@ -51,13 +51,38 @@
                 <a href="#corrector" data-nav-lvl="corrector">✍️ Insho</a>
                 <a href="#games" data-nav-lvl="games">🎮 O'yinlar</a>
                 <a href="#tournament" data-nav-lvl="tournament">⚔️ Turnir</a>
+                <a href="#video-lessons" data-nav-lvl="video-lessons" style="color:#2dd4bf; font-weight:600;">🎬 Video-Dialog</a>
             </div>
 
-            <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
+            <div class="nav-right" id="nav-right" style="display:flex;align-items:center;gap:10px;">
                 <button class="btn-icon theme-toggle" id="theme-btn" type="button" aria-label="Mavzuni o'zgartirish" title="Mavzuni o'zgartirish">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                 </button>
+
+                <!-- Kirish tugmasi -->
+                <button class="btn-primary" id="login-btn" type="button" aria-label="Kirish yoki ro'yxatdan o'tish" title="Kirish" data-action="open-auth" data-mode="login">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                    <span data-i18n="nav.login" class="nav-text">Kirish</span>
+                </button>
+
+                <!-- Foydalanuvchi menyusi -->
+                <div class="user-menu" id="user-menu" style="display:none;">
+                    <button class="user-chip" id="user-chip" type="button" title="Profil">
+                        <span class="user-avatar" id="user-avatar">A</span>
+                        <span class="user-name" id="user-name-label">Foydalanuvchi</span>
+                    </button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <div class="user-dropdown-head">
+                            <strong id="user-dd-name">Foydalanuvchi</strong>
+                            <small id="user-dd-username">@user</small>
+                        </div>
+                        <button class="user-dd-item" id="user-results-btn" type="button">📊 Mening profilim va natijalarim</button>
+                        <button class="user-dd-item" id="user-edit-profile-btn" type="button">✏️ Nick / Profilni tahrirlash</button>
+                        <a href="kay.html" class="user-dd-item" id="user-admin-link" style="display:none; text-decoration:none; align-items:center; gap:6px;">⚙️ Admin paneli</a>
+                        <button class="user-dd-item" id="user-logout-btn" type="button" style="color: #f87171;">🚪 Chiqish</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -211,7 +236,14 @@
             <span style="font-size: 18px;">⚔️</span>
             <span class="dock-label">Turnir</span>
         </a>
+        <a href="#video-lessons" class="dock-item" data-page="video-lessons" title="Video-Dialoglar">
+            <span style="font-size: 18px;">🎬</span>
+            <span class="dock-label">Dialog</span>
+        </a>
     </nav>
+
+    <!-- Video Lesson Container (Click-to-Translate) -->
+    <section class="container" id="video-lesson-container" style="max-width: 900px; margin: 36px auto; padding: 0 16px;"></section>
 
     <!-- Modallar -->
     <div class="modal-overlay" id="myresults-modal">
@@ -221,6 +253,41 @@
                 <div id="myresults-content">
                     <p style="color:var(--text-secondary); text-align:center;">Yuklanmoqda...</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== O'QUVCHI LOGIN / RO'YXATDAN O'TISH MODALI ===== -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-container" style="max-width: 440px;">
+            <button class="modal-close" id="close-auth-modal" type="button" aria-label="Yopish" data-action="close-auth">&times;</button>
+            <div class="modal-body">
+                <div style="text-align:center; margin-bottom:22px;">
+                    <div style="font-size:40px; margin-bottom:10px;">👋</div>
+                    <h2 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:6px;">Xush kelibsiz</h2>
+                    <p style="color:var(--text-secondary); font-size:13px;">Ro'yxatdan o'ting — test natijalaringiz va turnir reytingingiz har qanday qurilmada saqlanadi</p>
+                </div>
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="auth-tab-login" type="button">Kirish</button>
+                    <button class="auth-tab" id="auth-tab-register" type="button">Ro'yxatdan o'tish</button>
+                </div>
+                <form class="auth-form" id="auth-form">
+                    <div class="form-group auth-name-group" id="auth-name-group" style="display:none;">
+                        <label for="auth-name">Ismingiz</label>
+                        <input type="text" id="auth-name" class="form-input" placeholder="Masalan: Ism" autocomplete="name" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-username">Username</label>
+                        <input type="text" id="auth-username" class="form-input" placeholder="masalan: foydalanuvchi1" autocomplete="username" maxlength="20">
+                        <small class="auth-hint" id="auth-username-hint" style="display:none;">3-20 ta belgi: faqat a-z, 0-9, _</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-password">Parol</label>
+                        <input type="password" id="auth-password" class="form-input" placeholder="••••" autocomplete="current-password" minlength="4">
+                    </div>
+                    <div class="auth-error" id="auth-error"></div>
+                    <button type="submit" class="btn-primary" id="auth-submit" style="width:100%; justify-content:center; padding:13px;">Kirish</button>
+                </form>
             </div>
         </div>
     </div>
@@ -244,6 +311,9 @@
     <script src="scripts/horror-data.js"></script>
     <script src="scripts/horror-logic.js"></script>
     <script src="scripts/gamification.js"></script>
+    <script src="scripts/super-palette.js" defer></script>
+    <script src="scripts/story-card.js" defer></script>
+    <script src="scripts/video-lesson.js" defer></script>
     <script src="deutsch.js"></script>
     <script src="scripts/ambient-player.js" defer></script>
 </body>

@@ -61,7 +61,7 @@ async function copyDir(name) {
       filter: (source) => {
         const basename = path.basename(source).toLowerCase();
         // Xavfsizlik: Baza va maxfiy ma'lumotlar dist/ ga ko'chirilmasligi shart
-        if (basename === 'db.json' || basename.endsWith('.tmp') || basename === 'users.json') {
+        if (basename === 'db.json' || basename.endsWith('.tmp') || basename === 'users.json' || basename === 'gemini.md' || basename === 'readme.md' || basename.endsWith('.md')) {
           return false;
         }
         return true;

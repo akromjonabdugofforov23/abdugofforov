@@ -43,6 +43,8 @@ const BLOCKED_PATHS = [
     /\/(data\/)?db\.json/i,
     /\/users\.json/i,
     /\/package(-lock)?\.json/i,
+    /\/gemini\.md/i,
+    /\/readme\.md/i,
     /\/(server|database)\.js/i,
     /\/(routes|middlewares|functions|services)\//i,
     /\.(bak|backup|old|save|swp|tmp|temp|orig|sql|tar|gz|zip|7z|rar|pem|key|crt)$/i,

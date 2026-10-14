@@ -28,15 +28,15 @@ export async function onRequestGet(context) {
   const { env, request } = context;
 
   if (!env || !env.POSTS_KV) {
-    return jsonResponse({ posts: [], configured: false }, 200, request, env);
+    return jsonResponse({ ok: true, posts: [], configured: false }, 200, request, env);
   }
 
   try {
     const raw = await env.POSTS_KV.get(KV_KEY);
     const posts = raw ? JSON.parse(raw) : [];
-    return jsonResponse({ posts, configured: true }, 200, request, env);
+    return jsonResponse({ ok: true, posts, configured: true }, 200, request, env);
   } catch (e) {
-    return jsonResponse({ posts: [], configured: true, error: 'read_failed' }, 200, request, env);
+    return jsonResponse({ ok: false, posts: [], configured: true, error: 'read_failed' }, 200, request, env);
   }
 }
 

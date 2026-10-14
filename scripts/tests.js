@@ -569,6 +569,7 @@ function renderTestResult() {
 
             <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:24px;">
                 <button data-action="start-test" data-level="${currentLevel}" class="btn-primary">🔄 Qayta boshlash</button>
+                <button data-action="download-test-certificate" data-score="${score}" data-total="${total}" data-topic="${escapeHTML(levelName)}" data-level="${currentLevel}" class="btn-primary" style="background:linear-gradient(135deg, #2dd4bf, #38bdf8); color:#07111c; font-weight:700;">🏆 Sertifikat olish</button>
                 <button data-action="render-deutsch-home" class="btn-secondary">← Testlar</button>
             </div>
         </div>
@@ -958,6 +959,10 @@ function initAuthUI() {
         dropdown?.classList.remove('open');
         openMyResults();
     });
+    document.getElementById('user-edit-profile-btn')?.addEventListener('click', () => {
+        dropdown?.classList.remove('open');
+        openMyResults('edit');
+    });
     document.getElementById('close-myresults-modal')?.addEventListener('click', () => {
         document.getElementById('myresults-modal')?.classList.remove('active');
         document.body.style.overflow = '';
@@ -1177,10 +1182,16 @@ window.setDeutschLevelFilter = setDeutschLevelFilter;
 window.saveTestResult = saveTestResult;
 window.renderTestHistory = renderTestHistory;
 window.getTestHistory = getTestHistory;
+window.initAuthUI = initAuthUI;
+window.updateAuthUI = updateAuthUI;
+window.openAuthModal = openAuthModal;
+window.closeAuthModal = closeAuthModal;
 
+// ===== HAMBURGER MENU & AUTH UI INITIALIZATION =====
+function bootTestsUI() {
+    initAuthUI();
+    updateAuthUI();
 
-// ===== HAMBURGER MENU =====
-window.addEventListener('DOMContentLoaded', () => {
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const hamburgerMenu = document.getElementById('hamburger-menu');
     
@@ -1196,7 +1207,13 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', bootTestsUI);
+} else {
+    bootTestsUI();
+}
 
 
 

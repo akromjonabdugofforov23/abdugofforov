@@ -29,25 +29,23 @@ export async function onRequestPost(context) {
   const rl = await rateLimit(env, request, 'results-post', 30, 60);
   if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
 
-  const username = await getSessionUsername(env, request);
-  if (!username) {
-    return jsonResponse({ ok: false, message: "Tizimga kiring (natija saqlanmadi)" }, 401, request, env);
-  }
-
   let body;
   try { body = await request.json(); } catch (e) {
     return jsonResponse({ ok: false, message: "Noto'g'ri so'rov" }, 400, request, env);
   }
 
+  const sessionUser = await getSessionUsername(env, request);
+  const username = sessionUser || (body && body.username) || 'mehmon';
+
   const total = Math.max(0, Math.min(200, parseInt(body.total, 10) || 0));
   const score = Math.max(0, Math.min(total, parseInt(body.score, 10) || 0));
   const wrong = Math.max(0, total - score);
 
-  const user = await getUser(env, username);
+  const user = sessionUser ? await getUser(env, sessionUser) : null;
   const entry = {
     id: randomHex(8),
     username,
-    name: (user && user.name) || username,
+    name: (user && user.name) || (body && (body.name || body.username)) || username,
     testId: String(body.testId || '').slice(0, 40),
     testTitle: String(body.testTitle || '').slice(0, 80),
     score,
@@ -73,7 +71,7 @@ export async function onRequestPost(context) {
     return jsonResponse({ ok: false, message: "Saqlashda xato" }, 500, request, env);
   }
 
-  return jsonResponse({ ok: true, saved: entry }, 200, request, env);
+  return jsonResponse({ ok: true, result: entry, saved: entry, message: "Natija saqlandi" }, 200, request, env);
 }
 
 // Admin barcha natijalarni oladi

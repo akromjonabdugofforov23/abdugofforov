@@ -577,12 +577,15 @@
                         <p style="color: #cbd5e1; font-size: 15px; margin-bottom: 24px;">
                             ${passed ? 'Ajoyib natija! Ushbu mavzuni to\'liq o\'zlashtirdingiz.' : 'Yaxshi harakat, ammo mavzuni yana bir bor takrorlab qayta topshirishingizni tavsiya qilamiz.'}
                         </p>
-                        <div style="display: flex; justify-content: center; gap: 12px;">
-                            <button id="quiz-restart-btn" style="padding: 12px 24px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-weight: 600; cursor: pointer;">
+                        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                            <button id="quiz-restart-btn" style="padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-weight: 600; cursor: pointer;">
                                 Qayta urinish
                             </button>
-                            <button id="quiz-to-game-btn" style="padding: 12px 24px; border-radius: 12px; background: #3b82f6; border: none; color: #fff; font-weight: 700; cursor: pointer;">
+                            <button id="quiz-to-game-btn" style="padding: 12px 20px; border-radius: 12px; background: #3b82f6; border: none; color: #fff; font-weight: 700; cursor: pointer;">
                                 O'yin o'ynash &rarr;
+                            </button>
+                            <button class="btn-cert" data-action="download-test-certificate" data-score="${score}" data-total="${questions.length}" data-topic="${topic.title}" data-level="${currentLevelKey || 'A1'}" style="padding: 12px 20px; border-radius: 12px; background: linear-gradient(135deg, #2dd4bf, #38bdf8); border: none; color: #07111c; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                🏆 Sertifikat olish
                             </button>
                         </div>
                     </div>

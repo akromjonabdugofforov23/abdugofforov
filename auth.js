@@ -4,9 +4,45 @@
 // ============================================================
 (function () {
     const TOKEN_KEY = 'abdu_user_token';
+    const COOKIE_KEY = 'abdu_session_token';
+
+    function getCookieDomain() {
+        const host = window.location.hostname;
+        if (host.endsWith('abdugofforov.uz')) {
+            return '; Domain=.abdugofforov.uz';
+        }
+        return '';
+    }
+
+    function setAuthCookie(token, days = 30) {
+        if (!token) return;
+        try {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            const domain = getCookieDomain();
+            const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+            document.cookie = `${COOKIE_KEY}=${encodeURIComponent(token)}; Expires=${expires}; Path=/${domain}; SameSite=Lax${secure}`;
+        } catch (e) {}
+    }
+
+    function getAuthCookie() {
+        try {
+            const match = document.cookie.match(new RegExp('(?:^|;\\s*)' + COOKIE_KEY + '=([^;]+)'));
+            return match ? decodeURIComponent(match[1]) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function clearAuthCookie() {
+        try {
+            const domain = getCookieDomain();
+            const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+            document.cookie = `${COOKIE_KEY}=; Max-Age=0; Path=/${domain}; SameSite=Lax${secure}`;
+        } catch (e) {}
+    }
 
     const Auth = {
-        token: localStorage.getItem(TOKEN_KEY) || null,
+        token: localStorage.getItem(TOKEN_KEY) || getAuthCookie() || null,
         user: null,
 
         isLoggedIn() { return !!this.token && !!this.user; },
@@ -37,6 +73,7 @@
                 this.token = data.token;
                 this.user = data.user;
                 localStorage.setItem(TOKEN_KEY, data.token);
+                setAuthCookie(data.token);
                 localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
                 if (this.isAdmin()) {
                     sessionStorage.setItem('kay_admin', 'true');
@@ -58,6 +95,7 @@
                 this.token = data.token;
                 this.user = data.user;
                 localStorage.setItem(TOKEN_KEY, data.token);
+                setAuthCookie(data.token);
                 localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
                 if (this.isAdmin()) {
                     sessionStorage.setItem('kay_admin', 'true');
@@ -83,6 +121,7 @@
                     this.token = data.token;
                     this.user = data.user;
                     localStorage.setItem(TOKEN_KEY, data.token);
+                    setAuthCookie(data.token);
                     localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
                     this.updateUIState();
                     return { ok: true, user: this.user };
@@ -135,6 +174,7 @@
             this.user = null;
             localStorage.removeItem(TOKEN_KEY);
             localStorage.removeItem('abdu_user_data');
+            clearAuthCookie();
             sessionStorage.removeItem('kay_admin');
             sessionStorage.removeItem('kay_admin_token');
             sessionStorage.removeItem('kay_admin_pin');
@@ -145,6 +185,13 @@
 
         // Token amal qilsa, foydalanuvchini tiklaydi
         async restore() {
+            if (!this.token) {
+                const cookieToken = getAuthCookie();
+                if (cookieToken) {
+                    this.token = cookieToken;
+                    localStorage.setItem(TOKEN_KEY, cookieToken);
+                }
+            }
             if (!this.token) return null;
             const savedData = localStorage.getItem('abdu_user_data');
             if (savedData) {
@@ -160,6 +207,7 @@
                 if (data.ok && data.user) {
                     this.user = data.user;
                     localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+                    setAuthCookie(this.token);
                     this.updateUIState();
                     return this.user;
                 }
@@ -169,6 +217,7 @@
             this.user = null;
             localStorage.removeItem(TOKEN_KEY);
             localStorage.removeItem('abdu_user_data');
+            clearAuthCookie();
             document.body.classList.remove('admin-mode');
             this.updateUIState();
             return null;
@@ -255,6 +304,10 @@
                         drawerAuthLink.setAttribute('data-action', 'open-auth');
                         drawerAuthLink.setAttribute('data-mode', 'login');
                     }
+                }
+
+                if (typeof window.updateAuthUI === 'function' && window.updateAuthUI !== this.updateUIState) {
+                    try { window.updateAuthUI(); } catch (uiErr) {}
                 }
             } catch (e) {
                 console.error("UI state update error:", e);
@@ -394,6 +447,7 @@
                 Auth.token = data.token;
                 Auth.user = data.user;
                 localStorage.setItem(TOKEN_KEY, data.token);
+                setAuthCookie(data.token);
                 localStorage.setItem('abdu_user_data', JSON.stringify(Auth.user));
                 Auth.updateUIState();
 
@@ -1060,6 +1114,47 @@
             return;
         }
 
+        // User chip & dropdown boshqaruvi
+        const userChip = target.closest('#user-chip');
+        if (userChip) {
+            e.stopPropagation();
+            const dd = document.getElementById('user-dropdown');
+            if (dd) dd.classList.toggle('open');
+            return;
+        }
+        const userDropdown = document.getElementById('user-dropdown');
+        if (userDropdown && !userDropdown.contains(target) && !target.closest('#user-chip')) {
+            userDropdown.classList.remove('open');
+        }
+
+        const userResultsBtn = target.closest('#user-results-btn');
+        if (userResultsBtn) {
+            e.preventDefault();
+            const dd = document.getElementById('user-dropdown');
+            if (dd) dd.classList.remove('open');
+            openMyResults('results');
+            return;
+        }
+
+        const userEditBtn = target.closest('#user-edit-profile-btn');
+        if (userEditBtn) {
+            e.preventDefault();
+            const dd = document.getElementById('user-dropdown');
+            if (dd) dd.classList.remove('open');
+            openMyResults('edit');
+            return;
+        }
+
+        const userLogoutBtn = target.closest('#user-logout-btn');
+        if (userLogoutBtn) {
+            e.preventDefault();
+            const dd = document.getElementById('user-dropdown');
+            if (dd) dd.classList.remove('open');
+            Auth.logout();
+            notifyToast('🚪 Tizimdan chiqdingiz', 'info');
+            return;
+        }
+
         // Modalni yopish
         if (target.id === 'close-myresults-modal' || target.closest('#close-myresults-modal')) {
             const modal = document.getElementById('myresults-modal');
@@ -1089,4 +1184,11 @@
     window.saveProfileChanges = saveProfileChanges;
 
     window.Auth = Auth;
+
+    // Avtomatik tiklash: sahifa yuklanganda sessiyani tekshirish va subdomenlararo sinxronlash
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { Auth.restore(); });
+    } else {
+        Auth.restore();
+    }
 })();

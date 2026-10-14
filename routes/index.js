@@ -174,6 +174,12 @@ router.get(['/settings', '/api/settings'], (req, res) => {
     res.json({ ok: true, settings });
 });
 
+// 5. Rejalar (Tasks)
+router.get(['/tasks', '/api/tasks'], (req, res) => {
+    const tasks = db.find('tasks');
+    res.json({ ok: true, tasks });
+});
+
 // 5. Test natijalari (Results)
 router.get(['/results', '/api/results'], (req, res) => {
     const results = db.find('results');

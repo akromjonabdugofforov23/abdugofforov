@@ -52,6 +52,9 @@ const SHELL = [
     '/scripts/community-gamification.js',
     '/scripts/aesthetic-features.js',
     '/scripts/productivity-shelf.js',
+    '/scripts/super-palette.js',
+    '/scripts/story-card.js',
+    '/scripts/video-lesson.js',
     '/manifest.webmanifest',
     '/icon.svg',
     '/og-image.svg'
@@ -82,7 +85,16 @@ self.addEventListener('fetch', (event) => {
 
     // Admin, maxfiy servislar va API funksiyalarini mutlaqo keshlamaymiz
     const noCachePaths = ['/kay', '/kay.html'];
-    if (url.pathname.startsWith('/functions') || url.pathname.startsWith('/admin') || url.pathname.startsWith('/auth') || noCachePaths.includes(url.pathname)) return;
+    if (url.pathname.startsWith('/functions') || 
+        url.pathname.startsWith('/admin') || 
+        url.pathname.startsWith('/auth') || 
+        url.pathname.startsWith('/api') || 
+        url.pathname.startsWith('/posts') || 
+        url.pathname.startsWith('/projects') || 
+        url.pathname.startsWith('/quotes') || 
+        url.pathname.startsWith('/tasks') || 
+        url.pathname.startsWith('/results') || 
+        noCachePaths.includes(url.pathname)) return;
 
     // Navigatsiya (HTML) — tarmoq birinchi, keyin kesh (oflayn ishlashi uchun)
     if (req.mode === 'navigate') {
@@ -109,18 +121,18 @@ self.addEventListener('fetch', (event) => {
             }).catch(() => {
                 const path = url.pathname;
                 if (path === '/' || path === '/index.html') {
-                    return caches.match('/index.html').then((r) => r || caches.match('/'));
+                    return caches.match('/index.html', { ignoreSearch: true }).then((r) => r || caches.match('/', { ignoreSearch: true }));
                 }
                 if (path === '/deutsch' || path === '/deutsch.html') {
-                    return caches.match('/deutsch.html').then((r) => r || caches.match('/deutsch'));
+                    return caches.match('/deutsch.html', { ignoreSearch: true }).then((r) => r || caches.match('/deutsch', { ignoreSearch: true }));
                 }
                 if (path === '/tools' || path === '/tools.html') {
-                    return caches.match('/tools.html').then((r) => r || caches.match('/tools'));
+                    return caches.match('/tools.html', { ignoreSearch: true }).then((r) => r || caches.match('/tools', { ignoreSearch: true }));
                 }
                 if (path === '/3d-lab.html') {
-                    return caches.match('/3d-lab.html');
+                    return caches.match('/3d-lab.html', { ignoreSearch: true });
                 }
-                return caches.match(req).then((r) => r || caches.match('/index.html')).catch(() => {
+                return caches.match(req, { ignoreSearch: true }).then((r) => r || caches.match('/index.html', { ignoreSearch: true })).catch(() => {
                     return new Response('Oflayn rejim — internet aloqasi mavjud emas', {
                         status: 503,
                         headers: { 'Content-Type': 'text/plain; charset=utf-8' }
@@ -140,14 +152,14 @@ self.addEventListener('fetch', (event) => {
                     caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
                 }
                 return res;
-            }).catch(() => caches.match(req))
+            }).catch(() => caches.match(req, { ignoreSearch: true }))
         );
         return;
     }
 
     // Boshqa statik resurslar — Stale-While-Revalidate (0ms tezkor ochilish + fonda yangilanish)
     event.respondWith(
-        caches.match(req).then((cached) => {
+        caches.match(req, { ignoreSearch: true }).then((cached) => {
             const networkFetch = fetch(req).then((res) => {
                 if (res && res.status === 200) {
                     const copy = res.clone();
