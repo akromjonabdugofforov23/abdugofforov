@@ -945,7 +945,7 @@ function renderPosts(instant) {
                 card.innerHTML = `
                     <div class="post-image-wrapper">
                         ${post.videoData 
-                            ? `<video class="post-video-thumb" style="width:100%; height:100%; object-fit:cover; border-radius:12px 12px 0 0;" muted preload="metadata" src="${post.videoData}"></video>`
+                            ? `<video class="post-video-thumb" style="width:100%; height:100%; object-fit:cover; border-radius:12px 12px 0 0;" muted preload="none" src="${post.videoData}"></video>`
                             : `<div class="post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=600')}');"></div>`
                         }
                         <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.6); border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center; pointer-events:none;">
@@ -1430,7 +1430,7 @@ function handleLike(postId) {
 }
 
 // 10. Post Detail Modali
-function openPostDetail(postId) {
+function openPostDetail(postId, pushHistory = true) {
     const post = posts.find(p => p.id === postId);
     if (!post) return;
     isAdmin = checkIsAdmin();
@@ -1460,7 +1460,7 @@ function openPostDetail(postId) {
         ${post.type === 'music' 
             ? `<div style="margin-bottom: 30px;">
                    <img src="${post.image}" class="zoomable" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; cursor: zoom-in;">
-                   ${post.musicData ? `<audio controls style="width:100%; margin-bottom:12px;" src="${post.musicData}"></audio>` : ''}
+                   ${post.musicData ? `<audio controls preload="none" style="width:100%; margin-bottom:12px;" src="${post.musicData}"></audio>` : ''}
                    <div class="music-actions" style="justify-content:flex-start;">
                        ${post.artist ? `<span class="music-artist">🎤 ${escapeHTML(post.artist)}</span>` : ''}
                        <div class="music-btn-row">
@@ -1472,7 +1472,7 @@ function openPostDetail(postId) {
             : post.type === 'video'
                 ? `<div style="margin-bottom: 30px;">
                        ${post.videoData 
-                           ? `<video controls style="width:100%; max-height:500px; border-radius:12px;" src="${post.videoData}"></video>`
+                           ? `<video controls preload="none" style="width:100%; max-height:500px; border-radius:12px;" src="${post.videoData}"></video>`
                            : `<div class="modal-post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1000')}');"></div>`
                        }
                    </div>`
@@ -1577,9 +1577,19 @@ function openPostDetail(postId) {
 
     // Deep-link (ulashiladigan havola) va dinamik meta
     currentDetailPostId = post.id;
-    try {
+    if (pushHistory) {
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.set('post', post.id);
+            history.pushState({ postId: post.id }, '', url.toString());
         } catch (e) { /* file:// muhitida o'tkazib yuboriladi */ }
-    setMeta(`${post.title} | Abdugofforov`, post.excerpt || DEFAULT_DESC);
+    }
+    setMeta(
+        `${post.title} | Abdugofforov`,
+        post.excerpt || DEFAULT_DESC,
+        post.image || 'https://abdugofforov.uz/icon-512.png',
+        `${window.location.origin}/?post=${post.id}`
+    );
 }
 
 function renderComments(commentsList) {
@@ -1606,17 +1616,22 @@ function renderComments(commentsList) {
     `).join('');
 }
 
-function closePostDetailModal() {
+function closePostDetailModal(pushHistory = true) {
     postDetailModal.classList.remove('active');
     document.body.style.overflow = '';
     // Deep-link va meta'ni tiklash
     if (currentDetailPostId != null) {
         currentDetailPostId = null;
-        try {
-            if (new URLSearchParams(location.search).has('post')) {
+        if (pushHistory) {
+            try {
+                const url = new URL(window.location.href);
+                if (url.searchParams.has('post')) {
+                    url.searchParams.delete('post');
+                    history.pushState({}, '', url.pathname + (url.search ? url.search : '') + url.hash);
                 }
-        } catch (e) { /* o'tkazib yuboriladi */ }
-        setMeta(DEFAULT_TITLE, DEFAULT_DESC);
+            } catch (e) { /* o'tkazib yuboriladi */ }
+        }
+        setMeta(DEFAULT_TITLE, DEFAULT_DESC, 'https://abdugofforov.uz/icon-512.png', 'https://abdugofforov.uz/');
     }
 }
 
@@ -1629,38 +1644,80 @@ if (postDetailModal) postDetailModal.addEventListener('click', (e) => {
 // ============================================================
 // 11. ZEN CREATIVE WRITING STUDIO (NOTION / MEDIUM USLUBI)
 // ============================================================
-const zenEditor = document.getElementById('zen-editor');
-const zenCloseBtn = document.getElementById('zen-close-btn');
-const zenSaveStatus = document.getElementById('zen-save-status');
-const zenStatusText = document.getElementById('zen-status-text');
-const zenStatsPill = document.getElementById('zen-stats-pill');
-const zenPublishBtn = document.getElementById('zen-publish-btn');
-const zenPublishLabel = document.getElementById('zen-publish-label');
+let zenEditor = null;
+let zenCloseBtn = null;
+let zenSaveStatus = null;
+let zenStatusText = null;
+let zenStatsPill = null;
+let zenPublishBtn = null;
+let zenPublishLabel = null;
 
-const zenTabWrite = document.getElementById('zen-tab-write');
-const zenTabPreview = document.getElementById('zen-tab-preview');
-const zenEditPane = document.getElementById('zen-edit-pane');
-const zenPreviewPane = document.getElementById('zen-preview-pane');
-const zenPreviewContent = document.getElementById('zen-preview-content');
+let zenTabWrite = null;
+let zenTabPreview = null;
+let zenEditPane = null;
+let zenPreviewPane = null;
+let zenPreviewContent = null;
 
-const zenCoverZone = document.getElementById('zen-cover-zone');
-const zenCoverEmpty = document.getElementById('zen-cover-empty');
-const zenCoverPreview = document.getElementById('zen-cover-preview');
-const zenCoverImg = document.getElementById('zen-cover-img');
-const zenTriggerCoverBtn = document.getElementById('zen-trigger-cover-btn');
-const zenChangeCoverBtn = document.getElementById('zen-change-cover-btn');
-const zenRemoveCoverBtn = document.getElementById('zen-remove-cover-btn');
-const zenCoverFile = document.getElementById('zen-cover-file');
-const zenUrlPopover = document.getElementById('zen-url-popover');
-const zenCoverUrlInput = document.getElementById('zen-cover-url-input');
-const zenApplyUrlBtn = document.getElementById('zen-apply-url-btn');
-const zenCancelUrlBtn = document.getElementById('zen-cancel-url-btn');
+let zenCoverZone = null;
+let zenCoverEmpty = null;
+let zenCoverPreview = null;
+let zenCoverImg = null;
+let zenTriggerCoverBtn = null;
+let zenChangeCoverBtn = null;
+let zenRemoveCoverBtn = null;
+let zenCoverFile = null;
+let zenUrlPopover = null;
+let zenCoverUrlInput = null;
+let zenApplyUrlBtn = null;
+let zenCancelUrlBtn = null;
 
-const zenTitle = document.getElementById('zen-title');
-const zenExcerpt = document.getElementById('zen-excerpt');
-const zenTags = document.getElementById('zen-tags');
-const zenToolbar = document.getElementById('zen-toolbar');
-const zenContent = document.getElementById('zen-content');
+let zenTitle = null;
+let zenExcerpt = null;
+let zenTags = null;
+let zenToolbar = null;
+let zenContent = null;
+
+function ensureZenEditorMounted() {
+    zenEditor = document.getElementById('zen-editor');
+    if (zenEditor) return true;
+    const tpl = document.getElementById('zen-editor-template');
+    if (!tpl) return false;
+    const clone = tpl.content.cloneNode(true);
+    document.body.appendChild(clone);
+
+    zenEditor = document.getElementById('zen-editor');
+    zenCloseBtn = document.getElementById('zen-close-btn');
+    zenSaveStatus = document.getElementById('zen-save-status');
+    zenStatusText = document.getElementById('zen-status-text');
+    zenStatsPill = document.getElementById('zen-stats-pill');
+    zenPublishBtn = document.getElementById('zen-publish-btn');
+    zenPublishLabel = document.getElementById('zen-publish-label');
+    zenTabWrite = document.getElementById('zen-tab-write');
+    zenTabPreview = document.getElementById('zen-tab-preview');
+    zenEditPane = document.getElementById('zen-edit-pane');
+    zenPreviewPane = document.getElementById('zen-preview-pane');
+    zenPreviewContent = document.getElementById('zen-preview-content');
+    zenCoverZone = document.getElementById('zen-cover-zone');
+    zenCoverEmpty = document.getElementById('zen-cover-empty');
+    zenCoverPreview = document.getElementById('zen-cover-preview');
+    zenCoverImg = document.getElementById('zen-cover-img');
+    zenTriggerCoverBtn = document.getElementById('zen-trigger-cover-btn');
+    zenChangeCoverBtn = document.getElementById('zen-change-cover-btn');
+    zenRemoveCoverBtn = document.getElementById('zen-remove-cover-btn');
+    zenCoverFile = document.getElementById('zen-cover-file');
+    zenUrlPopover = document.getElementById('zen-url-popover');
+    zenCoverUrlInput = document.getElementById('zen-cover-url-input');
+    zenApplyUrlBtn = document.getElementById('zen-apply-url-btn');
+    zenCancelUrlBtn = document.getElementById('zen-cancel-url-btn');
+    zenTitle = document.getElementById('zen-title');
+    zenExcerpt = document.getElementById('zen-excerpt');
+    zenTags = document.getElementById('zen-tags');
+    zenToolbar = document.getElementById('zen-toolbar');
+    zenContent = document.getElementById('zen-content');
+
+    if (typeof initZenListeners === 'function') initZenListeners();
+    return true;
+}
 
 let pendingImageData = null;
 let zenDraftTimer = null;
@@ -1789,11 +1846,11 @@ function switchZenTab(mode) {
 }
 
 function openZenEditor(postId = null) {
-    if (!zenEditor) return;
     if (!checkIsAdmin()) {
         if (typeof showToast === 'function') showToast("⚠️ Maqola yozish faqat admin uchun ruxsat etilgan!", "warn");
         return;
     }
+    if (!ensureZenEditorMounted()) return;
     editingPostId = postId;
 
     switchZenTab('write');
@@ -1924,8 +1981,13 @@ function insertFormatting(cmd) {
     scheduleZenDraftSave();
 }
 
-// Zen Event Listeners
-if (zenCloseBtn) zenCloseBtn.addEventListener('click', closeZenEditor);
+let zenListenersInitialized = false;
+function initZenListeners() {
+    if (zenListenersInitialized) return;
+    zenListenersInitialized = true;
+
+    // Zen Event Listeners
+    if (zenCloseBtn) zenCloseBtn.addEventListener('click', closeZenEditor);
 if (zenTabWrite) zenTabWrite.addEventListener('click', () => switchZenTab('write'));
 if (zenTabPreview) zenTabPreview.addEventListener('click', () => switchZenTab('preview'));
 
@@ -2098,16 +2160,21 @@ if (zenPublishBtn) {
         closeZenEditor();
     });
 }
+}
 
 // Tugmalarni Zen Editor ga ulash
-if (addPostBtn) {
-    addPostBtn.addEventListener('click', () => {
+window.initAddPostBtn = function(btn) {
+    if (!btn) return;
+    btn.addEventListener('click', () => {
         if (!checkIsAdmin()) {
             if (typeof showToast === 'function') showToast("⚠️ Maqola yozish faqat admin uchun!", "warn");
             return;
         }
         openZenEditor();
     });
+};
+if (addPostBtn) {
+    window.initAddPostBtn(addPostBtn);
 }
 
 // Yordamchi Funksiyalar
@@ -2355,10 +2422,43 @@ const DEFAULT_TITLE = document.title;
 const DEFAULT_DESC = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
 let currentDetailPostId = null;
 
-function setMeta(title, desc) {
-    document.title = title;
-    const m = document.querySelector('meta[name="description"]');
-    if (m && desc) m.setAttribute('content', desc);
+function setMeta(title, desc, image, url) {
+    if (title) document.title = title;
+
+    function setOrCreateMeta(attrName, attrVal, content) {
+        if (!content) return;
+        let el = document.querySelector(`meta[${attrName}="${attrVal}"]`);
+        if (!el) {
+            el = document.createElement('meta');
+            el.setAttribute(attrName, attrVal);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    }
+
+    if (desc) {
+        setOrCreateMeta('name', 'description', desc);
+        setOrCreateMeta('property', 'og:description', desc);
+        setOrCreateMeta('name', 'twitter:description', desc);
+    }
+    if (title) {
+        setOrCreateMeta('property', 'og:title', title);
+        setOrCreateMeta('name', 'twitter:title', title);
+    }
+    if (image) {
+        setOrCreateMeta('property', 'og:image', image);
+        setOrCreateMeta('name', 'twitter:image', image);
+    }
+    if (url) {
+        setOrCreateMeta('property', 'og:url', url);
+        let can = document.querySelector('link[rel="canonical"]');
+        if (!can) {
+            can = document.createElement('link');
+            can.setAttribute('rel', 'canonical');
+            document.head.appendChild(can);
+        }
+        can.setAttribute('href', url);
+    }
 }
 
 function openPostFromUrl() {
@@ -2366,7 +2466,7 @@ function openPostFromUrl() {
     const id = params.get('post');
     if (id) {
         const post = posts.find(p => String(p.id) === String(id));
-        if (post) openPostDetail(post.id);
+        if (post) openPostDetail(post.id, false);
     }
 
     // PWA shortcuts:  /?new=1  → "Yangi yozuv" modalini ochish
@@ -2384,6 +2484,19 @@ function openPostFromUrl() {
         }, 300);
     }
 }
+
+window.addEventListener('popstate', () => {
+    const params = new URLSearchParams(window.location.search);
+    const pid = params.get('post');
+    if (pid) {
+        const post = posts.find(p => String(p.id) === String(pid));
+        if (post) openPostDetail(post.id, false);
+    } else {
+        if (postDetailModal && postDetailModal.classList.contains('active')) {
+            closePostDetailModal(false);
+        }
+    }
+});
 
 function sharePost(post) {
     const url = `${location.origin}/?post=${post.id}`;
@@ -2961,8 +3074,6 @@ if (closeMyresultsModal && myresultsModal) {
     const usernameHint = document.getElementById('auth-username-hint');
     const errorEl = document.getElementById('auth-error');
     const submitBtn = document.getElementById('auth-submit');
-    const adminPinGroup = document.getElementById('auth-admin-pin-group');
-    const adminPinInput = document.getElementById('auth-admin-pin');
     let loginMode = true;
 
     if (!authFormEl) return; // forma topilmasa chiqamiz
@@ -2975,7 +3086,6 @@ if (closeMyresultsModal && myresultsModal) {
             if (tabRegister) tabRegister.classList.remove('active');
             if (nameGroup) nameGroup.style.display = 'none';
             if (usernameHint) usernameHint.style.display = 'none';
-            if (adminPinGroup) adminPinGroup.style.display = 'none';
             if (submitBtn) submitBtn.textContent = 'Kirish';
             if (errorEl) { errorEl.textContent = ''; errorEl.style.display = 'none'; }
         });
@@ -2988,22 +3098,8 @@ if (closeMyresultsModal && myresultsModal) {
             if (nameGroup) nameGroup.style.display = 'block';
             if (usernameHint) usernameHint.style.display = 'block';
             if (submitBtn) submitBtn.textContent = "Ro'yxatdan o'tish";
-            updateAdminPinVisibility();
             if (errorEl) { errorEl.textContent = ''; errorEl.style.display = 'none'; }
         });
-    }
-
-    function updateAdminPinVisibility() {
-        if (!adminPinGroup) return;
-        if (loginMode) {
-            adminPinGroup.style.display = 'none';
-        } else {
-            adminPinGroup.style.display = 'block';
-        }
-    }
-    const usernameInputForPin = document.getElementById('auth-username');
-    if (usernameInputForPin) {
-        usernameInputForPin.addEventListener('input', updateAdminPinVisibility);
     }
 
     // Formani yuborish
@@ -3044,9 +3140,7 @@ if (closeMyresultsModal && myresultsModal) {
             if (loginMode) {
                 result = await window.Auth.login(username, password);
             } else {
-                const adminPin = (adminPinInput && adminPinGroup && adminPinGroup.style.display !== 'none') ? adminPinInput.value.trim() : '';
-                const finalAdminPin = adminPin;
-                result = await window.Auth.register(name, username, password, finalAdminPin);
+                result = await window.Auth.register(name, username, password);
             }
 
             if (result && result.ok) {

@@ -96,8 +96,29 @@ async function buildScripts() {
   return rows;
 }
 
+const BUILD_HASH = Date.now().toString(36);
+
+function injectCacheBusting(html, hash) {
+  // <script src="..."> dagi mahalliy JS fayllarga ?v=hash qo'shish/yangilash
+  let res = html.replace(/(<script\b[^>]*\bsrc=["'])(?!https?:\/\/|\/\/|data:)([^"'>]+)(["'][^>]*>)/gi, (match, prefix, url, suffix) => {
+    const cleanUrl = url.split('?')[0];
+    return `${prefix}${cleanUrl}?v=${hash}${suffix}`;
+  });
+
+  // <link rel="stylesheet" href="..."> dagi mahalliy CSS fayllarga ?v=hash qo'shish/yangilash
+  res = res.replace(/(<link\b[^>]*\bhref=["'])(?!https?:\/\/|\/\/|data:)([^"'>]+\.css)(?:\?[^"'>]*)?(["'][^>]*>)/gi, (match, prefix, url, suffix) => {
+    const cleanUrl = url.split('?')[0];
+    return `${prefix}${cleanUrl}?v=${hash}${suffix}`;
+  });
+
+  return res;
+}
+
 async function buildJs(name) {
-  const code = await fs.readFile(path.join(ROOT, name), 'utf8');
+  let code = await fs.readFile(path.join(ROOT, name), 'utf8');
+  if (name === 'sw.js') {
+    code = code.replace(/const CACHE = ['"][^'"]+['"];/, `const CACHE = 'abdu-cache-${BUILD_HASH}';`);
+  }
   const res = await terserMinify({ [name]: code }, TERSER_OPTS);
   if (res.error) throw res.error;
   await fs.writeFile(path.join(OUT, name), res.code, 'utf8');
@@ -115,7 +136,8 @@ async function buildCss(name) {
 }
 
 async function buildHtml(name) {
-  const code = await fs.readFile(path.join(ROOT, name), 'utf8');
+  let code = await fs.readFile(path.join(ROOT, name), 'utf8');
+  code = injectCacheBusting(code, BUILD_HASH);
   const out = await htmlMinify(code, {
     collapseWhitespace: true,
     removeComments: true,

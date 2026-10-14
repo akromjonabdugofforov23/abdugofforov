@@ -270,16 +270,24 @@ window.runDataClickAction = runDataClickAction;
     // Routing
     function applyRoute() {
         const hash = (window.location.hash || '#a1').toLowerCase();
+        const cleanHash = hash.replace('#', '');
+        const parts = cleanHash.split('-');
+        const lvlPart = parts[0];
+        const topicPart = parts.length > 1 ? parts.slice(1).join('-') : null;
+
+        if (['a1', 'a2', 'b1', 'b2'].includes(lvlPart)) {
+            const lvlUpper = lvlPart.toUpperCase();
+            openDeutschLevel(lvlUpper, false);
+            if (topicPart && typeof openDeutschTopicStudio === 'function') {
+                setTimeout(() => {
+                    openDeutschTopicStudio(topicPart, 'theory', false);
+                }, 100);
+            }
+            return;
+        }
+
         if (hash.includes('test')) {
             openDeutschTests(false);
-        } else if (hash.includes('a1')) {
-            openDeutschLevel('A1', false);
-        } else if (hash.includes('a2')) {
-            openDeutschLevel('A2', false);
-        } else if (hash.includes('b1')) {
-            openDeutschLevel('B1', false);
-        } else if (hash.includes('b2')) {
-            openDeutschLevel('B2', false);
         } else if (hash.includes('flashcard') || hash.includes('lugat')) {
             openDeutschFlashcards(false);
         } else if (hash.includes('tandem')) {

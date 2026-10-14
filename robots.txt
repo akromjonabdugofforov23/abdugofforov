@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /kay
+Disallow: /admin
+Disallow: /api/admin/
 
 Sitemap: https://abdugofforov.uz/sitemap.xml

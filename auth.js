@@ -179,18 +179,35 @@
             try {
                 const userMenu = document.getElementById('user-menu');
                 const loginBtnEl = document.getElementById('login-btn');
-                const addPostBtnEl = document.getElementById('add-post-btn');
+                let addPostBtnEl = document.getElementById('add-post-btn');
                 const fabAddEl = document.getElementById('fab-add');
                 const isCurrentlyAdmin = this.isAdmin() || (sessionStorage.getItem('kay_admin') === 'true');
 
                 if (isCurrentlyAdmin) {
                     document.body.classList.add('admin-mode');
+                    if (!addPostBtnEl) {
+                        const tpl = document.getElementById('admin-add-post-template');
+                        const navRight = document.getElementById('nav-right');
+                        const loginBtn = document.getElementById('login-btn');
+                        if (tpl && navRight) {
+                            const clone = tpl.content.cloneNode(true);
+                            navRight.insertBefore(clone, loginBtn || navRight.firstChild);
+                            addPostBtnEl = document.getElementById('add-post-btn');
+                            if (addPostBtnEl) {
+                                addPostBtnEl.addEventListener('click', () => {
+                                    if (typeof window.openZenEditor === 'function') window.openZenEditor();
+                                });
+                            }
+                        }
+                    }
                     if (addPostBtnEl) addPostBtnEl.style.display = 'inline-flex';
                     if (fabAddEl && window.innerWidth <= 768) fabAddEl.style.display = 'flex';
                 } else {
                     document.body.classList.remove('admin-mode');
-                    if (addPostBtnEl) addPostBtnEl.style.display = 'none';
+                    if (addPostBtnEl) addPostBtnEl.remove();
                     if (fabAddEl) fabAddEl.style.display = 'none';
+                    const zenEl = document.getElementById('zen-editor');
+                    if (zenEl) zenEl.remove();
                 }
 
                 if (this.isLoggedIn()) {

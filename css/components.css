@@ -1771,6 +1771,28 @@
     transform: translateZ(0);
 }
 
+/* ============================================================
+   MODERN SHIMMER SKELETON LOADERS
+   ============================================================ */
+@keyframes skeleton-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.skeleton-line,
+.skeleton-badge,
+.skeleton-card-block {
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.04) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.8s infinite ease-in-out;
+    display: inline-block;
+}
+[data-theme="light"] .skeleton-line,
+[data-theme="light"] .skeleton-badge,
+[data-theme="light"] .skeleton-card-block {
+    background: linear-gradient(90deg, rgba(0,0,0,0.04) 25%, rgba(0,0,0,0.09) 50%, rgba(0,0,0,0.04) 75%);
+    background-size: 200% 100%;
+}
+
 
 
 

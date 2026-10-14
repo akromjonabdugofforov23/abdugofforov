@@ -22,14 +22,31 @@
 
     window.speakGerman = speakGerman;
 
-    // LocalStorage progress
+    // LocalStorage progress & profile sync
     function getTopicProgress(topicId) {
         try {
             const raw = localStorage.getItem('abdu_curriculum_progress');
             const data = raw ? JSON.parse(raw) : {};
-            return data[topicId] || { completed: false, score: 0, testPassed: false };
+            const p = data[topicId] || {};
+            const theory = !!p.theory;
+            const flashcards = !!p.flashcards;
+            const quiz = !!(p.quiz || p.testPassed);
+            const game = !!p.game;
+            const completedParts = [theory, flashcards, quiz, game].filter(Boolean).length;
+            const percent = Math.round((completedParts / 4) * 100);
+            return {
+                theory,
+                flashcards,
+                quiz,
+                game,
+                completedParts,
+                percent,
+                completed: percent === 100,
+                testPassed: quiz,
+                score: p.score || 0
+            };
         } catch (e) {
-            return { completed: false, score: 0, testPassed: false };
+            return { theory: false, flashcards: false, quiz: false, game: false, completedParts: 0, percent: 0, completed: false, testPassed: false, score: 0 };
         }
     }
 
@@ -39,6 +56,19 @@
             const data = raw ? JSON.parse(raw) : {};
             data[topicId] = Object.assign(data[topicId] || {}, update);
             localStorage.setItem('abdu_curriculum_progress', JSON.stringify(data));
+
+            // Sync with profile if logged in
+            if (window.Auth && typeof window.Auth.getUser === 'function') {
+                const user = window.Auth.getUser();
+                if (user && update.testPassed && typeof window.Auth.submitResult === 'function') {
+                    window.Auth.submitResult({
+                        topicId,
+                        level: currentLevel,
+                        score: update.score || 100,
+                        type: 'curriculum-quiz'
+                    }).catch(() => {});
+                }
+            }
         } catch (e) {}
     }
 
@@ -104,14 +134,18 @@
                     const prog = getTopicProgress(topic.id);
                     return `
                         <div class="curr-topic-card" data-topic-id="${topic.id}" style="background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
-                            ${prog.testPassed ? `
+                            ${prog.percent === 100 ? `
                                 <div style="position: absolute; top: 14px; right: 14px; background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.4); color: #4ade80; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; display:flex; align-items:center; gap:4px;">
-                                    ✓ O'zlashtirildi
+                                    ✓ 100% O'zlashtirildi
                                 </div>
-                            ` : ''}
+                            ` : (prog.completedParts > 0 ? `
+                                <div style="position: absolute; top: 14px; right: 14px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; display:flex; align-items:center; gap:4px;">
+                                    ${prog.completedParts}/4 Bajarildi
+                                </div>
+                            ` : '')}
 
                             <div>
-                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
                                     <div style="width: 46px; height: 46px; border-radius: 14px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); display: flex; align-items: center; justify-content: center; font-size: 24px;">
                                         ${topic.icon || '📖'}
                                     </div>
@@ -128,24 +162,35 @@
                                     </div>
                                 </div>
 
-                                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5; margin: 0 0 18px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5; margin: 0 0 12px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                     ${topic.description || ''}
                                 </p>
+
+                                <!-- Visual Progress Bar -->
+                                <div class="curr-progress-bar-wrap" style="margin-bottom: 14px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; margin-bottom: 5px;">
+                                        <span style="color: #94a3b8; font-weight: 600;">O'zlashtirish:</span>
+                                        <span style="color: ${prog.percent === 100 ? '#4ade80' : '#60a5fa'}; font-weight: 700;">${prog.percent}%</span>
+                                    </div>
+                                    <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden;">
+                                        <div style="width: ${prog.percent}%; height: 100%; background: ${prog.percent === 100 ? 'linear-gradient(90deg, #10b981, #22c55e)' : 'linear-gradient(90deg, #3b82f6, #60a5fa)'}; border-radius: 999px; transition: width 0.4s ease;"></div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- 4 ta interaktiv tugma -->
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
-                                <button class="topic-action-btn" data-topic-id="${topic.id}" data-action="theory" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; border-radius: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.12); color: #93c5fd; transition: all 0.2s;">
-                                    <span>📖</span> Dars
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
+                                <button class="topic-action-btn ${prog.theory ? 'is-completed' : ''}" data-topic-id="${topic.id}" data-action="theory" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; border-radius: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid ${prog.theory ? 'rgba(34, 197, 94, 0.4)' : 'rgba(59, 130, 246, 0.3)'}; background: ${prog.theory ? 'rgba(34, 197, 94, 0.15)' : 'rgba(59, 130, 246, 0.12)'}; color: ${prog.theory ? '#86efac' : '#93c5fd'}; transition: all 0.2s;">
+                                    <span>📖</span> Dars ${prog.theory ? '<span style="color:#4ade80; font-weight:bold;">✓</span>' : ''}
                                 </button>
-                                <button class="topic-action-btn" data-topic-id="${topic.id}" data-action="flashcards" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; border-radius: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid rgba(168, 85, 247, 0.3); background: rgba(168, 85, 247, 0.12); color: #d8b4fe; transition: all 0.2s;">
-                                    <span>🎴</span> Lug'at (${(topic.flashcards || []).length})
+                                <button class="topic-action-btn ${prog.flashcards ? 'is-completed' : ''}" data-topic-id="${topic.id}" data-action="flashcards" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; border-radius: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid ${prog.flashcards ? 'rgba(34, 197, 94, 0.4)' : 'rgba(168, 85, 247, 0.3)'}; background: ${prog.flashcards ? 'rgba(34, 197, 94, 0.15)' : 'rgba(168, 85, 247, 0.12)'}; color: ${prog.flashcards ? '#86efac' : '#d8b4fe'}; transition: all 0.2s;">
+                                    <span>🎴</span> Lug'at (${(topic.flashcards || []).length}) ${prog.flashcards ? '<span style="color:#4ade80; font-weight:bold;">✓</span>' : ''}
                                 </button>
-                                <button class="topic-action-btn" data-topic-id="${topic.id}" data-action="quiz" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; border-radius: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid rgba(34, 197, 94, 0.3); background: rgba(34, 197, 94, 0.12); color: #86efac; transition: all 0.2s;">
-                                    <span>📝</span> Test (${(topic.test || []).length})
+                                <button class="topic-action-btn ${prog.quiz ? 'is-completed' : ''}" data-topic-id="${topic.id}" data-action="quiz" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; border-radius: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid ${prog.quiz ? 'rgba(34, 197, 94, 0.4)' : 'rgba(34, 197, 94, 0.3)'}; background: ${prog.quiz ? 'rgba(34, 197, 94, 0.18)' : 'rgba(34, 197, 94, 0.12)'}; color: #86efac; transition: all 0.2s;">
+                                    <span>📝</span> Test (${(topic.test || []).length}) ${prog.quiz ? '<span style="color:#4ade80; font-weight:bold;">✓</span>' : ''}
                                 </button>
-                                <button class="topic-action-btn" data-topic-id="${topic.id}" data-action="game" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; border-radius: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.12); color: #fde68a; transition: all 0.2s;">
-                                    <span>🎮</span> O'yin
+                                <button class="topic-action-btn ${prog.game ? 'is-completed' : ''}" data-topic-id="${topic.id}" data-action="game" style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 8px; border-radius: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid ${prog.game ? 'rgba(34, 197, 94, 0.4)' : 'rgba(245, 158, 11, 0.3)'}; background: ${prog.game ? 'rgba(34, 197, 94, 0.15)' : 'rgba(245, 158, 11, 0.12)'}; color: ${prog.game ? '#86efac' : '#fde68a'}; transition: all 0.2s;">
+                                    <span>🎮</span> O'yin ${prog.game ? '<span style="color:#4ade80; font-weight:bold;">✓</span>' : ''}
                                 </button>
                             </div>
                         </div>
@@ -192,7 +237,7 @@
     }
 
     // Interaktiv O'quv Studiyasi Modali
-    function openTopicStudio(topicId, initialTab = 'theory') {
+    function openTopicStudio(topicId, initialTab = 'theory', pushHistory = true) {
         const curriculum = window.deutschCurriculum || {};
         const levelData = curriculum[currentLevel];
         if (!levelData || !levelData.topics) return;
@@ -220,14 +265,21 @@
         renderStudioModalContent(modal);
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
+
+        if (pushHistory && history && history.pushState) {
+            history.pushState({ level: currentLevel, topicId, tab: initialTab }, '', `#${currentLevel.toLowerCase()}-${topicId}`);
+        }
     }
 
-    function closeTopicStudio() {
+    function closeTopicStudio(pushHistory = true) {
         const modal = document.getElementById('curriculum-studio-modal');
         if (modal) {
             modal.style.display = 'none';
         }
         document.body.style.overflow = '';
+        if (pushHistory && history && history.pushState) {
+            history.pushState({ level: currentLevel }, '', `#${currentLevel.toLowerCase()}`);
+        }
         renderCurriculumHome(currentLevel);
     }
 
@@ -314,6 +366,7 @@
 
     // 1. NAZARIYA VA DARS TABI
     function renderTheoryTab(container, topic) {
+        saveTopicProgress(topic.id, { theory: true });
         const t = topic.theory || {};
         let html = `
             <div class="theory-view" style="color: #e2e8f0; line-height: 1.7; font-size: 15px;">
@@ -396,6 +449,7 @@
     let fcFlipped = false;
 
     function renderFlashcardsTab(container, topic) {
+        saveTopicProgress(topic.id, { flashcards: true });
         const cards = topic.flashcards || [];
         if (!cards.length) {
             container.innerHTML = '<p style="color: #94a3b8; text-align: center;">Bu mavzuda hozircha so\'z kartochkalari yo\'q.</p>';
@@ -511,7 +565,7 @@
             if (currentQIdx >= questions.length) {
                 const percentage = Math.round((score / questions.length) * 100);
                 const passed = percentage >= 70;
-                saveTopicProgress(topic.id, { testPassed: passed, score: percentage, completed: true });
+                saveTopicProgress(topic.id, { testPassed: passed, quiz: passed, score: percentage, completed: true });
 
                 container.innerHTML = `
                     <div style="text-align: center; max-width: 480px; margin: 30px auto; padding: 30px; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;">
@@ -652,6 +706,9 @@
 
         function renderGameBoard() {
             const allMatched = matched.length === pairs.length;
+            if (allMatched && pairs.length > 0) {
+                saveTopicProgress(topic.id, { game: true });
+            }
 
             container.innerHTML = `
                 <div style="max-width: 640px; margin: 0 auto; text-align: center;">
@@ -731,13 +788,40 @@
     window.renderDeutschCurriculum = renderCurriculumHome;
     window.openDeutschTopicStudio = openTopicStudio;
 
+    function handleHashRouting() {
+        const rawHash = (window.location.hash || '').replace('#', '').trim();
+        if (!rawHash) return;
+        const parts = rawHash.split('-');
+        const lvl = (parts[0] || '').toUpperCase();
+        if (['A1', 'A2', 'B1', 'B2'].includes(lvl)) {
+            currentLevel = lvl;
+            renderCurriculumHome(currentLevel);
+            if (parts.length > 1) {
+                const topicId = parts.slice(1).join('-');
+                setTimeout(() => {
+                    openTopicStudio(topicId, 'theory', false);
+                }, 120);
+            }
+        }
+    }
+
+    window.addEventListener('popstate', () => {
+        const modal = document.getElementById('curriculum-studio-modal');
+        const hash = (window.location.hash || '').toLowerCase();
+        if (!hash.includes('-') && modal && modal.style.display === 'flex') {
+            closeTopicStudio(false);
+        } else {
+            handleHashRouting();
+        }
+    });
+
     // Sahifa yuklanganda ishga tushirish
     document.addEventListener('DOMContentLoaded', () => {
-        const hash = (window.location.hash || '').toUpperCase();
-        if (hash === '#A1' || hash === '#A2' || hash === '#B1' || hash === '#B2') {
-            currentLevel = hash.replace('#', '');
+        if (window.location.hash) {
+            handleHashRouting();
+        } else {
+            renderCurriculumHome(currentLevel);
         }
-        renderCurriculumHome(currentLevel);
     });
 
 })();

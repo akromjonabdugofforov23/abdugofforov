@@ -65,12 +65,21 @@
         if (solvedEl) solvedEl.textContent = state.totalSolved;
     }
 
+    const FALLBACK_A1_VERBS = [
+        { id: 'sein', infinitive: 'sein', translation: "bo'lmoq", level: 'A1', type: 'irregular', auxiliary: 'sein', praesens: { ich: 'bin', du: 'bist', er_sie_es: 'ist', wir: 'sind', ihr: 'seid', sie_Sie: 'sind' }, praeteritum: { ich: 'war', du: 'warst', er_sie_es: 'war', wir: 'waren', ihr: 'wart', sie_Sie: 'waren' }, perfekt: { auxiliary: 'sein', partizip2: 'gewesen', full: 'ist gewesen' } },
+        { id: 'haben', infinitive: 'haben', translation: "ega bo'lmoq", level: 'A1', type: 'irregular', auxiliary: 'haben', praesens: { ich: 'habe', du: 'hast', er_sie_es: 'hat', wir: 'haben', ihr: 'habt', sie_Sie: 'haben' }, praeteritum: { ich: 'hatte', du: 'hattest', er_sie_es: 'hatte', wir: 'hatten', ihr: 'hattet', sie_Sie: 'hatten' }, perfekt: { auxiliary: 'haben', partizip2: 'gehabt', full: 'hat gehabt' } },
+        { id: 'machen', infinitive: 'machen', translation: "qilmoq, bajarmoq", level: 'A1', type: 'regular', auxiliary: 'haben', praesens: { ich: 'mache', du: 'machst', er_sie_es: 'macht', wir: 'machen', ihr: 'macht', sie_Sie: 'machen' }, praeteritum: { ich: 'machte', du: 'machtest', er_sie_es: 'machte', wir: 'machten', ihr: 'machtet', sie_Sie: 'machten' }, perfekt: { auxiliary: 'haben', partizip2: 'gemacht', full: 'hat gemacht' } },
+        { id: 'gehen', infinitive: 'gehen', translation: "bormoq", level: 'A1', type: 'irregular', auxiliary: 'sein', praesens: { ich: 'gehe', du: 'gehst', er_sie_es: 'geht', wir: 'gehen', ihr: 'geht', sie_Sie: 'gehen' }, praeteritum: { ich: 'ging', du: 'gingst', er_sie_es: 'ging', wir: 'gingen', ihr: 'gingt', sie_Sie: 'gingen' }, perfekt: { auxiliary: 'sein', partizip2: 'gegangen', full: 'ist gegangen' } },
+        { id: 'kommen', infinitive: 'kommen', translation: "kelmoq", level: 'A1', type: 'irregular', auxiliary: 'sein', praesens: { ich: 'komme', du: 'kommst', er_sie_es: 'kommt', wir: 'kommen', ihr: 'kommt', sie_Sie: 'kommen' }, praeteritum: { ich: 'kam', du: 'kamst', er_sie_es: 'kam', wir: 'kamen', ihr: 'kamt', sie_Sie: 'kamen' }, perfekt: { auxiliary: 'sein', partizip2: 'gekommen', full: 'ist gekommen' } }
+    ];
+
     // Filtr bo'yicha fe'llar ro'yxatini olish
     function getFilteredVerbs() {
-        const db = window.GERMAN_VERBS_DB || [];
-        if (state.levelFilter === 'ALL') return db;
-        if (state.levelFilter === 'irregular') return db.filter(v => v.type === 'irregular');
-        return db.filter(v => v.level === state.levelFilter);
+        const rawDb = (window.GERMAN_VERBS_DB && window.GERMAN_VERBS_DB.length) ? window.GERMAN_VERBS_DB : FALLBACK_A1_VERBS;
+        if (state.levelFilter === 'ALL') return rawDb;
+        if (state.levelFilter === 'irregular') return rawDb.filter(v => v.type === 'irregular');
+        const res = rawDb.filter(v => v.level === state.levelFilter);
+        return res.length ? res : rawDb;
     }
 
     // Tasodifiy element

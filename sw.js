@@ -2,10 +2,15 @@
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
 // CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
 // bilan qorishib qolmasligi uchun
-const CACHE = 'abdu-cache-v11';
+const CACHE = 'abdu-cache-v12';
 const SHELL = [
     '/',
     '/index.html',
+    '/deutsch',
+    '/deutsch.html',
+    '/tools',
+    '/tools.html',
+    '/3d-lab.html',
     '/clock.html',
     '/style.css',
     '/style.min.css',
@@ -14,12 +19,25 @@ const SHELL = [
     '/css/claps-reactions.css',
     '/css/ambient-player.css',
     '/css/luxury-clock-modal.css',
+    '/css/matching-game.css',
+    '/css/verb-trainer.css',
     '/app.js',
+    '/deutsch.js',
+    '/tools.js',
     '/i18n.js',
     '/storage.js',
     '/auth.js',
     '/data-flashcards.js',
     '/data-tests.js',
+    '/data/curriculum-a1.js',
+    '/data/curriculum-a2.js',
+    '/data/curriculum-b1.js',
+    '/data/curriculum-b2.js',
+    '/scripts/curriculum-engine.js',
+    '/scripts/matching-game.js',
+    '/scripts/verb-trainer.js',
+    '/scripts/verb-trainer-data.js',
+    '/scripts/tools-extended.js',
     '/scripts/flashcards.js',
     '/scripts/tests.js',
     '/scripts/horror-data.js',
@@ -63,23 +81,51 @@ self.addEventListener('fetch', (event) => {
     if (url.origin !== self.location.origin) return;
 
     // Admin, maxfiy servislar va API funksiyalarini mutlaqo keshlamaymiz
-    const noCachePaths = ['/kay', '/kay.html', '/tools', '/tools.html', '/deutsch', '/deutsch.html'];
-    if (url.pathname.startsWith('/functions') || url.pathname.startsWith('/admin') || noCachePaths.includes(url.pathname)) return;
+    const noCachePaths = ['/kay', '/kay.html'];
+    if (url.pathname.startsWith('/functions') || url.pathname.startsWith('/admin') || url.pathname.startsWith('/auth') || noCachePaths.includes(url.pathname)) return;
 
-    // Navigatsiya (HTML) — tarmoq birinchi, keyin kesh (faqat asosiy sahifa oflayn ishlashi uchun)
+    // Navigatsiya (HTML) — tarmoq birinchi, keyin kesh (oflayn ishlashi uchun)
     if (req.mode === 'navigate') {
         event.respondWith(
             fetch(req).then((res) => {
-                if (url.pathname === '/' || url.pathname === '/index.html') {
-                    const copy = res.clone();
+                const copy = res.clone();
+                const path = url.pathname;
+                if (path === '/' || path === '/index.html') {
                     caches.open(CACHE).then((c) => c.put('/index.html', copy)).catch(() => {});
+                } else if (path === '/deutsch' || path === '/deutsch.html') {
+                    caches.open(CACHE).then((c) => {
+                        c.put('/deutsch.html', copy);
+                        c.put('/deutsch', copy.clone());
+                    }).catch(() => {});
+                } else if (path === '/tools' || path === '/tools.html') {
+                    caches.open(CACHE).then((c) => {
+                        c.put('/tools.html', copy);
+                        c.put('/tools', copy.clone());
+                    }).catch(() => {});
+                } else if (path === '/3d-lab.html') {
+                    caches.open(CACHE).then((c) => c.put('/3d-lab.html', copy)).catch(() => {});
                 }
                 return res;
             }).catch(() => {
-                if (url.pathname === '/' || url.pathname === '/index.html') {
+                const path = url.pathname;
+                if (path === '/' || path === '/index.html') {
                     return caches.match('/index.html').then((r) => r || caches.match('/'));
                 }
-                return new Response('Oflayn rejim', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+                if (path === '/deutsch' || path === '/deutsch.html') {
+                    return caches.match('/deutsch.html').then((r) => r || caches.match('/deutsch'));
+                }
+                if (path === '/tools' || path === '/tools.html') {
+                    return caches.match('/tools.html').then((r) => r || caches.match('/tools'));
+                }
+                if (path === '/3d-lab.html') {
+                    return caches.match('/3d-lab.html');
+                }
+                return caches.match(req).then((r) => r || caches.match('/index.html')).catch(() => {
+                    return new Response('Oflayn rejim — internet aloqasi mavjud emas', {
+                        status: 503,
+                        headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+                    });
+                });
             })
         );
         return;
