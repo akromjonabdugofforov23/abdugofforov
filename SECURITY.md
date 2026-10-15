@@ -11,7 +11,7 @@ Cloudflare Pages → **Settings → Environment variables** (yoki Node.js `.env`
 ### `ADMIN_PIN_HASH` (O'ta muhim — zudlik bilan o'rnating)
 Admin PIN kodi kodda saqlanmaydi. U `ADMIN_PIN_HASH` ENV o'zgaruvchisidan o'qiladi (PIN'ning SHA-256 hashi).
 
-> ⚠️ **Muhim qoida**: Agar `ADMIN_PIN_HASH` o'rnatilgan bo'lsa, tizim eski zaxira PIN (`0509`) ni **mutlaqo qabul qilmaydi**. Bu orqali eski oshkor bo'lgan kod orqali kirish ehtimoli 100% yopilgan.
+> ⚠️ **Muhim qoida**: Agar `ADMIN_PIN_HASH` o'rnatilgan bo'lsa, tizim eski zaxira PIN (`[REDACTED]`) ni **mutlaqo qabul qilmaydi**. Bu orqali eski oshkor bo'lgan kod orqali kirish ehtimoli 100% yopilgan.
 
 Yangi kuchli PIN (kamida 8+ belgi) xeshini yaratish (terminalda):
 ```bash

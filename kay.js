@@ -1975,24 +1975,40 @@ async function handleChangePin(e) {
     }
 
     try {
-        const res = await fetch('/api/admin/change-pin', {
+        const payload = JSON.stringify({ oldPin, newPin });
+        const headers = _adminHeaders({ 'Content-Type': 'application/json' });
+
+        let res = await fetch('/api/admin/change-pin', {
             method: 'POST',
-            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ oldPin, newPin })
+            headers,
+            body: payload
         }).catch(() => null);
 
-        if (res && res.ok) {
-            showMsg('PIN kod serverda muvaffaqiyatli yangilandi! ✅', true);
-        } else {
-            sessionStorage.setItem('kay_admin_pin', newPin);
-            showMsg('PIN kod yangilandi! ✅', true);
+        if (!res || res.status === 404) {
+            res = await fetch('/admin/change-pin', {
+                method: 'POST',
+                headers,
+                body: payload
+            }).catch(() => null);
         }
-        sessionStorage.setItem('kay_admin_pin', newPin);
-        addLog('info', 'Admin PIN kodi o\'zgartirildi');
-        showToast('PIN kod muvaffaqiyatli o\'zgartirildi! ✅', 'success');
-        document.getElementById('change-pin-form')?.reset();
+
+        const data = res ? await res.json().catch(() => null) : null;
+
+        if (res && res.ok && data && data.ok) {
+            sessionStorage.setItem('kay_admin_pin', newPin);
+            showMsg('PIN kod serverda muvaffaqiyatli yangilandi! ✅', true);
+            addLog('info', 'Admin PIN kodi o\'zgartirildi');
+            showToast('PIN kod muvaffaqiyatli o\'zgartirildi! ✅', 'success');
+            document.getElementById('change-pin-form')?.reset();
+        } else {
+            const errMsg = data?.error || data?.message || (res ? `Server xatosi (${res.status})` : 'Serverda PIN yangilanmadi');
+            showMsg(errMsg, false);
+            showToast(errMsg, 'error');
+            addLog('fail', 'PIN o\'zgartirishda xatolik: ' + errMsg);
+        }
     } catch (err) {
         showMsg('Xatolik: ' + err.message, false);
+        showToast('Xatolik: ' + err.message, 'error');
     }
 }
 

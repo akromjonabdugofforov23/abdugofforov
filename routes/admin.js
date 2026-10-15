@@ -584,12 +584,15 @@ router.post('/change-pin', (req, res) => {
             return res.status(400).json({ ok: false, error: "Yangi PIN kamida 4 belgidan iborat bo'lishi kerak" });
         }
         const { checkAdminPin } = require('../middlewares/auth');
-        if (oldPin && !checkAdminPin(oldPin)) {
+        if (!oldPin || !checkAdminPin(oldPin)) {
             return res.status(403).json({ ok: false, error: "Eski PIN noto'g'ri kiritildi" });
         }
         const newPinClean = newPin.trim();
         const newPinHash = crypto.createHash('sha256').update(newPinClean).digest('hex');
-        db.updateSettings({ adminPin: newPinClean, adminPinHash: newPinHash });
+        const currentSettings = db.getSettings();
+        delete currentSettings.adminPin;
+        delete currentSettings.admin_pin;
+        db.updateSettings({ adminPinHash: newPinHash });
         res.json({ ok: true, message: "PIN kod muvaffaqiyatli yangilandi" });
     } catch (err) {
         res.status(500).json({ ok: false, error: err.message });

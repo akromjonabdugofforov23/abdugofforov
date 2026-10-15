@@ -23,5 +23,8 @@ jobs:
       - name: Qaramliklarni o'rnatish
         run: npm ci
 
+      - name: Loyihani build qilish (Dist to'plami)
+        run: npm run build
+
       - name: Health Check & Sintaksis Auditini ishga tushirish
         run: node scripts/health-check.js

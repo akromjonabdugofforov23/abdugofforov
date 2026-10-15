@@ -12,5 +12,6 @@ Thumbs.db
 dist/
 *.log
 *.ps1
-data/
+data/db.json
+data/*.tmp
 users.json

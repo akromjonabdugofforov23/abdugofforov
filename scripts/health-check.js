@@ -42,10 +42,20 @@ const jsFiles = getAllJsFiles(rootDir);
 jsFiles.forEach(file => {
     const relPath = path.relative(rootDir, file);
     try {
-        execSync(`"${process.execPath}" --check "${file}"`, { stdio: 'pipe' });
+        const rawCode = fs.readFileSync(file, 'utf8');
+        const isModule = file.endsWith('.mjs') ||
+            relPath.split(path.sep).includes('functions') ||
+            /^\s*(import\s+|export\s+)/m.test(rawCode);
+
+        if (isModule) {
+            execSync(`"${process.execPath}" --check --input-type=module`, { input: rawCode, stdio: ['pipe', 'pipe', 'pipe'] });
+        } else {
+            execSync(`"${process.execPath}" --check "${file}"`, { stdio: 'pipe' });
+        }
         logPass(`Sintaksis toza: ${relPath}`);
     } catch (err) {
-        logFail(`SINTAKSIS XATO: ${relPath}\n${err.stderr.toString().trim()}`);
+        const errDetails = err.stderr ? err.stderr.toString().trim() : err.message;
+        logFail(`SINTAKSIS XATO: ${relPath}\n${errDetails}`);
     }
 });
 
