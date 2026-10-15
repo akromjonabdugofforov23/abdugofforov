@@ -1192,21 +1192,11 @@ const defaultProjects = [
         image: 'https://images.unsplash.com/photo-1527866959252-deab85ef7d1b?q=80&w=800'
     },
     {
-        id: 'proj_3d_lab',
-        title: '3D Vizual Lab (Koinot & Galaktika)',
-        cat: '3D Graphics & WebGL',
-        desc: "Three.js va WebGL texnologiyalari asosida yaratilgan interaktiv kosmik galaktika va zarrachalar simulyatsiyasi.",
-        tech: ['Three.js', 'WebGL', 'GLSL Shaders'],
-        link: '/3d-lab',
-        github: 'https://github.com/akrin4477/abdugofforov',
-        image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=800'
-    },
-    {
         id: 'proj_zen_studio',
-        title: 'Zen Focus & Audio Ambient',
+        title: 'Zen Focus Studio',
         cat: 'Mahsuldorlik',
-        desc: "Chalg'itmaydigan ijodiy matn muharriri, Pomodoro timer va Lofi/Ambient tinchlantiruvchi tabiat tovushlari.",
-        tech: ['HTML5 Audio', 'Local Storage', 'Minimalism'],
+        desc: "Chalg'itmaydigan ijodiy matn muharriri va Pomodoro taymer vositasi.",
+        tech: ['Local Storage', 'Minimalism', 'Productivity'],
         link: '/clock',
         github: 'https://github.com/akrin4477/abdugofforov',
         image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800'
@@ -2227,11 +2217,11 @@ async function loadCreatorPosts() {
         if (!posts.length) {
             posts = [
                 {
-                    id: 'post_ai_agentic_2026',
-                    title: "2026-yilgi Sun'iy Intellekt Inqilobi: Chatbotlardan Avtonom Agentlargacha",
-                    excerpt: "LLM modellari endi oddiy suhbatdosh emas, balki murakkab vazifalarni mustaqil rejalashtirib, kod yozib, natija beruvchi avtonom agentlarga aylandi.",
+                    id: 'post_web_architecture_2026',
+                    title: "Zamonaviy Web Arxitektura: Frontend va Backend Tizimlarini Optimallashtirish",
+                    excerpt: "Yuqori yuklamali veb-ilovalarda frontend va backend arxitekturasini loyihalash, keshlashtirish va mikroservislar o'rtasida ma'lumotlar almashinuvini optimallashtirish bo'yicha amaliy qo'llanma.",
                     image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200",
-                    tags: ['AI', 'Texnologiya', 'Agentlar'],
+                    tags: ['Architecture', 'Frontend', 'Backend', 'Dasturlash'],
                     createdAt: new Date().toISOString()
                 },
                 {
@@ -2244,8 +2234,8 @@ async function loadCreatorPosts() {
                 },
                 {
                     id: 'post_ecosystem_release_2_0',
-                    title: "Abdugofforov Ekotizimi 2.0: Zen Studio, Lofi Focus va Yangilangan Tools Lab",
-                    excerpt: "Saytimiz tubdan yangilandi: endi chalg'itmaydigan ijodiy muharrir, Lofi/Ambient audio pleyer va yangi asboblar sizning xizmatingizda!",
+                    title: "Abdugofforov Ekotizimi 2.0: Zen Studio va Yangilangan Tools Lab",
+                    excerpt: "Saytimiz tubdan yangilandi: endi chalg'itmaydigan ijodiy muharrir va yangi asboblar sizning xizmatingizda!",
                     image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1200",
                     tags: ['Yangiliklar', 'Ekotizim', 'Release'],
                     createdAt: new Date(Date.now() - 172800000).toISOString()

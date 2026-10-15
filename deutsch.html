@@ -45,7 +45,7 @@
                 <a href="#b2" data-nav-lvl="B2">🏔️ B2</a>
                 <a href="#tests" data-nav-lvl="tests">📝 Testlar</a>
                 <a href="#flashcards" data-nav-lvl="flashcards">🎴 Lug'at</a>
-                <a href="#tandem" data-nav-lvl="tandem" style="color:var(--accent-color); font-weight:600;">🤖 AI Tandem</a>
+                <a href="#tandem" data-nav-lvl="tandem" style="color:var(--accent-color); font-weight:600;">💬 Tandem</a>
                 <a href="#pronounce" data-nav-lvl="pronounce">🎙️ Talaffuz</a>
                 <a href="#idioms" data-nav-lvl="idioms">🥨 Iboralar</a>
                 <a href="#corrector" data-nav-lvl="corrector">✍️ Insho</a>
@@ -79,6 +79,7 @@
                         </div>
                         <button class="user-dd-item" id="user-results-btn" type="button">📊 Mening profilim va natijalarim</button>
                         <button class="user-dd-item" id="user-edit-profile-btn" type="button">✏️ Nick / Profilni tahrirlash</button>
+                        <button class="user-dd-item" id="user-change-pw-btn" type="button">🔒 Parolni yangilash</button>
                         <a href="kay.html" class="user-dd-item" id="user-admin-link" style="display:none; text-decoration:none; align-items:center; gap:6px;">⚙️ Admin paneli</a>
                         <button class="user-dd-item" id="user-logout-btn" type="button" style="color: #f87171;">🚪 Chiqish</button>
                     </div>
@@ -212,11 +213,11 @@
             <span style="font-size: 18px;">🎴</span>
             <span class="dock-label">Lug'at</span>
         </a>
-        <a href="#tandem" class="dock-item" data-page="tandem" title="AI Tandem Bot">
-            <span style="font-size: 18px;">🤖</span>
+        <a href="#tandem" class="dock-item" data-page="tandem" title="Tandem Muloqot">
+            <span style="font-size: 18px;">💬</span>
             <span class="dock-label">Tandem</span>
         </a>
-        <a href="#pronounce" class="dock-item" data-page="pronounce" title="AI Talaffuz Coach">
+        <a href="#pronounce" class="dock-item" data-page="pronounce" title="Talaffuz Murabbiyi">
             <span style="font-size: 18px;">🎙️</span>
             <span class="dock-label">Talaffuz</span>
         </a>
@@ -252,6 +253,31 @@
             <div class="modal-body" style="padding: 24px;">
                 <div id="myresults-content">
                     <p style="color:var(--text-secondary); text-align:center;">Yuklanmoqda...</p>
+                </div>
+
+                <!-- Parolni yangilash bloki / formasi -->
+                <div id="user-password-section" style="display:none; margin-top:16px; padding:18px; background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.25); border-radius:16px; text-align:left;">
+                    <h4 style="margin:0 0 12px 0; font-size:15px; color:var(--text-primary); font-weight:600; display:flex; align-items:center; gap:6px;">
+                        <span>🔒</span> <span>Parolni yangilash</span>
+                    </h4>
+                    <form id="user-change-password-form">
+                        <div style="margin-bottom:12px;">
+                            <label for="user-old-password" style="font-size:12px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Eski (joriy) parol:</label>
+                            <input type="password" id="user-old-password" name="oldPassword" class="form-input" placeholder="Joriy parolingizni kiriting" style="width:100%; box-sizing:border-box;" required autocomplete="current-password">
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <label for="user-new-password" style="font-size:12px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Yangi parol (kamida 6 ta belgi):</label>
+                            <input type="password" id="user-new-password" name="newPassword" class="form-input" placeholder="Yangi parolni kiriting" style="width:100%; box-sizing:border-box;" required minlength="6" autocomplete="new-password">
+                        </div>
+                        <div style="margin-bottom:14px;">
+                            <label for="user-confirm-password" style="font-size:12px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Yangi parolni tasdiqlang:</label>
+                            <input type="password" id="user-confirm-password" name="confirmPassword" class="form-input" placeholder="Yangi parolni qayta kiriting" style="width:100%; box-sizing:border-box;" required minlength="6" autocomplete="new-password">
+                        </div>
+                        <div id="user-change-password-msg" class="change-password-message" style="display:none; font-size:12.5px; padding:8px 12px; border-radius:8px; margin-bottom:12px;"></div>
+                        <div style="display:flex; justify-content:flex-end;">
+                            <button type="submit" id="save-password-btn" class="btn-primary" style="padding:8px 20px; font-size:13px; font-weight:600;">Parolni saqlash</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -309,6 +335,5 @@
     <script src="scripts/story-card.js" defer></script>
     <script src="scripts/video-lesson.js" defer></script>
     <script src="deutsch.js" defer></script>
-    <script src="scripts/ambient-player.js" defer></script>
 </body>
 </html>

@@ -587,15 +587,6 @@ function getPortfolioProjects() {
             tech: ['Vanilla JS', 'IndexedDB', 'Audio API', 'CSS Grid'],
             link: '/deutsch',
             github: 'https://github.com/akrin4477/abdugofforov'
-        },
-        {
-            id: 'proj_3d_lab',
-            title: '3D Lab & Universe',
-            cat: 'Grafika & Three.js',
-            desc: "Three.js va WebGL texnologiyasiga asoslangan interaktiv kosmik fazo, sayyoralar va vizual 3D laboratoriyasi.",
-            tech: ['Three.js', 'WebGL', 'GLSL', 'Math'],
-            link: '/3d-lab',
-            github: 'https://github.com/akrin4477/abdugofforov'
         }
     ];
 }
@@ -721,8 +712,6 @@ function renderPosts(instant) {
                         } else if (e.target.closest('.bookmark-btn')) {
                             e.stopPropagation();
                             handleBookmarkToggle(post.id, e.target.closest('.bookmark-btn'));
-                        } else if (post.type === 'music') {
-                            playMusic(post);
                         } else {
                             openPostDetail(post.id);
                         }
@@ -883,41 +872,7 @@ function renderPosts(instant) {
             const card = document.createElement('article');
             card.className = 'post-card';
             
-            if (post.type === 'music') {
-                card.innerHTML = `
-                    <div class="post-image-wrapper">
-                        <div class="post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600')}');"></div>
-                    </div>
-                    <div class="post-content">
-                        <span class="post-meta">${getCategoryIcon(post.category, post.type)} ${escapeHTML(post.category)}</span>
-                        <h2 class="post-title">${escapeHTML(post.title)}</h2>
-                        <p class="post-excerpt">${escapeHTML(post.excerpt)}</p>
-
-                        <div class="music-actions">
-                            ${post.artist ? `<span class="music-artist">🎤 ${escapeHTML(post.artist)}</span>` : ''}
-                            <div class="music-btn-row">
-                                ${post.link ? `<button class="btn-primary btn-sm music-play-btn" data-id="${post.id}">${i18n.t('music.listen')}</button>` : ''}
-                                ${post.link ? `<a class="btn-secondary btn-sm music-open-btn" href="${safeUrl(post.link)}" target="_blank" rel="noopener noreferrer">${i18n.t('music.open')}</a>` : ''}
-                            </div>
-                        </div>
-
-                        <div class="post-footer" style="margin-top: 15px;">
-                            <span class="post-date">${formatDate(post.date)}</span>
-                            <div class="post-stats">
-                                <div class="post-stat like-btn" data-id="${post.id}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="${post.liked ? 'var(--accent-color)' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                    <span>${(post.likes && post.likes > 0) ? post.likes : ''}</span>
-                                </div>
-                                <div class="post-stat">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                                    <span>${(post.comments || []).length}</span>
-                                </div>
-                                ${getBookmarkBtnHtml(post.id)}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (post.type === 'image') {
+            if (post.type === 'image') {
                 card.innerHTML = `
                     <div class="post-image-wrapper image-gallery-card">
                         <div class="post-image zoomable-bg" data-zoom-src="${escapeHTML(safeImageUrl(post.image))}" style="background-image: url('${cssUrl(post.image)}');"></div>
@@ -1010,11 +965,6 @@ function renderPosts(instant) {
                 } else if (e.target.closest('.zoomable-bg')) {
                     const z = e.target.closest('.zoomable-bg');
                     openLightbox(z.getAttribute('data-zoom-src'));
-                } else if (e.target.closest('.music-open-btn')) {
-                    e.stopPropagation();
-                } else if (e.target.closest('.music-play-btn')) {
-                    e.stopPropagation();
-                    playMusic(post);
                 } else {
                     openPostDetail(post.id);
                 }
@@ -1314,9 +1264,6 @@ function syncActiveNavState(page) {
         } else if (page === 'blog') {
             const bLink = desktopDock.querySelector('#dock-blog');
             if (bLink) bLink.classList.add('active');
-        } else if (page === 'music') {
-            const mLink = desktopDock.querySelector('#dock-music');
-            if (mLink) mLink.classList.add('active');
         }
     }
 }
@@ -1459,25 +1406,13 @@ function openPostDetail(postId, pushHistory = true) {
             </div>
         </div>
         
-        ${post.type === 'music' 
+        ${post.type === 'video'
             ? `<div style="margin-bottom: 30px;">
-                   <img src="${post.image}" class="zoomable" style="width: 100%; max-height: 320px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; cursor: zoom-in;">
-                   ${post.musicData ? `<audio controls preload="none" style="width:100%; margin-bottom:12px;" src="${post.musicData}"></audio>` : ''}
-                   <div class="music-actions" style="justify-content:flex-start;">
-                       ${post.artist ? `<span class="music-artist">🎤 ${escapeHTML(post.artist)}</span>` : ''}
-                       <div class="music-btn-row">
-                           ${(post.musicData || post.link) ? `<button class="btn-primary btn-sm" id="detail-play-${post.id}">${i18n.t('music.listen')}</button>` : ''}
-                           ${post.link ? `<a class="btn-secondary btn-sm" href="${safeUrl(post.link)}" target="_blank" rel="noopener noreferrer">${i18n.t('music.open')}</a>` : ''}
-                       </div>
-                   </div>
+                   ${post.videoData 
+                       ? `<video controls preload="none" style="width:100%; max-height:500px; border-radius:12px;" src="${post.videoData}"></video>`
+                       : `<div class="modal-post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1000')}');"></div>`
+                   }
                </div>`
-            : post.type === 'video'
-                ? `<div style="margin-bottom: 30px;">
-                       ${post.videoData 
-                           ? `<video controls preload="none" style="width:100%; max-height:500px; border-radius:12px;" src="${post.videoData}"></video>`
-                           : `<div class="modal-post-image" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1000')}');"></div>`
-                       }
-                   </div>`
             : post.type === 'image' 
                 ? `<div style="margin-bottom: 30px;"><img src="${escapeHTML(safeImageUrl(post.image))}" class="zoomable" style="width: 100%; border-radius: 12px; cursor: zoom-in;"></div>`
                 : `<div class="modal-post-image zoomable-bg" data-zoom-src="${escapeHTML(safeImageUrl(post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000'))}" style="background-image: url('${cssUrl(post.image, 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000')}'); cursor: zoom-in;"></div>`
@@ -1487,7 +1422,7 @@ function openPostDetail(postId, pushHistory = true) {
             ? `<div class="modal-post-excerpt">${escapeHTML(post.excerpt)}</div>` 
             : ''}
 
-        <div class="modal-post-text markdown-body" style="line-height:1.8;">${post.type === 'music' ? renderMarkdown(post.content || post.excerpt) : renderMarkdown(post.content || post.excerpt || '*Ushbu maqolada matn mavjud emas.*')}</div>
+        <div class="modal-post-text markdown-body" style="line-height:1.8;">${renderMarkdown(post.content || post.excerpt || '*Ushbu maqolada matn mavjud emas.*')}</div>
         ${renderTags(post)}
         
         <div class="comments-section">
@@ -1543,9 +1478,6 @@ function openPostDetail(postId, pushHistory = true) {
     modalLikeBtn.addEventListener('click', () => {
         handleLike(post.id);
     });
-
-    const detailPlayBtn = document.getElementById(`detail-play-${post.id}`);
-    if (detailPlayBtn) detailPlayBtn.addEventListener('click', () => playMusic(post));
 
     const shareBtn = detailModalBody.querySelector('.share-post-btn');
     if (shareBtn) shareBtn.addEventListener('click', () => sharePost(post));
@@ -2321,37 +2253,7 @@ function initLightbox() {
     });
 }
 
-// ===== DOIMIY MUSIQA PLEYERI (faqat kompyuter/noutbook) =====
-function isDesktopPlayer() {
-    return window.matchMedia('(min-width: 769px) and (hover: hover)').matches;
-}
 
-function getYouTubeId(url) {
-    if (!url) return null;
-    const patterns = [
-        /youtube\.com\/watch\?v=([\w-]{11})/,
-        /youtu\.be\/([\w-]{11})/,
-        /youtube\.com\/embed\/([\w-]{11})/,
-        /youtube\.com\/shorts\/([\w-]{11})/,
-        /music\.youtube\.com\/watch\?v=([\w-]{11})/
-    ];
-    for (const p of patterns) {
-        const m = url.match(p);
-        if (m) return m[1];
-    }
-    return null;
-}
-
-function playMusic(post) {
-    // Lokal audio fayl (data URL)
-    const link = post && (post.link || post.musicData);
-    if (link) {
-        window.open(safeUrl(link), '_blank', 'noopener');
-    }
-}
-
-function stopMusic() {}
-function initMiniPlayer() {}
 
 // ===== KARTOCHKALAR (FLASHCARDS) MA'LUMOTLARI =====
 // ===== FLASHCARDS MOVED TO data-flashcards.js =====
@@ -2656,19 +2558,19 @@ const DUMMY_POST_IDS = new Set([
 function getHighValueDefaultPosts() {
     return [
         {
-            id: 'post_ai_agentic_2026',
-            title: "2026-yilgi Sun'iy Intellekt Inqilobi: Chatbotlardan Avtonom Agentlargacha",
-            excerpt: "LLM modellari endi oddiy suhbatdosh emas, balki murakkab vazifalarni mustaqil rejalashtirib, kod yozib, natija beruvchi avtonom agentlarga aylandi.",
-            content: "So'nggi yillarda sun'iy intellekt taraqqiyoti misli ko'rilmagan tezlikda ildamlamoqda. Agar 2023–2024-yillarda biz matn generatsiya qiluvchi oddiy modellar bilan qanoatlangan bo'lsak, bugungi kunda **Agentic AI** (avtonom agentlar) davri boshlandi.\\n\\n### Agentic AI nima degani?\\nOddiy sun'iy intellekt faqat siz bergan savolga javob yozadi. Agent esa maqsadni tushunadi va unga erishish uchun bir qator ketma-ket harakatlarni o'zi bajaradi:\\n1. **Rejalashtirish (Planning):** Murakkab muammoni kichik qismlarga bo'ladi;\\n2. **Asboblardan foydalanish (Tool Calling):** Brauzer orqali qidiradi, ma'lumotlar bazasini tekshiradi, terminalda kod ishga tushiradi;\\n3. **Xatolarni tahlil qilish (Self-reflection):** Ish bermagan usulni o'zgartirib, muqobil yechim izlaydi.\\n\\n### Dasturchilar uchun nimani anglatadi?\\nDasturlash olamida sintaksis yodlash ahamiyati kamayib, **arxitektura**, **muammoga to'g'ri yondashish** va **AI bilan hamkorlikda ishlash** (Pair Programming) birinchi o'ringa chiqdi. Kelajak texnologiyalaridan orqada qolmaslik uchun har bir mutaxassis avtonom agentlar bilan ishlashni o'rganishi zarur!",
+            id: 'post_web_architecture_2026',
+            title: "Zamonaviy Web Arxitektura: Frontend va Backend Tizimlarini Optimallashtirish",
+            excerpt: "Yuqori yuklamali veb-ilovalarda frontend va backend arxitekturasini loyihalash, keshlashtirish va mikroservislar o'rtasida ma'lumotlar almashinuvini optimallashtirish bo'yicha amaliy qo'llanma.",
+            content: "Zamonaviy dasturiy ta'minot yaratishda tizimning tezkorligi, masshtabliligi va xavfsizligi eng muhim mezonlardan biridir. Katta hajmdagi ma'lumotlar va doimiy o'sib boruvchi foydalanuvchilar oqimiga ega bo'lgan tizimlarda to'g'ri arxitektura tanlash hal qiluvchi rol o'ynaydi.\\n\\n### 1. Frontend Optimallashtirish va App Shell\\nFoydalanuvchi interfeysi chaqmoqdek tez yuklanishi uchun resurslarni to'g'ri taqsimlash lozim:\\n1. **Kodni bo'lish (Code Splitting):** Foydalanuvchiga faqat u turgan sahifaga tegishli skript va stillar yetkazib beriladi;\\n2. **Keshlashtirish Strategiyalari (Service Worker & Stale-While-Revalidate):** Statik aktivlar va API javoblarini mahalliy kesh orqali tezkor qaytarish;\\n3. **DOM manipulyatsiyasini minimallashtirish:** Ortiqcha qayta chizilishlarni kamaytirish orqali render unumdorligini oshirish.\\n\\n### 2. Backend va Ma'lumotlar Bazasining Ishlash Tezligi\\nBackend darajasida kechikishlarni (latency) kamaytirish uchun quyidagi usullardan foydalaniladi:\\n1. **Asinxron operatsiyalar va navbatlar:** Og'ir hisob-kitoblar va fonda bajariluvchi vazifalarni fon oqimlariga o'tkazish;\\n2. **Indekslash va so'rovlar optimallashtiruvi:** Ma'lumotlar bazasidagi so'rovlarni optimallashtirib, diskka murojaatlarni kamaytirish;\\n3. **Xavfsiz va tejamkor API shlyuzlari:** Ortiqcha ma'lumot uzatishning oldini oluvchi ixcham REST va GraphQL so'rovlari.\\n\\n### Xulosa\\nMustahkam va to'g'ri tashkil etilgan arxitektura nafaqat tizimning barqarorligini ta'minlaydi, balki server resurslarini tejangani hisobiga infratuzilma xarajatlarini bir necha barobar qisqartiradi.",
             category: 'Texnologiya',
-            image: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?q=80&w=1200',
+            image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=1200',
             date: '2026-10-10',
-            tags: ['AI', 'Agent', 'Dasturlash', 'Kelajak'],
+            tags: ['Architecture', 'Frontend', 'Backend', 'Dasturlash'],
             likes: 0,
             liked: false,
             comments: [],
             author: "Abdug'offorov",
-            readTime: '4 daqiqa'
+            readTime: '5 daqiqa'
         },
         {
             id: 'post_germany_chancenkarte_2026',

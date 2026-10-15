@@ -170,6 +170,33 @@
             return { ok: true, user: this.user };
         },
 
+        async changePassword(oldPassword, newPassword) {
+            if (!this.token) {
+                return { ok: false, message: "Tizimga kirilmagan" };
+            }
+            if (!oldPassword || !newPassword) {
+                return { ok: false, message: "Barcha maydonlarni to'ldiring" };
+            }
+            if (String(newPassword).length < 6) {
+                return { ok: false, message: "Yangi parol kamida 6 ta belgidan iborat bo'lishi kerak" };
+            }
+            try {
+                const res = await fetch('/auth/change-password', {
+                    method: 'POST',
+                    headers: this._headers(),
+                    body: JSON.stringify({
+                        oldPassword: String(oldPassword),
+                        newPassword: String(newPassword)
+                    })
+                });
+                const data = await res.json().catch(() => ({}));
+                return data;
+            } catch (e) {
+                console.warn('Change password error:', e);
+                return { ok: false, message: "Server bilan bog'lanishda xatolik yuz berdi" };
+            }
+        },
+
         async logout() {
             try {
                 await fetch('/auth/logout', { method: 'POST', headers: this._headers() });
@@ -525,7 +552,7 @@
         const content = document.getElementById('myresults-content');
         if (!modal || !content) return;
 
-        const activeTab = ['results', 'bookmarks', 'badges', 'edit'].includes(tab) ? tab : 'results';
+        const activeTab = ['results', 'bookmarks', 'badges', 'edit', 'password'].includes(tab) ? (tab === 'password' ? 'edit' : tab) : 'results';
         const user = (window.Auth && Auth.user) ? Auth.user : { name: 'Foydalanuvchi', username: 'mehmon' };
         const isAdmin = window.Auth ? Auth.isAdmin() : false;
         const hist = (window.Auth && Auth.getLocalResults) ? Auth.getLocalResults() : [];
@@ -831,22 +858,11 @@
                         <small style="color:var(--text-muted);font-size:11px;display:block;margin-top:4px;">Yuqoridagi emojilardan birini bosing yoki o'zingizning rasm havolangizni (URL) kiriting.</small>
                     </div>
 
-                    <!-- Parolni o'zgartirish bloki (ochilib-yopiluvchi) -->
-                    <div style="margin-bottom:16px;border-top:1px dashed var(--glass-border);padding-top:12px;">
-                        <button type="button" data-action="toggle-profile-password" style="background:none;border:none;color:var(--color-purple-light,#8b5cf6);font-size:13px;cursor:pointer;padding:0;font-weight:600;display:flex;align-items:center;gap:6px;">
-                            <span>🔒</span> <span>Parolni o'zgartirish (ixtiyoriy)</span> <span>▾</span>
+                    <!-- Parolni o'zgartirish bloki eslatmasi -->
+                    <div style="margin-bottom:14px;border-top:1px dashed var(--glass-border);padding-top:12px;">
+                        <button type="button" data-action="focus-password-section" style="background:none;border:none;color:var(--color-purple-light,#8b5cf6);font-size:12.5px;cursor:pointer;padding:0;font-weight:600;display:flex;align-items:center;gap:6px;">
+                            <span>🔒</span> <span>Parolni yangilash &darr;</span>
                         </button>
-                        
-                        <div id="profile-password-fields" style="display:none;margin-top:10px;padding:12px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:10px;">
-                            <div style="margin-bottom:10px;">
-                                <label for="edit-profile-current-pass" style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Joriy parol ${isAdmin ? '(yoki Admin PIN)' : ''}:</label>
-                                <input type="password" id="edit-profile-current-pass" class="form-input" placeholder="Joriy parolingizni kiriting" style="width:100%;box-sizing:border-box;" autocomplete="current-password">
-                            </div>
-                            <div>
-                                <label for="edit-profile-new-pass" style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:4px;">Yangi parol (kamida 6 ta belgi):</label>
-                                <input type="password" id="edit-profile-new-pass" class="form-input" placeholder="Yangi parolni kiriting" style="width:100%;box-sizing:border-box;" autocomplete="new-password">
-                            </div>
-                        </div>
                     </div>
 
                     <div style="display:flex;gap:10px;justify-content:flex-end;">
@@ -934,7 +950,20 @@
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        if (activeTab === 'edit') {
+        const pwSec = document.getElementById('user-password-section');
+        if (pwSec) {
+            pwSec.style.display = (activeTab === 'edit') ? 'block' : 'none';
+        }
+
+        if (tab === 'password') {
+            setTimeout(() => {
+                const oldPass = document.getElementById('user-old-password');
+                if (oldPass) {
+                    oldPass.focus();
+                    oldPass.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 180);
+        } else if (activeTab === 'edit') {
             const nameInput = document.getElementById('edit-profile-name');
             if (nameInput && typeof nameInput.focus === 'function') setTimeout(() => nameInput.focus(), 150);
         }
@@ -1013,6 +1042,94 @@
         if (saveBtn) {
             saveBtn.disabled = false;
             saveBtn.textContent = 'Saqlash';
+        }
+    }
+
+    async function savePasswordChanges(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        const oldPassInput = document.getElementById('user-old-password');
+        const newPassInput = document.getElementById('user-new-password');
+        const confirmPassInput = document.getElementById('user-confirm-password');
+        const msgEl = document.getElementById('user-change-password-msg') || document.getElementById('change-password-message');
+        const submitBtn = document.getElementById('save-password-btn') || (e && e.target && e.target.querySelector('button[type="submit"]'));
+
+        function showMsg(text, type) {
+            if (!msgEl) return;
+            msgEl.textContent = text;
+            msgEl.style.display = 'block';
+            if (type === 'success') {
+                msgEl.style.background = 'rgba(34, 197, 94, 0.15)';
+                msgEl.style.color = '#22c55e';
+                msgEl.style.border = '1px solid rgba(34, 197, 94, 0.3)';
+            } else {
+                msgEl.style.background = 'rgba(239, 68, 68, 0.15)';
+                msgEl.style.color = '#ef4444';
+                msgEl.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+            }
+        }
+
+        const oldPassword = oldPassInput ? oldPassInput.value : '';
+        const newPassword = newPassInput ? newPassInput.value : '';
+        const confirmPassword = confirmPassInput ? confirmPassInput.value : '';
+
+        if (!oldPassword) {
+            notifyToast("Eski parolni kiriting", "warn");
+            showMsg("Eski parolni kiriting", "error");
+            if (oldPassInput) oldPassInput.focus();
+            return;
+        }
+        if (!newPassword) {
+            notifyToast("Yangi parolni kiriting", "warn");
+            showMsg("Yangi parolni kiriting", "error");
+            if (newPassInput) newPassInput.focus();
+            return;
+        }
+        if (newPassword.length < 6) {
+            notifyToast("Yangi parol kamida 6 ta belgidan iborat bo'lishi kerak", "warn");
+            showMsg("Yangi parol kamida 6 ta belgidan iborat bo'lishi kerak", "error");
+            if (newPassInput) newPassInput.focus();
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            notifyToast("Yangi parollar mos kelmadi", "warn");
+            showMsg("Yangi parollar mos kelmadi", "error");
+            if (confirmPassInput) confirmPassInput.focus();
+            return;
+        }
+        if (oldPassword === newPassword) {
+            notifyToast("Yangi parol eski paroldan farq qilishi kerak", "warn");
+            showMsg("Yangi parol eski paroldan farq qilishi kerak", "error");
+            if (newPassInput) newPassInput.focus();
+            return;
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saqlanmoqda...';
+        }
+
+        try {
+            const res = await Auth.changePassword(oldPassword, newPassword);
+
+            if (res && res.ok) {
+                notifyToast("🔒 Parol muvaffaqiyatli yangilandi!", "success");
+                showMsg(res.message || "Parol muvaffaqiyatli yangilandi!", "success");
+                if (oldPassInput) oldPassInput.value = '';
+                if (newPassInput) newPassInput.value = '';
+                if (confirmPassInput) confirmPassInput.value = '';
+            } else {
+                const errMsg = (res && res.message) ? res.message : "Parolni yangilashda xatolik yuz berdi";
+                notifyToast(errMsg, "error");
+                showMsg(errMsg, "error");
+            }
+        } catch (err) {
+            notifyToast("Server bilan bog'lanishda xatolik", "error");
+            showMsg("Server bilan bog'lanishda xatolik", "error");
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Parolni saqlash';
         }
     }
 
@@ -1179,6 +1296,28 @@
             return;
         }
 
+        const userChangePwBtn = target.closest('#user-change-pw-btn');
+        if (userChangePwBtn) {
+            e.preventDefault();
+            const dd = document.getElementById('user-dropdown');
+            if (dd) dd.classList.remove('open');
+            openMyResults('password');
+            return;
+        }
+
+        const focusPwBtn = target.closest('[data-action="focus-password-section"]');
+        if (focusPwBtn) {
+            e.preventDefault();
+            const pwSec = document.getElementById('user-password-section');
+            if (pwSec) pwSec.style.display = 'block';
+            const oldP = document.getElementById('user-old-password');
+            if (oldP) {
+                oldP.focus();
+                oldP.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
         const userLogoutBtn = target.closest('#user-logout-btn');
         if (userLogoutBtn) {
             e.preventDefault();
@@ -1209,6 +1348,9 @@
         if (e.target && e.target.id === 'edit-profile-form') {
             e.preventDefault();
             saveProfileChanges(e);
+        } else if (e.target && e.target.id === 'user-change-password-form') {
+            e.preventDefault();
+            savePasswordChanges(e);
         }
     });
 
@@ -1216,6 +1358,7 @@
     window.toggleEditProfileForm = toggleEditProfileForm;
     window.toggleProfilePasswordFields = toggleProfilePasswordFields;
     window.saveProfileChanges = saveProfileChanges;
+    window.savePasswordChanges = savePasswordChanges;
 
     window.Auth = Auth;
 

@@ -366,6 +366,68 @@ router.post('/profile', authenticateUser, (req, res) => {
     return res.json({ ok: true, user: formatUser(resultUser), message: "Profil muvaffaqiyatli yangilandi" });
 });
 
+// Parolni yangilash (Change Password)
+router.post('/change-password', authenticateUser, (req, res) => {
+    const { oldPassword, currentPassword, newPassword } = req.body || {};
+    const oldPass = String(oldPassword || currentPassword || '');
+    const newPass = String(newPassword || '');
+
+    if (!oldPass || !newPass) {
+        return res.status(400).json({
+            ok: false,
+            error: "Eski va yangi parolni kiriting",
+            message: "Eski va yangi parolni kiriting"
+        });
+    }
+
+    if (newPass.length < 6) {
+        return res.status(400).json({
+            ok: false,
+            error: "Yangi parol kamida 6 ta belgidan iborat bo'lishi kerak",
+            message: "Yangi parol kamida 6 ta belgidan iborat bo'lishi kerak"
+        });
+    }
+
+    if (oldPass === newPass) {
+        return res.status(400).json({
+            ok: false,
+            error: "Yangi parol eski paroldan farq qilishi kerak",
+            message: "Yangi parol eski paroldan farq qilishi kerak"
+        });
+    }
+
+    const user = req.user;
+    const { valid } = verifyPassword(oldPass, user);
+    const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+    const isAdmin = user.role === 'admin' || (user.username && adminUsers.includes(user.username.toLowerCase()));
+
+    let isOldPassValid = valid;
+    if (!isOldPassValid && isAdmin && checkAdminPin(oldPass)) {
+        isOldPassValid = true;
+    }
+
+    if (!isOldPassValid) {
+        return res.status(400).json({
+            ok: false,
+            error: "Joriy (eski) parol noto'g'ri",
+            message: "Joriy (eski) parol noto'g'ri"
+        });
+    }
+
+    const { hash, salt, algo } = hashPasswordScrypt(newPass);
+    const updatedUser = db.update('users', user.id, {
+        passHash: hash,
+        salt,
+        algo
+    });
+
+    return res.json({
+        ok: true,
+        message: "Parol muvaffaqiyatli yangilandi",
+        user: formatUser(updatedUser || user)
+    });
+});
+
 // ============================================================
 // STEALTH ADMIN GATE: /auth/magic-gate
 // GET /auth/magic-gate?token=... yoki ?pin=...

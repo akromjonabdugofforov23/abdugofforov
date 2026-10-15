@@ -25,7 +25,7 @@ const OUT = path.join(ROOT, 'dist');
 
 const JS_FILES = ['data-flashcards.js', 'data-tests.js', 'app.js', 'auth.js', 'i18n.js', 'storage.js', 'sw.js', 'kay.js', 'deutsch.js', 'tools.js'];
 const CSS_FILES = ['style.css'];
-const HTML_FILES = ['index.html', 'kay.html', 'deutsch.html', 'prototype.html', '3d-lab.html', 'tools.html', 'clock.html'];
+const HTML_FILES = ['index.html', 'kay.html', 'deutsch.html', 'tools.html', 'clock.html'];
 // Statik fayllar (o'zgartirilmasdan ko'chiriladi)
 const COPY_FILES = [
   '_headers', 'robots.txt', 'sitemap.xml', 'manifest.webmanifest',
@@ -89,17 +89,21 @@ async function buildScripts() {
 
     const srcPath = path.join(scriptsDir, entry.name);
     const destPath = path.join(outScriptsDir, entry.name);
+    await fs.mkdir(outScriptsDir, { recursive: true });
     if (entry.name.endsWith('.js')) {
       const code = await fs.readFile(srcPath, 'utf8');
       try {
         const res = await terserMinify({ [entry.name]: code }, TERSER_OPTS);
+        await fs.mkdir(outScriptsDir, { recursive: true });
         await fs.writeFile(destPath, res.code, 'utf8');
         rows.push({ name: 'scripts/' + entry.name, before: code.length, after: res.code.length });
       } catch (err) {
         console.warn('Terser warning for scripts/' + entry.name, err.message);
+        await fs.mkdir(outScriptsDir, { recursive: true });
         await fs.copyFile(srcPath, destPath);
       }
     } else {
+      await fs.mkdir(outScriptsDir, { recursive: true });
       await fs.copyFile(srcPath, destPath);
     }
   }

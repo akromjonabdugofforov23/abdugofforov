@@ -2,7 +2,7 @@
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
 // CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
 // bilan qorishib qolmasligi uchun
-const CACHE = 'abdu-cache-v12';
+const CACHE = 'abdu-cache-v13';
 const SHELL = [
     '/',
     '/index.html',
@@ -10,14 +10,12 @@ const SHELL = [
     '/deutsch.html',
     '/tools',
     '/tools.html',
-    '/3d-lab.html',
     '/clock.html',
     '/style.css',
     '/style.min.css',
     '/animations.css',
     '/css/horror.css',
     '/css/claps-reactions.css',
-    '/css/ambient-player.css',
     '/css/matching-game.css',
     '/css/verb-trainer.css',
     '/app.js',
@@ -108,8 +106,6 @@ self.addEventListener('fetch', (event) => {
                         c.put('/tools.html', copy);
                         c.put('/tools', copy.clone());
                     }).catch(() => {});
-                } else if (path === '/3d-lab.html') {
-                    caches.open(CACHE).then((c) => c.put('/3d-lab.html', copy)).catch(() => {});
                 }
                 return res;
             }).catch(() => {
@@ -122,9 +118,6 @@ self.addEventListener('fetch', (event) => {
                 }
                 if (path === '/tools' || path === '/tools.html') {
                     return caches.match('/tools.html', { ignoreSearch: true }).then((r) => r || caches.match('/tools', { ignoreSearch: true }));
-                }
-                if (path === '/3d-lab.html') {
-                    return caches.match('/3d-lab.html', { ignoreSearch: true });
                 }
                 return caches.match(req, { ignoreSearch: true }).then((r) => r || caches.match('/index.html', { ignoreSearch: true })).catch(() => {
                     return new Response('Oflayn rejim — internet aloqasi mavjud emas', {

@@ -44,11 +44,6 @@ router.post('/check-pin', (req, res) => {
     return res.json({ success: true, ok: true, token: tokenGenerated });
 });
 
-// 3D Lab
-router.get(['/3d-lab', '/3d-lab.html'], (req, res) => {
-    res.sendFile(path.join(__dirname, '../3d-lab.html'));
-});
-
 // Dinamik XML Sitemap (SEO)
 router.get('/sitemap.xml', (req, res) => {
     const baseUrl = 'https://abdugofforov.uz';
@@ -60,8 +55,7 @@ router.get('/sitemap.xml', (req, res) => {
     const staticPages = [
         { loc: '/', priority: '1.0', changefreq: 'daily' },
         { loc: '/deutsch', priority: '0.9', changefreq: 'weekly' },
-        { loc: '/tools', priority: '0.8', changefreq: 'monthly' },
-        { loc: '/3d-lab', priority: '0.7', changefreq: 'monthly' }
+        { loc: '/tools', priority: '0.8', changefreq: 'monthly' }
     ];
 
     staticPages.forEach(p => {

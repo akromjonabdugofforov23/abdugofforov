@@ -124,6 +124,7 @@
                         </div>
                         <button class="user-dd-item" id="user-results-btn" type="button">📊 Mening profilim va natijalarim</button>
                         <button class="user-dd-item" id="user-edit-profile-btn" type="button">✏️ Nick / Profilni tahrirlash</button>
+                        <button class="user-dd-item" id="user-change-pw-btn" type="button">🔒 Parolni yangilash</button>
                         <a href="kay.html" class="user-dd-item" id="user-admin-link" style="display:none; text-decoration:none; align-items:center; gap:6px;">⚙️ Admin paneli</a>
                         <button class="user-dd-item" id="user-logout-btn" type="button" style="color: #f87171;">🚪 Chiqish</button>
                     </div>
@@ -309,18 +310,18 @@
 
         <!-- Postlar Panjarasi -->
         <section class="blog-grid" id="blog-grid">
-            <article class="post-card" data-id="post_ai_agentic_2026">
+            <article class="post-card" data-id="post_web_architecture_2026">
                 <div class="post-image-wrapper">
-                    <div class="post-image" style="background-image: url('https://images.unsplash.com/photo-1677442136019-21780efad99a?q=80&amp;w=1200');"></div>
+                    <div class="post-image" style="background-image: url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&amp;w=1200');"></div>
                 </div>
                 <div class="post-content">
                     <span class="post-meta">💡 Texnologiya</span>
-                    <h2 class="post-title">2026-yilgi Sun'iy Intellekt Inqilobi: Chatbotlardan Avtonom Agentlargacha</h2>
-                    <p class="post-excerpt">LLM modellari endi oddiy suhbatdosh emas, balki murakkab vazifalarni mustaqil rejalashtirib, kod yozib, natija beruvchi avtonom agentlarga aylandi.</p>
+                    <h2 class="post-title">Zamonaviy Web Arxitektura: Frontend va Backend Tizimlarini Optimallashtirish</h2>
+                    <p class="post-excerpt">Yuqori yuklamali veb-ilovalarda frontend va backend arxitekturasini loyihalash, keshlashtirish va mikroservislar o'rtasida ma'lumotlar almashinuvini optimallashtirish bo'yicha amaliy qo'llanma.</p>
                     <div class="post-footer">
                         <span class="post-date">10-oktabr, 2026</span>
                         <div class="post-stats">
-                            <div class="post-stat like-btn" data-id="post_ai_agentic_2026">
+                            <div class="post-stat like-btn" data-id="post_web_architecture_2026">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                                 <span>0</span>
                             </div>
@@ -361,8 +362,8 @@
                 </div>
                 <div class="post-content">
                     <span class="post-meta">✨ Yangiliklar</span>
-                    <h2 class="post-title">Abdugofforov Ekotizimi 2.0: Zen Studio, Lofi Focus va Yangilangan Tools Lab</h2>
-                    <p class="post-excerpt">Saytimiz tubdan yangilandi: endi chalg'itmaydigan ijodiy muharrir, Lofi/Ambient audio pleyer va yangi asboblar sizning xizmatingizda!</p>
+                    <h2 class="post-title">Abdugofforov Ekotizimi 2.0: Zen Studio va Yangilangan Tools Lab</h2>
+                    <p class="post-excerpt">Saytimiz tubdan yangilandi: endi chalg'itmaydigan ijodiy muharrir va yangi asboblar sizning xizmatingizda!</p>
                     <div class="post-footer">
                         <span class="post-date">8-oktabr, 2026</span>
                         <div class="post-stats">
@@ -586,6 +587,31 @@
             <div class="modal-body" style="padding: 24px;">
                 <div id="myresults-content">
                     <p style="color:var(--text-secondary); text-align:center;">Yuklanmoqda...</p>
+                </div>
+
+                <!-- Parolni yangilash bloki / formasi -->
+                <div id="user-password-section" style="display:none; margin-top:16px; padding:18px; background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.25); border-radius:16px; text-align:left;">
+                    <h4 style="margin:0 0 12px 0; font-size:15px; color:var(--text-primary); font-weight:600; display:flex; align-items:center; gap:6px;">
+                        <span>🔒</span> <span>Parolni yangilash</span>
+                    </h4>
+                    <form id="user-change-password-form">
+                        <div style="margin-bottom:12px;">
+                            <label for="user-old-password" style="font-size:12px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Eski (joriy) parol:</label>
+                            <input type="password" id="user-old-password" name="oldPassword" class="form-input" placeholder="Joriy parolingizni kiriting" style="width:100%; box-sizing:border-box;" required autocomplete="current-password">
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <label for="user-new-password" style="font-size:12px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Yangi parol (kamida 6 ta belgi):</label>
+                            <input type="password" id="user-new-password" name="newPassword" class="form-input" placeholder="Yangi parolni kiriting" style="width:100%; box-sizing:border-box;" required minlength="6" autocomplete="new-password">
+                        </div>
+                        <div style="margin-bottom:14px;">
+                            <label for="user-confirm-password" style="font-size:12px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:4px;">Yangi parolni tasdiqlang:</label>
+                            <input type="password" id="user-confirm-password" name="confirmPassword" class="form-input" placeholder="Yangi parolni qayta kiriting" style="width:100%; box-sizing:border-box;" required minlength="6" autocomplete="new-password">
+                        </div>
+                        <div id="user-change-password-msg" class="change-password-message" style="display:none; font-size:12.5px; padding:8px 12px; border-radius:8px; margin-bottom:12px;"></div>
+                        <div style="display:flex; justify-content:flex-end;">
+                            <button type="submit" id="save-password-btn" class="btn-primary" style="padding:8px 20px; font-size:13px; font-weight:600;">Parolni saqlash</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

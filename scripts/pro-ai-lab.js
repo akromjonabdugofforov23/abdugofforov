@@ -1,5 +1,5 @@
 // ============================================================
-// ABDUGOFFOROV — PRO AI LAB CONTROLLER
+// ABDUGOFFOROV — DEV LAB CONTROLLER
 // Handles Variant Switching, 3D Tilt, Audio Equalizer & Spotlights
 // ============================================================
 
@@ -8,7 +8,7 @@
 
     const TITLES = {
         prism: '✦ PRISM LUX (Apple Vision Pro & Linear)',
-        aurora: '🌌 QUANTUM AURORA (OpenAI & Perplexity)',
+        aurora: '🌌 QUANTUM AURORA (Nordic & Perplexity)',
         atelier: '🏛️ SWISS ATELIER (Stripe Press & Arc)'
     };
 
@@ -33,14 +33,14 @@
             localStorage.setItem('kay_pro_variant', variant);
         } catch(e) {}
 
-        // Lab tablarini yangilash (prototype.html)
+        // Lab tablarini yangilash
         document.querySelectorAll('.lab-tab').forEach(tab => {
             const isTarget = tab.id === 'tab-' + variant || tab.getAttribute('data-variant') === variant;
             tab.classList.toggle('active', isTarget);
         });
 
-        // AI Lab drawer tugmalarini yangilash (index.html)
-        document.querySelectorAll('.ai-variant-btn').forEach(btn => {
+        // Dev Lab drawer tugmalarini yangilash (index.html)
+        document.querySelectorAll('.theme-variant-btn, .ai-variant-btn').forEach(btn => {
             const isTarget = btn.getAttribute('data-v') === variant;
             btn.classList.toggle('active', isTarget);
         });
@@ -231,7 +231,7 @@
     function init() {
         // Kliklar uchun delegatsiya (CSP inline onclick cheklovlarini to'liq aylanib o'tadi)
         document.addEventListener('click', (e) => {
-            // Lab tablar (prototype.html)
+            // Lab tablar
             const labTab = e.target.closest('.lab-tab');
             if (labTab) {
                 e.preventDefault();
@@ -240,22 +240,22 @@
                 return;
             }
 
-            // AI Lab drawer tugmalari (index.html)
-            const variantBtn = e.target.closest('.ai-variant-btn');
+            // Dev Lab drawer tugmalari (index.html)
+            const variantBtn = e.target.closest('.theme-variant-btn, .dev-variant-btn');
             if (variantBtn) {
                 e.preventDefault();
                 const v = variantBtn.getAttribute('data-v');
                 setVariant(v);
-                const fab = document.getElementById('ai-lab-fab');
+                const fab = document.getElementById('dev-lab-fab');
                 if (fab) fab.classList.remove('open');
                 return;
             }
 
-            // AI Lab trigger tugmasi (index.html)
-            const trigger = e.target.closest('#ai-lab-trigger');
+            // Dev Lab trigger tugmasi (index.html)
+            const trigger = e.target.closest('#dev-lab-trigger');
             if (trigger) {
                 e.preventDefault();
-                const fab = document.getElementById('ai-lab-fab');
+                const fab = document.getElementById('dev-lab-fab');
                 if (fab) fab.classList.toggle('open');
                 return;
             }

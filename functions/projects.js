@@ -29,19 +29,6 @@ const DEFAULT_PROJECTS = [
     link: '/deutsch',
     github: 'https://github.com/akrin4477/abdugofforov',
     status: 'active'
-  },
-  {
-    id: 'proj_3d_lab',
-    title: '3D Lab & Universe',
-    cat: 'Grafika & Three.js',
-    category: 'Grafika & Three.js',
-    desc: "Three.js va WebGL texnologiyasiga asoslangan interaktiv kosmik fazo, sayyoralar va vizual 3D laboratoriyasi.",
-    description: "Three.js va WebGL texnologiyasiga asoslangan interaktiv kosmik fazo, sayyoralar va vizual 3D laboratoriyasi.",
-    tech: ['Three.js', 'WebGL', 'GLSL', 'Math'],
-    techStack: ['Three.js', 'WebGL', 'GLSL', 'Math'],
-    link: '/3d-lab',
-    github: 'https://github.com/akrin4477/abdugofforov',
-    status: 'active'
   }
 ];
 
