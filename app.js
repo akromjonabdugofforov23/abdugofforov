@@ -297,11 +297,13 @@ let searchCategoryTab = 'all';
 let editingPostId = null;
 function checkIsAdmin() {
     try {
-        if (window.Auth && typeof Auth.isAdmin === 'function') {
-            return Auth.isAdmin();
+        if (window.Auth && typeof Auth.isAdmin === 'function' && Auth.isAdmin()) {
+            return true;
         }
     } catch (_) {}
-    return sessionStorage.getItem('kay_admin') === 'true';
+    return sessionStorage.getItem('kay_admin') === 'true' ||
+           !!sessionStorage.getItem('kay_admin_token') ||
+           !!localStorage.getItem('kay_admin_token');
 }
 let isAdmin = checkIsAdmin();
 
@@ -3545,7 +3547,7 @@ function closeSecretGateModal() {
 }
 
 async function handleSecretGateSubmit(e) {
-    e.preventDefault();
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
     const modal = _secretGateModalEl;
     if (!modal) return;
     const input = modal.querySelector('#secret-gate-input');
@@ -3562,22 +3564,81 @@ async function handleSecretGateSubmit(e) {
     if (errEl) errEl.style.display = 'none';
 
     try {
-        const res = await fetch('/auth/magic-gate', {
+        let res = await fetch('/auth/magic-gate', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: val, pin: val })
+            headers: {
+                'Content-Type': 'application/json',
+                'x-admin-pin': val
+            },
+            body: JSON.stringify({ token: val, pin: val, adminPin: val })
         });
-        const data = await res.json().catch(() => ({}));
+        let data = await res.json().catch(() => ({}));
+
+        // Agar /auth/magic-gate 404 yoki 503 bersa, fallback sifatida /check-pin ga murojaat qilamiz
+        if (!res.ok && (res.status === 404 || res.status === 502 || res.status === 503)) {
+            try {
+                const fbRes = await fetch('/check-pin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pin: val })
+                });
+                const fbData = await fbRes.json().catch(() => ({}));
+                if (fbRes.ok && (fbData.ok || fbData.success)) {
+                    res = fbRes;
+                    data = fbData;
+                }
+            } catch (_) {}
+        }
 
         if (res.ok && (data.ok || data.success)) {
+            const token = data.token || val;
             sessionStorage.setItem('kay_admin', 'true');
-            if (data.token) sessionStorage.setItem('kay_admin_token', data.token);
             sessionStorage.setItem('kay_admin_pin', val);
+            if (token) {
+                sessionStorage.setItem('kay_admin_token', token);
+                localStorage.setItem('kay_admin_token', token);
+                localStorage.setItem('abdu_user_token', token);
+                try {
+                    const domain = (window.location.hostname.endsWith('abdugofforov.uz')) ? '; Domain=.abdugofforov.uz' : '';
+                    const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+                    const expires = new Date(Date.now() + 30 * 864e5).toUTCString();
+                    document.cookie = `abdu_session_token=${encodeURIComponent(token)}; Expires=${expires}; Path=/; SameSite=Lax${domain}${secure}`;
+                    document.cookie = `kay_admin_token=${encodeURIComponent(token)}; Expires=${expires}; Path=/; SameSite=Lax${domain}${secure}`;
+                } catch (_) {}
+            }
+
+            const adminUser = data.user || {
+                id: 'abdugofforov',
+                name: "Abdug'afforov",
+                username: 'abdugofforov',
+                role: 'admin'
+            };
+            localStorage.setItem('abdu_user_data', JSON.stringify(adminUser));
+
+            if (window.Auth) {
+                if (token) Auth.token = token;
+                Auth.user = adminUser;
+                if (typeof Auth.updateUIState === 'function') {
+                    Auth.updateUIState();
+                }
+            }
+
+            isAdmin = true;
+            document.body.classList.add('admin-mode');
+            if (typeof ensureZenEditorMounted === 'function') {
+                ensureZenEditorMounted();
+            }
 
             if (submitBtn) submitBtn.textContent = '✅ Tasdiqlandi!';
+            if (typeof showToast === 'function') showToast("Admin ruxsati faollashtirildi!", "success");
+
             setTimeout(() => {
                 closeSecretGateModal();
-                window.location.href = data.redirectUrl || '/kay.html';
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    window.location.href = `/kay.html?token=${encodeURIComponent(token)}`;
+                }
             }, 350);
             return;
         }

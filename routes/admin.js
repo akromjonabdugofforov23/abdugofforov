@@ -587,7 +587,9 @@ router.post('/change-pin', (req, res) => {
         if (oldPin && !checkAdminPin(oldPin)) {
             return res.status(403).json({ ok: false, error: "Eski PIN noto'g'ri kiritildi" });
         }
-        db.updateSettings({ adminPin: newPin.trim() });
+        const newPinClean = newPin.trim();
+        const newPinHash = crypto.createHash('sha256').update(newPinClean).digest('hex');
+        db.updateSettings({ adminPin: newPinClean, adminPinHash: newPinHash });
         res.json({ ok: true, message: "PIN kod muvaffaqiyatli yangilandi" });
     } catch (err) {
         res.status(500).json({ ok: false, error: err.message });

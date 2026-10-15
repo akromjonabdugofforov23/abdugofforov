@@ -47,10 +47,14 @@
 
         isLoggedIn() { return !!this.token && !!this.user; },
         isAdmin() {
-            if (!this.isLoggedIn() || !this.user) return false;
-            if (this.user.role === 'admin') return true;
-            const u = (this.user.username || '').toLowerCase();
-            if (u === 'abdugofforov' || u === 'admin' || u === 'akrin4477' || u === 'akrin') return true;
+            if (this.isLoggedIn() && this.user) {
+                if (this.user.role === 'admin') return true;
+                const u = (this.user.username || '').toLowerCase();
+                if (u === 'abdugofforov' || u === 'admin' || u === 'akrin4477' || u === 'akrin') return true;
+            }
+            if (sessionStorage.getItem('kay_admin') === 'true' || !!sessionStorage.getItem('kay_admin_token') || !!localStorage.getItem('kay_admin_token')) {
+                return true;
+            }
             return false;
         },
 
@@ -192,6 +196,24 @@
                     localStorage.setItem(TOKEN_KEY, cookieToken);
                 }
             }
+            if (!this.token) {
+                const adminTok = sessionStorage.getItem('kay_admin_token') || localStorage.getItem('kay_admin_token');
+                if (adminTok) {
+                    this.token = adminTok;
+                    localStorage.setItem(TOKEN_KEY, adminTok);
+                }
+            }
+            if (!this.token && sessionStorage.getItem('kay_admin') === 'true') {
+                this.user = {
+                    id: 'abdugofforov',
+                    name: "Abdug'afforov",
+                    username: 'abdugofforov',
+                    role: 'admin'
+                };
+                localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+                this.updateUIState();
+                return this.user;
+            }
             if (!this.token) return null;
             const savedData = localStorage.getItem('abdu_user_data');
             if (savedData) {
@@ -212,6 +234,18 @@
                     return this.user;
                 }
             } catch (e) {}
+
+            // Agar sessionStorage da admin belgisi bo'lsa, admin rejimini saqlaymiz
+            if (sessionStorage.getItem('kay_admin') === 'true') {
+                this.user = {
+                    id: 'abdugofforov',
+                    name: "Abdug'afforov",
+                    username: 'abdugofforov',
+                    role: 'admin'
+                };
+                this.updateUIState();
+                return this.user;
+            }
 
             this.token = null;
             this.user = null;

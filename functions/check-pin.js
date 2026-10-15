@@ -8,7 +8,7 @@
 
 import {
   jsonResponse, corsHeaders, verifyAdminPin, rateLimit, tooManyRequests,
-  createSession, getClientIp
+  createSession, getClientIp, randomHex
 } from './_lib.js';
 
 export async function onRequestOptions(context) {
@@ -23,18 +23,20 @@ export async function onRequestPost(context) {
   if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
 
   try {
-    const body = await request.json();
-    const userPin = (body && typeof body.pin === 'string') ? body.pin : '';
+    const body = await request.json().catch(() => ({}));
+    const rawPin = (body && (body.pin || body.token || body.adminPin)) ||
+                   request.headers.get('x-admin-pin') || request.headers.get('x-pin') || '';
+    const cleanPin = String(rawPin || '').trim();
 
     // Brute-force ni sekinlashtirish uchun kichik kechikish (~250ms)
     await new Promise(r => setTimeout(r, 250));
 
-    if (!userPin || userPin.length > 64) {
+    if (!cleanPin || cleanPin.length > 64) {
       return jsonResponse({ success: false, message: "Noto'g'ri so'rov" }, 400, request, env);
     }
 
-    if (await verifyAdminPin(env, userPin)) {
-      let token = '';
+    if (await verifyAdminPin(env, cleanPin)) {
+      let token = randomHex(32);
       try {
         if (env.POSTS_KV) {
           token = await createSession(env, 'abdugofforov', { ip: getClientIp(request) });

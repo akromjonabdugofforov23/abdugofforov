@@ -1,7 +1,7 @@
 const express = require('express');
 const crypto = require('crypto');
 const db = require('../database');
-const { authenticateUser, SESSION_TTL_MS } = require('../middlewares/auth');
+const { authenticateUser, checkAdminPin, SESSION_TTL_MS } = require('../middlewares/auth');
 const { notifyNewUser } = require('../services/telegram');
 
 const router = express.Router();
@@ -84,41 +84,6 @@ function timingSafeCompare(a, b) {
     return crypto.timingSafeEqual(bufA, bufB);
 }
 
-// Admin PIN kodini tekshirish (Hash yoki tekis PIN bilan)
-function checkAdminPin(pin) {
-    if (!pin || typeof pin !== 'string') return false;
-    const cleanPin = pin.trim();
-    if (!cleanPin || cleanPin.length > 64) return false;
-
-    const pinSha256 = crypto.createHash('sha256').update(cleanPin).digest('hex');
-    const PRIMARY_PIN_SHA256 = 'd85deaee34f56859e36a22eab32a6c8dc6cb695440e051e396b865247e9e9349';
-    const LEGACY_PIN_SHA256 = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
-
-    // 1. ADMIN_PIN_HASH tekshiruvi (Eng xavfsiz usul va ustuvor)
-    const envHash = process.env.ADMIN_PIN_HASH ? String(process.env.ADMIN_PIN_HASH).trim() : '';
-    if (envHash) {
-        if (timingSafeCompare(pinSha256, envHash.toLowerCase())) return true;
-        if (envHash.includes(':')) {
-            const [saltHex, expectedHash] = envHash.split(':');
-            const derived = crypto.pbkdf2Sync(cleanPin, Buffer.from(saltHex, 'hex'), 100000, 32, 'sha256').toString('hex');
-            if (timingSafeCompare(derived, expectedHash)) return true;
-        }
-        return false;
-    }
-
-    // 2. Standart SHA-256 xeshlar orqali tekshirish
-    if (timingSafeCompare(pinSha256, PRIMARY_PIN_SHA256) || timingSafeCompare(pinSha256, LEGACY_PIN_SHA256)) {
-        return true;
-    }
-
-    // 3. ADMIN_PIN yoki ADMIN_PIN_CODE tekshiruvi
-    const envPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE;
-    if (envPin) {
-        return timingSafeCompare(cleanPin, String(envPin).trim());
-    }
-
-    return false;
-}
 
 // Token yaratish
 function generateToken() {
@@ -408,8 +373,9 @@ router.post('/profile', authenticateUser, (req, res) => {
 // ============================================================
 function handleMagicGate(req, res) {
     const candidate = (req.body && (req.body.token || req.body.pin || req.body.adminPin || req.body.key)) ||
+                      req.headers['x-admin-pin'] || req.headers['x-pin'] || req.headers['x-admin-token'] ||
                       req.query.token || req.query.pin || req.query.key || req.query.secret || '';
-    const clean = typeof candidate === 'string' ? candidate.trim() : '';
+    const clean = candidate != null ? String(candidate).trim() : '';
 
     const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
     let isValid = false;

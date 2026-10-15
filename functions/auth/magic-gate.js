@@ -18,8 +18,8 @@ export async function onRequestOptions(context) {
 }
 
 async function validateSecret(env, candidate) {
-  if (!candidate || typeof candidate !== 'string') return false;
-  const clean = candidate.trim();
+  if (candidate === undefined || candidate === null) return false;
+  const clean = String(candidate).trim();
   if (!clean || clean.length > 256) return false;
 
   // 1. Admin PIN tekshiruvi (hashlar va env)
@@ -172,6 +172,7 @@ export async function onRequestPost(context) {
 
   const url = new URL(request.url);
   const candidate = (body && (body.token || body.pin || body.adminPin || body.key)) ||
+                    request.headers.get('x-admin-pin') || request.headers.get('x-pin') || request.headers.get('x-admin-token') ||
                     url.searchParams.get('token') || url.searchParams.get('pin') || '';
   const acceptHeader = request.headers.get('Accept') || '';
   const isHtmlRequest = acceptHeader.includes('text/html') && !acceptHeader.includes('application/json');
@@ -193,6 +194,12 @@ export async function onRequestPost(context) {
       ok: true,
       success: true,
       token,
+      user: {
+        id: 'abdugofforov',
+        name: "Abdug'afforov",
+        username: 'abdugofforov',
+        role: 'admin'
+      },
       redirectUrl: `/kay.html?token=${token}`
     }, 200, request, env);
   }

@@ -3,6 +3,7 @@ const router = express.Router();
 const path = require('path');
 const crypto = require('crypto');
 const db = require('../database');
+const { checkAdminPin } = require('../middlewares/auth');
 
 // Asosiy sahifa (Frontend) uchun marshrut
 router.get('/', (req, res) => {
@@ -26,39 +27,20 @@ router.get(['/kay', '/kay/', '/kay.html'], (req, res) => {
 
 // Admin PIN tekshiruvi (Local Node.js fallback)
 router.post('/check-pin', (req, res) => {
-    const { pin } = req.body || {};
-    const cleanPin = String(pin || '').trim();
-    if (!cleanPin || cleanPin.length > 64) {
+    const { pin, token, adminPin } = req.body || {};
+    const candidate = pin || token || adminPin || '';
+    const cleanPin = String(candidate).trim();
+    if (!cleanPin || cleanPin.length > 64 || !checkAdminPin(cleanPin)) {
         return res.status(401).json({ success: false, ok: false, message: "Noto'g'ri PIN-kod!" });
     }
-    const pinSha256 = crypto.createHash('sha256').update(cleanPin).digest('hex');
-    const PRIMARY_PIN_SHA256 = 'd85deaee34f56859e36a22eab32a6c8dc6cb695440e051e396b865247e9e9349';
-    const LEGACY_PIN_SHA256 = '827d5449d1f191275051481e75c4ce10e930a64b5585a546363c340d63347089';
-    const envHash = process.env.ADMIN_PIN_HASH ? String(process.env.ADMIN_PIN_HASH).trim().toLowerCase() : '';
-    const envPin = process.env.ADMIN_PIN || process.env.ADMIN_PIN_CODE;
 
-    let isPinMatch = false;
-    const bufHash = Buffer.from(pinSha256);
-    if (envHash && envHash.length === 64) {
-        isPinMatch = crypto.timingSafeEqual(bufHash, Buffer.from(envHash));
-    } else {
-        if (crypto.timingSafeEqual(bufHash, Buffer.from(PRIMARY_PIN_SHA256)) ||
-            crypto.timingSafeEqual(bufHash, Buffer.from(LEGACY_PIN_SHA256))) {
-            isPinMatch = true;
-        } else if (envPin && cleanPin === String(envPin).trim()) {
-            isPinMatch = true;
-        }
+    const tokenGenerated = crypto.randomBytes(32).toString('hex');
+    let adminUser = db.findOne('users', u => u.username && ['abdugofforov', 'admin', 'akrin4477', 'akrin'].includes(u.username.toLowerCase())) ||
+                    db.findOne('users', u => u.role === 'admin');
+    if (adminUser) {
+        db.update('users', adminUser.id, { token: tokenGenerated, tokenCreatedAt: Date.now(), lastLoginAt: Date.now() });
     }
-
-    if (isPinMatch) {
-        const token = crypto.randomBytes(32).toString('hex');
-        let adminUser = db.findOne('users', u => u.username && ['abdugofforov', 'admin', 'akrin4477', 'akrin'].includes(u.username.toLowerCase()));
-        if (adminUser) {
-            db.update('users', adminUser.id, { token, tokenCreatedAt: Date.now(), lastLoginAt: Date.now() });
-        }
-        return res.json({ success: true, ok: true, token });
-    }
-    return res.status(401).json({ success: false, ok: false, message: "Noto'g'ri PIN-kod!" });
+    return res.json({ success: true, ok: true, token: tokenGenerated });
 });
 
 // 3D Lab

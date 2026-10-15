@@ -177,6 +177,25 @@ async function tryLogin() {
                 localStorage.removeItem('kay_lockcount');
                 addLog('info', 'Telegram sozlanmagan — PIN bilan kirildi (legacy)');
                 sessionStorage.setItem('kay_admin', 'true');
+                if (cpData.token) {
+                    sessionStorage.setItem('kay_admin_token', cpData.token);
+                    localStorage.setItem('kay_admin_token', cpData.token);
+                    localStorage.setItem('abdu_user_token', cpData.token);
+                    try {
+                        const domain = (window.location.hostname.endsWith('abdugofforov.uz')) ? '; Domain=.abdugofforov.uz' : '';
+                        const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+                        const expires = new Date(Date.now() + 30 * 864e5).toUTCString();
+                        document.cookie = `abdu_session_token=${encodeURIComponent(cpData.token)}; Expires=${expires}; Path=/; SameSite=Lax${domain}${secure}`;
+                        document.cookie = `kay_admin_token=${encodeURIComponent(cpData.token)}; Expires=${expires}; Path=/; SameSite=Lax${domain}${secure}`;
+                    } catch (_) {}
+                }
+                const adminUser = {
+                    id: 'abdugofforov',
+                    name: "Abdug'afforov",
+                    username: 'abdugofforov',
+                    role: 'admin'
+                };
+                localStorage.setItem('abdu_user_data', JSON.stringify(adminUser));
                 sessionStorage.setItem('kay_admin_pin', pin);
                 showAdminPanel();
             } else {
@@ -279,7 +298,23 @@ async function verifyTgCode() {
         if (data.ok && data.token) {
             sessionStorage.setItem('kay_admin', 'true');
             sessionStorage.setItem('kay_admin_token', data.token);
+            localStorage.setItem('kay_admin_token', data.token);
+            localStorage.setItem('abdu_user_token', data.token);
             sessionStorage.setItem('kay_admin_pin', window.__authSession.pin);
+            try {
+                const domain = (window.location.hostname.endsWith('abdugofforov.uz')) ? '; Domain=.abdugofforov.uz' : '';
+                const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+                const expires = new Date(Date.now() + 30 * 864e5).toUTCString();
+                document.cookie = `abdu_session_token=${encodeURIComponent(data.token)}; Expires=${expires}; Path=/; SameSite=Lax${domain}${secure}`;
+                document.cookie = `kay_admin_token=${encodeURIComponent(data.token)}; Expires=${expires}; Path=/; SameSite=Lax${domain}${secure}`;
+            } catch (_) {}
+            const adminUser = {
+                id: 'abdugofforov',
+                name: "Abdug'afforov",
+                username: 'abdugofforov',
+                role: 'admin'
+            };
+            localStorage.setItem('abdu_user_data', JSON.stringify(adminUser));
             window.__authSession = null;
             if (tgCountdownTimer) clearInterval(tgCountdownTimer);
             addLog('success', 'Telegram tasdiqlandi — admin panel ochildi');
