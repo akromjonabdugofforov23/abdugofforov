@@ -20,5 +20,8 @@ jobs:
         with:
           node-version: 22
 
+      - name: Qaramliklarni o'rnatish
+        run: npm ci
+
       - name: Health Check & Sintaksis Auditini ishga tushirish
         run: node scripts/health-check.js
