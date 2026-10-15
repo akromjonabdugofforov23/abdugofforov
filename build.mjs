@@ -76,14 +76,14 @@ async function buildScripts() {
   await fs.mkdir(outScriptsDir, { recursive: true });
   const entries = await fs.readdir(scriptsDir, { withFileTypes: true });
   const rows = [];
-  const EXCLUDE_EXTS = ['.ps1', '.py', '.tmp', '.bak', '.sh'];
-  const STUB_FILES = ['ai-innovations.js', 'ai-summary-bookmarks.js', 'luxury-clock-modal.js', 'reader-mode.js'];
+  const EXCLUDE_EXTS = ['.ps1', '.py', '.tmp', '.bak', '.sh', '.mjs'];
+  const EXCLUDE_FILES = ['health-check.js', 'fetch-weekly-quotes.mjs', 'pro-ai-lab.js', 'particles.js', 'community-gamification.js', 'ai-innovations.js', 'ai-summary-bookmarks.js', 'luxury-clock-modal.js', 'reader-mode.js'];
 
   for (const entry of entries) {
     if (!entry.isFile()) continue;
     const lower = entry.name.toLowerCase();
     const ext = path.extname(lower);
-    if (EXCLUDE_EXTS.includes(ext) || STUB_FILES.includes(lower)) {
+    if (EXCLUDE_EXTS.includes(ext) || EXCLUDE_FILES.includes(lower)) {
       continue;
     }
 

@@ -19,6 +19,7 @@ const SHELL = [
     '/css/matching-game.css',
     '/css/verb-trainer.css',
     '/css/light-variants.css',
+    '/css/bookmarks.css',
     '/app.js',
     '/deutsch.js',
     '/tools.js',
