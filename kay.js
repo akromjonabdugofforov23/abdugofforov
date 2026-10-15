@@ -475,7 +475,7 @@ document.getElementById('logout-btn')?.addEventListener('click', triggerPanicLog
 function _adminHeaders(extra) {
     const h = Object.assign({}, extra || {});
     const token = sessionStorage.getItem('kay_admin_token') || localStorage.getItem('kay_admin_token') || localStorage.getItem('abdu_token') || sessionStorage.getItem('abdu_token') || '';
-    const pin = sessionStorage.getItem('kay_admin_pin') || localStorage.getItem('kay_admin_pin') || '0509';
+    const pin = sessionStorage.getItem('kay_admin_pin') || localStorage.getItem('kay_admin_pin') || '';
     if (token) {
         h['x-admin-token'] = token;
         h['x-user-token'] = token;
@@ -486,6 +486,30 @@ function _adminHeaders(extra) {
         h['x-pin'] = pin;
     }
     return h;
+}
+
+async function safeAdminFetch(primaryUrl, fallbackUrl, options = {}) {
+    const opts = Object.assign({}, options);
+    opts.headers = _adminHeaders(opts.headers || {});
+    try {
+        const res = await fetch(primaryUrl, opts);
+        if (res && res.ok) return res;
+        if (fallbackUrl) {
+            const fbRes = await fetch(fallbackUrl, opts);
+            if (fbRes && fbRes.ok) return fbRes;
+            return fbRes || res;
+        }
+        return res;
+    } catch (err) {
+        if (fallbackUrl) {
+            try {
+                return await fetch(fallbackUrl, opts);
+            } catch (_) {
+                return null;
+            }
+        }
+        return null;
+    }
 }
 
 function _esc(s) {
@@ -500,12 +524,13 @@ async function loadDashboardAndRealData(forceRefresh = false) {
     try {
         // Parallel so'rov: Tizim statistikasi, Foydalanuvchilar, Postlar, Natijalar, Loyihalar, Iqtiboslar, Rejalar
         const [statsRes, usersRes, postsRes, resultsRes, projectsRes, quotesRes, tasksRes] = await Promise.all([
-            fetch('/api/admin/stats', { headers: _adminHeaders() }).catch(() => null),
-            fetch('/api/admin/users', { headers: _adminHeaders() }).catch(() => fetch('/admin/users', { headers: _adminHeaders() }).catch(() => null)),
-            fetch('/api/admin/posts', { headers: _adminHeaders() }).catch(() => null),
-            fetch('/api/admin/projects', { headers: _adminHeaders() }).catch(() => fetch('/projects', { headers: _adminHeaders() }).catch(() => null)),
-            fetch('/api/admin/quotes', { headers: _adminHeaders() }).catch(() => fetch('/quotes', { headers: _adminHeaders() }).catch(() => null)),
-            fetch('/api/admin/tasks', { headers: _adminHeaders() }).catch(() => fetch('/tasks', { headers: _adminHeaders() }).catch(() => null))
+            safeAdminFetch('/api/admin/stats', '/admin/stats'),
+            safeAdminFetch('/api/admin/users', '/admin/users'),
+            safeAdminFetch('/api/admin/posts', '/posts'),
+            safeAdminFetch('/api/admin/results', '/results'),
+            safeAdminFetch('/api/admin/projects', '/projects'),
+            safeAdminFetch('/api/admin/quotes', '/quotes'),
+            safeAdminFetch('/api/admin/tasks', '/tasks')
         ]);
 
         if (statsRes && statsRes.ok) {
@@ -525,8 +550,10 @@ async function loadDashboardAndRealData(forceRefresh = false) {
 
         if (postsRes && postsRes.ok) {
             const pData = await postsRes.json().catch(() => ({}));
-            if (pData.ok && Array.isArray(pData.posts)) {
-                cachedPosts = pData.posts;
+            const pList = pData.ok && Array.isArray(pData.posts) ? pData.posts : (Array.isArray(pData) ? pData : null);
+            if (pList) {
+                cachedPosts = pList;
+                try { localStorage.setItem('abdu_posts', JSON.stringify(pList)); } catch (_) {}
             }
         } else {
             try {
@@ -666,6 +693,15 @@ function renderStudentsList(filterQuery = '') {
     const adminCountEl = document.getElementById('admins-count');
     if (adminCountEl) adminCountEl.textContent = adminCount;
 
+    const studentsCountEl = document.getElementById('students-count');
+    if (studentsCountEl) studentsCountEl.textContent = cachedUsers.length;
+    const sideStudents = document.getElementById('side-students');
+    if (sideStudents) sideStudents.textContent = cachedUsers.length;
+    const statStudents = document.getElementById('stat-students');
+    if (statStudents) statStudents.textContent = cachedUsers.length;
+    const quickStatUsers = document.getElementById('quick-stat-users');
+    if (quickStatUsers) quickStatUsers.textContent = cachedUsers.length;
+
     if (!users.length) {
         usersBox.innerHTML = `<p style="color:#9aa;font-size:13px;padding:16px;text-align:center;">${q ? 'Qidiruv bo\'yicha foydalanuvchi topilmadi.' : 'Hali hech kim ro\'yxatdan o\'tmagan.'}</p>`;
         return;
@@ -714,6 +750,28 @@ function renderStudentsList(filterQuery = '') {
             }).join('')}
         </tbody>
     </table>`;
+}
+
+async function loadUsers(filterQuery = '', forceRefresh = false) {
+    const usersBox = document.getElementById('students-list');
+    if (forceRefresh || !cachedUsers || !cachedUsers.length) {
+        if (usersBox && (!cachedUsers || !cachedUsers.length)) {
+            usersBox.innerHTML = '<div class="glz-empty" style="padding:20px;text-align:center;">Foydalanuvchilar ro\'yxati yuklanmoqda...</div>';
+        }
+        try {
+            const res = await safeAdminFetch('/api/admin/users', '/admin/users');
+            if (res && res.ok) {
+                const uData = await res.json().catch(() => ({}));
+                if (uData.ok && Array.isArray(uData.users)) {
+                    cachedUsers = uData.users;
+                }
+            }
+        } catch (e) {
+            console.warn('Users load error:', e);
+        }
+    }
+    renderStudentsList(filterQuery);
+    renderRealDataMetrics();
 }
 
 function renderResultsTable(filterQuery = '') {
@@ -787,12 +845,16 @@ async function toggleUserRole(username, currentRole) {
     if (!confirm(`@${username} foydalanuvchisi rolini "${newRole === 'admin' ? 'Admin' : 'O\'quvchi'}" ga o'zgartirishni tasdiqlaysizmi?`)) return;
 
     try {
-        const res = await fetch(`/api/admin/users/${encodeURIComponent(username)}/role`, {
-            method: 'PUT',
-            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({ role: newRole })
-        });
-        const data = await res.json().catch(() => ({}));
+        const res = await safeAdminFetch(
+            `/api/admin/users/${encodeURIComponent(username)}/role`,
+            `/admin/users/${encodeURIComponent(username)}/role`,
+            {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, role: newRole })
+            }
+        );
+        const data = res ? await res.json().catch(() => ({})) : null;
         if (data && data.ok) {
             showToast(`@${username} roli "${newRole}" ga o'zgartirildi! ✅`, 'success');
         } else {
@@ -815,10 +877,15 @@ async function deleteUser(username) {
     if (!confirm(`@${username} foydalanuvchisini o'chirishni tasdiqlaysizmi?`)) return;
 
     try {
-        await fetch(`/api/admin/users/${encodeURIComponent(username)}`, {
-            method: 'DELETE',
-            headers: _adminHeaders()
-        }).catch(() => {});
+        await safeAdminFetch(
+            `/api/admin/users/${encodeURIComponent(username)}`,
+            `/admin/users/${encodeURIComponent(username)}`,
+            {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username })
+            }
+        );
 
         cachedUsers = cachedUsers.filter(u => (u.username || '').toLowerCase() !== username.toLowerCase());
         renderStudentsList();
@@ -839,10 +906,15 @@ async function deleteResult(idx) {
 
     const item = cachedResults[num];
     const targetId = item ? (item.id || item._id || num) : num;
-    fetch(`/api/admin/results/${encodeURIComponent(targetId)}`, {
-        method: 'DELETE',
-        headers: _adminHeaders()
-    }).catch(() => {});
+    safeAdminFetch(
+        `/api/admin/results/${encodeURIComponent(targetId)}`,
+        `/results?id=${encodeURIComponent(targetId)}`,
+        {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: targetId, action: 'delete' })
+        }
+    ).catch(() => {});
 
     cachedResults.splice(num, 1);
     renderResultsTable();
@@ -859,10 +931,15 @@ async function clearAllResults() {
     }
     if (!confirm('Barcha test natijalarini tozalashni tasdiqlaysizmi? Bu amalni ortga qaytarib bo\'lmaydi.')) return;
 
-    fetch('/api/admin/results', {
-        method: 'DELETE',
-        headers: _adminHeaders()
-    }).catch(() => {});
+    safeAdminFetch(
+        '/api/admin/results',
+        '/results?all=true',
+        {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ all: true, action: 'clear_all' })
+        }
+    ).catch(() => {});
 
     cachedResults = [];
     renderResultsTable();
@@ -1060,42 +1137,82 @@ function loadTasks() {
     }).join('');
 }
 
-function cycleTaskStatus(id) {
+async function cycleTaskStatus(id) {
+    if (!id) return;
     const tasks = getTasks();
-    const task = tasks.find(t => t.id === id);
+    const task = tasks.find(t => String(t.id) === String(id));
     if (!task) return;
 
     const cycleOrder = { todo: 'progress', progress: 'done', done: 'todo' };
     task.status = cycleOrder[task.status] || 'todo';
+    task.updatedAt = Date.now();
     saveTasks(tasks);
-    fetch(`/api/admin/tasks/${encodeURIComponent(id)}`, {
-        method: 'PUT',
-        headers: _adminHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({ status: task.status, title: task.title })
-    }).catch(() => {});
-    addLog('info', `Reja holati o'zgartirildi: "${task.title.slice(0, 30)}..." -> ${task.status}`);
     loadTasks();
+
+    const payload = { id: task.id, status: task.status, title: task.title };
+    try {
+        const res = await safeAdminFetch(
+            `/api/admin/tasks/${encodeURIComponent(task.id)}`,
+            '/tasks',
+            {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }
+        );
+        if (res && res.ok) {
+            const data = await res.json().catch(() => ({}));
+            if (data && data.tasks && Array.isArray(data.tasks)) {
+                saveTasks(data.tasks);
+                loadTasks();
+            }
+        }
+    } catch (_) {}
+
+    addLog('info', `Reja holati o'zgartirildi: "${task.title.slice(0, 30)}..." -> ${task.status}`);
+    const statusLabel = task.status === 'done' ? 'Bajarildi' : task.status === 'progress' ? 'Jarayonda' : 'Bajariladigan';
+    showToast(`Reja holati yangilandi! (${statusLabel}) ✅`, 'success');
 }
 
-function deleteTask(id) {
+async function deleteTask(id) {
+    if (!id) return;
     const tasks = getTasks();
-    const task = tasks.find(t => t.id === id);
+    const task = tasks.find(t => String(t.id) === String(id));
     if (!task) return;
 
     if (confirm(`"${task.title}" rejasini o'chirishni tasdiqlaysizmi?`)) {
-        saveTasks(tasks.filter(t => t.id !== id));
-        fetch(`/api/admin/tasks/${encodeURIComponent(id)}`, {
-            method: 'DELETE',
-            headers: _adminHeaders()
-        }).catch(() => {});
-        addLog('info', `Reja o'chirildi: "${task.title.slice(0, 30)}..."`);
+        const filtered = tasks.filter(t => String(t.id) !== String(id));
+        saveTasks(filtered);
         loadTasks();
+
+        try {
+            const res = await safeAdminFetch(
+                `/api/admin/tasks/${encodeURIComponent(id)}`,
+                `/tasks?id=${encodeURIComponent(id)}`,
+                {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, action: 'delete' })
+                }
+            );
+            if (res && res.ok) {
+                const data = await res.json().catch(() => ({}));
+                if (data && data.tasks && Array.isArray(data.tasks)) {
+                    saveTasks(data.tasks);
+                    loadTasks();
+                }
+            }
+        } catch (_) {}
+
+        addLog('info', `Reja o'chirildi: "${task.title.slice(0, 30)}..."`);
+        showToast('Reja muvaffaqiyatli o\'chirildi! 🗑️', 'info');
     }
 }
 
 function editTask(id) {
+    if (!id) return;
     const tasks = getTasks();
-    const task = tasks.find(t => t.id === id);
+    const task = tasks.find(t => String(t.id) === String(id));
     if (!task) return;
 
     const titleInput = document.getElementById('task-title-input');
@@ -1105,7 +1222,7 @@ function editTask(id) {
 
     if (titleInput) titleInput.value = task.title;
     if (statusInput) statusInput.value = task.status;
-    if (editIdInput) editIdInput.value = task.id;
+    if (editIdInput) editIdInput.value = String(task.id);
     if (saveBtn) saveBtn.textContent = '💾 O\'zgarishni saqlash';
 
     titleInput?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1113,7 +1230,7 @@ function editTask(id) {
 }
 
 // Yangi reja kiritish yoki tahrirlash formasi
-document.getElementById('admin-task-form')?.addEventListener('submit', e => {
+document.getElementById('admin-task-form')?.addEventListener('submit', async e => {
     e.preventDefault();
     const titleInput = document.getElementById('task-title-input');
     const statusInput = document.getElementById('task-status-input');
@@ -1122,51 +1239,88 @@ document.getElementById('admin-task-form')?.addEventListener('submit', e => {
 
     const title = (titleInput?.value || '').trim();
     const status = statusInput?.value || 'todo';
-    const editId = editIdInput?.value ? Number(editIdInput.value) : null;
+    const editId = (editIdInput?.value || '').trim();
 
-    if (!title) return;
+    if (!title) {
+        showToast('Reja sarlavhasini kiriting!', 'error');
+        return;
+    }
 
     const tasks = getTasks();
 
     if (editId) {
         // Tahrirlash
-        const existing = tasks.find(t => t.id === editId);
+        const existing = tasks.find(t => String(t.id) === String(editId));
         if (existing) {
             existing.title = title;
             existing.status = status;
-            fetch(`/api/admin/tasks/${encodeURIComponent(editId)}`, {
-                method: 'PUT',
-                headers: _adminHeaders({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify({ title, status })
-            }).catch(() => {});
+            existing.updatedAt = Date.now();
+            saveTasks(tasks);
+            loadTasks();
+
+            const payload = { id: editId, title, status };
+            try {
+                const res = await safeAdminFetch(
+                    `/api/admin/tasks/${encodeURIComponent(editId)}`,
+                    '/tasks',
+                    {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    }
+                );
+                if (res && res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    if (data && data.tasks && Array.isArray(data.tasks)) {
+                        saveTasks(data.tasks);
+                        loadTasks();
+                    }
+                }
+            } catch (_) {}
+
             addLog('info', `Reja tahrirlandi: "${title.slice(0, 30)}..."`);
+            showToast('Reja muvaffaqiyatli saqlandi! 💾', 'success');
         }
     } else {
         // Yangi qo'shish
         const newTaskItem = {
-            id: Date.now(),
+            id: 'task_' + Date.now(),
             title,
             status,
             createdAt: Date.now()
         };
         tasks.unshift(newTaskItem);
-        fetch('/api/admin/tasks', {
-            method: 'POST',
-            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify(newTaskItem)
-        }).catch(() => {});
-        addLog('info', `Yangi reja kiritildi: "${title.slice(0, 30)}..."`);
-    }
+        saveTasks(tasks);
+        loadTasks();
 
-    saveTasks(tasks);
+        try {
+            const res = await safeAdminFetch(
+                '/api/admin/tasks',
+                '/tasks',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newTaskItem)
+                }
+            );
+            if (res && res.ok) {
+                const data = await res.json().catch(() => ({}));
+                if (data && data.tasks && Array.isArray(data.tasks)) {
+                    saveTasks(data.tasks);
+                    loadTasks();
+                }
+            }
+        } catch (_) {}
+
+        addLog('info', `Yangi reja kiritildi: "${title.slice(0, 30)}..."`);
+        showToast('Yangi reja muvaffaqiyatli qo\'shildi! 🚀', 'success');
+    }
 
     // Formani tozalash
     if (titleInput) titleInput.value = '';
     if (editIdInput) editIdInput.value = '';
     if (statusInput) statusInput.value = 'todo';
     if (saveBtn) saveBtn.textContent = '➕ Rejani saqlash';
-
-    loadTasks();
 });
 
 // ===== LOYIHALAR VA IQTIBOSLAR STANDART MA'LUMOTLARI =====
@@ -1251,7 +1405,7 @@ function switchTab(targetTab) {
 
     // Tabga xos ma'lumotlarni yangilash
     if (targetTab === 'students' || targetTab === 'users') {
-        renderStudentsList();
+        loadUsers();
     } else if (targetTab === 'results') {
         renderResultsTable();
     } else if (targetTab === 'projects') {
@@ -1419,39 +1573,60 @@ function handleProjectSubmit(e) {
         addLog('info', `Loyiha tahrirlandi: "${title}"`);
         showToast('Loyiha yangilandi! ✅', 'success');
 
-        fetch(`/api/admin/projects/${encodeURIComponent(editId)}`, {
+        safeAdminFetch(`/api/admin/projects/${encodeURIComponent(editId)}`, '/projects', {
             method: 'PUT',
-            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                id: projectData.id,
                 title: projectData.title,
+                desc: projectData.desc,
                 description: projectData.desc,
                 link: projectData.link,
                 github: projectData.github,
                 category: projectData.cat,
+                cat: projectData.cat,
                 techStack: projectData.tech,
-                tags: projectData.tech,
+                tech: projectData.tech,
                 image: projectData.image
             })
+        }).then(async res => {
+            if (res && res.ok) {
+                const d = await res.json().catch(() => ({}));
+                if (d && Array.isArray(d.projects) && d.projects.length) {
+                    saveProjects(d.projects);
+                    loadProjects();
+                }
+            }
         }).catch(() => {});
     } else {
         projects.unshift(projectData);
         addLog('info', `Yangi loyiha qo'shildi: "${title}"`);
         showToast('Yangi loyiha muvaffaqiyatli qo\'shildi! 🚀', 'success');
 
-        fetch('/api/admin/projects', {
+        safeAdminFetch('/api/admin/projects', '/projects', {
             method: 'POST',
-            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 id: projectData.id,
                 title: projectData.title,
+                desc: projectData.desc,
                 description: projectData.desc,
                 link: projectData.link,
                 github: projectData.github,
                 category: projectData.cat,
+                cat: projectData.cat,
                 techStack: projectData.tech,
-                tags: projectData.tech,
+                tech: projectData.tech,
                 image: projectData.image
             })
+        }).then(async res => {
+            if (res && res.ok) {
+                const d = await res.json().catch(() => ({}));
+                if (d && Array.isArray(d.projects) && d.projects.length) {
+                    saveProjects(d.projects);
+                    loadProjects();
+                }
+            }
         }).catch(() => {});
     }
 
@@ -1512,9 +1687,18 @@ function deleteProject(id) {
     if (confirm(`"${p.title}" loyihasini o'chirishni tasdiqlaysizmi?`)) {
         const filtered = projects.filter(item => String(item.id) !== String(id));
         saveProjects(filtered);
-        fetch(`/api/admin/projects/${encodeURIComponent(id)}`, {
+        safeAdminFetch(`/api/admin/projects/${encodeURIComponent(id)}`, `/projects?id=${encodeURIComponent(id)}`, {
             method: 'DELETE',
-            headers: _adminHeaders()
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, action: 'delete' })
+        }).then(async res => {
+            if (res && res.ok) {
+                const d = await res.json().catch(() => ({}));
+                if (d && Array.isArray(d.projects)) {
+                    saveProjects(d.projects);
+                    loadProjects();
+                }
+            }
         }).catch(() => {});
         addLog('info', `Loyiha o'chirildi: "${p.title}"`);
         showToast('Loyiha o\'chirildi! 🗑️', 'info');
@@ -1607,25 +1791,9 @@ function handleQuoteSubmit(e) {
         addLog('info', `Iqtibos tahrirlandi: "${quote.slice(0, 25)}..."`);
         showToast('Iqtibos yangilandi! ✅', 'success');
 
-        fetch(`/api/admin/quotes/${encodeURIComponent(editId)}`, {
+        safeAdminFetch(`/api/admin/quotes/${encodeURIComponent(editId)}`, '/quotes', {
             method: 'PUT',
-            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({
-                text: quoteData.quote,
-                quote: quoteData.quote,
-                author: quoteData.author,
-                category: quoteData.cat,
-                de: quoteData.de
-            })
-        }).catch(() => {});
-    } else {
-        quotes.unshift(quoteData);
-        addLog('info', `Yangi iqtibos qo'shildi: "${quote.slice(0, 25)}..."`);
-        showToast('Yangi hikmat qo\'shildi! 💡', 'success');
-
-        fetch('/api/admin/quotes', {
-            method: 'POST',
-            headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 id: quoteData.id,
                 text: quoteData.quote,
@@ -1634,6 +1802,39 @@ function handleQuoteSubmit(e) {
                 category: quoteData.cat,
                 de: quoteData.de
             })
+        }).then(async res => {
+            if (res && res.ok) {
+                const d = await res.json().catch(() => ({}));
+                if (d && Array.isArray(d.quotes) && d.quotes.length) {
+                    saveQuotes(d.quotes);
+                    loadQuotes();
+                }
+            }
+        }).catch(() => {});
+    } else {
+        quotes.unshift(quoteData);
+        addLog('info', `Yangi iqtibos qo'shildi: "${quote.slice(0, 25)}..."`);
+        showToast('Yangi hikmat qo\'shildi! 💡', 'success');
+
+        safeAdminFetch('/api/admin/quotes', '/quotes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: quoteData.id,
+                text: quoteData.quote,
+                quote: quoteData.quote,
+                author: quoteData.author,
+                category: quoteData.cat,
+                de: quoteData.de
+            })
+        }).then(async res => {
+            if (res && res.ok) {
+                const d = await res.json().catch(() => ({}));
+                if (d && Array.isArray(d.quotes) && d.quotes.length) {
+                    saveQuotes(d.quotes);
+                    loadQuotes();
+                }
+            }
         }).catch(() => {});
     }
 
@@ -1688,9 +1889,18 @@ function deleteQuote(id) {
     if (confirm(`"${q.quote.slice(0, 30)}..." hikmatini o'chirishni tasdiqlaysizmi?`)) {
         const filtered = quotes.filter(item => String(item.id) !== String(id));
         saveQuotes(filtered);
-        fetch(`/api/admin/quotes/${encodeURIComponent(id)}`, {
+        safeAdminFetch(`/api/admin/quotes/${encodeURIComponent(id)}`, `/quotes?id=${encodeURIComponent(id)}`, {
             method: 'DELETE',
-            headers: _adminHeaders()
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, action: 'delete' })
+        }).then(async res => {
+            if (res && res.ok) {
+                const d = await res.json().catch(() => ({}));
+                if (d && Array.isArray(d.quotes)) {
+                    saveQuotes(d.quotes);
+                    loadQuotes();
+                }
+            }
         }).catch(() => {});
         addLog('info', `Iqtibos o'chirildi: "${q.author}"`);
         showToast('Iqtibos o\'chirildi! 🗑️', 'info');
@@ -1748,7 +1958,7 @@ async function handleCreateUser(e) {
 // ===== SAYT SOZLAMALARI =====
 async function loadSettingsInputs() {
     try {
-        const res = await fetch('/api/admin/settings', { headers: _adminHeaders() }).catch(() => null);
+        const res = await safeAdminFetch('/api/admin/settings', '/admin/settings');
         if (res && res.ok) {
             const data = await res.json().catch(() => ({}));
             if (data.ok && data.settings) {
@@ -1827,9 +2037,9 @@ function saveSettingsInputs() {
     localStorage.setItem('kay_banner_text', bannerText);
     localStorage.setItem('kay_banner_active', String(bannerActive));
 
-    fetch('/api/admin/settings', {
+    safeAdminFetch('/api/admin/settings', '/admin/settings', {
         method: 'POST',
-        headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             siteName,
             siteDesc,
@@ -2079,11 +2289,11 @@ document.addEventListener('click', (e) => {
     const action = btn.dataset.action;
 
     if (action === 'cycle-task-status') {
-        cycleTaskStatus(Number(btn.dataset.id));
+        cycleTaskStatus(btn.dataset.id);
     } else if (action === 'edit-task') {
-        editTask(Number(btn.dataset.id));
+        editTask(btn.dataset.id);
     } else if (action === 'delete-task') {
-        deleteTask(Number(btn.dataset.id));
+        deleteTask(btn.dataset.id);
     } else if (action === 'filter-task') {
         currentTaskFilter = btn.dataset.filter || 'all';
         document.querySelectorAll('.task-filter-btn').forEach(b => b.classList.remove('active'));
@@ -2182,28 +2392,18 @@ async function loadCreatorPosts() {
 
     try {
         let posts = [];
-        // 1. Server admin posts API
+        // 1. Server admin posts API (avval /api/admin/posts, fallback /posts)
         try {
-            const res = await fetch('/api/admin/posts', { headers: _adminHeaders() });
-            if (res.ok) {
-                const data = await res.json();
+            const res = await safeAdminFetch('/api/admin/posts', '/posts');
+            if (res && res.ok) {
+                const data = await res.json().catch(() => ({}));
                 if (data.ok && Array.isArray(data.posts) && data.posts.length) {
                     posts = data.posts;
+                } else if (Array.isArray(data) && data.length) {
+                    posts = data;
                 }
             }
         } catch (_) {}
-
-        // 2. Ommaviy /posts API dan yuklash
-        if (!posts.length) {
-            try {
-                const resPub = await fetch('/posts');
-                if (resPub.ok) {
-                    const dataPub = await resPub.json();
-                    if (Array.isArray(dataPub) && dataPub.length) posts = dataPub;
-                    else if (dataPub.posts && Array.isArray(dataPub.posts) && dataPub.posts.length) posts = dataPub.posts;
-                }
-            } catch (_) {}
-        }
 
         // 3. LocalStorage
         if (!posts.length) {
@@ -2338,22 +2538,37 @@ async function deleteCreatorPost(id) {
     if (!confirm('Haqiqatan ham ushbu maqolani o\'chirmoqchimisiz?')) return;
 
     try {
-        await fetch(`/api/admin/posts/${encodeURIComponent(id)}`, {
-            method: 'DELETE',
-            headers: _adminHeaders()
-        }).catch(() => {});
+        await safeAdminFetch(
+            `/api/admin/posts/${encodeURIComponent(id)}`,
+            `/posts?id=${encodeURIComponent(id)}`,
+            {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, action: 'delete' })
+            }
+        ).catch(() => {});
 
         try {
             let local = JSON.parse(localStorage.getItem('abdu_posts') || '[]');
             local = local.filter(p => String(p.id) !== String(id));
             localStorage.setItem('abdu_posts', JSON.stringify(local));
+
+            const pin = sessionStorage.getItem('kay_admin_pin');
+            if (pin) {
+                fetch('/posts', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-pin': pin },
+                    body: JSON.stringify({ posts: local })
+                }).catch(() => {});
+            }
         } catch (_) {}
 
         await loadDashboardAndRealData(true);
         loadCreatorPosts();
+        showToast('Maqola muvaffaqiyatli o\'chirildi! 🗑️', 'info');
     } catch (e) {
         console.error('Postni o\'chirishda xato:', e);
-        alert('O\'chirishda xatolik yuz berdi');
+        showToast('O\'chirishda xatolik yuz berdi', 'error');
     }
 }
 
@@ -2402,9 +2617,9 @@ async function handlePostEditorSubmit(e) {
     try {
         // 1. Serverga saqlash (CMS API)
         try {
-            await fetch('/api/admin/posts', {
+            await safeAdminFetch('/api/admin/posts', '/posts', {
                 method: 'POST',
-                headers: _adminHeaders({ 'Content-Type': 'application/json' }),
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(postPayload)
             });
         } catch (apiErr) {

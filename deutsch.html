@@ -33,25 +33,17 @@
 
     <!-- Navigatsiya -->
     <nav class="navbar" id="main-nav">
-        <div class="container navbar-row">
-            <a href="#tests" class="logo" id="nav-logo" style="display:flex; align-items:center; gap:8px;">
-                <span>🇩🇪</span> Deutsch<span>.</span>
-            </a>
-
-            <div class="nav-links" id="top-nav-links">
-                <a href="#a1" class="active" data-nav-lvl="A1">🌱 A1</a>
-                <a href="#a2" data-nav-lvl="A2">🌿 A2</a>
-                <a href="#b1" data-nav-lvl="B1">🌳 B1</a>
-                <a href="#b2" data-nav-lvl="B2">🏔️ B2</a>
-                <a href="#tests" data-nav-lvl="tests">📝 Testlar</a>
-                <a href="#flashcards" data-nav-lvl="flashcards">🎴 Lug'at</a>
-                <a href="#tandem" data-nav-lvl="tandem" style="color:var(--accent-color); font-weight:600;">💬 Tandem</a>
-                <a href="#pronounce" data-nav-lvl="pronounce">🎙️ Talaffuz</a>
-                <a href="#idioms" data-nav-lvl="idioms">🥨 Iboralar</a>
-                <a href="#corrector" data-nav-lvl="corrector">✍️ Insho</a>
-                <a href="#games" data-nav-lvl="games">🎮 O'yinlar</a>
-                <a href="#tournament" data-nav-lvl="tournament">⚔️ Turnir</a>
-                <a href="#video-lessons" data-nav-lvl="video-lessons" style="color:#2dd4bf; font-weight:600;">🎬 Video-Dialog</a>
+        <div class="container navbar-row" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div class="nav-left" style="display:flex; align-items:center; gap:12px; flex-shrink:0;">
+                <a href="#a1" class="logo" id="nav-logo" style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:22px;">🇩🇪</span>
+                    <span class="logo-name" style="font-size:18px; font-weight:700;">Deutsch<span class="logo-dot" style="color:var(--accent-color);">.</span></span>
+                </a>
+                <a href="https://abdugofforov.uz" class="nav-back-home" id="back-to-main" title="Asosiy saytga qaytish">
+                    <span class="nav-back-arrow" aria-hidden="true">←</span>
+                    <span class="nav-back-text-full">🏠 Asosiy sayt</span>
+                    <span class="nav-back-text-short">🏠 Sayt</span>
+                </a>
             </div>
 
             <div class="nav-right" id="nav-right" style="display:flex;align-items:center;gap:10px;">
@@ -142,8 +134,68 @@
         <div class="carousel-dots" id="carousel-dots"></div>
     </section>
 
+    <!-- Ta'lim Modullari Kategoriya Menyu (Sub-nav Pill Bar) -->
+    <section class="deutsch-subnav-section" id="deutsch-subnav-section" aria-label="Nemis tili o'quv modullari">
+        <div class="container">
+            <nav class="deutsch-pill-bar" id="top-nav-links">
+                <a href="#a1" class="pill-nav-item active" data-nav-lvl="A1" title="A1 Boshlang'ich daraja">
+                    <span class="pill-icon">🌱</span>
+                    <span class="pill-text">A1 Boshlang'ich</span>
+                </a>
+                <a href="#a2" class="pill-nav-item" data-nav-lvl="A2" title="A2 Asosiy daraja">
+                    <span class="pill-icon">🌿</span>
+                    <span class="pill-text">A2 Asosiy</span>
+                </a>
+                <a href="#b1" class="pill-nav-item" data-nav-lvl="B1" title="B1 O'rta daraja">
+                    <span class="pill-icon">🌳</span>
+                    <span class="pill-text">B1 O'rta</span>
+                </a>
+                <a href="#b2" class="pill-nav-item" data-nav-lvl="B2" title="B2 Yuqori daraja">
+                    <span class="pill-icon">🏔️</span>
+                    <span class="pill-text">B2 Yuqori</span>
+                </a>
+                <a href="#tests" class="pill-nav-item" data-nav-lvl="tests" title="telc Nemis Tili Testlari">
+                    <span class="pill-icon">📝</span>
+                    <span class="pill-text">Testlar</span>
+                </a>
+                <a href="#flashcards" class="pill-nav-item" data-nav-lvl="flashcards" title="Lug'at Kartochkalari">
+                    <span class="pill-icon">🎴</span>
+                    <span class="pill-text">Lug'at</span>
+                </a>
+                <a href="#tandem" class="pill-nav-item" data-nav-lvl="tandem" title="Tandem Muloqot">
+                    <span class="pill-icon">💬</span>
+                    <span class="pill-text">Tandem</span>
+                </a>
+                <a href="#pronounce" class="pill-nav-item" data-nav-lvl="pronounce" title="Talaffuz Murabbiyi">
+                    <span class="pill-icon">🎙️</span>
+                    <span class="pill-text">Talaffuz</span>
+                </a>
+                <a href="#idioms" class="pill-nav-item" data-nav-lvl="idioms" title="Nemis Iboralari">
+                    <span class="pill-icon">🥨</span>
+                    <span class="pill-text">Iboralar</span>
+                </a>
+                <a href="#corrector" class="pill-nav-item" data-nav-lvl="corrector" title="Insho Tahrirchi">
+                    <span class="pill-icon">✍️</span>
+                    <span class="pill-text">Insho</span>
+                </a>
+                <a href="#games" class="pill-nav-item" data-nav-lvl="games" title="3D Vision Kartochka O'yinlari">
+                    <span class="pill-icon">🎮</span>
+                    <span class="pill-text">O'yinlar</span>
+                </a>
+                <a href="#tournament" class="pill-nav-item" data-nav-lvl="tournament" title="Nemis Tili Turniri">
+                    <span class="pill-icon">⚔️</span>
+                    <span class="pill-text">Turnir</span>
+                </a>
+                <a href="#video-lessons" class="pill-nav-item pill-highlight" data-nav-lvl="video-lessons" title="Interaktiv Subtitrli Video-Dialoglar">
+                    <span class="pill-icon">🎬</span>
+                    <span class="pill-text">Video-Dialog</span>
+                </a>
+            </nav>
+        </div>
+    </section>
+
     <!-- Content Views -->
-    <main class="container" style="padding: 30px 0 100px 0;">
+    <main class="container" style="padding: 24px 0 100px 0;">
         <div class="animate-fade-in" id="deutsch-view">
             <div id="deutsch-content"></div>
         </div>
@@ -174,6 +226,10 @@
 
         <div class="animate-fade-in" id="verb-trainer-view" style="display:none;">
             <div id="verb-trainer-content"></div>
+        </div>
+
+        <div class="animate-fade-in" id="video-lessons-view" style="display:none;">
+            <div id="video-lesson-container" style="max-width: 900px; margin: 10px auto; padding: 0 16px;"></div>
         </div>
     </main>
 
@@ -242,9 +298,6 @@
             <span class="dock-label">Dialog</span>
         </a>
     </nav>
-
-    <!-- Video Lesson Container (Click-to-Translate) -->
-    <section class="container" id="video-lesson-container" style="max-width: 900px; margin: 36px auto; padding: 0 16px;"></section>
 
     <!-- Modallar -->
     <div class="modal-overlay" id="myresults-modal">

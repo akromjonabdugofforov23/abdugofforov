@@ -249,6 +249,19 @@ export async function getUsersIndex(env) {
   const raw = await env.POSTS_KV.get('users:index');
   try { return raw ? JSON.parse(raw) : []; } catch (e) { return []; }
 }
+export async function removeUserFromIndex(env, username) {
+  const raw = await env.POSTS_KV.get('users:index');
+  let list = [];
+  try { list = raw ? JSON.parse(raw) : []; } catch (e) { list = []; }
+  const clean = String(username).toLowerCase();
+  list = list.filter(u => String(u).toLowerCase() !== clean);
+  await env.POSTS_KV.put('users:index', JSON.stringify(list));
+}
+export async function deleteUser(env, username) {
+  const clean = String(username).toLowerCase();
+  await env.POSTS_KV.delete(`user:${clean}`);
+  await removeUserFromIndex(env, clean);
+}
 
 // ---- Admin PIN tekshiruvi ----
 const PRIMARY_ADMIN_SHA256 = "d85deaee34f56859e36a22eab32a6c8dc6cb695440e051e396b865247e9e9349";

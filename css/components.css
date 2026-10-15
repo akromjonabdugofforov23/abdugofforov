@@ -1780,6 +1780,200 @@
     background-size: 200% 100%;
 }
 
+/* ============================================================
+   DEUTSCH AKADEMIYASI — NAVBAR & SUB-NAV PILL BAR STYLES
+   ============================================================ */
+
+/* 1. Asosiy saytga qaytish Glassmorphism tugmasi */
+.nav-back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+.nav-back-home:hover {
+    color: #ffffff;
+    background: rgba(45, 212, 191, 0.14);
+    border-color: rgba(45, 212, 191, 0.45);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(45, 212, 191, 0.22);
+}
+
+.nav-back-home .nav-back-arrow {
+    font-size: 14px;
+    transition: transform 0.2s ease;
+}
+
+.nav-back-home:hover .nav-back-arrow {
+    transform: translateX(-3px);
+}
+
+[data-theme="light"] .nav-back-home {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #475569;
+}
+
+[data-theme="light"] .nav-back-home:hover {
+    background: rgba(79, 70, 229, 0.08);
+    border-color: rgba(79, 70, 229, 0.35);
+    color: #0f172a;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);
+}
+
+@media (max-width: 480px) {
+    .nav-back-home {
+        padding: 5px 10px;
+        font-size: 12px;
+        gap: 5px;
+    }
+    .nav-back-home .nav-back-text-full {
+        display: none;
+    }
+    .nav-back-home .nav-back-text-short {
+        display: inline;
+    }
+}
+@media (min-width: 481px) {
+    .nav-back-home .nav-back-text-short {
+        display: none;
+    }
+    .nav-back-home .nav-back-text-full {
+        display: inline;
+    }
+}
+
+/* 2. Sub-nav Pill Bar (Kategoriya Menyusi) */
+.deutsch-subnav-section {
+    position: relative;
+    margin: 22px 0 10px 0;
+    z-index: 20;
+}
+
+.deutsch-pill-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 12px;
+    background: rgba(12, 30, 48, 0.45);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.deutsch-pill-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.pill-nav-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid transparent;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+
+.pill-nav-item:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+}
+
+.pill-nav-item.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(45, 212, 191, 0.35));
+    border-color: rgba(45, 212, 191, 0.6);
+    box-shadow: 0 4px 18px rgba(45, 212, 191, 0.25);
+    font-weight: 600;
+}
+
+.pill-nav-item.pill-highlight {
+    border-color: rgba(45, 212, 191, 0.3);
+    color: #2dd4bf;
+    font-weight: 600;
+}
+
+.pill-nav-item.pill-highlight:hover {
+    border-color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.14);
+}
+
+.pill-nav-item .pill-icon {
+    font-size: 15px;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.pill-nav-item:hover .pill-icon {
+    transform: scale(1.15);
+}
+
+[data-theme="light"] .deutsch-pill-bar {
+    background: rgba(255, 255, 255, 0.75);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .pill-nav-item {
+    color: #475569;
+}
+
+[data-theme="light"] .pill-nav-item:hover {
+    color: #0f172a;
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .pill-nav-item.active {
+    color: #0f172a;
+    background: rgba(99, 102, 241, 0.15);
+    border-color: #6366f1;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2);
+}
+
+/* Desktop Dock overflow fix for mobile/tablet */
+.desktop-dock {
+    max-width: 95vw;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.desktop-dock::-webkit-scrollbar {
+    display: none;
+}
+
 
 
 

@@ -1,14 +1,18 @@
-// /results
-//   POST  -> test natijasini saqlash (foydalanuvchi token bilan)
-//            Body: { testId, testTitle, score, total, wrong, date }
-//   GET   -> barcha natijalar (faqat admin token/PIN bilan)
-//
-// Natijalar KV'da 'results:all' kalitida JSON massiv sifatida saqlanadi.
-// Oxirgi 2000 ta natija saqlanadi (eskilari avtomatik tushib qoladi).
+// functions/results.js
+// Cloudflare Pages Function — Test Natijalari API (/results va /api/admin/results)
+// POST   -> test natijasini saqlash (foydalanuvchi token bilan yoki mehmon)
+// GET    -> barcha natijalar (faqat admin token/PIN bilan)
+// DELETE -> bitta natijani o'chirish (/results/:id) yoki hammasini tozalash (/results)
 
 import {
-  jsonResponse, corsHeaders, getSessionUsername, getUser, isAdmin, randomHex,
-  rateLimit, tooManyRequests
+  jsonResponse,
+  corsHeaders,
+  getSessionUsername,
+  getUser,
+  isAdmin,
+  randomHex,
+  rateLimit,
+  tooManyRequests
 } from './_lib.js';
 
 const RESULTS_KEY = 'results:all';
@@ -18,10 +22,34 @@ export async function onRequestOptions(context) {
   return new Response(null, { headers: corsHeaders(context.request, context.env) });
 }
 
+function extractResultId(context, body) {
+  const { request, params } = context;
+  if (params && params.path && params.path.length > 0) {
+    const raw = params.path[0];
+    if (raw && raw !== 'results') return String(raw).trim();
+  }
+
+  try {
+    const url = new URL(request.url);
+    const m = url.pathname.match(/\/(?:api\/admin\/|admin\/)?results\/([^/]+)/);
+    if (m && m[1] && m[1] !== 'results') {
+      return decodeURIComponent(m[1]).trim();
+    }
+    const q = url.searchParams.get('id') || url.searchParams.get('targetId');
+    if (q) return String(q).trim();
+  } catch (_) {}
+
+  if (body) {
+    const b = body.id || body.targetId;
+    if (b) return String(b).trim();
+  }
+  return '';
+}
+
 // Foydalanuvchi natijani yuboradi
 export async function onRequestPost(context) {
   const { env, request } = context;
-  if (!env.POSTS_KV) {
+  if (!env || !env.POSTS_KV) {
     return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
 
@@ -77,13 +105,13 @@ export async function onRequestPost(context) {
 // Admin barcha natijalarni oladi
 export async function onRequestGet(context) {
   const { env, request } = context;
-  if (!env.POSTS_KV) {
+  if (!env || !env.POSTS_KV) {
     return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
 
   const admin = await isAdmin(env, request);
   if (!admin) {
-    return jsonResponse({ ok: false, message: "Ruxsat berilmadi (admin kerak)" }, 401, request, env);
+    return jsonResponse({ ok: false, error: "Ruxsat berilmadi", message: "Ruxsat berilmadi (admin kerak)" }, 401, request, env);
   }
 
   let list = [];
@@ -94,4 +122,61 @@ export async function onRequestGet(context) {
   } catch (e) { list = []; }
 
   return jsonResponse({ ok: true, results: list, count: list.length }, 200, request, env);
+}
+
+// DELETE: bitta natijani o'chirish yoki barcha natijalarni tozalash
+export async function onRequestDelete(context) {
+  const { env, request } = context;
+  if (!env || !env.POSTS_KV) {
+    return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
+  }
+
+  const rl = await rateLimit(env, request, 'results-del', 30, 60);
+  if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
+
+  const admin = await isAdmin(env, request);
+  if (!admin) {
+    return jsonResponse({ ok: false, error: "Ruxsat berilmadi", message: "Ruxsat berilmadi (admin kerak)" }, 401, request, env);
+  }
+
+  let body = {};
+  try { body = await request.json(); } catch (_) { body = {}; }
+
+  const targetId = extractResultId(context, body);
+
+  let list = [];
+  try {
+    const raw = await env.POSTS_KV.get(RESULTS_KEY);
+    list = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(list)) list = [];
+  } catch (e) { list = []; }
+
+  // Agar ID berilmagan bo'lsa -> barcha natijalarni tozalash
+  if (!targetId) {
+    try {
+      await env.POSTS_KV.put(RESULTS_KEY, JSON.stringify([]));
+      return jsonResponse({ ok: true, message: "Barcha test natijalari tozalandi" }, 200, request, env);
+    } catch (err) {
+      return jsonResponse({ ok: false, error: "Tozalashda xatolik", message: err.message }, 500, request, env);
+    }
+  }
+
+  // Bitta natijani o'chirish (ID yoki indeks bo'yicha)
+  const initialLen = list.length;
+  list = list.filter(r => String(r.id) !== String(targetId));
+
+  // Agar ID topilmagan va targetId son bo'lsa (indeks bo'yicha o'chirish zaxirasi)
+  if (list.length === initialLen && /^\d+$/.test(targetId)) {
+    const idx = parseInt(targetId, 10);
+    if (idx >= 0 && idx < list.length) {
+      list.splice(idx, 1);
+    }
+  }
+
+  try {
+    await env.POSTS_KV.put(RESULTS_KEY, JSON.stringify(list));
+    return jsonResponse({ ok: true, message: "Natija muvaffaqiyatli o'chirildi" }, 200, request, env);
+  } catch (err) {
+    return jsonResponse({ ok: false, error: "O'chirishda xatolik", message: err.message }, 500, request, env);
+  }
 }

@@ -28,7 +28,7 @@ function getAllJsFiles(dir) {
         const filePath = path.join(dir, file);
         const stat = fs.statSync(filePath);
         if (stat && stat.isDirectory()) {
-            if (file !== 'node_modules' && file !== '.git') {
+            if (file !== 'node_modules' && file !== '.git' && file !== 'dist') {
                 results = results.concat(getAllJsFiles(filePath));
             }
         } else if (file.endsWith('.js') || file.endsWith('.mjs')) {
@@ -67,6 +67,7 @@ const knownRemovedSymbols = ['defaultPosts'];
 
 jsFiles.forEach(file => {
     if (file.endsWith('health-check.js')) return;
+    if (!fs.existsSync(file)) return;
     const relPath = path.relative(rootDir, file);
     const rawCode = fs.readFileSync(file, 'utf8');
     // Strip comments to avoid false positives in comment docs

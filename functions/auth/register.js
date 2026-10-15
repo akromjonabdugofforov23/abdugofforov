@@ -80,6 +80,37 @@ export async function onRequestPost(context) {
   await putUser(env, user);
   await addUserToIndex(env, username);
 
+  // Adminga Telegram orqali bildirishnoma yuborish (notifyNewUser mantiqi)
+  const tgToken = env.TELEGRAM_BOT_TOKEN;
+  const tgChatId = env.TELEGRAM_ADMIN_CHAT_ID || env.TELEGRAM_CHAT_ID;
+  if (tgToken && tgChatId) {
+    let timeStr;
+    try {
+      timeStr = new Date().toLocaleString('uz-UZ');
+    } catch (_) {
+      timeStr = new Date().toISOString();
+    }
+    const text = `👤 <b>Yangi Foydalanuvchi Ro'yxatdan O'tdi!</b>\n\n` +
+                 `▫️ <b>Ism:</b> ${user.name || 'Noma\'lum'}\n` +
+                 `▫️ <b>Username:</b> @${user.username}\n` +
+                 `▫️ <b>Rol:</b> ${user.role}\n` +
+                 `▫️ <b>Vaqt:</b> ${timeStr}`;
+    const notifyPromise = fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: tgChatId,
+        text,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
+      })
+    }).catch(() => {});
+
+    if (context && typeof context.waitUntil === 'function') {
+      context.waitUntil(notifyPromise);
+    }
+  }
+
   const token = await createSession(env, username, { ip });
   return jsonResponse({ ok: true, token, user: publicUser(user, env) }, 200, request, env);
 }

@@ -3,7 +3,7 @@ const router = express.Router();
 const path = require('path');
 const crypto = require('crypto');
 const db = require('../database');
-const { checkAdminPin } = require('../middlewares/auth');
+const { checkAdminPin, optionalAuth } = require('../middlewares/auth');
 const telegramService = require('../services/telegram');
 
 // Asosiy sahifa (Frontend) uchun marshrut
@@ -184,7 +184,54 @@ router.post(['/results', '/api/results'], (req, res) => {
     res.json({ ok: true, result: entry, message: "Natija saqlandi" });
 });
 
-// 6. Telegram Bildirishnomalari (Notify) va Izohlar
+// 6. Turnir (Tournament & Leaderboard)
+router.get(['/tournament', '/api/tournament'], (req, res) => {
+    const leaderboard = db.getTournamentLeaderboard(50);
+    res.json({ ok: true, leaderboard, count: leaderboard.length });
+});
+
+router.post(['/tournament', '/api/tournament'], optionalAuth, (req, res) => {
+    const body = req.body || {};
+    const total = Math.max(1, Math.min(200, parseInt(body.total, 10) || 0));
+    const score = Math.max(0, Math.min(total, parseInt(body.score, 10) || 0));
+
+    let username = req.user ? req.user.username : null;
+    let name, registered = false;
+    if (req.user) {
+        name = req.user.name || req.user.username;
+        registered = true;
+    } else {
+        name = String(body.name || '').trim().slice(0, 40) || 'Mehmon';
+    }
+
+    const entry = {
+        id: crypto.randomBytes(4).toString('hex'),
+        name,
+        username: username || null,
+        registered,
+        score,
+        total,
+        pct: total ? Math.round((score / total) * 100) : 0,
+        date: new Date().toISOString()
+    };
+
+    db.saveTournamentScore(entry);
+
+    const leaderboard = db.getTournamentLeaderboard(0);
+    const rank = leaderboard.findIndex(e =>
+        (entry.username && e.username === entry.username) ||
+        (!entry.username && e.name === entry.name && e.score === entry.score)
+    );
+
+    res.json({
+        ok: true,
+        saved: entry,
+        rank: rank >= 0 ? rank + 1 : null,
+        totalPlayers: leaderboard.length
+    });
+});
+
+// 7. Telegram Bildirishnomalari (Notify) va Izohlar
 router.post(['/notify', '/api/notify'], async (req, res) => {
     try {
         const payload = req.body || {};

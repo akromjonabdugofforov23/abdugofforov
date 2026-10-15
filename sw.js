@@ -2,7 +2,7 @@
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
 // CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
 // bilan qorishib qolmasligi uchun
-const CACHE = 'abdu-cache-v13';
+const CACHE = 'abdu-cache-v14';
 const SHELL = [
     '/',
     '/index.html',
@@ -18,6 +18,7 @@ const SHELL = [
     '/css/claps-reactions.css',
     '/css/matching-game.css',
     '/css/verb-trainer.css',
+    '/css/light-variants.css',
     '/app.js',
     '/deutsch.js',
     '/tools.js',
@@ -42,7 +43,6 @@ const SHELL = [
     '/scripts/gamification.js',
     '/scripts/quote-widget.js',
     '/scripts/claps-reactions.js',
-    '/scripts/community-gamification.js',
     '/scripts/aesthetic-features.js',
     '/scripts/super-palette.js',
     '/scripts/story-card.js',
@@ -86,6 +86,7 @@ self.addEventListener('fetch', (event) => {
         url.pathname.startsWith('/quotes') || 
         url.pathname.startsWith('/tasks') || 
         url.pathname.startsWith('/results') || 
+        url.pathname.startsWith('/tournament') || 
         noCachePaths.includes(url.pathname)) return;
 
     // Navigatsiya (HTML) — tarmoq birinchi, keyin kesh (oflayn ishlashi uchun)

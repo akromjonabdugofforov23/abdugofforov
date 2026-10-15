@@ -1,5 +1,5 @@
 /* ============================================================
-   ABDUGOFFOROV — DEV LAB LIGHT DESIGN SYSTEM
+   ABDUGOFFOROV — LIGHT VARIANTS DESIGN SYSTEM
    3 Striking, High-Contrast, Visually Distinct Aesthetics:
    - Variant 1 (Default): Prism Lux (Apple Vision Pro & Linear)
    - Variant 2: Quantum Aurora (Nordic & Dynamic Cyber Mesh)
@@ -508,7 +508,7 @@ body[data-theme="light"] {
     border: 1px solid var(--ai-border) !important;
 }
 
-/* 7. AI DESIGN LAB FLOATING CONTROL */
+/* 7. DESIGN LAB FLOATING CONTROL */
 .ai-lab-fab {
     position: fixed;
     bottom: 24px;

@@ -31,6 +31,8 @@ class Database {
             quotes: [],
             projects: [],
             tasks: [],
+            scores: [],
+            tournament: [],
             settings: {}
         };
         this.isSaving = false;
@@ -44,11 +46,18 @@ class Database {
                 const raw = fs.readFileSync(DB_FILE, 'utf8');
                 const parsed = JSON.parse(raw);
                 this.cache = Object.assign(this.cache, parsed);
-                ['users', 'posts', 'comments', 'results', 'gamification', 'quotes', 'projects', 'tasks'].forEach(col => {
+                ['users', 'posts', 'comments', 'results', 'gamification', 'quotes', 'projects', 'tasks', 'scores', 'tournament'].forEach(col => {
                     if (!Array.isArray(this.cache[col])) {
                         this.cache[col] = [];
                     }
                 });
+                if (this.cache.scores.length > 0 && this.cache.tournament.length === 0) {
+                    this.cache.tournament = this.cache.scores;
+                } else if (this.cache.tournament.length > 0 && this.cache.scores.length === 0) {
+                    this.cache.scores = this.cache.tournament;
+                } else if (this.cache.scores.length === 0 && this.cache.tournament.length === 0) {
+                    this.cache.tournament = this.cache.scores;
+                }
                 if (!this.cache.settings || typeof this.cache.settings !== 'object' || Array.isArray(this.cache.settings)) {
                     this.cache.settings = {};
                 }
@@ -100,6 +109,11 @@ class Database {
     }
 
     getCollection(name) {
+        if (name === 'tournament' || name === 'scores') {
+            if (!this.cache.scores) this.cache.scores = [];
+            this.cache.tournament = this.cache.scores;
+            return this.cache.scores;
+        }
         if (!this.cache[name]) {
             this.cache[name] = [];
         }
@@ -161,6 +175,38 @@ class Database {
         return true;
     }
 
+    // Turnir (Tournament / Scores) bo'yicha yordamchi metodlar
+    getTournamentScores() {
+        const scores = this.getCollection('scores');
+        return [...scores];
+    }
+
+    saveTournamentScore(entry) {
+        const scores = this.getCollection('scores');
+        scores.unshift(entry);
+        if (scores.length > 500) {
+            scores.splice(500);
+        }
+        this.persist();
+        return entry;
+    }
+
+    getTournamentLeaderboard(limit = 50) {
+        const list = this.getTournamentScores();
+        const best = {};
+        for (const e of list) {
+            const key = e.username ? ('u:' + e.username) : ('g:' + e.name);
+            if (!best[key] || e.pct > best[key].pct || (e.pct === best[key].pct && e.score > best[key].score)) {
+                best[key] = e;
+            }
+        }
+        const sorted = Object.values(best).sort((a, b) => {
+            if (b.pct !== a.pct) return b.pct - a.pct;
+            return new Date(a.date) - new Date(b.date);
+        });
+        return limit ? sorted.slice(0, limit) : sorted;
+    }
+
     // Statistika hisoblash
     getStats() {
         return {
@@ -171,7 +217,8 @@ class Database {
             tasksCount: this.getCollection('tasks').length,
             resultsCount: this.getCollection('results').length,
             commentsCount: this.getCollection('comments').length,
-            testsCount: this.getCollection('results').length
+            testsCount: this.getCollection('results').length,
+            tournamentCount: this.getCollection('scores').length
         };
     }
 
@@ -207,6 +254,9 @@ class Database {
     restore(newData) {
         if (!newData || typeof newData !== 'object') return false;
         const targetData = (newData.data && typeof newData.data === 'object') ? newData.data : newData;
+        const tournamentData = Array.isArray(targetData.scores)
+            ? targetData.scores
+            : (Array.isArray(targetData.tournament) ? targetData.tournament : []);
         this.cache = {
             users: Array.isArray(targetData.users) ? targetData.users : (this.cache.users || []),
             posts: Array.isArray(targetData.posts) ? targetData.posts : [],
@@ -216,6 +266,8 @@ class Database {
             quotes: Array.isArray(targetData.quotes) ? targetData.quotes : [],
             projects: Array.isArray(targetData.projects) ? targetData.projects : [],
             tasks: Array.isArray(targetData.tasks) ? targetData.tasks : [],
+            scores: tournamentData,
+            tournament: tournamentData,
             settings: (targetData.settings && typeof targetData.settings === 'object' && !Array.isArray(targetData.settings))
                 ? targetData.settings
                 : (this.cache.settings || {})
