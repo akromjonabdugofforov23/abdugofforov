@@ -664,4 +664,11 @@
             </div>
         `;
     }
+
+    if (typeof window !== 'undefined') {
+        window.startHorrorGame = window.startHorrorEscape;
+        if (window.HorrorGamesData && !window.horrorGameData) {
+            window.horrorGameData = window.HorrorGamesData;
+        }
+    }
 })();

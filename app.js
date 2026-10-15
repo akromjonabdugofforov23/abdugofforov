@@ -1571,6 +1571,20 @@ function openPostDetail(postId, pushHistory = true) {
         
         if (textInput) textInput.value = '';
         renderPosts();
+
+        // Telegram bildirishnomasi yuborish (Cloudflare / Express /notify orqali)
+        try {
+            fetch('/notify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    event: 'comment',
+                    postTitle: post.title,
+                    author: newComment.author,
+                    content: newComment.text
+                })
+            }).catch(() => {});
+        } catch (_) {}
     });
 
     postDetailModal.classList.add('active');

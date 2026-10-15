@@ -24,7 +24,6 @@ if (fs.existsSync(envPath)) {
 const routes = require('./routes/index');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
-const aiRoutes = require('./routes/ai');
 
 // Xavfsizlik qatlamlarini import qilish (Middlewares)
 const securityLayer1 = require('./middlewares/securityLayer1');
@@ -96,7 +95,6 @@ app.use(aiBotDetector);
 
 // 3-bosqich: DDoS va ortiqcha so'rovlardan himoya (Rate Limiting)
 app.use('/auth', securityLayer1.authLimiter || securityLayer1);
-app.use('/api/ai', securityLayer1.aiLimiter || securityLayer1);
 app.use('/api/admin', securityLayer1.adminLimiter || securityLayer1);
 app.use(securityLayer1);
 
@@ -112,7 +110,6 @@ const noCacheMiddleware = (req, res, next) => {
 app.use('/auth', noCacheMiddleware, authRoutes);
 app.use('/api/admin', noCacheMiddleware, adminRoutes);
 app.use('/admin', noCacheMiddleware, adminRoutes);
-app.use('/api/ai', noCacheMiddleware, aiRoutes);
 
 // Statik fayllarni ilova manbalaridan o'qish
 app.use(express.static(path.join(__dirname, '.')));
@@ -123,7 +120,7 @@ app.use('/', routes);
 if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`Server ishga tushdi: http://localhost:${PORT}`);
-        console.log(`Himoya qatlamlari: FAOL (WAF, Helmet, RateLimiter, StrictAuth, Gemini AI, CMS)`);
+        console.log(`Himoya qatlamlari: FAOL (WAF, Helmet, RateLimiter, StrictAuth, CMS)`);
     });
 }
 

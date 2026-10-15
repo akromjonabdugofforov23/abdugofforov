@@ -79,10 +79,11 @@ async function notifyNewUser(user) {
 
 // 2. Yangi izoh qo'shilganda xabar
 async function notifyNewComment(comment, postTitle) {
+    const content = (comment.content || comment.text || '').slice(0, 300);
     const text = `💬 <b>Yangi Izoh Qoldirildi!</b>\n\n` +
                  `▫️ <b>Post:</b> ${postTitle || 'Umumiy'}\n` +
                  `▫️ <b>Muallif:</b> ${comment.author || 'Anonim'}\n` +
-                 `▫️ <b>Matn:</b> <i>${comment.content ? comment.content.slice(0, 200) : ''}</i>\n` +
+                 `▫️ <b>Matn:</b> <i>${content}</i>\n` +
                  `▫️ <b>Vaqt:</b> ${new Date().toLocaleString('uz-UZ')}`;
     return sendMessage(ADMIN_CHAT_ID, text);
 }

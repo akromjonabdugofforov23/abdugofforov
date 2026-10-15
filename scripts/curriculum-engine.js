@@ -72,9 +72,44 @@
         } catch (e) {}
     }
 
+    // Dinamik darslik skriptlarini yuklash mexanizmi (Code Splitting / Lazy Loading)
+    const _curriculumLoadPromises = {};
+
+    function loadCurriculumScript(level) {
+        const lvl = (level || 'A1').toUpperCase();
+        if (window.deutschCurriculum && window.deutschCurriculum[lvl] && window.deutschCurriculum[lvl].topics && window.deutschCurriculum[lvl].topics.length) {
+            return Promise.resolve(window.deutschCurriculum[lvl]);
+        }
+        if (_curriculumLoadPromises[lvl]) {
+            return _curriculumLoadPromises[lvl];
+        }
+
+        const promise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = `data/curriculum-${lvl.toLowerCase()}.js`;
+            script.async = true;
+            script.onload = () => {
+                if (window.deutschCurriculum && window.deutschCurriculum[lvl]) {
+                    resolve(window.deutschCurriculum[lvl]);
+                } else {
+                    resolve(null);
+                }
+            };
+            script.onerror = (err) => {
+                console.error(`Curriculum ${lvl} yuklanmadi:`, err);
+                delete _curriculumLoadPromises[lvl];
+                reject(err);
+            };
+            document.body.appendChild(script);
+        });
+
+        _curriculumLoadPromises[lvl] = promise;
+        return promise;
+    }
+
     // Bosh sahifani chizish (Darajalar va 7 ta mavzu kartochkalari)
     function renderCurriculumHome(lvl) {
-        if (lvl) currentLevel = lvl;
+        if (lvl) currentLevel = lvl.toUpperCase();
         const container = document.getElementById('deutsch-content');
         if (!container) return;
 
@@ -117,13 +152,29 @@
         if (!levelData || !levelData.topics || !levelData.topics.length) {
             html += `
                 <div class="empty-state" style="text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size: 40px; margin-bottom: 12px;">⏳</div>
+                    <div style="font-size: 40px; margin-bottom: 12px; animation: pulse 1.2s infinite ease-in-out;">⏳</div>
                     <h3 style="color: var(--text-primary); margin-bottom: 8px;">${currentLevel} darajasi ma'lumotlari yuklanmoqda...</h3>
                     <p style="color: var(--text-secondary); font-size: 14px;">Iltimos, bir necha soniya kuting.</p>
                 </div>
             `;
             container.innerHTML = html;
             bindLevelEvents();
+
+            const requestedLvl = currentLevel;
+            loadCurriculumScript(requestedLvl).then((data) => {
+                if (currentLevel === requestedLvl && data) {
+                    renderCurriculumHome(requestedLvl);
+                }
+            }).catch(() => {
+                const emptyEl = container.querySelector('.empty-state');
+                if (emptyEl && currentLevel === requestedLvl) {
+                    emptyEl.innerHTML = `
+                        <div style="font-size: 40px; margin-bottom: 12px; color: #ef4444;">⚠️</div>
+                        <h3 style="color: #ef4444; margin-bottom: 8px;">${requestedLvl} darslarini yuklashda xatolik yuz berdi</h3>
+                        <button class="btn-primary" onclick="if(typeof renderDeutschCurriculum==='function')renderDeutschCurriculum('${requestedLvl}')" style="margin-top:12px;">Qayta urinish</button>
+                    `;
+                }
+            });
             return;
         }
 
@@ -238,10 +289,22 @@
 
     // Interaktiv O'quv Studiyasi Modali
     function openTopicStudio(topicId, initialTab = 'theory', pushHistory = true) {
-        const curriculum = window.deutschCurriculum || {};
-        const levelData = curriculum[currentLevel];
-        if (!levelData || !levelData.topics) return;
+        let targetLevel = currentLevel;
+        if (topicId && topicId.includes('_')) {
+            targetLevel = topicId.split('_')[0].toUpperCase();
+        }
 
+        const curriculum = window.deutschCurriculum || {};
+        const levelData = curriculum[targetLevel];
+        if (!levelData || !levelData.topics) {
+            loadCurriculumScript(targetLevel).then(() => {
+                currentLevel = targetLevel;
+                openTopicStudio(topicId, initialTab, pushHistory);
+            });
+            return;
+        }
+
+        currentLevel = targetLevel;
         const topic = levelData.topics.find(t => t.id === topicId);
         if (!topic) return;
 
@@ -790,6 +853,7 @@
     // Global eksport
     window.renderDeutschCurriculum = renderCurriculumHome;
     window.openDeutschTopicStudio = openTopicStudio;
+    window.loadCurriculumScript = loadCurriculumScript;
 
     function handleHashRouting() {
         const rawHash = (window.location.hash || '').replace('#', '').trim();
@@ -801,9 +865,11 @@
             renderCurriculumHome(currentLevel);
             if (parts.length > 1) {
                 const topicId = parts.slice(1).join('-');
-                setTimeout(() => {
-                    openTopicStudio(topicId, 'theory', false);
-                }, 120);
+                loadCurriculumScript(currentLevel).then(() => {
+                    setTimeout(() => {
+                        openTopicStudio(topicId, 'theory', false);
+                    }, 120);
+                });
             }
         }
     }
@@ -819,12 +885,18 @@
     });
 
     // Sahifa yuklanganda ishga tushirish
-    document.addEventListener('DOMContentLoaded', () => {
+    function initCurriculum() {
         if (window.location.hash) {
             handleHashRouting();
         } else {
             renderCurriculumHome(currentLevel);
         }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCurriculum);
+    } else {
+        initCurriculum();
+    }
 
 })();

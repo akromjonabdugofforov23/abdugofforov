@@ -113,16 +113,18 @@ function auditEncoding(filePath) {
     });
 }
 
-const htmlFiles = [path.join(rootDir, 'index.html'), path.join(rootDir, 'kay.html')];
+const htmlFiles = fs.readdirSync(rootDir)
+    .filter(f => f.endsWith('.html'))
+    .map(f => path.join(rootDir, f));
 [...jsFiles, ...htmlFiles].forEach(f => auditEncoding(f));
 
 // -------------------------------------------------------------
 // 4. HTML ID & JS DOM BINDINGS AUDIT
 // -------------------------------------------------------------
 console.log('\n📌 4. HTML Element ID va JS DOM Bog\'liqliklari Audit:');
-const indexHtmlContent = fs.readFileSync(path.join(rootDir, 'index.html'), 'utf8');
-const kayHtmlContent = fs.existsSync(path.join(rootDir, 'kay.html')) ? fs.readFileSync(path.join(rootDir, 'kay.html'), 'utf8') : '';
-const combinedHtml = indexHtmlContent + '\n' + kayHtmlContent;
+const combinedHtml = htmlFiles
+    .map(f => fs.readFileSync(f, 'utf8'))
+    .join('\n');
 
 const appJsContent = fs.readFileSync(path.join(rootDir, 'app.js'), 'utf8');
 
@@ -145,10 +147,11 @@ while ((idMatch = getElementByIdRegex.exec(appJsContent)) !== null) {
 console.log('\n📌 5. Xavfsizlik Protokollari va Kriptografiya Audit:');
 try {
     const sec1 = require('../middlewares/securityLayer1');
-    if (sec1 && sec1.authLimiter && sec1.aiLimiter && sec1.adminLimiter) {
-        logPass("Rate Limiting protokollari (General, Auth, AI, Admin) to'liq mavjud");
+    if (sec1 && sec1.authLimiter && sec1.adminLimiter) {
+        const aiNote = sec1.aiLimiter ? ', AI' : '';
+        logPass(`Rate Limiting protokollari (General, Auth${aiNote}, Admin) to'liq mavjud`);
     } else {
-        logFail("Rate Limiting limiterlaridan biri yetishmaydi");
+        logFail("Rate Limiting limiterlaridan biri (Auth yoki Admin) yetishmaydi");
     }
 } catch (e) {
     logFail(`securityLayer1 yuklanmadi: ${e.message}`);

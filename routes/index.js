@@ -4,6 +4,7 @@ const path = require('path');
 const crypto = require('crypto');
 const db = require('../database');
 const { checkAdminPin } = require('../middlewares/auth');
+const telegramService = require('../services/telegram');
 
 // Asosiy sahifa (Frontend) uchun marshrut
 router.get('/', (req, res) => {
@@ -113,7 +114,7 @@ router.get('/api/status', (req, res) => {
     res.json({
         status: "success",
         message: "Sayt va xavfsizlik qatlamlari a'lo darajada ishlamoqda!",
-        ai_module: "Active (Gemini)",
+        ai_module: "Disabled",
         timestamp: Date.now()
     });
 });
@@ -187,6 +188,32 @@ router.post(['/results', '/api/results'], (req, res) => {
         date: new Date().toISOString()
     });
     res.json({ ok: true, result: entry, message: "Natija saqlandi" });
+});
+
+// 6. Telegram Bildirishnomalari (Notify) va Izohlar
+router.post(['/notify', '/api/notify'], async (req, res) => {
+    try {
+        const payload = req.body || {};
+        const event = String(payload.event || 'event').slice(0, 40);
+
+        if (event === 'comment') {
+            const comment = {
+                author: String(payload.author || 'Anonim').slice(0, 60),
+                content: String(payload.content || payload.text || '').slice(0, 500)
+            };
+            const postTitle = String(payload.postTitle || 'Umumiy').slice(0, 100);
+            await telegramService.notifyNewComment(comment, postTitle);
+            return res.json({ ok: true, message: "Izoh haqida Telegramga xabar yuborildi" });
+        }
+
+        const note = String(payload.note || '').slice(0, 200);
+        const text = `🔔 Abdugofforov admin\nHodisa: ${event}\n${note ? 'Izoh: ' + note + '\n' : ''}Vaqt: ${new Date().toISOString()}`;
+        const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID;
+        await telegramService.sendMessage(adminChatId, text);
+        res.json({ ok: true });
+    } catch (e) {
+        res.json({ ok: false, error: e.message });
+    }
 });
 
 // CSP hisobotlarini qabul qilish endpointi

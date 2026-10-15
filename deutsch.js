@@ -169,6 +169,9 @@ window.runDataClickAction = runDataClickAction;
         const v = document.getElementById('deutsch-view');
         if (v) v.style.display = 'block';
         setActiveDock('tests');
+        if (typeof loadGermanTests === 'function' && !window.germanTests && !window.deutschTests && typeof deutschTests === 'undefined') {
+            loadGermanTests();
+        }
         if (typeof renderDeutschHome === 'function') {
             renderDeutschHome();
         } else if (typeof renderDeutschCurriculum === 'function') {
@@ -200,14 +203,98 @@ window.runDataClickAction = runDataClickAction;
         const v = document.getElementById('tournament-view');
         if (v) v.style.display = 'block';
         setActiveDock('tournament');
+        if (typeof loadGermanTests === 'function' && !window.germanTests && !window.deutschTests && typeof deutschTests === 'undefined') {
+            loadGermanTests();
+        }
         if (typeof renderTournamentHome === 'function') renderTournamentHome();
         if (pushHistory) history.pushState({ page: 'tournament' }, '', '#tournament');
     };
 
-    window.openDeutschHorror = function(pushHistory = true) {
+    // Dinamik Horror o'yini skriptlarini yuklash mexanizmi (Code Splitting / Lazy Loading)
+    let _horrorLoadPromise = null;
+    function loadHorrorGameScripts() {
+        if ((window.horrorGameData || window.HorrorGamesData) && (typeof window.startHorrorGame === 'function' || typeof window.openHorrorHome === 'function')) {
+            return Promise.resolve();
+        }
+        if (_horrorLoadPromise) return _horrorLoadPromise;
+
+        _horrorLoadPromise = new Promise((resolve, reject) => {
+            // Horror CSS ni dinamik ulash (agar ulanmagan bo'lsa)
+            if (!document.querySelector('link[href*="horror.css"]')) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = 'css/horror.css';
+                document.head.appendChild(link);
+            }
+
+            const loadScript = (src) => new Promise((res, rej) => {
+                const s = document.createElement('script');
+                s.src = src;
+                s.async = true;
+                s.onload = () => res();
+                s.onerror = (e) => rej(e);
+                document.body.appendChild(s);
+            });
+
+            loadScript('scripts/horror-data.js')
+                .then(() => loadScript('scripts/horror-logic.js'))
+                .then(() => {
+                    if (window.HorrorGamesData && !window.horrorGameData) {
+                        window.horrorGameData = window.HorrorGamesData;
+                    }
+                    if (typeof window.startHorrorEscape === 'function' && !window.startHorrorGame) {
+                        window.startHorrorGame = window.startHorrorEscape;
+                    }
+                    resolve();
+                })
+                .catch(err => {
+                    console.error('Horror skriptlarini yuklashda xatolik:', err);
+                    _horrorLoadPromise = null;
+                    reject(err);
+                });
+        });
+        return _horrorLoadPromise;
+    }
+    window.loadHorrorGame = loadHorrorGameScripts;
+
+    if (typeof window.startHorrorGame !== 'function') {
+        window.startHorrorGame = async function(...args) {
+            if (!window.horrorGameData || typeof window.startHorrorEscape !== 'function') {
+                await loadHorrorGameScripts();
+            }
+            if (typeof window.startHorrorEscape === 'function') {
+                return window.startHorrorEscape(...args);
+            }
+        };
+    }
+
+    window.openDeutschHorror = async function(pushHistory = true) {
         hideAllViews();
         const v = document.getElementById('deutsch-view');
         if (v) v.style.display = 'block';
+
+        if (!window.horrorGameData && !window.HorrorGamesData) {
+            const container = document.getElementById('deutsch-content');
+            if (container) {
+                container.innerHTML = `
+                    <div class="horror-container" style="text-align: center; padding: 80px 20px; color: #ef4444;">
+                        <div style="font-size: 54px; margin-bottom: 16px; animation: pulse 1s infinite;">💀</div>
+                        <h2 style="color: #ef4444; font-size: 24px; font-weight: 800; margin-bottom: 10px;">HORROR DEUTSCH YUKLANMOQDA...</h2>
+                        <p style="color: #94a3b8; font-size: 15px;">Qorong'u qasr eshiklari ochilmoqda, iltimos kuting...</p>
+                    </div>
+                `;
+            }
+        }
+
+        if (!window.horrorGameData || !window.startHorrorGame || typeof openHorrorHome !== 'function') {
+            try {
+                await loadHorrorGameScripts();
+            } catch (e) {
+                console.error('Horror yuklanmadi:', e);
+                return;
+            }
+        }
+
         if (typeof openHorrorHome === 'function') openHorrorHome(true);
         if (pushHistory) history.pushState({ page: 'horror' }, '', '#horror');
     };

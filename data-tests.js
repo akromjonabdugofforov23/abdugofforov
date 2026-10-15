@@ -1441,3 +1441,8 @@ const deutschTests = {
         }]
     }
 };
+
+if (typeof window !== 'undefined') {
+    window.deutschTests = deutschTests;
+    window.germanTests = deutschTests;
+}

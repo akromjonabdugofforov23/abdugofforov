@@ -58,13 +58,21 @@ export async function onRequestPost(context) {
   const time = new Date().toISOString();
   const ip = request.headers.get('CF-Connecting-IP') || 'noma\'lum';
 
-  const text = `🔔 Abdugofforov admin\nHodisa: ${event}\n${note ? 'Izoh: ' + note + '\n' : ''}IP: ${ip}\nVaqt: ${time}`;
+  let text;
+  if (event === 'comment') {
+    const postTitle = String(payload.postTitle || 'Umumiy').slice(0, 100);
+    const author = String(payload.author || 'Anonim').slice(0, 60);
+    const content = String(payload.content || payload.text || note || '').slice(0, 300);
+    text = `💬 <b>Yangi Izoh Qoldirildi!</b>\n\n▫️ <b>Post:</b> ${postTitle}\n▫️ <b>Muallif:</b> ${author}\n▫️ <b>Matn:</b> <i>${content}</i>\n▫️ <b>Vaqt:</b> ${new Date().toLocaleString('uz-UZ')}`;
+  } else {
+    text = `🔔 Abdugofforov admin\nHodisa: ${event}\n${note ? 'Izoh: ' + note + '\n' : ''}IP: ${ip}\nVaqt: ${time}`;
+  }
 
   try {
     const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true })
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true })
     });
     const ok = tgRes.ok;
     return jsonResponse({ ok, configured: true }, 200, request, env);

@@ -239,9 +239,18 @@
         if (!modalBody) return;
 
         // Find postId from modal content
+        let postId = '';
         const likeStat = modalBody.querySelector('[id^="modal-like-"]');
-        if (!likeStat) return;
-        const postId = likeStat.id.replace('modal-like-', '');
+        if (likeStat) {
+            postId = likeStat.id.replace('modal-like-', '');
+        }
+        if (!postId) {
+            const bmBtn = modalBody.querySelector('.modal-detail-bookmark-btn[data-id]');
+            if (bmBtn) postId = bmBtn.getAttribute('data-id');
+        }
+        if (!postId && window.currentDetailPostId) {
+            postId = String(window.currentDetailPostId);
+        }
         if (!postId) return;
 
         // 6A. Add Clap button in header post-meta if not yet present
@@ -529,6 +538,11 @@
             subtree: true,
             attributes: true,
             attributeFilter: ['class', 'style']
+        });
+
+        // Modal ochilganda darhol reaksiyalar va qarsaklarni faollashtirish
+        window.addEventListener('postOpenedInModal', () => {
+            setTimeout(enhanceDetailModal, 15);
         });
 
         // Setup Selection Share listeners

@@ -60,8 +60,8 @@ async function copyDir(name) {
       recursive: true,
       filter: (source) => {
         const basename = path.basename(source).toLowerCase();
-        // Xavfsizlik: Baza va maxfiy ma'lumotlar dist/ ga ko'chirilmasligi shart
-        if (basename === 'db.json' || basename.endsWith('.tmp') || basename === 'users.json' || basename === 'gemini.md' || basename === 'readme.md' || basename.endsWith('.md')) {
+        // Xavfsizlik: Baza, developer va maxfiy ma'lumotlar dist/ ga ko'chirilmasligi shart
+        if (basename === 'db.json' || basename.endsWith('.tmp') || basename === 'users.json' || basename === 'gemini.md' || basename === 'readme.md' || basename.endsWith('.md') || basename.endsWith('.ps1') || basename.endsWith('.py') || basename.endsWith('.bak')) {
           return false;
         }
         return true;
@@ -76,10 +76,20 @@ async function buildScripts() {
   await fs.mkdir(outScriptsDir, { recursive: true });
   const entries = await fs.readdir(scriptsDir, { withFileTypes: true });
   const rows = [];
+  const EXCLUDE_EXTS = ['.ps1', '.py', '.tmp', '.bak', '.sh'];
+  const STUB_FILES = ['ai-innovations.js', 'ai-summary-bookmarks.js', 'luxury-clock-modal.js', 'reader-mode.js'];
+
   for (const entry of entries) {
+    if (!entry.isFile()) continue;
+    const lower = entry.name.toLowerCase();
+    const ext = path.extname(lower);
+    if (EXCLUDE_EXTS.includes(ext) || STUB_FILES.includes(lower)) {
+      continue;
+    }
+
     const srcPath = path.join(scriptsDir, entry.name);
     const destPath = path.join(outScriptsDir, entry.name);
-    if (entry.isFile() && entry.name.endsWith('.js')) {
+    if (entry.name.endsWith('.js')) {
       const code = await fs.readFile(srcPath, 'utf8');
       try {
         const res = await terserMinify({ [entry.name]: code }, TERSER_OPTS);
@@ -89,7 +99,7 @@ async function buildScripts() {
         console.warn('Terser warning for scripts/' + entry.name, err.message);
         await fs.copyFile(srcPath, destPath);
       }
-    } else if (entry.isFile()) {
+    } else {
       await fs.copyFile(srcPath, destPath);
     }
   }
@@ -159,21 +169,32 @@ function report(rows) {
   }
 }
 
+async function filterExisting(files) {
+  const existing = [];
+  for (const f of files) {
+    try {
+      await fs.access(path.join(ROOT, f));
+      existing.push(f);
+    } catch {}
+  }
+  return existing;
+}
+
 async function main() {
   await fs.rm(OUT, { recursive: true, force: true });
   await fs.mkdir(OUT, { recursive: true });
 
   console.log('JS minify (terser):');
-  report(await Promise.all(JS_FILES.map(buildJs)));
+  report(await Promise.all((await filterExisting(JS_FILES)).map(buildJs)));
 
   console.log('Scripts JS minify (terser):');
   report(await buildScripts());
 
   console.log('CSS minify (clean-css):');
-  report(await Promise.all(CSS_FILES.map(buildCss)));
+  report(await Promise.all((await filterExisting(CSS_FILES)).map(buildCss)));
 
   console.log('HTML minify (html-minifier-terser):');
-  report(await Promise.all(HTML_FILES.map(buildHtml)));
+  report(await Promise.all((await filterExisting(HTML_FILES)).map(buildHtml)));
 
   for (const f of COPY_FILES) await copyFile(f);
   for (const d of COPY_DIRS) await copyDir(d);

@@ -229,6 +229,9 @@ window.HorrorGamesData = {
         { q: 'Germaniya poytaxti qaysi?', options: ['Berlin', 'München', 'Hamburg', 'Köln'], answer: 0 },
         { q: '"Schule" (Maktab) artikli qaysi?', options: ['die', 'der', 'das', 'den'], answer: 0 },
         { q: '"Ja" inkor shakli qaysi?', options: ['Nein', 'Nicht', 'Kein', 'Nie'], answer: 0 },
-        { q: '"Jawohl!" nimani anglatadi?', options: ['Xuddi shunday!', 'Yo\'q', 'Xayr', 'Kechirasiz'], answer: 0 }
     ]
 };
+
+if (typeof window !== 'undefined') {
+    window.horrorGameData = window.HorrorGamesData;
+}

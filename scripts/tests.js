@@ -95,8 +95,39 @@ const DEUTSCH_LEVELS_DATA = [
     }
 ];
 
+// Dinamik testlar skriptini yuklash mexanizmi (Code Splitting / Lazy Loading)
+let _loadingTestsScript = null;
+function loadGermanTestsScript() {
+    if (window.germanTests || window.deutschTests) {
+        return Promise.resolve(window.germanTests || window.deutschTests);
+    }
+    if (_loadingTestsScript) return _loadingTestsScript;
+    _loadingTestsScript = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'data-tests.js';
+        s.async = true;
+        s.onload = () => {
+            const loadedData = window.germanTests || window.deutschTests || (typeof deutschTests !== 'undefined' ? deutschTests : null);
+            if (loadedData) {
+                window.germanTests = loadedData;
+                window.deutschTests = loadedData;
+            }
+            resolve(window.germanTests || window.deutschTests);
+        };
+        s.onerror = (err) => {
+            console.error('data-tests.js yuklashda xatolik:', err);
+            _loadingTestsScript = null;
+            reject(err);
+        };
+        document.body.appendChild(s);
+    });
+    return _loadingTestsScript;
+}
+window.loadGermanTests = loadGermanTestsScript;
+
 function countTestQuestions(testId) {
-    const t = typeof deutschTests !== 'undefined' ? deutschTests[testId] : null;
+    const allTests = window.germanTests || window.deutschTests || (typeof deutschTests !== 'undefined' ? deutschTests : null);
+    const t = allTests ? allTests[testId] : null;
     if (!t || !t.parts) return 10;
     return t.parts.reduce((s, p) => s + (p.sections ? p.sections.reduce((s2, sec) => s2 + (sec.questions ? sec.questions.length : 0), 0) : 0), 0) || 10;
 }
@@ -192,6 +223,12 @@ function renderDeutschHome() {
     const view = document.getElementById('deutsch-content');
     if (!view) return;
 
+    if (!window.germanTests && !window.deutschTests && typeof deutschTests === 'undefined') {
+        loadGermanTestsScript().then(() => {
+            updateDeutschLevelsView();
+        });
+    }
+
     const t = (key, fallback) => (window.i18n && typeof i18n.t === 'function') ? i18n.t(key) : fallback;
 
     view.innerHTML = `
@@ -262,9 +299,18 @@ function renderDeutschHome() {
 
 let currentPart = 0;
 
-function startTest(level) {
-    currentTest = deutschTests[level];
-    if (!currentTest) return;
+async function startTest(level) {
+    if (!window.germanTests && !window.deutschTests && typeof deutschTests === 'undefined') {
+        try {
+            await loadGermanTestsScript();
+        } catch (e) {
+            console.error('Test ma\'lumotlarini yuklashda xatolik:', e);
+            return;
+        }
+    }
+    const allTests = window.germanTests || window.deutschTests || (typeof deutschTests !== 'undefined' ? deutschTests : null);
+    if (!allTests || !allTests[level]) return;
+    currentTest = allTests[level];
     currentLevel = level;
     currentPart = 0;
     currentSection = 0;
@@ -603,7 +649,8 @@ function buildTournamentQuestions(count) {
 
     // 1) Nemis testlaridan (allaqachon ko'p tanlovli)
     try {
-        Object.values(deutschTests).forEach(test => {
+        const allTests = window.germanTests || window.deutschTests || (typeof deutschTests !== 'undefined' ? deutschTests : {});
+        Object.values(allTests).forEach(test => {
             (test.parts || []).forEach(part => {
                 (part.sections || []).forEach(sec => {
                     (sec.questions || []).forEach(q => {
@@ -706,7 +753,13 @@ async function loadLeaderboard() {
     }
 }
 
-function startTournamentGame() {
+async function startTournamentGame() {
+    if (!window.germanTests && !window.deutschTests && typeof deutschTests === 'undefined') {
+        try {
+            await loadGermanTestsScript();
+        } catch (e) {}
+    }
+
     const loggedIn = window.Auth && Auth.isLoggedIn();
     let name;
     if (loggedIn) {
