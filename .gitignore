@@ -15,3 +15,8 @@ dist/
 data/db.json
 data/*.tmp
 users.json
+
+# Maxfiy Lokal AI Boshqaruv Jurnali (Hech qachon GitHub'ga push qilinmasin)
+gemini.md
+GEMINI.md
+
