@@ -1129,6 +1129,41 @@
         return res;
     }
 
+    // -------------------------------------------------------------------------
+    // LIVE SO'Z VA BELGILAR STATISTIKASI (WORD & CHARACTER METRICS)
+    // -------------------------------------------------------------------------
+    function updateTextMetrics(text, prefix) {
+        const wordsEl = document.getElementById(`${prefix}-stat-words`);
+        const charsEl = document.getElementById(`${prefix}-stat-chars`);
+        const charsNoSpaceEl = document.getElementById(`${prefix}-stat-chars-nospace`);
+        const linesEl = document.getElementById(`${prefix}-stat-lines`);
+        const readEl = document.getElementById(`${prefix}-stat-reading`);
+        if (!wordsEl || !charsEl) return;
+
+        if (!text) {
+            wordsEl.textContent = '0';
+            charsEl.textContent = '0';
+            charsNoSpaceEl.textContent = '0';
+            linesEl.textContent = '0';
+            if (readEl) readEl.textContent = '~0 daq';
+            return;
+        }
+
+        const chars = text.length;
+        const charsNoSpace = text.replace(/\s/g, '').length;
+        const trimmed = text.trim();
+        const words = trimmed ? trimmed.split(/\s+/).length : 0;
+        const lines = text.split(/\r\n|\r|\n/).length;
+        const minutes = Math.max(1, Math.ceil(words / 200));
+        const readingTime = words === 0 ? '~0 daq' : (words < 50 ? '< 1 daq' : `~${minutes} daq`);
+
+        wordsEl.textContent = words.toLocaleString('uz-UZ');
+        charsEl.textContent = chars.toLocaleString('uz-UZ');
+        charsNoSpaceEl.textContent = charsNoSpace.toLocaleString('uz-UZ');
+        linesEl.textContent = lines.toLocaleString('uz-UZ');
+        if (readEl) readEl.textContent = readingTime;
+    }
+
     function initSpellcheck() {
         const input = document.getElementById('spell-input');
         const result = document.getElementById('spell-result');
@@ -1137,12 +1172,16 @@
         const copyBtn = document.getElementById('spell-copy-btn');
         const toCyrlBtn = document.getElementById('spell-to-cyrl-btn');
         const toLatBtn = document.getElementById('spell-to-lat-btn');
+        const sampleBtn = document.getElementById('spell-sample-btn');
+        const clearBtn = document.getElementById('spell-clear-btn');
         if (!input) return;
 
         let currentTypoMap = []; // { tokenIdx, orig, fix }
 
         function checkText() {
             const raw = input.value;
+            updateTextMetrics(raw, 'spell');
+
             if (!raw.trim()) {
                 if (result) {
                     result.innerHTML = '<span style="color:var(--text-secondary);">Natija bu yerda ko\'rinadi...</span>';
@@ -1310,11 +1349,31 @@
             });
         }
 
+        // Namuna matnni yuklash
+        if (sampleBtn) {
+            sampleBtn.addEventListener('click', () => {
+                input.value = "Bugun men juda xursand bo'ldim. Hamma xarakatlarimiz besamar ketmadi, muxim natijalarga erishdik. Ustozimizga katta raxmat aytdik va yangi maslaxatlar oldik. Mexnat qilishdan hech qachon to'xtamaymiz.";
+                checkText();
+                notify("Namunaviy matn yuklandi!", 'ℹ️');
+            });
+        }
+
+        // Tozalash
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                input.value = '';
+                checkText();
+                notify("Matn tozalandi", '🗑️');
+            });
+        }
+
         input.addEventListener('input', checkText);
 
         // Dastlabki matn mavjud bo'lsa tekshirish
         if (input.value) {
             checkText();
+        } else {
+            updateTextMetrics('', 'spell');
         }
     }
 
@@ -1430,15 +1489,34 @@
         const cleanBtn = document.getElementById('pdf-clean-btn');
         const copyBtn = document.getElementById('pdf-copy-btn');
         const dlBtn = document.getElementById('pdf-dl-btn');
+        const uploadBtn = document.getElementById('pdf-upload-btn');
+        const fileInput = document.getElementById('pdf-file-input');
         if (!input || !output) return;
 
         function runCleaning() {
             const raw = input.value;
+            updateTextMetrics(raw, 'pdf');
             if (!raw.trim()) {
                 output.value = '';
                 return;
             }
             output.value = cleanPdfToMarkdown(raw);
+        }
+
+        // Fayl yuklash tugmasi (.txt, .md)
+        if (uploadBtn && fileInput) {
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    input.value = evt.target.result || '';
+                    runCleaning();
+                    notify(`"${file.name}" yuklandi va tozalashga tayyor!`, '📎');
+                };
+                reader.readAsText(file, 'UTF-8');
+            });
         }
 
         if (cleanBtn) {
@@ -1455,6 +1533,7 @@
         // Reaktiv input (debounce 250ms)
         let debounceTimer;
         input.addEventListener('input', () => {
+            updateTextMetrics(input.value, 'pdf');
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(runCleaning, 250);
         });
@@ -1510,6 +1589,12 @@
                 notify(`"${filename}" fayli yuklab olindi!`, '📥');
             });
         }
+
+        if (input.value) {
+            runCleaning();
+        } else {
+            updateTextMetrics('', 'pdf');
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -1542,9 +1627,9 @@
             sample: 'Server IP manzillari:\n192.168.1.1 (Lokal router)\n10.0.0.254 (Shlyuz)\n127.0.0.1 (Loopback)\n8.8.8.8 (Google DNS)\nNoto\'g\'ri: 999.999.999.999'
         },
         hash: {
-            pattern: '\\b[a-fA-F0-9]{64}\\b|\\b[a-fA-F0-9]{32}\\b',
+            pattern: '\\b[a-fA-F0-9]{128}\\b|\\b[a-fA-F0-9]{64}\\b',
             flags: 'gi',
-            sample: 'MD5 va SHA-256 xeshlari:\ne10adc3949ba59abbe56e057f20f883e (MD5 32-belgi)\n2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824 (SHA-256 64-belgi)\nQisqa: abc123'
+            sample: 'SHA-256 va SHA-512 xeshlari (Web Crypto API):\n2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824 (SHA-256 64-belgi)\ncf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e (SHA-512 128-belgi)'
         }
     };
 

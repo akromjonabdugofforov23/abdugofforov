@@ -64,6 +64,17 @@
         'diff': 'diff',
         'qr': 'qr',
         'hash': 'hash',
+        'crypto': 'hash',
+        'encoder': 'hash',
+        'base64': 'hash',
+        'b64': 'hash',
+        'sha': 'hash',
+        'sha256': 'hash',
+        'sha384': 'hash',
+        'sha512': 'hash',
+        'jwt': 'hash',
+        'token': 'hash',
+        'decoder': 'hash',
         'slug': 'slug',
         'url-slug': 'slug',
         'case': 'slug',
@@ -74,10 +85,7 @@
         'timestamp': 'timestamp',
         'time': 'timestamp',
         'unix': 'timestamp',
-        'epoch': 'timestamp',
-        'jwt': 'jwt',
-        'token': 'jwt',
-        'decoder': 'jwt'
+        'epoch': 'timestamp'
     };
 
     // ---------- KATEGORIYA FILTRLARI VA TEZKOR QIDIRUV ----------
@@ -203,8 +211,22 @@
         // Faol tab tugmasini ekranning o'rtasiga silliq siljitish
         targetBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
+        if (canonical === 'hash') {
+            if (normalized === 'jwt' || normalized === 'token' || normalized === 'decoder') {
+                switchCryptoSubtab('jwt');
+            } else if (normalized.startsWith('sha')) {
+                switchCryptoSubtab('sha');
+            } else if (normalized === 'base64' || normalized === 'b64' || normalized === 'url') {
+                switchCryptoSubtab('b64url');
+            }
+        }
+
         if (updateHash) {
-            const nextHash = canonical === 'image' ? '#webp' : `#${canonical}`;
+            let nextHash = canonical === 'image' ? '#webp' : `#${canonical}`;
+            if (canonical === 'hash') {
+                if (normalized === 'jwt' || normalized === 'token') nextHash = '#jwt';
+                else if (normalized.startsWith('sha')) nextHash = '#sha';
+            }
             if (window.location.hash !== nextHash) {
                 try {
                     history.replaceState(null, '', nextHash);
@@ -1108,15 +1130,46 @@
     renderQrCode();
 
     // ============================================================
-    // 6. BASE64 & HASH GENERATOR (Web Crypto API)
+    // 6. CRYPTO & ENCODER HUB (Web Crypto API & Native Standards)
     // ============================================================
+    const cryptoSubtabBtns = document.querySelectorAll('.crypto-subtab-btn');
+    const cryptoSubviews = document.querySelectorAll('.crypto-subview');
+
+    function switchCryptoSubtab(subName) {
+        if (!subName) return;
+        const targetBtn = document.querySelector(`.crypto-subtab-btn[data-sub="${subName}"]`);
+        const targetView = document.getElementById(`crypto-view-${subName}`);
+        if (!targetBtn || !targetView) return;
+
+        cryptoSubtabBtns.forEach(b => b.classList.remove('active'));
+        cryptoSubviews.forEach(v => { v.style.display = 'none'; });
+
+        targetBtn.classList.add('active');
+        targetView.style.display = 'block';
+    }
+
+    cryptoSubtabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const sub = btn.getAttribute('data-sub');
+            switchCryptoSubtab(sub);
+            if (sub === 'jwt') {
+                try { history.replaceState(null, '', '#jwt'); } catch (e) { location.hash = '#jwt'; }
+            } else if (sub === 'sha') {
+                try { history.replaceState(null, '', '#sha'); } catch (e) { location.hash = '#sha'; }
+            } else {
+                try { history.replaceState(null, '', '#hash'); } catch (e) { location.hash = '#hash'; }
+            }
+        });
+    });
+
+    // --- A. BASE64 & URL ENCODER / DECODER ---
     const hashInput = document.getElementById('hash-input');
     const hashOutput = document.getElementById('hash-output');
     const hashB64EncBtn = document.getElementById('hash-b64-enc-btn');
     const hashB64DecBtn = document.getElementById('hash-b64-dec-btn');
     const hashUrlEncBtn = document.getElementById('hash-url-enc-btn');
     const hashUrlDecBtn = document.getElementById('hash-url-dec-btn');
-    const hashSha256Btn = document.getElementById('hash-sha256-btn');
+    const hashClearBtn = document.getElementById('hash-clear-btn');
     const hashCopyBtn = document.getElementById('hash-copy-btn');
 
     function utf8ToBase64(str) {
@@ -1177,37 +1230,86 @@
         });
     }
 
-    async function updateSha256() {
-        const text = hashInput.value;
-        if (!text) {
-            hashOutput.value = '';
-            return;
-        }
-        try {
-            const msgBuffer = new TextEncoder().encode(text);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            hashOutput.value = hashHex;
-        } catch (e) {}
-    }
-
-    if (hashSha256Btn) {
-        hashSha256Btn.addEventListener('click', async () => {
-            await updateSha256();
-            if (hashInput.value) showToast("SHA-256 Hash yaratildi");
+    if (hashClearBtn) {
+        hashClearBtn.addEventListener('click', () => {
+            if (hashInput) hashInput.value = '';
+            if (hashOutput) hashOutput.value = '';
+            showToast("Tozalandi", '🗑️');
         });
-    }
-
-    if (hashInput) {
-        hashInput.addEventListener('input', updateSha256);
     }
 
     if (hashCopyBtn) {
         hashCopyBtn.addEventListener('click', () => {
-            if (!hashOutput.value) return;
+            if (!hashOutput.value) {
+                showToast("Nusxalash uchun natija mavjud emas!", '⚠️');
+                return;
+            }
             navigator.clipboard.writeText(hashOutput.value).then(() => showToast("Nusxalandi!"));
         });
     }
+
+    // --- B. SHA XESHLAR (SHA-256, SHA-384, SHA-512 via Web Crypto API) ---
+    const shaInput = document.getElementById('sha-input');
+    const shaClearBtn = document.getElementById('sha-clear-btn');
+    const shaOut256 = document.getElementById('sha-output-256');
+    const shaOut384 = document.getElementById('sha-output-384');
+    const shaOut512 = document.getElementById('sha-output-512');
+    const shaCopyBtns = document.querySelectorAll('.sha-copy-btn');
+
+    async function computeShaDigest(algorithm, text) {
+        const msgBuffer = new TextEncoder().encode(text);
+        const hashBuffer = await crypto.subtle.digest(algorithm, msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function updateAllShaHashes() {
+        const text = shaInput ? shaInput.value : '';
+        if (!text) {
+            if (shaOut256) shaOut256.value = '';
+            if (shaOut384) shaOut384.value = '';
+            if (shaOut512) shaOut512.value = '';
+            return;
+        }
+
+        try {
+            const [h256, h384, h512] = await Promise.all([
+                computeShaDigest('SHA-256', text),
+                computeShaDigest('SHA-384', text),
+                computeShaDigest('SHA-512', text)
+            ]);
+            if (shaOut256) shaOut256.value = h256;
+            if (shaOut384) shaOut384.value = h384;
+            if (shaOut512) shaOut512.value = h512;
+        } catch (err) {
+            console.error("SHA digest error:", err);
+        }
+    }
+
+    if (shaInput) {
+        shaInput.addEventListener('input', updateAllShaHashes);
+    }
+
+    if (shaClearBtn && shaInput) {
+        shaClearBtn.addEventListener('click', () => {
+            shaInput.value = '';
+            updateAllShaHashes();
+            showToast("Xesh maydoni tozalandi", '🗑️');
+        });
+    }
+
+    shaCopyBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const targetEl = document.getElementById(targetId);
+            if (!targetEl || !targetEl.value) {
+                showToast("Nusxalash uchun xesh mavjud emas!", '⚠️');
+                return;
+            }
+            navigator.clipboard.writeText(targetEl.value).then(() => {
+                showToast("Xesh nusxalandi!", '✓');
+            });
+        });
+    });
 
 })();

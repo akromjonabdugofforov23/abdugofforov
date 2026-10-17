@@ -781,14 +781,11 @@
             <button class="tool-tab-btn" data-tool="regex" data-category="dev" data-keywords="regex muntazam ifoda pattern tester validator test moslik">
                 <span>🔍</span> RegEx Tester
             </button>
-            <button class="tool-tab-btn" data-tool="hash" data-category="dev" data-keywords="hash base64 sha256 sha-256 encode decode crypto shifr xesh">
-                <span>🔐</span> Base64 &amp; Hash
+            <button class="tool-tab-btn" data-tool="hash" data-category="dev" data-keywords="crypto encoder hub hash base64 url jwt token sha256 sha384 sha512 shifr xesh dekoder bearer claim">
+                <span>🔐</span> Crypto &amp; Encoder Hub
             </button>
             <button class="tool-tab-btn" data-tool="timestamp" data-category="dev" data-keywords="timestamp unix epoch vaqt sana date time seconds sekundomer hisoblash">
                 <span>⏱️</span> Timestamp
-            </button>
-            <button class="tool-tab-btn" data-tool="jwt" data-category="dev" data-keywords="jwt json web token bearer dekoder decode payload claim muddat token">
-                <span>🔑</span> JWT Dekoder
             </button>
             <button class="tool-tab-btn" data-tool="qr" data-category="dev" data-keywords="qr qrcode barcode kod generator havola link">
                 <span>📱</span> QR Code Generator
@@ -1003,36 +1000,133 @@
             </div>
         </section>
 
-        <!-- 6. HASH & BASE64 -->
+        <!-- 6. CRYPTO & ENCODER HUB -->
         <section class="tool-panel" id="panel-hash">
             <div class="panel-header">
                 <div class="panel-title">
                     <span>🔐</span>
                     <div>
-                        <h2>Hash &amp; Base64 Encoder / Decoder</h2>
-                        <small style="color:var(--text-secondary);">SHA-256, Base64, URL encode/decode (Web Crypto API)</small>
+                        <h2>Crypto &amp; Encoder Hub</h2>
+                        <small style="color:var(--text-secondary);">Base64, URL Encode/Decode, SHA (256/384/512) va JWT Token dekoder</small>
                     </div>
-                </div>
-                <div class="panel-actions">
-                    <button class="tool-btn" id="hash-b64-enc-btn">Base64 Encode</button>
-                    <button class="tool-btn" id="hash-b64-dec-btn">Base64 Decode</button>
-                    <button class="tool-btn" id="hash-url-enc-btn">URL Encode</button>
-                    <button class="tool-btn" id="hash-url-dec-btn">URL Decode</button>
-                    <button class="tool-btn tool-btn-primary" id="hash-sha256-btn">SHA-256 Hash</button>
                 </div>
             </div>
 
-            <div class="converter-grid">
-                <div class="converter-box">
-                    <div class="box-label"><span>Kiruvchi matn (Input):</span></div>
-                    <textarea class="tool-textarea code-font" id="hash-input" placeholder="Shifrlash yoki o'girish kerak bo'lgan matn..."></textarea>
+            <!-- Hub Sub-navigatsiyasi -->
+            <div class="crypto-subnav" style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;">
+                <button type="button" class="tool-btn crypto-subtab-btn active" data-sub="b64url">🔤 Base64 &amp; URL</button>
+                <button type="button" class="tool-btn crypto-subtab-btn" data-sub="sha">🛡️ SHA Xeshlar (256 / 384 / 512)</button>
+                <button type="button" class="tool-btn crypto-subtab-btn" data-sub="jwt">🔑 JWT Token Dekoder</button>
+            </div>
+
+            <!-- 1. BASE64 & URL VIEW -->
+            <div class="crypto-subview" id="crypto-view-b64url">
+                <div class="panel-actions" style="margin-bottom:14px; display:flex; gap:8px; flex-wrap:wrap;">
+                    <button type="button" class="tool-btn" id="hash-b64-enc-btn">Base64 Encode</button>
+                    <button type="button" class="tool-btn" id="hash-b64-dec-btn">Base64 Decode</button>
+                    <button type="button" class="tool-btn" id="hash-url-enc-btn">URL Encode</button>
+                    <button type="button" class="tool-btn" id="hash-url-dec-btn">URL Decode</button>
+                    <button type="button" class="tool-btn" id="hash-clear-btn">Tozalash</button>
                 </div>
-                <div class="converter-box">
-                    <div class="box-label">
-                        <span>Natija (Output):</span>
-                        <button class="tool-btn" id="hash-copy-btn" style="padding:2px 8px; font-size:0.75rem;">Nusxa olish</button>
+                <div class="converter-grid">
+                    <div class="converter-box">
+                        <div class="box-label"><span>Kiruvchi matn (Input):</span></div>
+                        <textarea class="tool-textarea code-font" id="hash-input" placeholder="Shifrlash yoki o'girish kerak bo'lgan matn..."></textarea>
                     </div>
-                    <textarea class="tool-textarea code-font" id="hash-output" readonly placeholder="Natija bu yerda chiqadi..."></textarea>
+                    <div class="converter-box">
+                        <div class="box-label">
+                            <span>Natija (Output):</span>
+                            <button type="button" class="tool-btn" id="hash-copy-btn" style="padding:2px 8px; font-size:0.75rem;">Nusxa olish</button>
+                        </div>
+                        <textarea class="tool-textarea code-font" id="hash-output" readonly placeholder="Natija bu yerda chiqadi..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. SHA HASHES VIEW (SHA-256, SHA-384, SHA-512) -->
+            <div class="crypto-subview" id="crypto-view-sha" style="display:none;">
+                <div class="converter-box" style="margin-bottom:18px;">
+                    <div class="box-label">
+                        <span>Xeshlash uchun matn (Input):</span>
+                        <button type="button" class="tool-btn" id="sha-clear-btn" style="padding:2px 8px; font-size:0.75rem;">Tozalash</button>
+                    </div>
+                    <textarea class="tool-textarea code-font" id="sha-input" rows="3" placeholder="Matnni kiriting (har bir belgi kiritilganda barcha SHA xeshlar real vaqtda Web Crypto API orqali hisoblanadi)..."></textarea>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                    <!-- SHA-256 -->
+                    <div class="converter-box" style="background:rgba(0,0,0,0.2); border:1px solid var(--tools-border); border-radius:12px; padding:14px;">
+                        <div class="box-label" style="margin-bottom:6px;">
+                            <span style="font-weight:700; color:#38bdf8;">SHA-256 (256-bit / 64 hex belgi):</span>
+                            <button type="button" class="tool-btn sha-copy-btn" data-target="sha-output-256" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                        <input type="text" id="sha-output-256" class="tool-textarea code-font" readonly style="min-height:42px; padding:8px 12px; font-size:0.86rem; color:#38bdf8;" placeholder="SHA-256 xeshi bu yerda chiqadi...">
+                    </div>
+
+                    <!-- SHA-384 -->
+                    <div class="converter-box" style="background:rgba(0,0,0,0.2); border:1px solid var(--tools-border); border-radius:12px; padding:14px;">
+                        <div class="box-label" style="margin-bottom:6px;">
+                            <span style="font-weight:700; color:#a855f7;">SHA-384 (384-bit / 96 hex belgi):</span>
+                            <button type="button" class="tool-btn sha-copy-btn" data-target="sha-output-384" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                        <input type="text" id="sha-output-384" class="tool-textarea code-font" readonly style="min-height:42px; padding:8px 12px; font-size:0.86rem; color:#a855f7;" placeholder="SHA-384 xeshi bu yerda chiqadi...">
+                    </div>
+
+                    <!-- SHA-512 -->
+                    <div class="converter-box" style="background:rgba(0,0,0,0.2); border:1px solid var(--tools-border); border-radius:12px; padding:14px;">
+                        <div class="box-label" style="margin-bottom:6px;">
+                            <span style="font-weight:700; color:#10b981;">SHA-512 (512-bit / 128 hex belgi):</span>
+                            <button type="button" class="tool-btn sha-copy-btn" data-target="sha-output-512" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                        <input type="text" id="sha-output-512" class="tool-textarea code-font" readonly style="min-height:42px; padding:8px 12px; font-size:0.86rem; color:#10b981;" placeholder="SHA-512 xeshi bu yerda chiqadi...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. JWT TOKEN DECODER VIEW -->
+            <div class="crypto-subview" id="crypto-view-jwt" style="display:none;">
+                <div class="panel-actions" style="margin-bottom:14px; display:flex; gap:8px;">
+                    <button type="button" class="tool-btn" id="jwt-sample-btn">Namuna JWT</button>
+                    <button type="button" class="tool-btn" id="jwt-clear-btn">Tozalash</button>
+                </div>
+
+                <!-- Token kiritish -->
+                <div class="converter-box" style="margin-bottom:16px;">
+                    <div class="box-label"><span>Shifrlangan JWT Token (Encoded):</span></div>
+                    <textarea class="tool-textarea code-font" id="jwt-input" rows="4" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+                </div>
+
+                <!-- Status kartasi -->
+                <div id="jwt-status" class="jwt-status-card" style="display:none;"></div>
+
+                <!-- 3 qismli dekodlangan natijalar -->
+                <div class="jwt-parts-container" id="jwt-results-wrap" style="display:none;">
+                    <!-- 1. HEADER -->
+                    <div class="jwt-part-box" style="border-color:rgba(244, 63, 94, 0.4);">
+                        <div class="jwt-part-header header-color">
+                            <span>HEADER: ALGORITHM &amp; TOKEN TYPE</span>
+                            <button type="button" class="tool-btn jwt-copy-btn" data-target="jwt-header-code" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                        <pre class="jwt-part-code" id="jwt-header-code"></pre>
+                    </div>
+
+                    <!-- 2. PAYLOAD -->
+                    <div class="jwt-part-box" style="border-color:rgba(168, 85, 247, 0.4);">
+                        <div class="jwt-part-header payload-color">
+                            <span>PAYLOAD: DATA &amp; CLAIMS</span>
+                            <button type="button" class="tool-btn jwt-copy-btn" data-target="jwt-payload-code" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                        <pre class="jwt-part-code" id="jwt-payload-code"></pre>
+                    </div>
+
+                    <!-- 3. SIGNATURE -->
+                    <div class="jwt-part-box" style="border-color:rgba(6, 182, 212, 0.4);">
+                        <div class="jwt-part-header signature-color">
+                            <span>SIGNATURE: VERIFY SIGNATURE</span>
+                            <button type="button" class="tool-btn jwt-copy-btn" data-target="jwt-signature-code" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                        <pre class="jwt-part-code" id="jwt-signature-code" style="color:#06b6d4;"></pre>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1070,6 +1164,16 @@
                     <div class="box-label"><span>Xatolar tahlili va ko'rinishi:</span></div>
                     <div class="tool-textarea" id="spell-result" style="overflow-y:auto; line-height:1.6; white-space:pre-wrap;"><span style="color:var(--text-secondary);">Natija bu yerda ko'rinadi...</span></div>
                 </div>
+            </div>
+
+            <!-- Live Matn Statistikasi (Word & Character Counter) -->
+            <div id="spell-metrics-bar" style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:12px 18px; background:rgba(0,0,0,0.18); border:1px solid var(--tools-border); border-radius:12px; font-size:0.85rem; color:var(--text-secondary);">
+                <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center;">
+                    <span>📝 So'zlar: <strong id="spell-stat-words" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong></span>
+                    <span>🔤 Belgilar: <strong id="spell-stat-chars" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong> (<span title="Bo'sh joysiz">bo'sh joysiz:</span> <strong id="spell-stat-chars-nospace" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong>)</span>
+                    <span>📑 Qatorlar: <strong id="spell-stat-lines" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong></span>
+                </div>
+                <div>⏱️ O'qish vaqti: <strong id="spell-stat-reading" style="color:var(--tools-accent); font-weight:700;">~0 daq</strong></div>
             </div>
         </section>
 
@@ -1180,6 +1284,16 @@ salomDunyo("Abdugofforov");</textarea>
                     <div class="box-label"><span>Toza Markdown (Output):</span></div>
                     <textarea class="tool-textarea code-font" id="pdf-output" placeholder="Formatlangan Markdown bu yerda chiqadi..."></textarea>
                 </div>
+            </div>
+
+            <!-- Live Matn Statistikasi (Word & Character Counter) -->
+            <div id="pdf-metrics-bar" style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:12px 18px; background:rgba(0,0,0,0.18); border:1px solid var(--tools-border); border-radius:12px; font-size:0.85rem; color:var(--text-secondary);">
+                <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center;">
+                    <span>📝 So'zlar: <strong id="pdf-stat-words" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong></span>
+                    <span>🔤 Belgilar: <strong id="pdf-stat-chars" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong> (<span title="Bo'sh joysiz">bo'sh joysiz:</span> <strong id="pdf-stat-chars-nospace" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong>)</span>
+                    <span>📑 Qatorlar: <strong id="pdf-stat-lines" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong></span>
+                </div>
+                <div>⏱️ O'qish vaqti: <strong id="pdf-stat-reading" style="color:var(--tools-accent); font-weight:700;">~0 daq</strong></div>
             </div>
         </section>
 
@@ -1634,62 +1748,6 @@ salomDunyo("Abdugofforov");</textarea>
                     </div>
                 </div>
                 <div id="ts-diff-summary" style="font-size:0.84rem; color:var(--text-secondary); text-align:center; font-family:'JetBrains Mono', monospace;"></div>
-            </div>
-        </section>
-
-        <!-- 16. JWT (JSON WEB TOKEN) DEKODER -->
-        <section class="tool-panel" id="panel-jwt">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <span>🔑</span>
-                    <div>
-                        <h2>JWT (JSON Web Token) Dekoder</h2>
-                        <small style="color:var(--text-secondary);">100% mijoz brauzerida xavfsiz dekodlash, sintaktik ranglar va muddat tekshiruvi</small>
-                    </div>
-                </div>
-                <div class="panel-actions">
-                    <button type="button" class="tool-btn" id="jwt-sample-btn">Namuna JWT</button>
-                    <button type="button" class="tool-btn" id="jwt-clear-btn">Tozalash</button>
-                </div>
-            </div>
-
-            <!-- Token kiritish -->
-            <div class="converter-box" style="margin-bottom:16px;">
-                <div class="box-label"><span>Shifrlangan JWT Token (Encoded):</span></div>
-                <textarea class="tool-textarea code-font" id="jwt-input" rows="4" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
-            </div>
-
-            <!-- Status kartasi -->
-            <div id="jwt-status" class="jwt-status-card" style="display:none;"></div>
-
-            <!-- 3 qismli dekodlangan natijalar -->
-            <div class="jwt-parts-container" id="jwt-results-wrap" style="display:none;">
-                <!-- 1. HEADER -->
-                <div class="jwt-part-box" style="border-color:rgba(244, 63, 94, 0.4);">
-                    <div class="jwt-part-header header-color">
-                        <span>HEADER: ALGORITHM &amp; TOKEN TYPE</span>
-                        <button type="button" class="tool-btn jwt-copy-btn" data-target="jwt-header-code" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
-                    </div>
-                    <pre class="jwt-part-code" id="jwt-header-code"></pre>
-                </div>
-
-                <!-- 2. PAYLOAD -->
-                <div class="jwt-part-box" style="border-color:rgba(168, 85, 247, 0.4);">
-                    <div class="jwt-part-header payload-color">
-                        <span>PAYLOAD: DATA &amp; CLAIMS</span>
-                        <button type="button" class="tool-btn jwt-copy-btn" data-target="jwt-payload-code" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
-                    </div>
-                    <pre class="jwt-part-code" id="jwt-payload-code"></pre>
-                </div>
-
-                <!-- 3. SIGNATURE -->
-                <div class="jwt-part-box" style="border-color:rgba(6, 182, 212, 0.4);">
-                    <div class="jwt-part-header signature-color">
-                        <span>SIGNATURE: VERIFY SIGNATURE</span>
-                        <button type="button" class="tool-btn jwt-copy-btn" data-target="jwt-signature-code" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
-                    </div>
-                    <pre class="jwt-part-code" id="jwt-signature-code" style="color:#06b6d4;"></pre>
-                </div>
             </div>
         </section>
     </main>

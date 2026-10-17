@@ -2,7 +2,7 @@
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
 // CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
 // bilan qorishib qolmasligi uchun
-const CACHE = 'abdu-cache-v16';
+const CACHE = 'abdu-cache-v17';
 const SHELL = [
     '/',
     '/index.html',
