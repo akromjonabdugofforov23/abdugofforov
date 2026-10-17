@@ -63,8 +63,114 @@
         'json': 'json',
         'diff': 'diff',
         'qr': 'qr',
-        'hash': 'hash'
+        'hash': 'hash',
+        'slug': 'slug',
+        'url-slug': 'slug',
+        'case': 'slug',
+        'glass': 'glass',
+        'glassmorphism': 'glass',
+        'neon': 'glass',
+        'css': 'glass',
+        'timestamp': 'timestamp',
+        'time': 'timestamp',
+        'unix': 'timestamp',
+        'epoch': 'timestamp',
+        'jwt': 'jwt',
+        'token': 'jwt',
+        'decoder': 'jwt'
     };
+
+    // ---------- KATEGORIYA FILTRLARI VA TEZKOR QIDIRUV ----------
+    const searchInput = document.getElementById('tools-search-input');
+    const searchClearBtn = document.getElementById('tools-search-clear');
+    const catBtns = document.querySelectorAll('.tool-cat-btn');
+    let currentCategory = 'all';
+
+    function filterTools() {
+        const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+        let firstVisibleBtn = null;
+        let countVisible = 0;
+
+        tabBtns.forEach(btn => {
+            const tool = btn.getAttribute('data-tool') || '';
+            const cat = btn.getAttribute('data-category') || '';
+            const keywords = (btn.getAttribute('data-keywords') || '').toLowerCase();
+            const text = btn.textContent.toLowerCase();
+
+            const matchesCat = (currentCategory === 'all' || cat === currentCategory);
+            const matchesQuery = !query || tool.includes(query) || text.includes(query) || keywords.includes(query);
+
+            if (matchesCat && matchesQuery) {
+                btn.style.display = 'inline-flex';
+                countVisible++;
+                if (!firstVisibleBtn) firstVisibleBtn = btn;
+            } else {
+                btn.style.display = 'none';
+            }
+        });
+
+        if (searchClearBtn) {
+            searchClearBtn.style.display = query ? 'flex' : 'none';
+        }
+
+        return { firstVisibleBtn, countVisible };
+    }
+
+    catBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            catBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.getAttribute('data-category') || 'all';
+
+            const { firstVisibleBtn } = filterTools();
+
+            // Agar tanlangan kategoriya ichida hozirgi aktiv tab bo'lmasa, birinchi mos tabni faollashtiramiz
+            const currentActiveBtn = document.querySelector('.tool-tab-btn.active');
+            if (currentActiveBtn && currentActiveBtn.style.display === 'none' && firstVisibleBtn) {
+                activateTab(firstVisibleBtn.getAttribute('data-tool'), true);
+            }
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            filterTools();
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const { firstVisibleBtn } = filterTools();
+                if (firstVisibleBtn) {
+                    activateTab(firstVisibleBtn.getAttribute('data-tool'), true);
+                    searchInput.blur();
+                }
+            } else if (e.key === 'Escape') {
+                searchInput.value = '';
+                filterTools();
+                searchInput.blur();
+            }
+        });
+    }
+
+    if (searchClearBtn && searchInput) {
+        searchClearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            filterTools();
+            searchInput.focus();
+        });
+    }
+
+    // Global ⌘K yoki Ctrl+K orqali tezkor qidiruvga fokus berish
+    window.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+            if (searchInput && document.activeElement !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+                searchInput.select();
+            }
+        }
+    });
 
     function activateTab(toolName, updateHash = true) {
         if (!toolName) return;
@@ -75,6 +181,18 @@
         const targetPanel = document.getElementById(`panel-${canonical}`);
 
         if (!targetBtn || !targetPanel) return;
+
+        // Agar tanlangan tabning kategoriyasi yashiringan bo'lsa, toifani ochish
+        const cat = targetBtn.getAttribute('data-category');
+        if (currentCategory !== 'all' && cat && cat !== currentCategory) {
+            const matchingCatBtn = document.querySelector(`.tool-cat-btn[data-category="${cat}"]`);
+            if (matchingCatBtn) {
+                catBtns.forEach(b => b.classList.remove('active'));
+                matchingCatBtn.classList.add('active');
+                currentCategory = cat;
+                filterTools();
+            }
+        }
 
         tabBtns.forEach(b => b.classList.remove('active'));
         panels.forEach(p => p.classList.remove('active'));
@@ -121,6 +239,116 @@
     } else {
         setTimeout(syncStateFromHash, 50);
     }
+
+    // ---------- ZEN FULLSCREEN REJIMI ----------
+    function toggleZenFullscreen(panelId) {
+        const panel = document.getElementById(panelId);
+        if (!panel) return;
+
+        const isZen = panel.classList.toggle('zen-mode');
+        document.body.classList.toggle('zen-active', isZen);
+
+        const btn = panel.querySelector(`.zen-fullscreen-btn[data-panel="${panelId}"]`);
+        if (btn) {
+            const label = btn.querySelector('.fullscreen-label');
+            const icon = btn.querySelector('.fullscreen-icon');
+            if (isZen) {
+                if (label) label.textContent = 'Kichraytirish';
+                if (icon) icon.textContent = '⤢';
+                btn.classList.add('tool-btn-primary');
+                showToast("Zen to'liq ekran rejimi (Esc — chiqish)", "⛶");
+            } else {
+                if (label) label.textContent = 'Kengaytirish';
+                if (icon) icon.textContent = '⛶';
+                btn.classList.remove('tool-btn-primary');
+            }
+        }
+    }
+
+    document.querySelectorAll('.zen-fullscreen-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const panelId = btn.getAttribute('data-panel');
+            if (panelId) toggleZenFullscreen(panelId);
+        });
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const activeZenPanel = document.querySelector('.tool-panel.zen-mode');
+            if (activeZenPanel) {
+                toggleZenFullscreen(activeZenPanel.id);
+            }
+        }
+    });
+
+    // ---------- GLOBAL DRAG & DROP ----------
+    const dropOverlay = document.getElementById('tools-global-drop-overlay');
+    let dragCounter = 0;
+
+    window.addEventListener('dragenter', (e) => {
+        if (e.dataTransfer && e.dataTransfer.types && Array.from(e.dataTransfer.types).includes('Files')) {
+            dragCounter++;
+            if (dropOverlay) dropOverlay.classList.add('active');
+        }
+    });
+
+    window.addEventListener('dragleave', (e) => {
+        dragCounter--;
+        if (dragCounter <= 0) {
+            dragCounter = 0;
+            if (dropOverlay) dropOverlay.classList.remove('active');
+        }
+    });
+
+    window.addEventListener('dragover', (e) => {
+        if (e.dataTransfer && e.dataTransfer.types && Array.from(e.dataTransfer.types).includes('Files')) {
+            e.preventDefault();
+        }
+    });
+
+    window.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dragCounter = 0;
+        if (dropOverlay) dropOverlay.classList.remove('active');
+
+        const files = e.dataTransfer && e.dataTransfer.files;
+        if (!files || !files.length) return;
+
+        const firstFile = files[0];
+        if (firstFile.type && firstFile.type.startsWith('image/')) {
+            const activePanel = document.querySelector('.tool-panel.active');
+            const isOcr = activePanel && activePanel.id === 'panel-ocr';
+
+            if (isOcr) {
+                const ocrInput = document.getElementById('ocr-file-input');
+                if (ocrInput) {
+                    try {
+                        const dt = new DataTransfer();
+                        dt.items.add(firstFile);
+                        ocrInput.files = dt.files;
+                        ocrInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    } catch (err) {
+                        // fallback
+                    }
+                }
+                showToast("Rasm OCR tahliliga yuborildi", "👁️");
+            } else {
+                activateTab('image', true);
+                const compressInput = document.getElementById('compress-file-input');
+                if (compressInput) {
+                    try {
+                        const dt = new DataTransfer();
+                        dt.items.add(firstFile);
+                        compressInput.files = dt.files;
+                        compressInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    } catch (err) {
+                        // fallback
+                    }
+                }
+                showToast("Rasm WebP siquvchiga yuklandi", "🖼️");
+            }
+        }
+    });
 
     // ============================================================
     // 1. LOTIN ⇄ KIRILL TRANSLITERATOR

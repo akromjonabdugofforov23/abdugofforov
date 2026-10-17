@@ -495,6 +495,189 @@
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Search & Categories Bar */
+        .tools-controls-wrap {
+            max-width: 860px;
+            margin: 0 auto 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tools-search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--tools-card-bg);
+            border: 1px solid var(--tools-border);
+            border-radius: 16px;
+            padding: 4px 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .tools-search-box:focus-within {
+            border-color: var(--tools-accent);
+            box-shadow: 0 0 0 3px var(--tools-accent-glow);
+        }
+
+        .tools-search-icon {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-right: 12px;
+            user-select: none;
+        }
+
+        #tools-search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            padding: 10px 0;
+            font-family: inherit;
+        }
+
+        .tools-search-clear {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-secondary);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+            margin-right: 10px;
+            transition: all 0.2s;
+        }
+
+        .tools-search-clear:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .tools-search-badge kbd {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--tools-border);
+            border-radius: 6px;
+            padding: 3px 7px;
+            font-size: 0.72rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+        }
+
+        .tools-categories-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tool-cat-btn {
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--tools-border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .tool-cat-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--tools-border-hover);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .tool-cat-btn.active {
+            background: var(--tools-accent);
+            border-color: var(--tools-accent);
+            color: #ffffff;
+            box-shadow: 0 4px 14px var(--tools-accent-glow);
+        }
+
+        /* Zen Fullscreen Mode */
+        .tool-panel.zen-mode {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            z-index: 9999 !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            padding: 30px !important;
+            overflow-y: auto !important;
+            background: var(--bg-color, #0b1120) !important;
+            backdrop-filter: blur(24px) !important;
+            -webkit-backdrop-filter: blur(24px) !important;
+            border: none !important;
+            box-shadow: none !important;
+            animation: zenFadeIn 0.25s ease-out !important;
+        }
+
+        [data-theme="light"] .tool-panel.zen-mode {
+            background: #ffffff !important;
+        }
+
+        @keyframes zenFadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        body.zen-active {
+            overflow: hidden !important;
+        }
+
+        /* Global Drag & Drop Overlay */
+        .tools-global-drop-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 17, 32, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transition: all 0.2s ease;
+        }
+        .tools-global-drop-overlay.active {
+            display: flex;
+        }
+        .drop-overlay-card {
+            background: rgba(30, 41, 59, 0.85);
+            border: 2px dashed var(--tools-accent);
+            border-radius: 24px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(99, 102, 241, 0.25);
+            animation: pulseScale 1.5s ease-in-out infinite alternate;
+        }
+        .drop-overlay-icon {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 14px;
+        }
+        @keyframes pulseScale {
+            from { transform: scale(0.98); }
+            to { transform: scale(1.02); }
+        }
     </style>
 </head>
 <body>
@@ -529,43 +712,86 @@
             <p>100% mijoz brauzerida ishlaydi. Ma'lumotlaringiz hech qayerga yuborilmaydi, mutlaqo maxfiy va xavfsiz.</p>
         </div>
 
+        <!-- Tezkor Qidiruv va Kategoriya Filtrlari -->
+        <div class="tools-controls-wrap">
+            <div class="tools-search-box">
+                <span class="tools-search-icon">🔍</span>
+                <input type="text" id="tools-search-input" placeholder="Asboblar bo'yicha tezkor qidiruv... (masalan: json, jwt, imlo, qr, slug, fon)" autocomplete="off" spellcheck="false" aria-label="Asboblarni qidirish">
+                <button type="button" id="tools-search-clear" class="tools-search-clear" title="Tozalash" style="display:none;">✕</button>
+                <span class="tools-search-badge"><kbd>Enter ↵</kbd></span>
+            </div>
+
+            <!-- Kategoriya Teqlari -->
+            <div class="tools-categories-bar" id="tools-categories">
+                <button type="button" class="tool-cat-btn active" data-category="all">
+                    <span>🌐</span> Barchasi
+                </button>
+                <button type="button" class="tool-cat-btn" data-category="text">
+                    <span>📝</span> Matn &amp; Til
+                </button>
+                <button type="button" class="tool-cat-btn" data-category="media">
+                    <span>🖼️</span> Media &amp; Dizayn
+                </button>
+                <button type="button" class="tool-cat-btn" data-category="dev">
+                    <span>💻</span> Dev &amp; Kripto
+                </button>
+            </div>
+        </div>
+
         <!-- Tool Nav Tabs -->
         <div class="tools-tabs-wrap" id="tools-tabs">
-            <button class="tool-tab-btn active" data-tool="translit">
+            <!-- Matn & Til vositalari -->
+            <button class="tool-tab-btn active" data-tool="translit" data-category="text" data-keywords="lotin kirill translit alifbo o'girish matn uzbek uzb">
                 <span>🇺🇿</span> Lotin ⇄ Kirill
             </button>
-            <button class="tool-tab-btn" data-tool="spellcheck">
+            <button class="tool-tab-btn" data-tool="spellcheck" data-category="text" data-keywords="imlo orfografiya xato tuzatish tekshirish so'zlar lug'at">
                 <span>✍️</span> Imlo Tuzatuvchi
             </button>
-            <button class="tool-tab-btn" data-tool="image">
-                <span>🖼️</span> WebP &amp; Rasm Siquvchi
+            <button class="tool-tab-btn" data-tool="slug" data-category="text" data-keywords="slug url link case kebab snake camel pascal title nom o'zbekcha">
+                <span>🔗</span> URL Slug
             </button>
-            <button class="tool-tab-btn" data-tool="icon">
-                <span>🎨</span> Favicon Generator
+            <button class="tool-tab-btn" data-tool="pdfclean" data-category="text" data-keywords="markdown text matn tozalovchi pdf tozalash formatlash xatboshi">
+                <span>📄</span> Matn ➔ Markdown
             </button>
-            <button class="tool-tab-btn" data-tool="codeshot">
-                <span>📸</span> Code to Image
-            </button>
-            <button class="tool-tab-btn" data-tool="pdfclean">
-                <span>📄</span> Text ➔ Markdown
-            </button>
-            <button class="tool-tab-btn" data-tool="regex">
-                <span>🔍</span> RegEx Tester
-            </button>
-            <button class="tool-tab-btn" data-tool="ocr">
-                <span>👁️</span> Rasm Matnini Ajratish
-            </button>
-            <button class="tool-tab-btn" data-tool="json">
-                <span>📋</span> JSON Formatter
-            </button>
-            <button class="tool-tab-btn" data-tool="diff">
+            <button class="tool-tab-btn" data-tool="diff" data-category="text" data-keywords="diff taqqoslash solishtirish qiyoslash text checker farq">
                 <span>⚖️</span> Text Diff Checker
             </button>
-            <button class="tool-tab-btn" data-tool="qr">
-                <span>📱</span> QR Code Generator
+
+            <!-- Media & Dizayn vositalari -->
+            <button class="tool-tab-btn" data-tool="image" data-category="media" data-keywords="webp rasm siqish compress image photo fon convert hajm sifat">
+                <span>🖼️</span> WebP &amp; Rasm Siquvchi
             </button>
-            <button class="tool-tab-btn" data-tool="hash">
+            <button class="tool-tab-btn" data-tool="icon" data-category="media" data-keywords="favicon icon pwa app ico rasm generator o'lcham android apple">
+                <span>🎨</span> Favicon Generator
+            </button>
+            <button class="tool-tab-btn" data-tool="codeshot" data-category="media" data-keywords="codeshot carbon rayso code rasm snippet dastur skrinshot dasturchi">
+                <span>📸</span> Code to Image
+            </button>
+            <button class="tool-tab-btn" data-tool="ocr" data-category="media" data-keywords="ocr rasm matn tesseract skrinshot extract text o'qish ajratish">
+                <span>👁️</span> Rasm Matnini Ajratish
+            </button>
+            <button class="tool-tab-btn" data-tool="glass" data-category="media" data-keywords="glass glassmorphism neon css blur shaffoflik generator dizayn cyber oyna">
+                <span>✨</span> Glassmorphism CSS
+            </button>
+
+            <!-- Dev & Kripto vositalari -->
+            <button class="tool-tab-btn" data-tool="json" data-category="dev" data-keywords="json formatter validator format minify beautify kod parser">
+                <span>📋</span> JSON Formatter
+            </button>
+            <button class="tool-tab-btn" data-tool="regex" data-category="dev" data-keywords="regex muntazam ifoda pattern tester validator test moslik">
+                <span>🔍</span> RegEx Tester
+            </button>
+            <button class="tool-tab-btn" data-tool="hash" data-category="dev" data-keywords="hash base64 sha256 sha-256 encode decode crypto shifr xesh">
                 <span>🔐</span> Base64 &amp; Hash
+            </button>
+            <button class="tool-tab-btn" data-tool="timestamp" data-category="dev" data-keywords="timestamp unix epoch vaqt sana date time seconds sekundomer hisoblash">
+                <span>⏱️</span> Timestamp
+            </button>
+            <button class="tool-tab-btn" data-tool="jwt" data-category="dev" data-keywords="jwt json web token bearer dekoder decode payload claim muddat token">
+                <span>🔑</span> JWT Dekoder
+            </button>
+            <button class="tool-tab-btn" data-tool="qr" data-category="dev" data-keywords="qr qrcode barcode kod generator havola link">
+                <span>📱</span> QR Code Generator
             </button>
         </div>
 
@@ -675,6 +901,9 @@
                     </div>
                 </div>
                 <div class="panel-actions">
+                    <button type="button" class="tool-btn zen-fullscreen-btn" data-panel="panel-json" title="Zen to'liq ekran rejimi">
+                        <span class="fullscreen-icon">⛶</span> <span class="fullscreen-label">Kengaytirish</span>
+                    </button>
                     <button class="tool-btn" id="json-format-2-btn">Format (2 probel)</button>
                     <button class="tool-btn" id="json-format-4-btn">Format (4 probel)</button>
                     <button class="tool-btn" id="json-minify-btn">Minify (1 qator)</button>
@@ -712,6 +941,9 @@
                     </div>
                 </div>
                 <div class="panel-actions">
+                    <button type="button" class="tool-btn zen-fullscreen-btn" data-panel="panel-diff" title="Zen to'liq ekran rejimi">
+                        <span class="fullscreen-icon">⛶</span> <span class="fullscreen-label">Kengaytirish</span>
+                    </button>
                     <button class="tool-btn tool-btn-primary" id="diff-compare-btn">Taqqoslash</button>
                     <button class="tool-btn" id="diff-clear-btn">Tozalash</button>
                 </div>
@@ -885,6 +1117,9 @@
                     </div>
                 </div>
                 <div class="panel-actions">
+                    <button type="button" class="tool-btn zen-fullscreen-btn" data-panel="panel-codeshot" title="Zen to'liq ekran rejimi">
+                        <span class="fullscreen-icon">⛶</span> <span class="fullscreen-label">Kengaytirish</span>
+                    </button>
                     <select id="code-lang" class="tool-btn" style="background:var(--card-bg);">
                         <option value="javascript">JavaScript / TS</option>
                         <option value="python">Python</option>
@@ -924,7 +1159,7 @@ salomDunyo("Abdugofforov");</textarea>
                 <div class="panel-title">
                     <span>📄</span>
                     <div>
-                        <h2>PDF &amp; Xom Matndan Toza Markdown</h2>
+                        <h2>Matn Tozalovchi &amp; Markdown</h2>
                         <small style="color:var(--text-secondary);">Buzilgan qatorlarni birlashtirish, sarlavhalarni to'g'rilash va .md formatiga o'tkazish</small>
                     </div>
                 </div>
@@ -1031,6 +1266,432 @@ salomDunyo("Abdugofforov");</textarea>
                 <textarea class="tool-textarea" id="ocr-result" rows="6" readonly placeholder="Rasm tanlaganingizdan so'ng matn bu yerda chiqadi..."></textarea>
             </div>
         </section>
+
+        <!-- 13. O'ZBEKCHA URL SLUG & CASE GENERATOR -->
+        <section class="tool-panel" id="panel-slug">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>🔗</span>
+                    <div>
+                        <h2>O'zbekcha URL Slug &amp; Case Generator</h2>
+                        <small style="color:var(--text-secondary);">O'zbek harflarini to'g'ri normalizatsiya qilish va ko'p formatli slug/case konversiyasi</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <button type="button" class="tool-btn" id="slug-sample-btn">Namuna</button>
+                    <button type="button" class="tool-btn" id="slug-clear-btn">Tozalash</button>
+                </div>
+            </div>
+
+            <!-- Statistika paneli -->
+            <div class="dev-stats-bar">
+                <div class="dev-stat-item">
+                    <span>Belgilar:</span>
+                    <span class="dev-stat-value" id="slug-stat-chars">0 (0 probelsiz)</span>
+                </div>
+                <div class="dev-stat-item">
+                    <span>So'zlar:</span>
+                    <span class="dev-stat-value" id="slug-stat-words">0 ta</span>
+                </div>
+                <div class="dev-stat-item">
+                    <span>O'qish vaqti:</span>
+                    <span class="dev-stat-value" id="slug-stat-read">0 soniya</span>
+                </div>
+            </div>
+
+            <div class="converter-box" style="margin-bottom: 20px;">
+                <div class="box-label"><span>Kiruvchi matn yoki sarlavha:</span></div>
+                <textarea class="tool-textarea" id="slug-input" rows="3" placeholder="Sarlavha yoki matnni kiriting... Masalan: 'Yangi darsliklar va o'quv qo'llanmalari haqida 2026'"></textarea>
+            </div>
+
+            <div class="slug-formats-grid">
+                <!-- 1. Kebab-case -->
+                <div class="slug-format-card">
+                    <div class="slug-format-header">
+                        <span class="slug-format-title"><span>🌐</span> Kebab-case (SEO URL Slug)</span>
+                        <span class="slug-format-badge">URL / Web</span>
+                    </div>
+                    <div class="slug-format-body">
+                        <input type="text" id="slug-out-kebab" class="slug-format-input" readonly placeholder="kebab-case-natijasi">
+                        <button type="button" class="slug-copy-btn" data-target="slug-out-kebab">Nusxalash</button>
+                    </div>
+                </div>
+
+                <!-- 2. Snake_case -->
+                <div class="slug-format-card">
+                    <div class="slug-format-header">
+                        <span class="slug-format-title"><span>🐍</span> Snake_case</span>
+                        <span class="slug-format-badge">Python / DB</span>
+                    </div>
+                    <div class="slug-format-body">
+                        <input type="text" id="slug-out-snake" class="slug-format-input" readonly placeholder="snake_case_natijasi">
+                        <button type="button" class="slug-copy-btn" data-target="slug-out-snake">Nusxalash</button>
+                    </div>
+                </div>
+
+                <!-- 3. CamelCase -->
+                <div class="slug-format-card">
+                    <div class="slug-format-header">
+                        <span class="slug-format-title"><span>🐪</span> CamelCase</span>
+                        <span class="slug-format-badge">JS / TS</span>
+                    </div>
+                    <div class="slug-format-body">
+                        <input type="text" id="slug-out-camel" class="slug-format-input" readonly placeholder="camelCaseNatijasi">
+                        <button type="button" class="slug-copy-btn" data-target="slug-out-camel">Nusxalash</button>
+                    </div>
+                </div>
+
+                <!-- 4. PascalCase -->
+                <div class="slug-format-card">
+                    <div class="slug-format-header">
+                        <span class="slug-format-title"><span>🏛️</span> PascalCase</span>
+                        <span class="slug-format-badge">Class / Component</span>
+                    </div>
+                    <div class="slug-format-body">
+                        <input type="text" id="slug-out-pascal" class="slug-format-input" readonly placeholder="PascalCaseNatijasi">
+                        <button type="button" class="slug-copy-btn" data-target="slug-out-pascal">Nusxalash</button>
+                    </div>
+                </div>
+
+                <!-- 5. UPPER_CASE / CONSTANT -->
+                <div class="slug-format-card">
+                    <div class="slug-format-header">
+                        <span class="slug-format-title"><span>⚡</span> UPPER_CASE (Constant)</span>
+                        <span class="slug-format-badge">ENV / Const</span>
+                    </div>
+                    <div class="slug-format-body">
+                        <input type="text" id="slug-out-const" class="slug-format-input" readonly placeholder="UPPER_CASE_NATIJASI">
+                        <button type="button" class="slug-copy-btn" data-target="slug-out-const">Nusxalash</button>
+                    </div>
+                </div>
+
+                <!-- 6. Title Case -->
+                <div class="slug-format-card">
+                    <div class="slug-format-header">
+                        <span class="slug-format-title"><span>📰</span> Title Case</span>
+                        <span class="slug-format-badge">Sarlavha</span>
+                    </div>
+                    <div class="slug-format-body">
+                        <input type="text" id="slug-out-title" class="slug-format-input" readonly placeholder="Title Case Natijasi">
+                        <button type="button" class="slug-copy-btn" data-target="slug-out-title">Nusxalash</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 14. CYBER GLASSMORPHISM & NEON CSS GENERATOR -->
+        <section class="tool-panel" id="panel-glass">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>💎</span>
+                    <div>
+                        <h2>Cyber Glassmorphism &amp; Neon CSS Generator</h2>
+                        <small style="color:var(--text-secondary);">Oynasimon fon, xiralik va neon nurlanish effektlarini real vaqtda yaratish</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <button type="button" class="tool-btn" id="glass-reset-btn">Qayta tiklash</button>
+                    <button type="button" class="tool-btn tool-btn-primary" id="glass-copy-btn">📋 CSS Nusxa olish</button>
+                </div>
+            </div>
+
+            <div class="glass-layout-grid">
+                <!-- Sozlamalar paneli -->
+                <div class="glass-controls-panel">
+                    <!-- Fon shaffofligi -->
+                    <div class="glass-control-row">
+                        <div class="glass-label-wrap">
+                            <span>Fon Shaffofligi (Opacity):</span>
+                            <span class="glass-val-badge" id="glass-val-opacity">65%</span>
+                        </div>
+                        <input type="range" id="glass-bg-opacity" class="glass-range" min="0" max="100" value="65">
+                    </div>
+
+                    <!-- Xiralik (Blur) -->
+                    <div class="glass-control-row">
+                        <div class="glass-label-wrap">
+                            <span>Xiralik (Backdrop Blur):</span>
+                            <span class="glass-val-badge" id="glass-val-blur">16px</span>
+                        </div>
+                        <input type="range" id="glass-blur" class="glass-range" min="0" max="40" value="16">
+                    </div>
+
+                    <!-- Hoshiya qalinligi -->
+                    <div class="glass-control-row">
+                        <div class="glass-label-wrap">
+                            <span>Hoshiya Qalinligi (Border Width):</span>
+                            <span class="glass-val-badge" id="glass-val-border-width">1px</span>
+                        </div>
+                        <input type="range" id="glass-border-width" class="glass-range" min="0" max="5" value="1">
+                    </div>
+
+                    <!-- Hoshiya shaffofligi -->
+                    <div class="glass-control-row">
+                        <div class="glass-label-wrap">
+                            <span>Hoshiya Shaffofligi (Border Opacity):</span>
+                            <span class="glass-val-badge" id="glass-val-border-opacity">15%</span>
+                        </div>
+                        <input type="range" id="glass-border-opacity" class="glass-range" min="0" max="100" value="15">
+                    </div>
+
+                    <!-- Neon nurlanish xiraligi -->
+                    <div class="glass-control-row">
+                        <div class="glass-label-wrap">
+                            <span>Neon Glow Blur:</span>
+                            <span class="glass-val-badge" id="glass-val-glow-blur">24px</span>
+                        </div>
+                        <input type="range" id="glass-glow-blur" class="glass-range" min="0" max="60" value="24">
+                    </div>
+
+                    <!-- Neon nurlanish intensivligi -->
+                    <div class="glass-control-row">
+                        <div class="glass-label-wrap">
+                            <span>Neon Intensivligi (Opacity):</span>
+                            <span class="glass-val-badge" id="glass-val-glow-opacity">35%</span>
+                        </div>
+                        <input type="range" id="glass-glow-opacity" class="glass-range" min="0" max="100" value="35">
+                    </div>
+
+                    <!-- Burchak radiusi -->
+                    <div class="glass-control-row">
+                        <div class="glass-label-wrap">
+                            <span>Burchak Radiusi (Border Radius):</span>
+                            <span class="glass-val-badge" id="glass-val-radius">18px</span>
+                        </div>
+                        <input type="range" id="glass-radius" class="glass-range" min="0" max="32" value="18">
+                    </div>
+
+                    <!-- Neon nurlanish rangi -->
+                    <div class="glass-control-row">
+                        <div class="glass-label-wrap">
+                            <span>Nur Rangi (Neon Theme):</span>
+                        </div>
+                        <div class="glass-color-presets">
+                            <div class="glass-color-dot active" data-color="cyan" style="background:#06b6d4;" title="Cyan"></div>
+                            <div class="glass-color-dot" data-color="violet" style="background:#a855f7;" title="Violet"></div>
+                            <div class="glass-color-dot" data-color="emerald" style="background:#10b981;" title="Emerald"></div>
+                            <div class="glass-color-dot" data-color="amber" style="background:#f59e0b;" title="Amber"></div>
+                            <div class="glass-color-dot" data-color="rose" style="background:#f43f5e;" title="Rose"></div>
+                            <input type="color" id="glass-custom-color" value="#06b6d4" style="width:30px; height:30px; border:none; border-radius:50%; cursor:pointer; background:transparent;" title="Maxsus rang">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jonli Preview maydoni -->
+                <div>
+                    <div class="glass-preview-stage" id="glass-preview-stage">
+                        <div class="glass-stage-orb glass-stage-orb-1"></div>
+                        <div class="glass-stage-orb glass-stage-orb-2"></div>
+                        <div class="glass-stage-orb glass-stage-orb-3"></div>
+
+                        <div class="glass-demo-card" id="glass-preview-card">
+                            <div class="glass-demo-badge">
+                                <span class="glass-demo-badge-dot"></span>
+                                <span>CYBER GLASS // ACTIVE</span>
+                            </div>
+                            <h3 class="glass-demo-title">Cyber Glassmorphism Preview</h3>
+                            <p class="glass-demo-desc">Ushbu oynasimon panel CSS backdrop-filter va neon box-shadow texnologiyasi asosida ishlaydi.</p>
+                            <div class="glass-demo-actions">
+                                <button type="button" class="glass-demo-btn glass-demo-btn-primary">Batafsil</button>
+                                <button type="button" class="glass-demo-btn">Bekor qilish</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CSS kodi -->
+                    <div class="glass-css-output-box">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <span style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Generatsiya qilingan CSS:</span>
+                        </div>
+                        <code class="glass-css-code" id="glass-css-code">/* CSS kodi bu yerda paydo bo'ladi */</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 15. UNIX TIMESTAMP & SANA KALKULYATORI -->
+        <section class="tool-panel" id="panel-timestamp">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>⏱️</span>
+                    <div>
+                        <h2>Unix Timestamp &amp; Sana Kalkulyatori</h2>
+                        <small style="color:var(--text-secondary);">Real vaqt sekundomeri, Toshkent vaqti (UTC+5), ISO 8601 va nisbiy vaqt konversiyasi</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jonli sekundomer -->
+            <div class="ts-live-ticker-wrap">
+                <div>
+                    <div style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-bottom:4px;">Joriy Unix vaqti (Jonli):</div>
+                    <div class="ts-ticker-numbers">
+                        <span class="ts-ticker-sec" id="ts-live-sec">0000000000</span>
+                        <span class="ts-ticker-ms" id="ts-live-ms">.000</span>
+                    </div>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button type="button" class="tool-btn" id="ts-copy-sec-btn">📋 Sekundni nusxalash</button>
+                    <button type="button" class="tool-btn" id="ts-copy-ms-btn">📋 Millisekundni nusxalash</button>
+                    <button type="button" class="tool-btn" id="ts-live-pause-btn">⏸️ Pauza</button>
+                </div>
+            </div>
+
+            <div class="ts-sections-grid">
+                <!-- 1. Timestamp -> Sana -->
+                <div class="ts-card">
+                    <div class="ts-card-title">
+                        <span>📅</span>
+                        <span>Timestamp ➔ Sana</span>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="ts-to-date-input" class="tool-textarea code-font" style="min-height:44px; padding:8px 12px; height:44px;" placeholder="Masalan: 1776384000">
+                        <button type="button" class="tool-btn tool-btn-primary" id="ts-set-now-btn" style="white-space:nowrap;">Hozir</button>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <div class="ts-result-row">
+                            <span class="ts-result-label">🇺🇿 Toshkent vaqti:</span>
+                            <span class="ts-result-val" id="ts-out-tkt">—</span>
+                            <button type="button" class="ts-copy-btn tool-btn" data-target="ts-out-tkt" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                        <div class="ts-result-row">
+                            <span class="ts-result-label">🌐 UTC / GMT:</span>
+                            <span class="ts-result-val" id="ts-out-utc">—</span>
+                            <button type="button" class="ts-copy-btn tool-btn" data-target="ts-out-utc" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                        <div class="ts-result-row">
+                            <span class="ts-result-label">⚙️ ISO 8601:</span>
+                            <span class="ts-result-val" id="ts-out-iso">—</span>
+                            <button type="button" class="ts-copy-btn tool-btn" data-target="ts-out-iso" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                        <div class="ts-result-row">
+                            <span class="ts-result-label">⏳ Nisbiy vaqt:</span>
+                            <span class="ts-result-val" id="ts-out-rel" style="color:#10b981;">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Sana -> Timestamp -->
+                <div class="ts-card">
+                    <div class="ts-card-title">
+                        <span>⏱️</span>
+                        <span>Sana ➔ Timestamp</span>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <input type="datetime-local" id="ts-date-picker" class="tool-textarea code-font" style="min-height:44px; padding:8px 12px; height:44px;">
+                        <button type="button" class="tool-btn tool-btn-primary" id="ts-date-now-btn" style="white-space:nowrap;">Hozir</button>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <div class="ts-result-row">
+                            <span class="ts-result-label">Sekundlar (s):</span>
+                            <span class="ts-result-val" id="ts-date-out-sec">—</span>
+                            <button type="button" class="ts-copy-btn tool-btn" data-target="ts-date-out-sec" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                        <div class="ts-result-row">
+                            <span class="ts-result-label">Millisekundlar (ms):</span>
+                            <span class="ts-result-val" id="ts-date-out-ms">—</span>
+                            <button type="button" class="ts-copy-btn tool-btn" data-target="ts-date-out-ms" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Ikki sana orasidagi farq kalkulyatori -->
+            <div class="ts-card" style="margin-top:20px;">
+                <div class="ts-card-title">
+                    <span>⚖️</span>
+                    <span>Ikki sana orasidagi farq kalkulyatori</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--text-secondary); margin-bottom:6px;">Boshlanish sanasi:</label>
+                        <input type="datetime-local" id="ts-diff-start" class="tool-textarea code-font" style="min-height:44px; padding:8px 12px; height:44px;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.85rem; color:var(--text-secondary); margin-bottom:6px;">Tugash sanasi:</label>
+                        <input type="datetime-local" id="ts-diff-end" class="tool-textarea code-font" style="min-height:44px; padding:8px 12px; height:44px;">
+                    </div>
+                </div>
+
+                <div class="ts-diff-stats">
+                    <div class="ts-diff-box">
+                        <div class="ts-diff-box-val" id="ts-diff-days">0</div>
+                        <div class="ts-diff-box-lbl">Kun</div>
+                    </div>
+                    <div class="ts-diff-box">
+                        <div class="ts-diff-box-val" id="ts-diff-hours">0</div>
+                        <div class="ts-diff-box-lbl">Soat</div>
+                    </div>
+                    <div class="ts-diff-box">
+                        <div class="ts-diff-box-val" id="ts-diff-mins">0</div>
+                        <div class="ts-diff-box-lbl">Daqiqa</div>
+                    </div>
+                    <div class="ts-diff-box">
+                        <div class="ts-diff-box-val" id="ts-diff-secs">0</div>
+                        <div class="ts-diff-box-lbl">Soniya</div>
+                    </div>
+                </div>
+                <div id="ts-diff-summary" style="font-size:0.84rem; color:var(--text-secondary); text-align:center; font-family:'JetBrains Mono', monospace;"></div>
+            </div>
+        </section>
+
+        <!-- 16. JWT (JSON WEB TOKEN) DEKODER -->
+        <section class="tool-panel" id="panel-jwt">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>🔑</span>
+                    <div>
+                        <h2>JWT (JSON Web Token) Dekoder</h2>
+                        <small style="color:var(--text-secondary);">100% mijoz brauzerida xavfsiz dekodlash, sintaktik ranglar va muddat tekshiruvi</small>
+                    </div>
+                </div>
+                <div class="panel-actions">
+                    <button type="button" class="tool-btn" id="jwt-sample-btn">Namuna JWT</button>
+                    <button type="button" class="tool-btn" id="jwt-clear-btn">Tozalash</button>
+                </div>
+            </div>
+
+            <!-- Token kiritish -->
+            <div class="converter-box" style="margin-bottom:16px;">
+                <div class="box-label"><span>Shifrlangan JWT Token (Encoded):</span></div>
+                <textarea class="tool-textarea code-font" id="jwt-input" rows="4" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+            </div>
+
+            <!-- Status kartasi -->
+            <div id="jwt-status" class="jwt-status-card" style="display:none;"></div>
+
+            <!-- 3 qismli dekodlangan natijalar -->
+            <div class="jwt-parts-container" id="jwt-results-wrap" style="display:none;">
+                <!-- 1. HEADER -->
+                <div class="jwt-part-box" style="border-color:rgba(244, 63, 94, 0.4);">
+                    <div class="jwt-part-header header-color">
+                        <span>HEADER: ALGORITHM &amp; TOKEN TYPE</span>
+                        <button type="button" class="tool-btn jwt-copy-btn" data-target="jwt-header-code" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                    </div>
+                    <pre class="jwt-part-code" id="jwt-header-code"></pre>
+                </div>
+
+                <!-- 2. PAYLOAD -->
+                <div class="jwt-part-box" style="border-color:rgba(168, 85, 247, 0.4);">
+                    <div class="jwt-part-header payload-color">
+                        <span>PAYLOAD: DATA &amp; CLAIMS</span>
+                        <button type="button" class="tool-btn jwt-copy-btn" data-target="jwt-payload-code" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                    </div>
+                    <pre class="jwt-part-code" id="jwt-payload-code"></pre>
+                </div>
+
+                <!-- 3. SIGNATURE -->
+                <div class="jwt-part-box" style="border-color:rgba(6, 182, 212, 0.4);">
+                    <div class="jwt-part-header signature-color">
+                        <span>SIGNATURE: VERIFY SIGNATURE</span>
+                        <button type="button" class="tool-btn jwt-copy-btn" data-target="jwt-signature-code" style="padding:2px 8px; font-size:11px;">Nusxalash</button>
+                    </div>
+                    <pre class="jwt-part-code" id="jwt-signature-code" style="color:#06b6d4;"></pre>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
@@ -1039,6 +1700,15 @@ salomDunyo("Abdugofforov");</textarea>
             <p>© 2026 Abdugofforov. Barcha huquqlar himoyalangan. · <a href="https://abdugofforov.uz" style="color:var(--tools-accent); text-decoration:none;">abdugofforov.uz</a></p>
         </div>
     </footer>
+
+    <!-- Global Drag & Drop Overlay -->
+    <div id="tools-global-drop-overlay" class="tools-global-drop-overlay">
+        <div class="drop-overlay-card">
+            <span class="drop-overlay-icon">📸</span>
+            <h3 style="margin: 0 0 8px 0; font-size: 1.35rem; color: #ffffff;">Rasmni bu yerga tashlang</h3>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">WebP siquvchi yoki OCR matn ajratgichda avtomatik ochiladi</p>
+        </div>
+    </div>
 
     <!-- Toast Xabarnoma -->
     <div class="tools-toast" id="tools-toast">
@@ -1050,5 +1720,6 @@ salomDunyo("Abdugofforov");</textarea>
     <script src="tools.js"></script>
     <script src="scripts/tools-text-suite.js" defer></script>
     <script src="scripts/tools-media-suite.js" defer></script>
+    <script src="scripts/tools-dev-suite.js" defer></script>
 </body>
 </html>
