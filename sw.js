@@ -2,7 +2,7 @@
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
 // CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
 // bilan qorishib qolmasligi uchun
-const CACHE = 'abdu-cache-v14';
+const CACHE = 'abdu-cache-v15';
 const SHELL = [
     '/',
     '/index.html',
@@ -36,7 +36,8 @@ const SHELL = [
     '/scripts/matching-game.js',
     '/scripts/verb-trainer.js',
     '/scripts/verb-trainer-data.js',
-    '/scripts/tools-extended.js',
+    '/scripts/tools-text-suite.js',
+    '/scripts/tools-media-suite.js',
     '/scripts/flashcards.js',
     '/scripts/tests.js',
     '/scripts/horror-data.js',

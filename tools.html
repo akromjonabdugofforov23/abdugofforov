@@ -817,13 +817,21 @@
                 </div>
                 <div class="panel-actions">
                     <span id="spell-count-badge" style="font-size:12px; font-weight:600; padding:4px 10px; border-radius:12px; background:rgba(239,68,68,0.1); color:#ef4444;">0 ta xato</span>
-                    <button class="tool-btn tool-btn-primary" id="spell-fix-btn">Barchasini to'g'rilash</button>
-                    <button class="tool-btn" id="spell-copy-btn">Nusxa olish</button>
+                    <button type="button" class="tool-btn" id="spell-to-cyrl-btn" title="Lotin matnini Kirillga o'girish">🔄 Lotin → Kirill</button>
+                    <button type="button" class="tool-btn" id="spell-to-lat-btn" title="Kirill matnini Lotinga o'girish">🔄 Kirill → Lotin</button>
+                    <button type="button" class="tool-btn tool-btn-primary" id="spell-fix-btn">Barchasini to'g'rilash</button>
+                    <button type="button" class="tool-btn" id="spell-copy-btn">Nusxa olish</button>
                 </div>
             </div>
             <div class="converter-grid">
                 <div class="converter-box">
-                    <div class="box-label"><span>Tekshiriladigan matn:</span></div>
+                    <div class="box-label">
+                        <span>Tekshiriladigan matn:</span>
+                        <div style="display:flex; gap:6px;">
+                            <button type="button" class="tool-btn" id="spell-sample-btn" style="padding:2px 8px; font-size:11px;">Namunaviy xatolar</button>
+                            <button type="button" class="tool-btn" id="spell-clear-btn" style="padding:2px 8px; font-size:11px;">Tozalash</button>
+                        </div>
+                    </div>
                     <textarea class="tool-textarea" id="spell-input" placeholder="Matnni bu yerga yozing yoki tashlang... Masalan: 'Bugun xursand bo'ldim, hamma xarakatlar besamar ketmadi...'"></textarea>
                 </div>
                 <div class="converter-box">
@@ -843,14 +851,27 @@
                         <small style="color:var(--text-secondary);">Bitta rasmdan 16x16, 32x32, 180x180 va PWA 192x192, 512x512 ikonkalar yasash</small>
                     </div>
                 </div>
+                <div class="panel-actions" id="icon-top-actions" style="display:none;">
+                    <button class="tool-btn tool-btn-primary" id="icon-dl-ico-btn">📥 favicon.ico Yuklab olish</button>
+                    <button class="tool-btn" id="icon-copy-html-btn">HTML Teglarni nusxalash</button>
+                </div>
             </div>
-            <div id="icon-dropzone" style="border: 2px dashed var(--tools-border); border-radius: 16px; padding: 40px 20px; text-align: center; cursor: pointer; margin-bottom: 24px; transition: border-color 0.2s;">
+            <div id="icon-dropzone" style="border: 2px dashed var(--tools-border); border-radius: 16px; padding: 40px 20px; text-align: center; cursor: pointer; margin-bottom: 24px; transition: all 0.2s;">
                 <div style="font-size: 36px; margin-bottom: 8px;">🖼️</div>
-                <h3 style="margin: 0 0 6px 0; font-size: 1.1rem;">Rasmni bu yerga tashlang yoki tanlang (PNG, SVG, JPG)</h3>
+                <h3 style="margin: 0 0 6px 0; font-size: 1.1rem;">Rasmni bu yerga tashlang yoki tanlang (PNG, SVG, JPG, WebP)</h3>
                 <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">Brauzer avtomatik barcha standart o'lchamdagi ikonkalar generatsiya qiladi</p>
                 <input type="file" id="icon-file-input" accept="image/*" style="display: none;">
             </div>
-            <div id="icon-previews" style="display: none; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px;"></div>
+            <div id="icon-previews" style="display: none; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; margin-bottom: 24px;"></div>
+            
+            <!-- Generated HTML Tags -->
+            <div id="icon-html-snippet-wrap" style="display:none; background:var(--card-bg); border:1px solid var(--tools-border); border-radius:12px; padding:18px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="font-size:13px; font-weight:600;">Sayt uchun HTML meta-teglar:</span>
+                    <button class="tool-btn" id="icon-copy-snippet-btn" style="padding:3px 10px; font-size:11px;">Nusxalash</button>
+                </div>
+                <textarea id="icon-html-snippet" class="tool-textarea code-font" rows="5" readonly style="font-size:12px;"></textarea>
+            </div>
         </section>
 
         <!-- 9. CODE SNIPPET TO IMAGE -->
@@ -864,9 +885,16 @@
                     </div>
                 </div>
                 <div class="panel-actions">
+                    <select id="code-lang" class="tool-btn" style="background:var(--card-bg);">
+                        <option value="javascript">JavaScript / TS</option>
+                        <option value="python">Python</option>
+                        <option value="html">HTML / CSS</option>
+                        <option value="json">JSON / SQL</option>
+                    </select>
                     <select id="code-bg-theme" class="tool-btn" style="background:var(--card-bg);">
                         <option value="aurora">🌌 Aurora Gradient</option>
                         <option value="prism">💎 Prism Lux</option>
+                        <option value="sunset">🌅 Sunset Glow</option>
                         <option value="matrix">🟩 Matrix Green</option>
                         <option value="dark">🌑 Deep Slate</option>
                     </select>
@@ -901,6 +929,8 @@ salomDunyo("Abdugofforov");</textarea>
                     </div>
                 </div>
                 <div class="panel-actions">
+                    <input type="file" id="pdf-file-input" accept=".txt,.md,.pdf" style="display:none;">
+                    <button class="tool-btn" id="pdf-upload-btn" type="button">📎 Fayl yuklash</button>
                     <button class="tool-btn tool-btn-primary" id="pdf-clean-btn">Tozalash &amp; Formatlash</button>
                     <button class="tool-btn" id="pdf-copy-btn">Nusxa olish</button>
                     <button class="tool-btn" id="pdf-dl-btn">📥 .md Yuklab olish</button>
@@ -966,15 +996,36 @@ salomDunyo("Abdugofforov");</textarea>
                     </div>
                 </div>
                 <div class="panel-actions">
+                    <select id="ocr-lang-select" class="tool-btn" style="background:var(--card-bg);">
+                        <option value="eng">🇬🇧 Ingliz tili (English)</option>
+                        <option value="deu">🇩🇪 Nemis tili (Deutsch)</option>
+                        <option value="uzb">🇺🇿 O'zbek tili (Lotin)</option>
+                        <option value="uzb_cyrl">🇺🇿 O'zbek tili (Kirill)</option>
+                        <option value="rus">🇷🇺 Rus tili (Русский)</option>
+                        <option value="eng+deu+uzb+rus">🌐 Ko'p tilli (Multi-lang)</option>
+                    </select>
                     <button class="tool-btn tool-btn-primary" id="ocr-copy-btn">Nusxa olish</button>
+                    <button class="tool-btn" id="ocr-dl-btn">📥 .txt Yuklab olish</button>
                 </div>
             </div>
-            <div id="ocr-dropzone" style="border: 2px dashed var(--tools-border); border-radius: 16px; padding: 36px 20px; text-align: center; cursor: pointer; margin-bottom: 20px;">
+            <div id="ocr-dropzone" style="border: 2px dashed var(--tools-border); border-radius: 16px; padding: 36px 20px; text-align: center; cursor: pointer; margin-bottom: 20px; transition: all 0.2s;">
                 <div style="font-size: 34px; margin-bottom: 8px;">📸</div>
                 <h3 style="margin: 0 0 6px 0; font-size: 1.1rem;">Skrinshot yoki rasmni tanlang</h3>
-                <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">100% maxfiy, rasm serverga yuborilmaydi</p>
+                <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">100% maxfiy brauzer tahlili, rasm serverga yuborilmaydi</p>
                 <input type="file" id="ocr-file-input" accept="image/*" style="display: none;">
             </div>
+
+            <!-- OCR Progress Bar -->
+            <div id="ocr-progress-wrap" style="display:none; margin-bottom:18px; background:var(--card-bg); border:1px solid var(--tools-border); border-radius:12px; padding:14px;">
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+                    <span id="ocr-status-text" style="color:var(--tools-accent); font-weight:600;">Kutubxona tayyorlanmoqda...</span>
+                    <span id="ocr-progress-percent" style="color:var(--text-secondary); font-weight:600;">0%</span>
+                </div>
+                <div style="width:100%; height:8px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden;">
+                    <div id="ocr-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, var(--tools-accent), #a855f7); transition:width 0.2s;"></div>
+                </div>
+            </div>
+
             <div class="converter-box">
                 <div class="box-label"><span>Ajratilgan matn:</span></div>
                 <textarea class="tool-textarea" id="ocr-result" rows="6" readonly placeholder="Rasm tanlaganingizdan so'ng matn bu yerda chiqadi..."></textarea>
@@ -995,8 +1046,9 @@ salomDunyo("Abdugofforov");</textarea>
         <span id="toast-msg">Nusxa olindi!</span>
     </div>
 
-    <!-- Skript -->
+    <!-- Skriptlar -->
     <script src="tools.js"></script>
-    <script src="scripts/tools-extended.js" defer></script>
+    <script src="scripts/tools-text-suite.js" defer></script>
+    <script src="scripts/tools-media-suite.js" defer></script>
 </body>
 </html>

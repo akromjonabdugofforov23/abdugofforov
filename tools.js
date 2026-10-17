@@ -39,23 +39,88 @@
         });
     }
 
-    // ---------- TABS BOSHQARUVI ----------
+    // ---------- TABS & URL HASH ROUTING BOSHQARUVI ----------
     const tabBtns = document.querySelectorAll('.tool-tab-btn');
     const panels = document.querySelectorAll('.tool-panel');
+
+    const TOOL_HASH_MAP = {
+        'translit': 'translit',
+        'latin': 'translit',
+        'kirill': 'translit',
+        'spellcheck': 'spellcheck',
+        'imlo': 'spellcheck',
+        'image': 'image',
+        'webp': 'image',
+        'icon': 'icon',
+        'favicon': 'icon',
+        'codeshot': 'codeshot',
+        'code': 'codeshot',
+        'carbon': 'codeshot',
+        'pdfclean': 'pdfclean',
+        'markdown': 'pdfclean',
+        'regex': 'regex',
+        'ocr': 'ocr',
+        'json': 'json',
+        'diff': 'diff',
+        'qr': 'qr',
+        'hash': 'hash'
+    };
+
+    function activateTab(toolName, updateHash = true) {
+        if (!toolName) return;
+        const normalized = toolName.toLowerCase().replace('#', '').trim();
+        const canonical = TOOL_HASH_MAP[normalized] || normalized;
+
+        const targetBtn = document.querySelector(`.tool-tab-btn[data-tool="${canonical}"]`);
+        const targetPanel = document.getElementById(`panel-${canonical}`);
+
+        if (!targetBtn || !targetPanel) return;
+
+        tabBtns.forEach(b => b.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+
+        targetBtn.classList.add('active');
+        targetPanel.classList.add('active');
+
+        // Faol tab tugmasini ekranning o'rtasiga silliq siljitish
+        targetBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+        if (updateHash) {
+            const nextHash = canonical === 'image' ? '#webp' : `#${canonical}`;
+            if (window.location.hash !== nextHash) {
+                try {
+                    history.replaceState(null, '', nextHash);
+                } catch (e) {
+                    window.location.hash = nextHash;
+                }
+            }
+        }
+    }
 
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const tool = btn.getAttribute('data-tool');
-            tabBtns.forEach(b => b.classList.remove('active'));
-            panels.forEach(p => p.classList.remove('active'));
-
-            btn.classList.add('active');
-            const targetPanel = document.getElementById(`panel-${tool}`);
-            if (targetPanel) {
-                targetPanel.classList.add('active');
-            }
+            activateTab(tool, true);
         });
     });
+
+    function syncStateFromHash() {
+        const rawHash = (window.location.hash || '').replace('#', '').trim().toLowerCase();
+        if (rawHash && TOOL_HASH_MAP[rawHash]) {
+            activateTab(TOOL_HASH_MAP[rawHash], false);
+        }
+    }
+
+    // Brauzerning Orqaga/Oldinga tugmalari va hash o'zgarishi
+    window.addEventListener('hashchange', syncStateFromHash);
+    window.addEventListener('popstate', syncStateFromHash);
+
+    // Dastlabki yuklanishda hash ni faollashtirish
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', syncStateFromHash);
+    } else {
+        setTimeout(syncStateFromHash, 50);
+    }
 
     // ============================================================
     // 1. LOTIN ⇄ KIRILL TRANSLITERATOR
@@ -423,6 +488,32 @@
     if (jsonFormat4Btn) jsonFormat4Btn.addEventListener('click', () => formatJson(4));
     if (jsonMinifyBtn) jsonMinifyBtn.addEventListener('click', () => formatJson(0));
 
+    if (jsonInput) {
+        jsonInput.addEventListener('input', () => {
+            const val = jsonInput.value.trim();
+            if (!val) {
+                jsonOutput.value = '';
+                jsonStatusAlert.style.display = 'none';
+                return;
+            }
+            try {
+                const parsed = JSON.parse(val);
+                jsonOutput.value = JSON.stringify(parsed, null, 2);
+                jsonStatusAlert.style.display = 'block';
+                jsonStatusAlert.style.background = 'rgba(34, 197, 94, 0.15)';
+                jsonStatusAlert.style.border = '1px solid rgba(34, 197, 94, 0.4)';
+                jsonStatusAlert.style.color = '#4ade80';
+                jsonStatusAlert.textContent = "✓ JSON to'g'ri (Valid JSON)";
+            } catch (err) {
+                jsonStatusAlert.style.display = 'block';
+                jsonStatusAlert.style.background = 'rgba(239, 68, 68, 0.15)';
+                jsonStatusAlert.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+                jsonStatusAlert.style.color = '#f87171';
+                jsonStatusAlert.textContent = `⚠️ Xato: ${err.message}`;
+            }
+        });
+    }
+
     if (jsonClearBtn) {
         jsonClearBtn.addEventListener('click', () => {
             jsonInput.value = '';
@@ -448,40 +539,43 @@
     const diffClearBtn = document.getElementById('diff-clear-btn');
     const diffResultWrap = document.getElementById('diff-result-wrap');
 
-    if (diffCompareBtn) {
-        diffCompareBtn.addEventListener('click', () => {
-            const lines1 = (diffText1.value || '').split('\n');
-            const lines2 = (diffText2.value || '').split('\n');
+    function runDiff() {
+        if (!diffText1 || !diffText2 || !diffResultWrap) return;
+        const lines1 = (diffText1.value || '').split('\n');
+        const lines2 = (diffText2.value || '').split('\n');
 
-            let html = '';
-            const max = Math.max(lines1.length, lines2.length);
+        let html = '';
+        const max = Math.max(lines1.length, lines2.length);
 
-            if (max === 1 && lines1[0] === '' && lines2[0] === '') {
-                diffResultWrap.style.display = 'none';
-                return;
+        if (max === 1 && lines1[0] === '' && lines2[0] === '') {
+            diffResultWrap.style.display = 'none';
+            return;
+        }
+
+        diffResultWrap.style.display = 'block';
+
+        for (let i = 0; i < max; i++) {
+            const l1 = lines1[i];
+            const l2 = lines2[i];
+
+            if (l1 === undefined) {
+                html += `<span class="diff-added">+ ${escapeHtml(l2)}</span>`;
+            } else if (l2 === undefined) {
+                html += `<span class="diff-removed">- ${escapeHtml(l1)}</span>`;
+            } else if (l1 === l2) {
+                html += `<span class="diff-unchanged">  ${escapeHtml(l1)}</span>`;
+            } else {
+                html += `<span class="diff-removed">- ${escapeHtml(l1)}</span>`;
+                html += `<span class="diff-added">+ ${escapeHtml(l2)}</span>`;
             }
+        }
 
-            diffResultWrap.style.display = 'block';
-
-            for (let i = 0; i < max; i++) {
-                const l1 = lines1[i];
-                const l2 = lines2[i];
-
-                if (l1 === undefined) {
-                    html += `<span class="diff-added">+ ${escapeHtml(l2)}</span>`;
-                } else if (l2 === undefined) {
-                    html += `<span class="diff-removed">- ${escapeHtml(l1)}</span>`;
-                } else if (l1 === l2) {
-                    html += `<span class="diff-unchanged">  ${escapeHtml(l1)}</span>`;
-                } else {
-                    html += `<span class="diff-removed">- ${escapeHtml(l1)}</span>`;
-                    html += `<span class="diff-added">+ ${escapeHtml(l2)}</span>`;
-                }
-            }
-
-            diffResultWrap.innerHTML = html;
-        });
+        diffResultWrap.innerHTML = html;
     }
+
+    if (diffCompareBtn) diffCompareBtn.addEventListener('click', runDiff);
+    if (diffText1) diffText1.addEventListener('input', runDiff);
+    if (diffText2) diffText2.addEventListener('input', runDiff);
 
     if (diffClearBtn) {
         diffClearBtn.addEventListener('click', () => {
@@ -855,20 +949,30 @@
         });
     }
 
-    if (hashSha256Btn) {
-        hashSha256Btn.addEventListener('click', async () => {
-            const text = hashInput.value;
-            if (!text) {
-                hashOutput.value = '';
-                return;
-            }
+    async function updateSha256() {
+        const text = hashInput.value;
+        if (!text) {
+            hashOutput.value = '';
+            return;
+        }
+        try {
             const msgBuffer = new TextEncoder().encode(text);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
             hashOutput.value = hashHex;
-            showToast("SHA-256 Hash yaratildi");
+        } catch (e) {}
+    }
+
+    if (hashSha256Btn) {
+        hashSha256Btn.addEventListener('click', async () => {
+            await updateSha256();
+            if (hashInput.value) showToast("SHA-256 Hash yaratildi");
         });
+    }
+
+    if (hashInput) {
+        hashInput.addEventListener('input', updateSha256);
     }
 
     if (hashCopyBtn) {
