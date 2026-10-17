@@ -2,7 +2,7 @@
 // App-shell keshlash: oflayn ishlash va tezroq yuklash uchun.
 // CACHE versiyasini bump qildik (v2) — yangi dark dizayn keshda eski versiya
 // bilan qorishib qolmasligi uchun
-const CACHE = 'abdu-cache-v19';
+const CACHE = 'abdu-cache-v20';
 const SHELL = [
     '/',
     '/index.html',
@@ -14,6 +14,7 @@ const SHELL = [
     '/style.css',
     '/style.min.css',
     '/animations.css',
+    '/css/liquid-glass.css',
     '/css/horror.css',
     '/css/claps-reactions.css',
     '/css/matching-game.css',

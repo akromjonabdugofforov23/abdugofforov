@@ -1,0 +1,907 @@
+/* ==========================================================================
+   LIQUID GLASS UI DESIGN SYSTEM — ABDUGOFFOROV ECOSYSTEM
+   Hyper-Realistic Luminous Glassmorphism / VisionOS Skeuo-Glass UI
+   Based on Specular Edge Highlights, Dual-Chromatic Glow & Stacked Glass Depth
+   ========================================================================== */
+
+:root, [data-theme="dark"] {
+    /* --- Liquid Glass Palette --- */
+    --lq-cyan-base: #38bdf8;
+    --lq-cyan-light: #7dd3fc;
+    --lq-cyan-dark: #0284c7;
+    --lq-cyan-glow: rgba(56, 189, 248, 0.5);
+    --lq-cyan-glow-intense: rgba(56, 189, 248, 0.8);
+    
+    --lq-purple-base: #c084fc;
+    --lq-purple-light: #e9d5ff;
+    --lq-purple-dark: #9333ea;
+    --lq-purple-glow: rgba(192, 132, 252, 0.45);
+    
+    --lq-surface-bg: rgba(13, 20, 36, 0.65);
+    --lq-surface-bg-high: rgba(16, 25, 46, 0.8);
+    --lq-surface-border: rgba(255, 255, 255, 0.14);
+    --lq-surface-border-focus: rgba(56, 189, 248, 0.65);
+    
+    /* --- Optic Specular & Shadow Tokens --- */
+    --lq-specular-top: inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.55);
+    --lq-specular-top-sharp: inset 0 1px 1px 0 rgba(255, 255, 255, 0.85);
+    --lq-specular-bottom-dark: inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.5);
+    
+    /* 3D Stacked Glass Plates (Deck effect) */
+    --lq-deck-stack: 
+        0 4px 0 0 rgba(255, 255, 255, 0.04),
+        0 8px 0 0 rgba(255, 255, 255, 0.02);
+    
+    /* Dual-Chromatic Ambient Glow: Cyan (left/bottom) + Violet (right/bottom) */
+    --lq-ambient-glow: 
+        -8px 18px 36px -4px rgba(56, 189, 248, 0.16),
+        8px 22px 42px -4px rgba(168, 85, 247, 0.16),
+        0 24px 48px -4px rgba(0, 0, 0, 0.65);
+    
+    --lq-ambient-glow-hover: 
+        -10px 22px 42px -4px rgba(56, 189, 248, 0.28),
+        10px 26px 48px -4px rgba(168, 85, 247, 0.28),
+        0 30px 60px -4px rgba(0, 0, 0, 0.75);
+
+    --lq-blur-filter: blur(24px) saturate(190%);
+}
+
+/* ==========================================================================
+   1. BUTTONS — PRIMARY, SECONDARY & ICON (PILL & GLASS BUBBLE)
+   ========================================================================== */
+
+/* Primary Pill Button (e.g. "Create workspace" in reference) */
+.btn-primary,
+.liquid-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: 9999px !important;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.35) 0%, rgba(14, 116, 144, 0.45) 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.75),
+        inset 0 -8px 18px -4px rgba(56, 189, 248, 0.5),
+        0 8px 24px -2px rgba(56, 189, 248, 0.45),
+        0 2px 6px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    user-select: none;
+}
+
+.btn-primary::after,
+.liquid-btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.4) 0%, transparent 60%);
+    pointer-events: none;
+    opacity: 0.8;
+    transition: opacity 0.25s ease;
+}
+
+.btn-primary:hover,
+.liquid-btn-primary:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.45) 0%, rgba(14, 116, 144, 0.55) 100%);
+    border-color: rgba(56, 189, 248, 0.75);
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 #ffffff,
+        inset 0 -10px 22px -4px rgba(56, 189, 248, 0.75),
+        0 14px 34px -2px rgba(56, 189, 248, 0.65),
+        0 4px 10px rgba(0, 0, 0, 0.45);
+    filter: brightness(1.08);
+}
+
+.btn-primary:hover::after,
+.liquid-btn-primary:hover::after {
+    opacity: 1;
+}
+
+.btn-primary:active,
+.liquid-btn-primary:active {
+    transform: scale(0.97) translateY(0);
+    box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.6),
+        0 4px 14px rgba(56, 189, 248, 0.4);
+}
+
+/* Secondary Pill Button (e.g. "Invite member" in reference) */
+.btn-secondary,
+.liquid-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 26px;
+    border-radius: 9999px !important;
+    background: linear-gradient(180deg, rgba(168, 85, 247, 0.18) 0%, rgba(99, 102, 241, 0.25) 100%) !important;
+    color: #f1f5f9 !important;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    position: relative;
+    cursor: pointer;
+    box-shadow: 
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -6px 14px -4px rgba(168, 85, 247, 0.35),
+        0 8px 20px -3px rgba(168, 85, 247, 0.35),
+        0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    user-select: none;
+}
+
+.btn-secondary::after,
+.liquid-btn-secondary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.btn-secondary:hover,
+.liquid-btn-secondary:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(180deg, rgba(168, 85, 247, 0.28) 0%, rgba(99, 102, 241, 0.36) 100%);
+    border-color: rgba(168, 85, 247, 0.65);
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -8px 18px -4px rgba(168, 85, 247, 0.55),
+        0 12px 28px -2px rgba(168, 85, 247, 0.55),
+        0 3px 8px rgba(0, 0, 0, 0.35);
+}
+
+.btn-secondary:active,
+.liquid-btn-secondary:active {
+    transform: scale(0.97) translateY(0);
+}
+
+/* Round Glass Bubble Icon Button (e.g. "+" in reference) */
+.btn-icon,
+.liquid-btn-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.45) 0%, rgba(56, 189, 248, 0.2) 35%, rgba(14, 116, 144, 0.38) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: #ffffff;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.7),
+        inset 0 -4px 10px rgba(56, 189, 248, 0.4),
+        0 6px 18px rgba(56, 189, 248, 0.35),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    user-select: none;
+}
+
+.btn-icon:hover,
+.liquid-btn-icon:hover {
+    transform: translateY(-2px) scale(1.05);
+    border-color: rgba(56, 189, 248, 0.7);
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 #ffffff,
+        inset 0 -6px 14px rgba(56, 189, 248, 0.6),
+        0 10px 26px rgba(56, 189, 248, 0.55);
+    filter: brightness(1.1);
+}
+
+.btn-icon:active,
+.liquid-btn-icon:active {
+    transform: scale(0.95);
+}
+
+/* ==========================================================================
+   2. TEXT FIELDS & SEARCH FIELDS (STACKED GLASS CAVITY)
+   ========================================================================== */
+
+.search-input,
+.form-input,
+.liquid-input,
+.search-box input,
+.functional-search .search-input {
+    width: 100%;
+    border-radius: 14px;
+    background: rgba(13, 20, 36, 0.65) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #f1f5f9 !important;
+    padding: 12px 18px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -1px 2px 0 rgba(0, 0, 0, 0.4),
+        0 4px 0 0 rgba(255, 255, 255, 0.035),
+        0 8px 0 0 rgba(255, 255, 255, 0.015),
+        0 14px 28px -4px rgba(0, 0, 0, 0.55) !important;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    outline: none;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.search-input::placeholder,
+.form-input::placeholder,
+.liquid-input::placeholder {
+    color: #94a3b8 !important;
+    opacity: 0.85;
+}
+
+.search-input:focus,
+.form-input:focus,
+.liquid-input:focus,
+.search-box input:focus,
+.functional-search .search-input:focus {
+    border-color: rgba(56, 189, 248, 0.65) !important;
+    background: rgba(15, 24, 46, 0.78) !important;
+    box-shadow: 
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -2px 14px rgba(56, 189, 248, 0.35),
+        0 4px 0 0 rgba(56, 189, 248, 0.15),
+        0 8px 0 0 rgba(56, 189, 248, 0.06),
+        0 14px 32px -2px rgba(56, 189, 248, 0.45) !important;
+}
+
+/* ==========================================================================
+   3. SELECT / DROPDOWN
+   ========================================================================== */
+
+select,
+.liquid-select {
+    border-radius: 12px;
+    background: rgba(13, 20, 36, 0.65) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #f1f5f9 !important;
+    padding: 10px 36px 10px 16px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.3),
+        0 4px 0 0 rgba(255, 255, 255, 0.035),
+        0 8px 0 0 rgba(255, 255, 255, 0.015),
+        0 12px 24px rgba(0, 0, 0, 0.45) !important;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    outline: none;
+}
+
+select:focus,
+.liquid-select:focus {
+    border-color: rgba(56, 189, 248, 0.6) !important;
+    box-shadow: 
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.5),
+        0 4px 0 0 rgba(56, 189, 248, 0.15),
+        0 12px 28px rgba(56, 189, 248, 0.35) !important;
+}
+
+/* ==========================================================================
+   4. TABS & FILTER PILLS (LUMINOUS CYAN INDICATOR)
+   ========================================================================== */
+
+.filter-tags,
+.auth-tabs,
+.liquid-tabs {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(13, 20, 36, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 5px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.25),
+        0 4px 0 0 rgba(255, 255, 255, 0.035),
+        0 8px 0 0 rgba(255, 255, 255, 0.015),
+        0 14px 28px rgba(0, 0, 0, 0.45);
+    gap: 6px;
+}
+
+.filter-tag,
+.auth-tab,
+.liquid-tab {
+    border-radius: 11px;
+    padding: 8px 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #94a3b8;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    user-select: none;
+}
+
+.filter-tag:hover,
+.auth-tab:hover,
+.liquid-tab:hover {
+    color: #f1f5f9;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.filter-tag.active,
+.auth-tab.active,
+.liquid-tab.active {
+    color: #ffffff !important;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.25) 0%, rgba(14, 116, 144, 0.32) 100%) !important;
+    border-color: rgba(56, 189, 248, 0.45) !important;
+    box-shadow: 
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.55),
+        0 4px 18px rgba(56, 189, 248, 0.4) !important;
+    font-weight: 600;
+}
+
+/* Luminous neon cyan light bar on active tab */
+.filter-tag.active::after,
+.auth-tab.active::after,
+.liquid-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 20%;
+    right: 20%;
+    height: 2.5px;
+    border-radius: 3px;
+    background: #38bdf8;
+    box-shadow: 0 0 10px 2px #38bdf8;
+}
+
+/* ==========================================================================
+   5. CONTROLS — CHECKBOX & SWITCH
+   ========================================================================== */
+
+/* Liquid Checkbox */
+.liquid-checkbox,
+input[type="checkbox"].liquid-control {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        inset 0 1px 1px rgba(255, 255, 255, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    vertical-align: middle;
+}
+
+.liquid-checkbox:checked,
+input[type="checkbox"].liquid-control:checked {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.5) 0%, rgba(14, 116, 144, 0.7) 100%);
+    border-color: rgba(56, 189, 248, 0.8);
+    box-shadow: 
+        inset 0 1px 1.5px #ffffff,
+        0 0 14px rgba(56, 189, 248, 0.65);
+}
+
+.liquid-checkbox:checked::after,
+input[type="checkbox"].liquid-control:checked::after {
+    content: '✓';
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* Liquid Switch */
+.liquid-switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+    background: rgba(15, 23, 42, 0.7);
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 
+        inset 0 1.5px 2px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    vertical-align: middle;
+}
+
+.liquid-switch .thumb {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.liquid-switch.active,
+.liquid-switch:has(input:checked) {
+    background: rgba(14, 116, 144, 0.45);
+    border-color: rgba(56, 189, 248, 0.6);
+    box-shadow: 
+        inset 0 1px 2px rgba(0, 0, 0, 0.3),
+        0 0 16px rgba(56, 189, 248, 0.4);
+}
+
+.liquid-switch.active .thumb,
+.liquid-switch:has(input:checked) .thumb {
+    left: 25px;
+    background: #ffffff;
+    box-shadow: 
+        0 0 14px 3px #38bdf8,
+        0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   6. CARDS — POST CARDS, PORTFOLIO & STAT CARDS (STACKED GLASS DECK)
+   ========================================================================== */
+
+.post-card,
+.portfolio-card,
+.project-card,
+.stat-card,
+.quote-card,
+.liquid-card {
+    position: relative;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(13, 20, 36, 0.72) 100%) !important;
+    backdrop-filter: blur(28px) saturate(190%);
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
+    border-radius: 22px !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.5),
+        0 5px 0 0 rgba(255, 255, 255, 0.04),
+        0 10px 0 0 rgba(255, 255, 255, 0.02),
+        -8px 18px 36px -4px rgba(56, 189, 248, 0.16),
+        8px 22px 42px -4px rgba(168, 85, 247, 0.16),
+        0 24px 48px -4px rgba(0, 0, 0, 0.65) !important;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease !important;
+    overflow: hidden;
+}
+
+.post-card:hover,
+.portfolio-card:hover,
+.project-card:hover,
+.liquid-card:hover {
+    transform: translateY(-4px) !important;
+    border-color: rgba(56, 189, 248, 0.45) !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.5),
+        0 6px 0 0 rgba(255, 255, 255, 0.05),
+        0 12px 0 0 rgba(255, 255, 255, 0.025),
+        -10px 22px 44px -4px rgba(56, 189, 248, 0.28),
+        10px 26px 48px -4px rgba(168, 85, 247, 0.28),
+        0 30px 60px -4px rgba(0, 0, 0, 0.72) !important;
+}
+
+/* ==========================================================================
+   7. MODALS & DIALOGS (STACKED LUMINOUS GLASS MODAL)
+   ========================================================================== */
+
+.modal-container,
+.liquid-modal,
+.gate-card,
+#super-palette .super-palette-dialog {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(13, 20, 36, 0.88) 100%) !important;
+    backdrop-filter: blur(32px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
+    border-radius: 24px !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.5),
+        0 6px 0 0 rgba(255, 255, 255, 0.04),
+        0 12px 0 0 rgba(255, 255, 255, 0.02),
+        -12px 24px 48px -6px rgba(56, 189, 248, 0.22),
+        12px 28px 52px -6px rgba(168, 85, 247, 0.22),
+        0 32px 64px -4px rgba(0, 0, 0, 0.75) !important;
+}
+
+.modal-close {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.4) 0%, rgba(56, 189, 248, 0.15) 40%, rgba(14, 116, 144, 0.3) 100%) !important;
+    border: 1px solid rgba(56, 189, 248, 0.35) !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.65),
+        0 4px 14px rgba(56, 189, 248, 0.3) !important;
+    color: #ffffff !important;
+    transition: all 0.25s ease !important;
+}
+
+.modal-close:hover {
+    transform: scale(1.08) !important;
+    border-color: rgba(56, 189, 248, 0.7) !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 #ffffff,
+        0 8px 22px rgba(56, 189, 248, 0.5) !important;
+}
+
+/* ==========================================================================
+   8. TOAST NOTIFICATION (GLASS FLOATING CAPSULE)
+   ========================================================================== */
+
+.toast,
+.liquid-toast,
+.toast-notification {
+    border-radius: 14px !important;
+    background: rgba(13, 20, 36, 0.8) !important;
+    backdrop-filter: blur(24px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+    border: 1px solid rgba(56, 189, 248, 0.35) !important;
+    box-shadow: 
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.45),
+        0 4px 0 0 rgba(255, 255, 255, 0.04),
+        0 8px 24px -2px rgba(56, 189, 248, 0.35),
+        0 14px 32px rgba(0, 0, 0, 0.55) !important;
+    color: #f1f5f9 !important;
+    padding: 12px 22px;
+}
+
+/* ==========================================================================
+   9. KUNDUZGI REJIM (LIGHT MODE — PRISMATIC CRYSTAL GLASS)
+   ========================================================================== */
+
+[data-theme="light"] {
+    --lq-surface-bg: rgba(255, 255, 255, 0.75);
+    --lq-surface-bg-high: rgba(255, 255, 255, 0.9);
+    --lq-surface-border: rgba(15, 23, 42, 0.1);
+    --lq-surface-border-focus: rgba(79, 70, 229, 0.5);
+}
+
+[data-theme="light"] .btn-primary,
+[data-theme="light"] .liquid-btn-primary {
+    background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.55),
+        0 8px 20px -2px rgba(79, 70, 229, 0.4),
+        0 2px 4px rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .btn-secondary,
+[data-theme="light"] .liquid-btn-secondary {
+    background: linear-gradient(180deg, rgba(241, 245, 249, 0.9) 0%, rgba(226, 232, 240, 0.8) 100%);
+    color: #0f172a !important;
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow: 
+        inset 0 1.5px 1px 0 #ffffff,
+        0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .post-card,
+[data-theme="light"] .portfolio-card,
+[data-theme="light"] .project-card,
+[data-theme="light"] .stat-card,
+[data-theme="light"] .quote-card,
+[data-theme="light"] .liquid-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 250, 252, 0.85) 100%) !important;
+    border: 1px solid rgba(15, 23, 42, 0.09) !important;
+    box-shadow: 
+        inset 0 1.5px 1px 0 #ffffff,
+        0 4px 0 0 rgba(15, 23, 42, 0.02),
+        0 14px 34px -4px rgba(15, 23, 42, 0.1) !important;
+}
+
+[data-theme="light"] .modal-container,
+[data-theme="light"] .liquid-modal {
+    background: linear-gradient(145deg, #ffffff 0%, rgba(248, 250, 252, 0.96) 100%) !important;
+    border: 1px solid rgba(15, 23, 42, 0.12) !important;
+    box-shadow: 
+        inset 0 1.5px 1px 0 #ffffff,
+        0 6px 0 0 rgba(15, 23, 42, 0.02),
+        0 24px 48px -4px rgba(15, 23, 42, 0.15) !important;
+}
+
+[data-theme="light"] .search-input,
+[data-theme="light"] .form-input,
+[data-theme="light"] .liquid-input {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(15, 23, 42, 0.12) !important;
+    color: #0f172a !important;
+    box-shadow: 
+        inset 0 1.5px 1px 0 #ffffff,
+        0 2px 8px rgba(15, 23, 42, 0.04) !important;
+}
+
+/* ==========================================================================
+   10. 1-RASM — 3D HOLOGRAPHIC CASCADE & LIGHT BEAM (DEUTSCH & KUN HIKMATI)
+   Floating 3D glass cards streaming under downward radiant neon search beam
+   ========================================================================== */
+
+/* Luminous projector beam emanating downwards from search / header */
+[data-theme="dark"] .functional-search,
+[data-theme="dark"] .deutsch-subnav-section {
+    position: relative;
+}
+
+[data-theme="dark"] .functional-search::after,
+[data-theme="dark"] .deutsch-pill-bar::after {
+    content: '';
+    position: absolute;
+    bottom: -32px;
+    left: 15%;
+    right: 15%;
+    height: 60px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.35) 0%, rgba(56, 189, 248, 0.1) 45%, transparent 75%);
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(6px);
+}
+
+/* Kun Hikmati (Quote Card) — Floating Luminous Crystal Deck */
+.fortune-widget-wrap {
+    position: relative;
+    perspective: 1200px;
+}
+
+[data-theme="dark"] .fortune-widget-wrap::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 25%;
+    right: 25%;
+    height: 100px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.28) 0%, rgba(56, 189, 248, 0.06) 55%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(10px);
+}
+
+.atelier-quote-card,
+#fortune-card {
+    position: relative;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.09) 0%, rgba(8, 20, 48, 0.82) 100%) !important;
+    backdrop-filter: blur(28px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+    border: 1px solid rgba(56, 189, 248, 0.38) !important;
+    border-radius: 24px !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.75),
+        inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.5),
+        0 0 28px -4px rgba(56, 189, 248, 0.35),
+        0 20px 48px -4px rgba(0, 0, 0, 0.7) !important;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease, border-color 0.35s ease !important;
+    z-index: 1;
+}
+
+.atelier-quote-card:hover,
+#fortune-card:hover {
+    transform: translateY(-5px) scale(1.01) !important;
+    border-color: rgba(56, 189, 248, 0.75) !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 #ffffff,
+        0 0 42px rgba(56, 189, 248, 0.55),
+        0 28px 56px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Deutsch Akademiyasi — 3D Cascading Curriculum Cards */
+.curriculum-topics-grid {
+    perspective: 1200px;
+}
+
+.curr-topic-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(10, 24, 52, 0.72) 100%) !important;
+    backdrop-filter: blur(24px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+    border: 1px solid rgba(56, 189, 248, 0.32) !important;
+    border-radius: 22px !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.5),
+        0 4px 0 0 rgba(255, 255, 255, 0.04),
+        0 0 24px -2px rgba(56, 189, 248, 0.28),
+        0 16px 36px -4px rgba(0, 0, 0, 0.65) !important;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease, border-color 0.35s ease !important;
+}
+
+.curr-topic-card:hover {
+    transform: translateY(-8px) scale(1.02) !important;
+    border-color: rgba(56, 189, 248, 0.8) !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 #ffffff,
+        0 6px 0 0 rgba(255, 255, 255, 0.06),
+        0 0 36px rgba(56, 189, 248, 0.65),
+        0 24px 48px rgba(0, 0, 0, 0.75) !important;
+}
+
+/* ==========================================================================
+   11. 2-RASM — TUNGI REJIM (DARK MODE: DEEP SAPPHIRE SILK & GLASS AUTH)
+   ========================================================================== */
+
+[data-theme="dark"] #auth-modal .modal-container,
+[data-theme="dark"] #secret-gate-modal .modal-container {
+    background: linear-gradient(180deg, #07193f 0%, #040e25 60%, #020713 100%) !important;
+    border: 1px solid rgba(56, 189, 248, 0.32) !important;
+    border-radius: 28px !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -2px 4px 0 rgba(0, 0, 0, 0.7),
+        0 0 45px -5px rgba(30, 64, 175, 0.5),
+        0 32px 64px -4px rgba(0, 0, 0, 0.85) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Sapphire Silk Wave overlay */
+[data-theme="dark"] #auth-modal .modal-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(30, 64, 175, 0.25) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+[data-theme="dark"] #auth-modal .modal-body {
+    position: relative;
+    z-index: 1;
+}
+
+[data-theme="dark"] #auth-modal .form-input,
+[data-theme="dark"] #secret-gate-modal .form-input {
+    border-radius: 9999px !important;
+    background: rgba(10, 20, 44, 0.75) !important;
+    border: 1px solid rgba(56, 189, 248, 0.25) !important;
+    padding: 13px 22px !important;
+    box-shadow: 
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] #auth-modal .form-input:focus,
+[data-theme="dark"] #secret-gate-modal .form-input:focus {
+    border-color: rgba(56, 189, 248, 0.75) !important;
+    background: rgba(12, 25, 55, 0.85) !important;
+    box-shadow: 
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.4),
+        0 0 18px rgba(56, 189, 248, 0.45) !important;
+}
+
+[data-theme="dark"] #auth-submit {
+    position: relative;
+    background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%) !important;
+    border: 1px solid rgba(56, 189, 248, 0.5) !important;
+    box-shadow: 
+        inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.5),
+        0 8px 24px -2px rgba(2, 132, 199, 0.55),
+        0 2px 6px rgba(0, 0, 0, 0.4) !important;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+[data-theme="dark"] #auth-submit::after {
+    content: ' →';
+    font-weight: 800;
+    margin-left: 6px;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+[data-theme="dark"] #auth-submit:hover::after {
+    transform: translateX(4px);
+}
+
+/* ==========================================================================
+   12. 3-RASM — KUNDUZGI REJIM (LIGHT MODE: FROSTED CERAMIC NEOMORPHIC SNOW)
+   ========================================================================== */
+
+[data-theme="light"] body {
+    background: 
+        radial-gradient(circle at 10% 8%, rgba(59, 130, 246, 0.08), transparent 35%),
+        radial-gradient(circle at 90% 12%, rgba(99, 102, 241, 0.06), transparent 40%),
+        radial-gradient(circle at 50% 85%, rgba(203, 213, 225, 0.35), transparent 60%),
+        #f0f4f9 !important;
+}
+
+[data-theme="light"] #auth-modal .modal-container,
+[data-theme="light"] #secret-gate-modal .modal-container {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(32px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
+    border-radius: 28px !important;
+    border: 1px solid rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 
+        inset 0 2px 2px 0 #ffffff,
+        0 8px 0 0 rgba(255, 255, 255, 0.5),
+        0 24px 52px -8px rgba(148, 163, 184, 0.3) !important;
+}
+
+[data-theme="light"] #auth-modal .form-input,
+[data-theme="light"] #secret-gate-modal .form-input {
+    border-radius: 9999px !important;
+    background: rgba(248, 250, 252, 0.95) !important;
+    border: 1px solid rgba(226, 232, 240, 0.95) !important;
+    color: #0f172a !important;
+    padding: 13px 22px !important;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.04),
+        0 2px 6px rgba(148, 163, 184, 0.08) !important;
+}
+
+[data-theme="light"] #auth-modal .form-input:focus,
+[data-theme="light"] #secret-gate-modal .form-input:focus {
+    border-color: rgba(37, 99, 235, 0.6) !important;
+    background: #ffffff !important;
+    box-shadow: 
+        inset 0 1px 2px rgba(0, 0, 0, 0.02),
+        0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
+
+[data-theme="light"] #auth-submit {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    color: #ffffff !important;
+    border-radius: 9999px !important;
+    border: 1px solid rgba(37, 99, 235, 0.5) !important;
+    box-shadow: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.45),
+        0 10px 24px -2px rgba(37, 99, 235, 0.45),
+        0 2px 6px rgba(37, 99, 235, 0.2) !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] #auth-submit::after {
+    content: ' →';
+    font-weight: 800;
+    margin-left: 6px;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+[data-theme="light"] #auth-submit:hover::after {
+    transform: translateX(4px);
+}
+
+[data-theme="light"] .atelier-quote-card,
+[data-theme="light"] #fortune-card {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border: 1px solid rgba(226, 232, 240, 0.95) !important;
+    border-radius: 24px !important;
+    box-shadow: 
+        inset 0 2px 2px 0 #ffffff,
+        0 14px 36px -6px rgba(148, 163, 184, 0.22) !important;
+}
+
+[data-theme="light"] .curr-topic-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(226, 232, 240, 0.95) !important;
+    border-radius: 22px !important;
+    box-shadow: 
+        inset 0 2px 2px 0 #ffffff,
+        0 10px 28px -4px rgba(148, 163, 184, 0.18) !important;
+}
+
