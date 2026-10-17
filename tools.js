@@ -39,6 +39,59 @@
         });
     }
 
+    // ---------- ADMIN HAQIQIYLIK VA KO'RINISHLIK BOSHQARUVI ----------
+    function checkIsAdmin() {
+        try {
+            if (window.Auth && typeof Auth.isAdmin === 'function' && Auth.isAdmin()) {
+                return true;
+            }
+        } catch (_) {}
+        try {
+            const u = JSON.parse(localStorage.getItem('abdu_user_data') || '{}');
+            if (u && (u.role === 'admin' || u.role === 'superadmin' || u.isAdmin)) return true;
+        } catch (_) {}
+        return sessionStorage.getItem('kay_admin') === 'true' ||
+               !!sessionStorage.getItem('kay_admin_token') ||
+               !!localStorage.getItem('kay_admin_token') ||
+               (typeof document !== 'undefined' && document.cookie.includes('kay_admin_token='));
+    }
+
+    function updateAdminVisibility() {
+        const slot = document.getElementById('tools-admin-slot');
+        if (!slot) return;
+        if (checkIsAdmin()) {
+            if (!document.getElementById('tools-admin-link')) {
+                const a = document.createElement('a');
+                a.id = 'tools-admin-link';
+                a.href = '/kay.html';
+                a.className = 'eco-link';
+                a.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+                a.style.background = 'rgba(99, 102, 241, 0.12)';
+                a.innerHTML = '⚙️ Admin';
+                slot.appendChild(a);
+            }
+        } else {
+            const existing = document.getElementById('tools-admin-link');
+            if (existing) existing.remove();
+        }
+    }
+
+    updateAdminVisibility();
+    window.addEventListener('storage', updateAdminVisibility);
+
+    // Secret Knock: Logo ustiga 2 marta tez bosish yoki Ctrl+Alt+A orqali Admin panelga kirish
+    const brandLogo = document.querySelector('.tools-brand');
+    if (brandLogo) {
+        brandLogo.addEventListener('dblclick', () => {
+            window.location.href = '/kay.html';
+        });
+    }
+    window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.altKey && e.key.toLowerCase() === 'a') {
+            window.location.href = '/kay.html';
+        }
+    });
+
     // ---------- TABS & URL HASH ROUTING BOSHQARUVI ----------
     const tabBtns = document.querySelectorAll('.tool-tab-btn');
     const panels = document.querySelectorAll('.tool-panel');
@@ -58,6 +111,12 @@
         'carbon': 'codeshot',
         'pdfclean': 'pdfclean',
         'markdown': 'pdfclean',
+        'docconvert': 'docconvert',
+        'word': 'docconvert',
+        'word2pdf': 'docconvert',
+        'pdf2word': 'docconvert',
+        'docx': 'docconvert',
+        'pdf': 'docconvert',
         'regex': 'regex',
         'ocr': 'ocr',
         'json': 'json',
@@ -221,11 +280,24 @@
             }
         }
 
+        if (canonical === 'docconvert') {
+            if (window.ToolsDocSuite && typeof window.ToolsDocSuite.switchMode === 'function') {
+                if (normalized === 'pdf2word') {
+                    window.ToolsDocSuite.switchMode('pdf2word');
+                } else {
+                    window.ToolsDocSuite.switchMode('word2pdf');
+                }
+            }
+        }
+
         if (updateHash) {
             let nextHash = canonical === 'image' ? '#webp' : `#${canonical}`;
             if (canonical === 'hash') {
                 if (normalized === 'jwt' || normalized === 'token') nextHash = '#jwt';
                 else if (normalized.startsWith('sha')) nextHash = '#sha';
+            } else if (canonical === 'docconvert') {
+                if (normalized === 'pdf2word') nextHash = '#pdf2word';
+                else nextHash = '#word2pdf';
             }
             if (window.location.hash !== nextHash) {
                 try {
