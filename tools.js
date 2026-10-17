@@ -109,16 +109,7 @@
         'codeshot': 'codeshot',
         'code': 'codeshot',
         'carbon': 'codeshot',
-        'pdfclean': 'pdfclean',
-        'markdown': 'pdfclean',
-        'docconvert': 'docconvert',
-        'word': 'docconvert',
-        'word2pdf': 'docconvert',
-        'pdf2word': 'docconvert',
-        'docx': 'docconvert',
-        'pdf': 'docconvert',
         'regex': 'regex',
-        'ocr': 'ocr',
         'json': 'json',
         'diff': 'diff',
         'qr': 'qr',
@@ -137,10 +128,6 @@
         'slug': 'slug',
         'url-slug': 'slug',
         'case': 'slug',
-        'glass': 'glass',
-        'glassmorphism': 'glass',
-        'neon': 'glass',
-        'css': 'glass',
         'timestamp': 'timestamp',
         'time': 'timestamp',
         'unix': 'timestamp',
@@ -280,24 +267,11 @@
             }
         }
 
-        if (canonical === 'docconvert') {
-            if (window.ToolsDocSuite && typeof window.ToolsDocSuite.switchMode === 'function') {
-                if (normalized === 'pdf2word') {
-                    window.ToolsDocSuite.switchMode('pdf2word');
-                } else {
-                    window.ToolsDocSuite.switchMode('word2pdf');
-                }
-            }
-        }
-
         if (updateHash) {
             let nextHash = canonical === 'image' ? '#webp' : `#${canonical}`;
             if (canonical === 'hash') {
                 if (normalized === 'jwt' || normalized === 'token') nextHash = '#jwt';
                 else if (normalized.startsWith('sha')) nextHash = '#sha';
-            } else if (canonical === 'docconvert') {
-                if (normalized === 'pdf2word') nextHash = '#pdf2word';
-                else nextHash = '#word2pdf';
             }
             if (window.location.hash !== nextHash) {
                 try {
@@ -410,37 +384,19 @@
 
         const firstFile = files[0];
         if (firstFile.type && firstFile.type.startsWith('image/')) {
-            const activePanel = document.querySelector('.tool-panel.active');
-            const isOcr = activePanel && activePanel.id === 'panel-ocr';
-
-            if (isOcr) {
-                const ocrInput = document.getElementById('ocr-file-input');
-                if (ocrInput) {
-                    try {
-                        const dt = new DataTransfer();
-                        dt.items.add(firstFile);
-                        ocrInput.files = dt.files;
-                        ocrInput.dispatchEvent(new Event('change', { bubbles: true }));
-                    } catch (err) {
-                        // fallback
-                    }
+            activateTab('image', true);
+            const compressInput = document.getElementById('compress-file-input');
+            if (compressInput) {
+                try {
+                    const dt = new DataTransfer();
+                    dt.items.add(firstFile);
+                    compressInput.files = dt.files;
+                    compressInput.dispatchEvent(new Event('change', { bubbles: true }));
+                } catch (err) {
+                    // fallback
                 }
-                showToast("Rasm OCR tahliliga yuborildi", "👁️");
-            } else {
-                activateTab('image', true);
-                const compressInput = document.getElementById('compress-file-input');
-                if (compressInput) {
-                    try {
-                        const dt = new DataTransfer();
-                        dt.items.add(firstFile);
-                        compressInput.files = dt.files;
-                        compressInput.dispatchEvent(new Event('change', { bubbles: true }));
-                    } catch (err) {
-                        // fallback
-                    }
-                }
-                showToast("Rasm WebP siquvchiga yuklandi", "🖼️");
             }
+            showToast("Rasm WebP siquvchiga yuklandi", "🖼️");
         }
     });
 

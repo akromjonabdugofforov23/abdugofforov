@@ -716,7 +716,7 @@
         <div class="tools-controls-wrap">
             <div class="tools-search-box">
                 <span class="tools-search-icon">🔍</span>
-                <input type="text" id="tools-search-input" placeholder="Asboblar bo'yicha tezkor qidiruv... (masalan: json, jwt, imlo, qr, slug, fon)" autocomplete="off" spellcheck="false" aria-label="Asboblarni qidirish">
+                <input type="text" id="tools-search-input" placeholder="Asboblar bo'yicha tezkor qidiruv... (masalan: json, jwt, imlo, qr, slug, diff)" autocomplete="off" spellcheck="false" aria-label="Asboblarni qidirish">
                 <button type="button" id="tools-search-clear" class="tools-search-clear" title="Tozalash" style="display:none;">✕</button>
                 <span class="tools-search-badge"><kbd>Enter ↵</kbd></span>
             </div>
@@ -750,12 +750,6 @@
             <button class="tool-tab-btn" data-tool="slug" data-category="text" data-keywords="slug url link case kebab snake camel pascal title nom o'zbekcha">
                 <span>🔗</span> URL Slug
             </button>
-            <button class="tool-tab-btn" data-tool="pdfclean" data-category="text" data-keywords="markdown text matn tozalovchi pdf tozalash formatlash xatboshi">
-                <span>📄</span> Matn ➔ Markdown
-            </button>
-            <button class="tool-tab-btn" data-tool="docconvert" data-category="text" data-keywords="word pdf docx doc to pdf pdf to word konverter aylantirish hujjat o'tkazish text">
-                <span>📑</span> Word ⇄ PDF
-            </button>
             <button class="tool-tab-btn" data-tool="diff" data-category="text" data-keywords="diff taqqoslash solishtirish qiyoslash text checker farq">
                 <span>⚖️</span> Text Diff Checker
             </button>
@@ -769,12 +763,6 @@
             </button>
             <button class="tool-tab-btn" data-tool="codeshot" data-category="media" data-keywords="codeshot carbon rayso code rasm snippet dastur skrinshot dasturchi">
                 <span>📸</span> Code to Image
-            </button>
-            <button class="tool-tab-btn" data-tool="ocr" data-category="media" data-keywords="ocr rasm matn tesseract skrinshot extract text o'qish ajratish">
-                <span>👁️</span> Rasm Matnini Ajratish
-            </button>
-            <button class="tool-tab-btn" data-tool="glass" data-category="media" data-keywords="glass glassmorphism neon css blur shaffoflik generator dizayn cyber oyna">
-                <span>✨</span> Glassmorphism CSS
             </button>
 
             <!-- Dev & Kripto vositalari -->
@@ -1260,156 +1248,6 @@ salomDunyo("Abdugofforov");</textarea>
             </div>
         </section>
 
-        <!-- 10. TEXT TO MARKDOWN -->
-        <section class="tool-panel" id="panel-pdfclean">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <span>📄</span>
-                    <div>
-                        <h2>Matn Tozalovchi &amp; Markdown</h2>
-                        <small style="color:var(--text-secondary);">Buzilgan qatorlarni birlashtirish, sarlavhalarni to'g'rilash va .md formatiga o'tkazish</small>
-                    </div>
-                </div>
-                <div class="panel-actions">
-                    <input type="file" id="pdf-file-input" accept=".txt,.md,.pdf" style="display:none;">
-                    <button class="tool-btn" id="pdf-upload-btn" type="button">📎 Fayl yuklash</button>
-                    <button class="tool-btn tool-btn-primary" id="pdf-clean-btn">Tozalash &amp; Formatlash</button>
-                    <button class="tool-btn" id="pdf-copy-btn">Nusxa olish</button>
-                    <button class="tool-btn" id="pdf-dl-btn">📥 .md Yuklab olish</button>
-                </div>
-            </div>
-            <div class="converter-grid">
-                <div class="converter-box">
-                    <div class="box-label"><span>PDF yoki xom matn (Input):</span></div>
-                    <textarea class="tool-textarea" id="pdf-input" placeholder="PDF dan nusxalangan matnni bu yerga tashlang..."></textarea>
-                </div>
-                <div class="converter-box">
-                    <div class="box-label"><span>Toza Markdown (Output):</span></div>
-                    <textarea class="tool-textarea code-font" id="pdf-output" placeholder="Formatlangan Markdown bu yerda chiqadi..."></textarea>
-                </div>
-            </div>
-
-            <!-- Live Matn Statistikasi (Word & Character Counter) -->
-            <div id="pdf-metrics-bar" style="margin-top:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:12px 18px; background:rgba(0,0,0,0.18); border:1px solid var(--tools-border); border-radius:12px; font-size:0.85rem; color:var(--text-secondary);">
-                <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center;">
-                    <span>📝 So'zlar: <strong id="pdf-stat-words" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong></span>
-                    <span>🔤 Belgilar: <strong id="pdf-stat-chars" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong> (<span title="Bo'sh joysiz">bo'sh joysiz:</span> <strong id="pdf-stat-chars-nospace" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong>)</span>
-                    <span>📑 Qatorlar: <strong id="pdf-stat-lines" style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">0</strong></span>
-                </div>
-                <div>⏱️ O'qish vaqti: <strong id="pdf-stat-reading" style="color:var(--tools-accent); font-weight:700;">~0 daq</strong></div>
-            </div>
-        </section>
-
-        <!-- WORD <-> PDF CONVERTER -->
-        <section class="tool-panel" id="panel-docconvert">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <span>📑</span>
-                    <div>
-                        <h2>Word ⇄ PDF Konverter</h2>
-                        <small style="color:var(--text-secondary);">Word (.docx) fayllarni PDF ga va PDF (.pdf) hujjatlarni Word (.docx) ga o'tkazish (100% maxfiy va brauzerda)</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Yo'nalishni tanlash tugmalari (Subnav) -->
-            <div class="docconvert-subnav" style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
-                <button type="button" class="docconvert-mode-btn active" data-mode="word2pdf">
-                    <span>📘 ➔ 📕</span> Word (.docx) ➔ PDF
-                </button>
-                <button type="button" class="docconvert-mode-btn" data-mode="pdf2word">
-                    <span>📕 ➔ 📘</span> PDF (.pdf) ➔ Word (.docx)
-                </button>
-            </div>
-
-            <!-- MODE 1: WORD (.docx) -> PDF -->
-            <div id="docconvert-view-word2pdf" class="docconvert-view">
-                <div id="doc-word-dropzone" class="doc-dropzone" style="margin-bottom: 20px;">
-                    <div style="font-size: 40px; margin-bottom: 10px;">📘</div>
-                    <h3 style="margin: 0 0 6px 0; font-size: 1.15rem;">Word (.docx) faylni bu yerga tashlang yoki tanlang</h3>
-                    <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">Hujjat matni, sarlavhalar va tuzilmasi saqlangan holda toza PDF formatiga o'tkaziladi</p>
-                    <input type="file" id="doc-word-file-input" accept=".docx,.doc" style="display: none;">
-                </div>
-
-                <!-- Word File Info & Actions -->
-                <div id="doc-word-info-card" style="display:none; margin-bottom:20px; padding:16px 20px; background:rgba(0,0,0,0.22); border:1px solid var(--tools-border); border-radius:14px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <span style="font-size:28px;">📄</span>
-                            <div>
-                                <h4 id="doc-word-filename" style="margin:0 0 4px 0; font-size:1rem; font-weight:700;">hujjat.docx</h4>
-                                <span id="doc-word-meta" style="font-size:0.8rem; color:var(--text-secondary);">0 KB · 0 so'z</span>
-                            </div>
-                        </div>
-                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                            <button type="button" class="tool-btn" id="doc-word-reset-btn">Boshqa fayl</button>
-                            <button type="button" class="tool-btn tool-btn-primary" id="doc-word-convert-btn">📥 PDF ga aylantirish va Yuklab olish</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Word Document Preview & Edit -->
-                <div id="doc-word-preview-wrap" style="display:none;">
-                    <div class="box-label" style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                        <span>Hujjat tahriri va oldindan ko'rinishi:</span>
-                        <div style="display:flex; gap:8px;">
-                            <button type="button" class="tool-btn" id="doc-word-copy-btn" style="padding:3px 10px; font-size:11px;">Matnni nusxalash</button>
-                        </div>
-                    </div>
-                    <div class="doc-preview-box" id="doc-word-preview" contenteditable="true"></div>
-                </div>
-            </div>
-
-            <!-- MODE 2: PDF (.pdf) -> WORD (.docx) -->
-            <div id="docconvert-view-pdf2word" class="docconvert-view" style="display:none;">
-                <div id="doc-pdf-dropzone" class="doc-dropzone" style="margin-bottom: 20px;">
-                    <div style="font-size: 40px; margin-bottom: 10px;">📕</div>
-                    <h3 style="margin: 0 0 6px 0; font-size: 1.15rem;">PDF (.pdf) faylni bu yerga tashlang yoki tanlang</h3>
-                    <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">PDF sahifalari tahlil qilinib, tahrirlanadigan Word (.docx) formatiga aylantiriladi</p>
-                    <input type="file" id="doc-pdf-file-input" accept=".pdf" style="display: none;">
-                </div>
-
-                <!-- PDF File Info & Actions -->
-                <div id="doc-pdf-info-card" style="display:none; margin-bottom:20px; padding:16px 20px; background:rgba(0,0,0,0.22); border:1px solid var(--tools-border); border-radius:14px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <span style="font-size:28px;">📑</span>
-                            <div>
-                                <h4 id="doc-pdf-filename" style="margin:0 0 4px 0; font-size:1rem; font-weight:700;">hujjat.pdf</h4>
-                                <span id="doc-pdf-meta" style="font-size:0.8rem; color:var(--text-secondary);">0 sahifa · 0 KB</span>
-                            </div>
-                        </div>
-                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                            <button type="button" class="tool-btn" id="doc-pdf-reset-btn">Boshqa fayl</button>
-                            <button type="button" class="tool-btn tool-btn-primary" id="doc-pdf-convert-btn">📥 Word (.docx) Yuklab olish</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Progress Bar -->
-                <div id="doc-pdf-progress-wrap" style="display:none; margin-bottom:18px;">
-                    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
-                        <span id="doc-pdf-progress-msg">PDF sahifalari o'qilmoqda...</span>
-                        <span id="doc-pdf-progress-pct">0%</span>
-                    </div>
-                    <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:999px; overflow:hidden;">
-                        <div id="doc-pdf-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #6366f1, #38bdf8); transition:width 0.2s ease;"></div>
-                    </div>
-                </div>
-
-                <!-- PDF Text Preview & Edit -->
-                <div id="doc-pdf-preview-wrap" style="display:none;">
-                    <div class="box-label" style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                        <span>Ajratilgan matn (Word fayliga tushadi):</span>
-                        <div style="display:flex; gap:8px;">
-                            <button type="button" class="tool-btn" id="doc-pdf-copy-btn" style="padding:3px 10px; font-size:11px;">Matnni nusxalash</button>
-                            <button type="button" class="tool-btn" id="doc-pdf-txt-btn" style="padding:3px 10px; font-size:11px;">.txt Yuklab olish</button>
-                        </div>
-                    </div>
-                    <div class="doc-preview-box" id="doc-pdf-preview" contenteditable="true"></div>
-                </div>
-            </div>
-        </section>
 
         <!-- 11. REGEX TESTER -->
         <section class="tool-panel" id="panel-regex">
@@ -1448,52 +1286,6 @@ salomDunyo("Abdugofforov");</textarea>
             </div>
         </section>
 
-        <!-- 12. IMAGE OCR TEXT EXTRACTOR -->
-        <section class="tool-panel" id="panel-ocr">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <span>👁️</span>
-                    <div>
-                        <h2>Rasm Matnini Ajratish (Client-side Image OCR)</h2>
-                        <small style="color:var(--text-secondary);">Skrinshot yoki rasmdagi matnlarni xavfsiz brauzer xotirasida o'qib berish</small>
-                    </div>
-                </div>
-                <div class="panel-actions">
-                    <select id="ocr-lang-select" class="tool-btn" style="background:var(--card-bg);">
-                        <option value="eng">🇬🇧 Ingliz tili (English)</option>
-                        <option value="deu">🇩🇪 Nemis tili (Deutsch)</option>
-                        <option value="uzb">🇺🇿 O'zbek tili (Lotin)</option>
-                        <option value="uzb_cyrl">🇺🇿 O'zbek tili (Kirill)</option>
-                        <option value="rus">🇷🇺 Rus tili (Русский)</option>
-                        <option value="eng+deu+uzb+rus">🌐 Ko'p tilli (Multi-lang)</option>
-                    </select>
-                    <button class="tool-btn tool-btn-primary" id="ocr-copy-btn">Nusxa olish</button>
-                    <button class="tool-btn" id="ocr-dl-btn">📥 .txt Yuklab olish</button>
-                </div>
-            </div>
-            <div id="ocr-dropzone" style="border: 2px dashed var(--tools-border); border-radius: 16px; padding: 36px 20px; text-align: center; cursor: pointer; margin-bottom: 20px; transition: all 0.2s;">
-                <div style="font-size: 34px; margin-bottom: 8px;">📸</div>
-                <h3 style="margin: 0 0 6px 0; font-size: 1.1rem;">Skrinshot yoki rasmni tanlang</h3>
-                <p style="margin: 0; font-size: 13px; color: var(--text-secondary);">100% maxfiy brauzer tahlili, rasm serverga yuborilmaydi</p>
-                <input type="file" id="ocr-file-input" accept="image/*" style="display: none;">
-            </div>
-
-            <!-- OCR Progress Bar -->
-            <div id="ocr-progress-wrap" style="display:none; margin-bottom:18px; background:var(--card-bg); border:1px solid var(--tools-border); border-radius:12px; padding:14px;">
-                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
-                    <span id="ocr-status-text" style="color:var(--tools-accent); font-weight:600;">Kutubxona tayyorlanmoqda...</span>
-                    <span id="ocr-progress-percent" style="color:var(--text-secondary); font-weight:600;">0%</span>
-                </div>
-                <div style="width:100%; height:8px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden;">
-                    <div id="ocr-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, var(--tools-accent), #a855f7); transition:width 0.2s;"></div>
-                </div>
-            </div>
-
-            <div class="converter-box">
-                <div class="box-label"><span>Ajratilgan matn:</span></div>
-                <textarea class="tool-textarea" id="ocr-result" rows="6" readonly placeholder="Rasm tanlaganingizdan so'ng matn bu yerda chiqadi..."></textarea>
-            </div>
-        </section>
 
         <!-- 13. O'ZBEKCHA URL SLUG & CASE GENERATOR -->
         <section class="tool-panel" id="panel-slug">
@@ -1607,135 +1399,6 @@ salomDunyo("Abdugofforov");</textarea>
             </div>
         </section>
 
-        <!-- 14. CYBER GLASSMORPHISM & NEON CSS GENERATOR -->
-        <section class="tool-panel" id="panel-glass">
-            <div class="panel-header">
-                <div class="panel-title">
-                    <span>💎</span>
-                    <div>
-                        <h2>Cyber Glassmorphism &amp; Neon CSS Generator</h2>
-                        <small style="color:var(--text-secondary);">Oynasimon fon, xiralik va neon nurlanish effektlarini real vaqtda yaratish</small>
-                    </div>
-                </div>
-                <div class="panel-actions">
-                    <button type="button" class="tool-btn" id="glass-reset-btn">Qayta tiklash</button>
-                    <button type="button" class="tool-btn tool-btn-primary" id="glass-copy-btn">📋 CSS Nusxa olish</button>
-                </div>
-            </div>
-
-            <div class="glass-layout-grid">
-                <!-- Sozlamalar paneli -->
-                <div class="glass-controls-panel">
-                    <!-- Fon shaffofligi -->
-                    <div class="glass-control-row">
-                        <div class="glass-label-wrap">
-                            <span>Fon Shaffofligi (Opacity):</span>
-                            <span class="glass-val-badge" id="glass-val-opacity">65%</span>
-                        </div>
-                        <input type="range" id="glass-bg-opacity" class="glass-range" min="0" max="100" value="65">
-                    </div>
-
-                    <!-- Xiralik (Blur) -->
-                    <div class="glass-control-row">
-                        <div class="glass-label-wrap">
-                            <span>Xiralik (Backdrop Blur):</span>
-                            <span class="glass-val-badge" id="glass-val-blur">16px</span>
-                        </div>
-                        <input type="range" id="glass-blur" class="glass-range" min="0" max="40" value="16">
-                    </div>
-
-                    <!-- Hoshiya qalinligi -->
-                    <div class="glass-control-row">
-                        <div class="glass-label-wrap">
-                            <span>Hoshiya Qalinligi (Border Width):</span>
-                            <span class="glass-val-badge" id="glass-val-border-width">1px</span>
-                        </div>
-                        <input type="range" id="glass-border-width" class="glass-range" min="0" max="5" value="1">
-                    </div>
-
-                    <!-- Hoshiya shaffofligi -->
-                    <div class="glass-control-row">
-                        <div class="glass-label-wrap">
-                            <span>Hoshiya Shaffofligi (Border Opacity):</span>
-                            <span class="glass-val-badge" id="glass-val-border-opacity">15%</span>
-                        </div>
-                        <input type="range" id="glass-border-opacity" class="glass-range" min="0" max="100" value="15">
-                    </div>
-
-                    <!-- Neon nurlanish xiraligi -->
-                    <div class="glass-control-row">
-                        <div class="glass-label-wrap">
-                            <span>Neon Glow Blur:</span>
-                            <span class="glass-val-badge" id="glass-val-glow-blur">24px</span>
-                        </div>
-                        <input type="range" id="glass-glow-blur" class="glass-range" min="0" max="60" value="24">
-                    </div>
-
-                    <!-- Neon nurlanish intensivligi -->
-                    <div class="glass-control-row">
-                        <div class="glass-label-wrap">
-                            <span>Neon Intensivligi (Opacity):</span>
-                            <span class="glass-val-badge" id="glass-val-glow-opacity">35%</span>
-                        </div>
-                        <input type="range" id="glass-glow-opacity" class="glass-range" min="0" max="100" value="35">
-                    </div>
-
-                    <!-- Burchak radiusi -->
-                    <div class="glass-control-row">
-                        <div class="glass-label-wrap">
-                            <span>Burchak Radiusi (Border Radius):</span>
-                            <span class="glass-val-badge" id="glass-val-radius">18px</span>
-                        </div>
-                        <input type="range" id="glass-radius" class="glass-range" min="0" max="32" value="18">
-                    </div>
-
-                    <!-- Neon nurlanish rangi -->
-                    <div class="glass-control-row">
-                        <div class="glass-label-wrap">
-                            <span>Nur Rangi (Neon Theme):</span>
-                        </div>
-                        <div class="glass-color-presets">
-                            <div class="glass-color-dot active" data-color="cyan" style="background:#06b6d4;" title="Cyan"></div>
-                            <div class="glass-color-dot" data-color="violet" style="background:#a855f7;" title="Violet"></div>
-                            <div class="glass-color-dot" data-color="emerald" style="background:#10b981;" title="Emerald"></div>
-                            <div class="glass-color-dot" data-color="amber" style="background:#f59e0b;" title="Amber"></div>
-                            <div class="glass-color-dot" data-color="rose" style="background:#f43f5e;" title="Rose"></div>
-                            <input type="color" id="glass-custom-color" value="#06b6d4" style="width:30px; height:30px; border:none; border-radius:50%; cursor:pointer; background:transparent;" title="Maxsus rang">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Jonli Preview maydoni -->
-                <div>
-                    <div class="glass-preview-stage" id="glass-preview-stage">
-                        <div class="glass-stage-orb glass-stage-orb-1"></div>
-                        <div class="glass-stage-orb glass-stage-orb-2"></div>
-                        <div class="glass-stage-orb glass-stage-orb-3"></div>
-
-                        <div class="glass-demo-card" id="glass-preview-card">
-                            <div class="glass-demo-badge">
-                                <span class="glass-demo-badge-dot"></span>
-                                <span>CYBER GLASS // ACTIVE</span>
-                            </div>
-                            <h3 class="glass-demo-title">Cyber Glassmorphism Preview</h3>
-                            <p class="glass-demo-desc">Ushbu oynasimon panel CSS backdrop-filter va neon box-shadow texnologiyasi asosida ishlaydi.</p>
-                            <div class="glass-demo-actions">
-                                <button type="button" class="glass-demo-btn glass-demo-btn-primary">Batafsil</button>
-                                <button type="button" class="glass-demo-btn">Bekor qilish</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CSS kodi -->
-                    <div class="glass-css-output-box">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <span style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Generatsiya qilingan CSS:</span>
-                        </div>
-                        <code class="glass-css-code" id="glass-css-code">/* CSS kodi bu yerda paydo bo'ladi */</code>
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <!-- 15. UNIX TIMESTAMP & SANA KALKULYATORI -->
         <section class="tool-panel" id="panel-timestamp">
@@ -1878,7 +1541,7 @@ salomDunyo("Abdugofforov");</textarea>
         <div class="drop-overlay-card">
             <span class="drop-overlay-icon">📸</span>
             <h3 style="margin: 0 0 8px 0; font-size: 1.35rem; color: #ffffff;">Rasmni bu yerga tashlang</h3>
-            <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">WebP siquvchi yoki OCR matn ajratgichda avtomatik ochiladi</p>
+            <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">WebP siquvchida avtomatik ochiladi</p>
         </div>
     </div>
 
@@ -1893,6 +1556,5 @@ salomDunyo("Abdugofforov");</textarea>
     <script src="scripts/tools-text-suite.js" defer></script>
     <script src="scripts/tools-media-suite.js" defer></script>
     <script src="scripts/tools-dev-suite.js" defer></script>
-    <script src="scripts/tools-doc-suite.js" defer></script>
 </body>
 </html>

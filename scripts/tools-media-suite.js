@@ -2,10 +2,9 @@
  * ABDUGOFFOROV WEB EKOTIZIMI — TOOLS MEDIA SUITE
  * scripts/tools-media-suite.js
  * 
- * Ushbu modul quyidagi 3 ta media va vizual vositani to'laqonli ta'minlaydi:
+ * Ushbu modul quyidagi media va vizual vositalarni to'laqonli ta'minlaydi:
  * 1. Favicon & PWA App Icon Generator (16x16, 32x32, 48x48, 180x180, 192x192, 512x512, .ico generator, HTML meta-teglari)
  * 2. Code to Image (Retina High-DPI Canvas, haqiqiy sintaksis ranglash, macOS oynasi, nafis gradientlar, PNG yuklab olish)
- * 3. Real Client-Side Image OCR (Tesseract.js lazy-load, vizual progress bar, nusxalash va .txt yuklab olish)
  */
 
 (function () {
@@ -693,204 +692,6 @@
         renderSnippet();
     }
 
-    // -------------------------------------------------------------------------
-    // 3. REAL CLIENT-SIDE IMAGE OCR (#panel-ocr)
-    // -------------------------------------------------------------------------
-    let tesseractLoadingPromise = null;
-
-    function loadTesseractLibrary() {
-        if (window.Tesseract) return Promise.resolve(window.Tesseract);
-        if (tesseractLoadingPromise) return tesseractLoadingPromise;
-
-        tesseractLoadingPromise = new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
-            script.async = true;
-            script.onload = () => {
-                if (window.Tesseract) {
-                    resolve(window.Tesseract);
-                } else {
-                    reject(new Error("Tesseract obyekti yuklanmadi"));
-                }
-            };
-            script.onerror = () => {
-                tesseractLoadingPromise = null;
-                reject(new Error("Tesseract.js CDN dan yuklanmadi. Internet aloqasini tekshiring."));
-            };
-            document.head.appendChild(script);
-        });
-
-        return tesseractLoadingPromise;
-    }
-
-    function initImageOcr() {
-        const ocrFile = document.getElementById('ocr-file-input');
-        const ocrDrop = document.getElementById('ocr-dropzone');
-        const ocrResult = document.getElementById('ocr-result');
-        const copyBtn = document.getElementById('ocr-copy-btn');
-        const dlBtn = document.getElementById('ocr-dl-btn');
-        const langSelect = document.getElementById('ocr-lang-select') || document.getElementById('ocr-lang');
-
-        // Progress bar elementlari
-        const progressWrap = document.getElementById('ocr-progress-wrap');
-        const statusText = document.getElementById('ocr-status-text');
-        const percentText = document.getElementById('ocr-progress-percent');
-        const progressBar = document.getElementById('ocr-progress-bar');
-
-        if (!ocrFile || !ocrDrop || !ocrResult) return;
-
-        const OCR_LANG_NAMES = {
-            'eng': 'Ingliz tili (eng)',
-            'deu': 'Nemis tili (deu)',
-            'uzb': "O'zbek tili lotin (uzb)",
-            'uzb_cyrl': "O'zbek tili kirill (uzb_cyrl)",
-            'rus': 'Rus tili (rus)',
-            'eng+deu+uzb+rus': "Ko'p tilli (eng+rus+deu)"
-        };
-
-        function updateProgress(message, percent = null) {
-            if (progressWrap) progressWrap.style.display = 'block';
-            if (statusText) statusText.textContent = message;
-            if (percent !== null) {
-                const rounded = Math.round(percent);
-                if (percentText) percentText.textContent = `${rounded}%`;
-                if (progressBar) progressBar.style.width = `${rounded}%`;
-            }
-        }
-
-        function hideProgress() {
-            if (progressWrap) progressWrap.style.display = 'none';
-        }
-
-        async function processOcr(file) {
-            if (!file) return;
-
-            ocrResult.value = '';
-            const selectedLang = langSelect ? langSelect.value : 'eng';
-            const langName = OCR_LANG_NAMES[selectedLang] || selectedLang;
-
-            updateProgress(`AI moduli yuklanmoqda (${langName})...`, 10);
-
-            try {
-                // 1. Kutubxonani yuklash
-                const Tesseract = await loadTesseractLibrary();
-                updateProgress("Tizim initsializatsiya qilinmoqda...", 25);
-
-                // Tesseract v5 uchun barqaror til kodi
-                let targetLang = selectedLang;
-                if (selectedLang === 'eng+deu+uzb+rus') targetLang = 'eng+rus+deu';
-
-                updateProgress(`${langName} modeli tayyorlanmoqda...`, 35);
-
-                // 2. Haqiqiy recognize jarayoni
-                const result = await Tesseract.recognize(
-                    file,
-                    targetLang,
-                    {
-                        logger: m => {
-                            if (m.status && m.progress !== undefined) {
-                                let label = "Tahlil qilinmoqda...";
-                                if (m.status === 'loading tesseract core') label = "AI yadrosi yuklanmoqda...";
-                                else if (m.status === 'initializing tesseract') label = "Tizim initsializatsiya qilinmoqda...";
-                                else if (m.status === 'loading language traineddata') label = `${langName} lug'at modeli yuklanmoqda...`;
-                                else if (m.status === 'initializing api') label = "Optik analizator tayyorlanmoqda...";
-                                else if (m.status === 'recognizing text') label = "Matn qatlamlari ajratilmoqda...";
-
-                                const pct = Math.round(m.progress * 100);
-                                updateProgress(`${label} (${pct}%)`, pct);
-                            }
-                        }
-                    }
-                );
-
-                const extractedText = (result.data && result.data.text) ? result.data.text.trim() : '';
-
-                if (extractedText) {
-                    ocrResult.value = extractedText;
-                    updateProgress("✓ Matn muvaffaqiyatli ajratildi!", 100);
-                    notify("Matn rasmdan muvaffaqiyatli ajratildi!");
-                } else {
-                    ocrResult.value = "Rasmdan hech qanday matn topilmadi.\nIltimos, kontrastliroq va aniqroq rasm yuklab ko'ring.";
-                    updateProgress("Matn topilmadi", 100);
-                    notify("Rasmdan matn topilmadi", 'ℹ️');
-                }
-
-                setTimeout(hideProgress, 3500);
-
-            } catch (err) {
-                console.error("OCR tahlili xatosi:", err);
-                ocrResult.value = `Xatolik yuz berdi: ${err.message || err}`;
-                updateProgress("Tahlilda xatolik yuz berdi", 0);
-                notify("OCR tahlilida xatolik yuz berdi", '⚠️');
-            }
-        }
-
-        ocrFile.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-                processOcr(e.target.files[0]);
-            }
-        });
-
-        ocrDrop.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            ocrDrop.style.borderColor = 'var(--tools-accent)';
-            ocrDrop.style.background = 'rgba(99, 102, 241, 0.05)';
-        });
-
-        ocrDrop.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            ocrDrop.style.borderColor = '';
-            ocrDrop.style.background = '';
-        });
-
-        ocrDrop.addEventListener('drop', (e) => {
-            e.preventDefault();
-            ocrDrop.style.borderColor = '';
-            ocrDrop.style.background = '';
-            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                processOcr(e.dataTransfer.files[0]);
-            }
-        });
-
-        ocrDrop.addEventListener('click', () => {
-            ocrFile.click();
-        });
-
-        if (copyBtn) {
-            copyBtn.addEventListener('click', () => {
-                const text = ocrResult.value;
-                if (!text || text.startsWith('Rasmdan hech qanday') || text.startsWith('Xatolik')) {
-                    notify("Nusxalash uchun matn mavjud emas", '⚠️');
-                    return;
-                }
-                navigator.clipboard.writeText(text).then(() => {
-                    notify("Matn xotiraga nusxalandi!");
-                }).catch(() => {
-                    notify("Nusxalashda xatolik yuz berdi", '⚠️');
-                });
-            });
-        }
-
-        if (dlBtn) {
-            dlBtn.addEventListener('click', () => {
-                const text = ocrResult.value;
-                if (!text || text.startsWith('Rasmdan hech qanday') || text.startsWith('Xatolik')) {
-                    notify("Yuklab olish uchun matn mavjud emas", '⚠️');
-                    return;
-                }
-                const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'ocr-extracted-text.txt';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                setTimeout(() => URL.revokeObjectURL(url), 2000);
-                notify(".txt fayl yuklab olindi!");
-            });
-        }
-    }
 
     // -------------------------------------------------------------------------
     // BOSHLANG'ICH INITIALIZATSIYA
@@ -898,7 +699,6 @@
     function initAll() {
         initFaviconGenerator();
         initCodeToImage();
-        initImageOcr();
     }
 
     if (document.readyState === 'loading') {
@@ -912,7 +712,6 @@
         init: initAll,
         initFaviconGenerator,
         initCodeToImage,
-        initImageOcr,
         generateMultiResIcoBlob
     };
 

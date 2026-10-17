@@ -9,12 +9,6 @@
  *    - Real-vaqtli tahlil, xatolar soni sanagichi (#spell-count-badge)
  *    - Interaktiv taklif chiplari (bosganda aynan shu so'zni almashtirish)
  *    - Barchasini birdaniga to'g'rilash (#spell-fix-btn) va nusxalash (#spell-copy-btn)
- * 2. PDF & Xom Matndan Toza Markdown (#panel-pdfclean):
- *    - Qator o'rtasidagi tire bilan bo'lingan so'zlarni ulash (tas-\nkil -> tashkil)
- *    - Sun'iy qator uzilishlarini (single newline) bitta xatboshiga birlashtirish
- *    - Katta harfli va ikki nuqtali satrlarni Markdown sarlavhalariga aylantirish (### Sarlavha)
- *    - Ro'yxat belgilari (•, ⁃, 1) kabilarni standart Markdown ro'yxatlariga o'tkazish
- *    - Real-vaqtli reaktiv konversiya, nusxalash va .md fayl yuklab olish (#pdf-dl-btn)
  * 3. Smart RegEx Tester & Vizualizator (#panel-regex):
  *    - Xavfsiz RegEx dvigateli (zero-length loop prevention, lastIndex xavfsizligi)
  *    - Xavfsiz HTML escape va <mark> teglari bilan ranglash
@@ -1378,226 +1372,6 @@
     }
 
     // -------------------------------------------------------------------------
-    // 2. TEXT & PDF TO CLEAN MARKDOWN (#panel-pdfclean)
-    // -------------------------------------------------------------------------
-    function cleanPdfToMarkdown(rawText) {
-        if (!rawText) return '';
-
-        // 1. Standartlashtirish: \r\n -> \n
-        let text = rawText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-
-        // 2. Qator ko'chishidagi tirelarni birlashtirish (so'z uzilishi):
-        // Masalan: "tas-\nkil" -> "tashkil", "dastur-\nchi" -> "dasturchi"
-        text = text.replace(/([a-zA-Zа-яА-ЯoʻgʻOʻGʻ\u0400-\u04FF\w]+)-\s*\n\s*([a-zA-Zа-яА-ЯoʻgʻOʻGʻ\u0400-\u04FF\w]+)/g, '$1$2');
-
-        // 3. Ro'yxat belgilarini tozalash:
-        // Unicode bulletlar: •, ⁃, ◦, ▪, ▫, –, —, *
-        text = text.replace(/^[ \t]*[•⁃◦▪▫–—−*·][ \t]+/gm, '- ');
-        // Tartibli ro'yxatlar: "1) ", "1 . ", "(1) "
-        text = text.replace(/^[ \t]*(?:\(?(\d+)\)|(\d+)[.)\s]+)[ \t]*/gm, '$1$2. ');
-
-        // 4. Paragraflarni ajratish (bo'sh qatorlar bilan bo'lingan bloklar)
-        const blocks = text.split(/\n\s*\n+/);
-
-        const cleanedBlocks = blocks.map(block => {
-            const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
-            if (lines.length === 0) return '';
-
-            // Agar blok bitta sarlavha bo'lsa:
-            if (lines.length === 1) {
-                const single = lines[0];
-                // ALL CAPS sarlavha (masalan: "LOYIHAGA KIRISH" yoki "1. BOSQICH")
-                if (/^[A-Z0-9\s\u0400-\u04FF'ʻʼ\-_.:]{3,65}$/.test(single) && !single.startsWith('#') && single.length >= 3 && single === single.toUpperCase() && /[A-Z\u0400-\u04FF]/.test(single)) {
-                    return `### ${single.replace(/:$/, '')}`;
-                }
-                // Ikki nuqta bilan tugagan qisqa satr (masalan: "Asosiy talablar:")
-                if (single.endsWith(':') && single.length <= 60 && !single.startsWith('#')) {
-                    return `### ${single}`;
-                }
-                // Tartibli boblar: "I BOB.", "1-QISM.", "1. Kirish"
-                if (/^(?:[IVXLCDM]+\s+(?:BOB|QISM)|(\d+)\.\s+[A-Z\u0400-\u04FF])/i.test(single) && !single.startsWith('#')) {
-                    return `## ${single}`;
-                }
-                return single;
-            }
-
-            // Agar blok bir nechta qatordan iborat bo'lsa:
-            let merged = [];
-            let currentPara = '';
-
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-
-                // Agar qator ro'yxat elementi bo'lsa:
-                if (/^(?:[-*]|\d+\.)\s+/.test(line)) {
-                    if (currentPara) {
-                        merged.push(currentPara);
-                        currentPara = '';
-                    }
-                    merged.push(line);
-                    continue;
-                }
-
-                // Agar qator Markdown sarlavhasi bo'lsa:
-                if (/^#{1,6}\s+/.test(line)) {
-                    if (currentPara) {
-                        merged.push(currentPara);
-                        currentPara = '';
-                    }
-                    merged.push(line);
-                    continue;
-                }
-
-                // Agar qator butunlay ALL CAPS qisqa satr bo'lsa (ichki sarlavha):
-                if (/^[A-Z0-9\s\u0400-\u04FF'ʻʼ\-_.:]{3,50}$/.test(line) && line === line.toUpperCase() && /[A-Z\u0400-\u04FF]/.test(line)) {
-                    if (currentPara) {
-                        merged.push(currentPara);
-                        currentPara = '';
-                    }
-                    merged.push(`### ${line.replace(/:$/, '')}`);
-                    continue;
-                }
-
-                // Oddiy matn satri - sun'iy newline'ni bitta probel bilan ulaymiz
-                if (currentPara) {
-                    currentPara += ' ' + line;
-                } else {
-                    currentPara = line;
-                }
-            }
-
-            if (currentPara) {
-                merged.push(currentPara);
-            }
-
-            return merged.join('\n');
-        });
-
-        // 5. Bloklarni ikki qator bo'shliq bilan birlashtirish
-        let result = cleanedBlocks.filter(Boolean).join('\n\n');
-
-        // 6. Ortiqcha probellarni tozalash
-        result = result.replace(/[ \t]{2,}/g, ' ');
-        result = result.replace(/\n{3,}/g, '\n\n').trim();
-
-        return result;
-    }
-
-    function initPdfClean() {
-        const input = document.getElementById('pdf-input');
-        const output = document.getElementById('pdf-output');
-        const cleanBtn = document.getElementById('pdf-clean-btn');
-        const copyBtn = document.getElementById('pdf-copy-btn');
-        const dlBtn = document.getElementById('pdf-dl-btn');
-        const uploadBtn = document.getElementById('pdf-upload-btn');
-        const fileInput = document.getElementById('pdf-file-input');
-        if (!input || !output) return;
-
-        function runCleaning() {
-            const raw = input.value;
-            updateTextMetrics(raw, 'pdf');
-            if (!raw.trim()) {
-                output.value = '';
-                return;
-            }
-            output.value = cleanPdfToMarkdown(raw);
-        }
-
-        // Fayl yuklash tugmasi (.txt, .md)
-        if (uploadBtn && fileInput) {
-            uploadBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (evt) => {
-                    input.value = evt.target.result || '';
-                    runCleaning();
-                    notify(`"${file.name}" yuklandi va tozalashga tayyor!`, '📎');
-                };
-                reader.readAsText(file, 'UTF-8');
-            });
-        }
-
-        if (cleanBtn) {
-            cleanBtn.addEventListener('click', () => {
-                if (!input.value.trim()) {
-                    notify("Formatlash uchun matn kiriting!", '⚠️');
-                    return;
-                }
-                runCleaning();
-                notify("Toza Markdown formatiga o'tkazildi!", '✓');
-            });
-        }
-
-        // Reaktiv input (debounce 250ms)
-        let debounceTimer;
-        input.addEventListener('input', () => {
-            updateTextMetrics(input.value, 'pdf');
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(runCleaning, 250);
-        });
-
-        if (copyBtn) {
-            copyBtn.addEventListener('click', () => {
-                if (!output.value.trim()) {
-                    notify("Nusxalash uchun Markdown matni yo'q!", '⚠️');
-                    return;
-                }
-                navigator.clipboard.writeText(output.value).then(() => {
-                    notify("Markdown nusxalandi!", '✓');
-                }).catch(() => {
-                    output.select();
-                    document.execCommand('copy');
-                    notify("Markdown nusxalandi!", '✓');
-                });
-            });
-        }
-
-        if (dlBtn) {
-            dlBtn.addEventListener('click', () => {
-                const content = output.value;
-                if (!content.trim()) {
-                    notify("Yuklab olish uchun Markdown matni yo'q!", '⚠️');
-                    return;
-                }
-
-                // Sarlavhani fayl nomiga aylantirish
-                const headingMatch = content.match(/^#+\s+([^\n]+)/m);
-                let filename = 'hujjat-toza.md';
-                if (headingMatch && headingMatch[1]) {
-                    const slug = headingMatch[1]
-                        .toLowerCase()
-                        .replace(/[^a-z0-9\u0400-\u04FF]+/gi, '-')
-                        .replace(/^-+|-+$/g, '')
-                        .slice(0, 30);
-                    if (slug) filename = `${slug}.md`;
-                }
-
-                const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 150);
-
-                notify(`"${filename}" fayli yuklab olindi!`, '📥');
-            });
-        }
-
-        if (input.value) {
-            runCleaning();
-        } else {
-            updateTextMetrics('', 'pdf');
-        }
-    }
-
-    // -------------------------------------------------------------------------
     // 3. REGEX TESTER & VISUALIZER (#panel-regex)
     // -------------------------------------------------------------------------
     const REGEX_PRESETS = {
@@ -1804,7 +1578,6 @@
     function initAll() {
         injectSuiteStyles();
         initSpellcheck();
-        initPdfClean();
         initRegex();
     }
 
@@ -1818,11 +1591,9 @@
     window.ToolsTextSuite = {
         init: initAll,
         initSpellcheck,
-        initPdfClean,
         initRegex,
         transliterateLatinToCyrillic,
         transliterateCyrillicToLatin,
-        cleanPdfToMarkdown,
         normalizeApostrophes,
         matchCase,
         UZBEK_DICTIONARY,
