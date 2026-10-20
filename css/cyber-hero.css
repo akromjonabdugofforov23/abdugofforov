@@ -1,0 +1,317 @@
+/* ============================================================
+   CYBER HERO 3D SECTION — STYLES
+   Dark Cyber Glassmorphism & Spatial 3D Stage
+   ============================================================ */
+
+.cyber-hero-section {
+    position: relative;
+    padding: 24px 0 16px;
+    z-index: 10;
+}
+
+.cyber-hero-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 38px 44px;
+    border-radius: 28px;
+    background: var(--atelier-surface, rgba(14, 19, 31, 0.78));
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--atelier-border-highlight, rgba(56, 189, 248, 0.25));
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    contain: paint;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.cyber-hero-card:hover {
+    border-color: rgba(56, 189, 248, 0.45);
+    box-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.6),
+                0 0 35px rgba(56, 189, 248, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Yuqori neon nur chizig'i */
+.cyber-hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, #38bdf8 30%, #818cf8 70%, transparent);
+    opacity: 0.8;
+}
+
+/* Matnlar qismi */
+.cyber-hero-content {
+    flex: 1.15;
+    max-width: 580px;
+    z-index: 2;
+}
+
+.cyber-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #38bdf8;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+}
+
+.cyber-pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
+    animation: 1.8s ease-in-out infinite cyberPulse;
+}
+
+@keyframes cyberPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.cyber-hero-title {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: clamp(28px, 4.2vw, 44px);
+    font-weight: 800;
+    line-height: 1.18;
+    letter-spacing: -0.035em;
+    color: var(--text-primary, #f8fafc);
+    margin-bottom: 14px;
+}
+
+.cyber-gradient-text {
+    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #2dd4bf 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 14px rgba(56, 189, 248, 0.3));
+}
+
+.cyber-hero-desc {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-secondary, #94a3b8);
+    margin-bottom: 24px;
+    max-width: 500px;
+}
+
+.cyber-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.cyber-hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #38bdf8, #6366f1);
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(56, 189, 248, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.cyber-hero-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(56, 189, 248, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    filter: brightness(1.06);
+    color: #ffffff;
+}
+
+.cyber-hero-cta:active {
+    transform: translateY(0);
+}
+
+.cyber-hero-mode-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    color: var(--text-primary, #f8fafc);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.25s ease;
+}
+
+.cyber-hero-mode-btn:hover {
+    background: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.4);
+    color: #38bdf8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.cyber-hero-mode-btn:active {
+    transform: translateY(0);
+}
+
+/* 3D Canvas Sahna (Stage) */
+.cyber-3d-stage {
+    position: relative;
+    flex: 0.95;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 380px;
+}
+
+.cyber-3d-ambient-glow {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(129, 140, 248, 0.1) 40%, transparent 70%);
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 1;
+    animation: 6s ease-in-out infinite alternate glowDrift;
+}
+
+@keyframes glowDrift {
+    0% { transform: scale(0.9) translate(-10px, -10px); opacity: 0.6; }
+    100% { transform: scale(1.15) translate(10px, 10px); opacity: 0.95; }
+}
+
+.cyber-3d-canvas {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 420px;
+    height: 360px;
+    cursor: grab;
+    touch-action: pan-y;
+}
+
+.cyber-3d-canvas:active {
+    cursor: grabbing;
+}
+
+.cyber-3d-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: var(--text-muted, #64748b);
+    letter-spacing: 0.02em;
+    margin-top: 6px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+/* ===== YORUG' (LIGHT) MAVZU MOSLASHUVCHANLIGI ===== */
+[data-theme="light"] .cyber-hero-card {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(79, 70, 229, 0.18);
+    box-shadow: 0 16px 40px -8px rgba(79, 70, 229, 0.08),
+                inset 0 1px 0 #ffffff;
+}
+
+[data-theme="light"] .cyber-hero-card:hover {
+    border-color: rgba(79, 70, 229, 0.35);
+    box-shadow: 0 20px 48px -8px rgba(79, 70, 229, 0.14),
+                0 0 25px rgba(79, 70, 229, 0.08);
+}
+
+[data-theme="light"] .cyber-hero-badge {
+    background: rgba(79, 70, 229, 0.06);
+    border-color: rgba(79, 70, 229, 0.2);
+    color: #4f46e5;
+}
+
+[data-theme="light"] .cyber-gradient-text {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #0284c7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 10px rgba(79, 70, 229, 0.2));
+}
+
+[data-theme="light"] .cyber-hero-cta {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
+}
+
+[data-theme="light"] .cyber-hero-mode-btn {
+    background: rgba(79, 70, 229, 0.05);
+    border-color: rgba(79, 70, 229, 0.15);
+    color: #1e1b4b;
+}
+
+[data-theme="light"] .cyber-hero-mode-btn:hover {
+    background: rgba(79, 70, 229, 0.1);
+    border-color: #4f46e5;
+    color: #4f46e5;
+}
+
+[data-theme="light"] .cyber-3d-ambient-glow {
+    background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, rgba(2, 132, 199, 0.08) 40%, transparent 70%);
+}
+
+/* ===== MOBIL VA PLANSHET MOSLASHUVI ===== */
+@media (max-width: 860px) {
+    .cyber-hero-card {
+        flex-direction: column;
+        padding: 30px 22px;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .cyber-hero-content {
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cyber-hero-desc {
+        max-width: 100%;
+    }
+
+    .cyber-hero-actions {
+        justify-content: center;
+    }
+
+    .cyber-3d-stage {
+        width: 100%;
+        min-height: 280px;
+    }
+
+    .cyber-3d-canvas {
+        max-width: 320px;
+        height: 280px;
+    }
+}

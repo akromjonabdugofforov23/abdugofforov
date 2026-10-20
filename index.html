@@ -179,7 +179,43 @@
         </div>
     </div>
 
-    <!-- Bespoke Kun Iqtibosi Widget (Atelier Quote - Compact Edition) -->
+        <!-- ===== 3D INTERACTIVE HERO SHOWCASE ===== -->
+    <section class="cyber-hero-section container" id="cyber-hero-section">
+        <div class="cyber-hero-card">
+            <div class="cyber-hero-content">
+                <div class="cyber-hero-badge">
+                    <span class="cyber-pulse-dot"></span>
+                    <span>INTERAKTIV 3D FAZO · 60-120 FPS</span>
+                </div>
+                <h1 class="cyber-hero-title">
+                    Kelajak <span class="cyber-gradient-text">Raqamli Fazosi</span> & Shaxsiy Fikrlar
+                </h1>
+                <p class="cyber-hero-desc">
+                    Sichqonchangizni qimirlatib ko'ring — 3D kiber-sfera harakatingizga real vaqtda javob beradi. Apparat tezlanishi bilan ta'minlangan nol qotishlar.
+                </p>
+                <div class="cyber-hero-actions">
+                    <a href="#blog-grid" class="cyber-hero-cta" id="hero-explore-btn">
+                        <span>Maqolalarni ko'rish</span>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+                    </a>
+                    <button class="cyber-hero-mode-btn" id="cyber-3d-toggle-btn" type="button" title="3D Shaklni almashtirish">
+                        <span class="cyber-mode-icon">✨</span>
+                        <span id="cyber-mode-text">Sfera</span>
+                    </button>
+                </div>
+            </div>
+            <div class="cyber-3d-stage">
+                <div class="cyber-3d-ambient-glow" aria-hidden="true"></div>
+                <canvas id="cyber-3d-canvas" class="cyber-3d-canvas" width="420" height="360" aria-label="3D Interaktiv kiber-sfera"></canvas>
+                <div class="cyber-3d-hint">
+                    <span class="cyber-hint-icon">🖱️</span>
+                    <span class="cyber-hint-text">Sichqonchani harakatlantiring yoki bosing</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Bespoke Kun Iqtibosi Widget (Atelier Quote - Compact Edition) -->
     <div class="fortune-widget-wrap atelier-quote-wrap container" id="fortune-widget-wrap">
         <article class="atelier-quote-card" id="fortune-card">
             <header class="atelier-card-header">
@@ -652,6 +688,7 @@
     <script src="scripts/super-palette.js" defer></script>
     <script src="scripts/story-card.js" defer></script>
     <script src="scripts/claps-reactions.js" defer></script>
+    <script src="scripts/cyber-hero-3d.js" defer></script>
     <script src="app.js?v=18" defer></script>
 
 

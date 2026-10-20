@@ -21,6 +21,7 @@ const SHELL = [
     '/css/verb-trainer.css',
     '/css/light-variants.css',
     '/css/bookmarks.css',
+    '/css/cyber-hero.css',
     '/app.js',
     '/deutsch.js',
     '/tools.js',
@@ -51,6 +52,7 @@ const SHELL = [
     '/scripts/super-palette.js',
     '/scripts/story-card.js',
     '/scripts/video-lesson.js',
+    '/scripts/cyber-hero-3d.js',
     '/manifest.webmanifest',
     '/icon.svg',
     '/og-image.svg'
