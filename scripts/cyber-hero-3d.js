@@ -307,7 +307,7 @@
     // 3. GLOBAL 3D CARD TILT (BUTUN SAYT KARTALARI UCHUN)
     // -------------------------------------------------------------
     function initGlobalCard3DTilt() {
-        const targets = document.querySelectorAll('.post-card, .atelier-quote-card, .project-card, .curr-topic-card');
+        const targets = document.querySelectorAll('.post-card, .atelier-quote-card, .project-card, .curr-topic-card, .tool-panel-item, .suite-card, .tools-stat-card, .curriculum-card');
 
         targets.forEach(card => {
             if (card.dataset.hasTilt) return;

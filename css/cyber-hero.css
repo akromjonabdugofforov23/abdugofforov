@@ -27,17 +27,16 @@
     margin-top: 24px;
 }
 
-.functional-row {
+.functional-row,
+#main-content,
+.tools-main,
+main {
     position: relative;
     z-index: 2;
 }
 
-#main-content {
-    position: relative;
-    z-index: 2;
-}
-
-.navbar {
+.navbar,
+.tools-header {
     position: sticky;
     top: 0;
     z-index: 100;
@@ -55,7 +54,7 @@
     z-index: 10;
 }
 
-.post-card, .atelier-quote-card, .project-card, .curr-topic-card {
+.post-card, .atelier-quote-card, .project-card, .curr-topic-card, .tool-panel-item, .suite-card, .tools-stat-card, .curriculum-card {
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease !important;
     will-change: transform;
 }
