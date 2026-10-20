@@ -1,7 +1,8 @@
-// ===== CYBER HERO 3D (INTERACTIVE HARDWARE-ACCELERATED 3D ENGINE) =====
-// Abdugofforov ekotizimi uchun 60-120 FPS da silliq ishlovchi, sichqoncha
-// harakatiga sinxronlashgan interaktiv 3D kiber-vizualizatsiya moduli.
-// Tashqi og'ir kutubxonalarsiz (0 dependency), sof WebGL/Canvas apparat tezlanishi.
+// ===== CYBER HERO 3D (ADVANCED SPATIAL 3D ENGINE & WHOLE-PAGE PARALLAX) =====
+// Abdugofforov ekotizimi uchun to'liq ekranli, 60-120 FPS apparat tezlanishli
+// 3D fazoviy dunyo. Sichqoncha orqali 360° erkin aylantirish (orbit drag),
+// butun ekran bo'ylab kursorni kuzatuvchi 3D kamera, zarrachalar girdobi (vortex),
+// Torus Tuguni (Knot), Giroskop va barcha sayt kartochkalariga 3D Tilt effekti.
 
 (function () {
     'use strict';
@@ -10,175 +11,237 @@
     let width = 0, height = 0, dpr = 1;
     let animationId = null;
     let isVisible = true;
-    let currentShape = 0; // 0: Sphere, 1: Torus, 2: Icosahedron Core
+    let currentShape = 0; // 0: Gyro-Sphere, 1: Torus Knot, 2: Cyber Monolith
 
-    // Fizika va LERP o'zgaruvchilari
-    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0, isHover: false };
-    let rotX = 0, rotY = 0, targetRotX = 0, targetRotY = 0;
-    let autoRotY = 0, autoRotX = 0;
-    let shockwave = 0, shockwaveVel = 0;
-
-    // Ranglar palitrasi (Theme-reactive)
-    let colors = {
-        primary: '#38bdf8',    // Cyan / Sapphire
-        secondary: '#818cf8',  // Purple / Violet
-        accent: '#2dd4bf',     // Neon Teal
-        nodeGlow: 'rgba(56, 189, 248, 0.8)',
-        lineGlow: 'rgba(129, 140, 248, 0.25)',
-        coreGlow: 'rgba(45, 212, 191, 0.15)'
+    // Butun ekran bo'ylab sichqoncha koordinatalari
+    let mouse = {
+        screenX: 0, screenY: 0,       // -1 dan 1 gacha (butun oyna bo'yicha)
+        targetScreenX: 0, targetScreenY: 0,
+        isDown: false,
+        dragStartX: 0, dragStartY: 0,
+        dragRotX: 0, dragRotY: 0,
+        velX: 0, velY: 0
     };
 
-    function updateColorsByTheme() {
+    // 3D Kamera va Burilish o'zgaruvchilari
+    let camRotX = 0, camRotY = 0;
+    let autoRotY = 0;
+    let scrollProgress = 0;
+    let shockwave = 0, shockwaveVel = 0;
+
+    // Mavzuga mos ranglar (Dark / Light)
+    let themeColors = {
+        cyan: '#38bdf8',
+        purple: '#818cf8',
+        teal: '#2dd4bf',
+        amber: '#fbbf24',
+        coreGlow: 'rgba(56, 189, 248, 0.25)',
+        lineAlpha: 0.35,
+        nodeAlpha: 0.85
+    };
+
+    function updateTheme() {
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
         if (isLight) {
-            colors.primary = '#4f46e5';
-            colors.secondary = '#7c3aed';
-            colors.accent = '#0284c7';
-            colors.nodeGlow = 'rgba(79, 70, 229, 0.75)';
-            colors.lineGlow = 'rgba(124, 58, 237, 0.22)';
-            colors.coreGlow = 'rgba(2, 132, 199, 0.12)';
+            themeColors.cyan = '#4f46e5';
+            themeColors.purple = '#7c3aed';
+            themeColors.teal = '#0284c7';
+            themeColors.amber = '#d97706';
+            themeColors.coreGlow = 'rgba(79, 70, 229, 0.18)';
+            themeColors.lineAlpha = 0.28;
+            themeColors.nodeAlpha = 0.9;
         } else {
-            colors.primary = '#38bdf8';
-            colors.secondary = '#818cf8';
-            colors.accent = '#2dd4bf';
-            colors.nodeGlow = 'rgba(56, 189, 248, 0.85)';
-            colors.lineGlow = 'rgba(129, 140, 248, 0.3)';
-            colors.coreGlow = 'rgba(45, 212, 191, 0.2)';
+            themeColors.cyan = '#38bdf8';
+            themeColors.purple = '#818cf8';
+            themeColors.teal = '#2dd4bf';
+            themeColors.amber = '#fbbf24';
+            themeColors.coreGlow = 'rgba(56, 189, 248, 0.25)';
+            themeColors.lineAlpha = 0.35;
+            themeColors.nodeAlpha = 0.85;
         }
     }
 
     // -------------------------------------------------------------
-    // 3D GEOMETRIYA GENERATORLARI
+    // 1. ZARRACHALAR GIRDOBI (COSMIC DUST PARTICLES — 3D DEPTH)
+    // -------------------------------------------------------------
+    const PARTICLE_COUNT = 160;
+    const cosmosParticles = [];
+
+    function initCosmosParticles() {
+        cosmosParticles.length = 0;
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            const radius = 180 + Math.random() * 320;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = (Math.random() - 0.5) * Math.PI;
+            cosmosParticles.push({
+                baseX: radius * Math.cos(phi) * Math.cos(theta),
+                baseY: radius * Math.sin(phi) * 0.7,
+                baseZ: radius * Math.cos(phi) * Math.sin(theta),
+                speed: 0.002 + Math.random() * 0.004,
+                size: 1.0 + Math.random() * 2.2,
+                orbitAngle: theta,
+                pulse: Math.random() * Math.PI * 2,
+                colorType: i % 3 // 0: cyan, 1: purple, 2: teal
+            });
+        }
+    }
+
+    // -------------------------------------------------------------
+    // 2. 3D GEOMETRIYALAR GENERATSIYASI
     // -------------------------------------------------------------
 
-    // 1. Kvant Fibonacci Sferasi
-    function createSphereGeometry(numPoints, radius) {
+    // A. Kvant Giroskop Sferasi (Fibonacci + 3 ta Metallik Giroskop Halqasi)
+    function buildGyroSphere() {
         const points = [];
-        const phi = Math.PI * (3 - Math.sqrt(5)); // Oltin burchak (~137.5 deg)
-        for (let i = 0; i < numPoints; i++) {
-            const y = 1 - (i / (numPoints - 1)) * 2; // -1 dan 1 gacha
+        const count = 160;
+        const phi = Math.PI * (3 - Math.sqrt(5)); // Golden angle
+        const radius = 145;
+
+        for (let i = 0; i < count; i++) {
+            const y = 1 - (i / (count - 1)) * 2;
             const radiusAtY = Math.sqrt(1 - y * y);
             const theta = phi * i;
-            const x = Math.cos(theta) * radiusAtY;
-            const z = Math.sin(theta) * radiusAtY;
             points.push({
-                baseX: x * radius,
+                baseX: Math.cos(theta) * radiusAtY * radius,
                 baseY: y * radius,
-                baseZ: z * radius,
-                x: 0, y: 0, z: 0,
-                pulseOffset: Math.random() * Math.PI * 2
+                baseZ: Math.sin(theta) * radiusAtY * radius,
+                pulseOffset: theta + y * 2,
+                isOuter: false
             });
         }
         return points;
     }
 
-    // 2. Kiber Torus (Donut Halqa)
-    function createTorusGeometry(rMajor, rMinor, segMajor, segMinor) {
+    // B. Hyper-Torus Tuguni (Trefoil Knot p=2, q=3)
+    function buildTorusKnot() {
         const points = [];
-        for (let i = 0; i < segMajor; i++) {
-            const u = (i / segMajor) * Math.PI * 2;
-            for (let j = 0; j < segMinor; j++) {
-                const v = (j / segMinor) * Math.PI * 2;
-                const x = (rMajor + rMinor * Math.cos(v)) * Math.cos(u);
-                const y = (rMajor + rMinor * Math.cos(v)) * Math.sin(u);
-                const z = rMinor * Math.sin(v);
-                points.push({
-                    baseX: x,
-                    baseY: y,
-                    baseZ: z,
-                    x: 0, y: 0, z: 0,
-                    pulseOffset: u + v
-                });
-            }
+        const total = 180;
+        const scale = 42;
+
+        for (let i = 0; i < total; i++) {
+            const phi = (i / total) * Math.PI * 2 * 3; // 3 to'liq aylanma
+            const r = 2.4 + Math.cos(3 * phi) * 0.9;
+            const x = r * Math.cos(2 * phi) * scale;
+            const y = r * Math.sin(2 * phi) * scale;
+            const z = -Math.sin(3 * phi) * scale * 1.5;
+
+            points.push({
+                baseX: x,
+                baseY: y,
+                baseZ: z,
+                pulseOffset: phi,
+                isKnot: true
+            });
         }
         return points;
     }
 
-    // 3. Ikozaedr Yadrosi va Orbitadagi Sun'iy Yo'ldoshlar
-    function createIcosahedronCore(radius) {
+    // C. Kiber Monolit (Ikozaedr Kristall Yadrosi + Kvant Koronasi)
+    function buildCyberMonolith() {
         const points = [];
-        const t = (1.0 + Math.sqrt(5.0)) / 2.0; // Oltin nisbat ~1.618
-        const verts = [
+        const t = (1.0 + Math.sqrt(5.0)) / 2.0;
+        const baseVerts = [
             [-1,  t,  0], [ 1,  t,  0], [-1, -t,  0], [ 1, -t,  0],
             [ 0, -1,  t], [ 0,  1,  t], [ 0, -1, -t], [ 0,  1, -t],
             [ t,  0, -1], [ t,  0,  1], [-t,  0, -1], [-t,  0,  1]
         ];
 
-        verts.forEach(v => {
+        // Ichki kristal qirralari
+        baseVerts.forEach(v => {
             const len = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+            const r = 105;
             points.push({
-                baseX: (v[0] / len) * radius,
-                baseY: (v[1] / len) * radius,
-                baseZ: (v[2] / len) * radius,
-                x: 0, y: 0, z: 0,
+                baseX: (v[0] / len) * r,
+                baseY: (v[1] / len) * r,
+                baseZ: (v[2] / len) * r,
                 pulseOffset: Math.random() * Math.PI * 2,
                 isCore: true
             });
         });
 
-        // Orbitadagi 12 ta erkin suzuvchi zarrachalar
-        for (let i = 0; i < 16; i++) {
-            const angle = (i / 16) * Math.PI * 2;
-            const r = radius * 1.55;
+        // 24 ta aylanuvchi kvant plazma tugunlari
+        for (let i = 0; i < 28; i++) {
+            const angle = (i / 28) * Math.PI * 2;
+            const r = 165 + Math.sin(i * 3) * 20;
             points.push({
                 baseX: Math.cos(angle) * r,
-                baseY: Math.sin(angle) * (r * 0.45),
+                baseY: (i % 2 === 0 ? 1 : -1) * 45 + Math.sin(angle * 2) * 25,
                 baseZ: Math.sin(angle) * r,
-                x: 0, y: 0, z: 0,
                 pulseOffset: angle,
                 isSatellite: true,
-                orbitSpeed: 0.02 + (i % 3) * 0.01
+                orbitSpeed: 0.015 + (i % 4) * 0.008
             });
         }
-
         return points;
     }
 
-    let spherePoints = createSphereGeometry(140, 130);
-    let torusPoints = createTorusGeometry(110, 42, 18, 8);
-    let icosaPoints = createIcosahedronCore(100);
+    const geomGyro = buildGyroSphere();
+    const geomKnot = buildTorusKnot();
+    const geomMonolith = buildCyberMonolith();
 
-    // Ikki tashqi orbital halqa (Atom/Saturn halqalari)
-    function createOrbitalRing(count, radius, tiltAngle) {
-        const ring = [];
-        for (let i = 0; i < count; i++) {
-            const angle = (i / count) * Math.PI * 2;
-            const x = Math.cos(angle) * radius;
-            const y = Math.sin(angle) * radius * Math.cos(tiltAngle);
-            const z = Math.sin(angle) * radius * Math.sin(tiltAngle);
-            ring.push({ x, y, z, angle, radius, tiltAngle });
+    // 3 ta Gigant Giroskop Halqasi (X, Y, Z tekisliklarida)
+    function buildGimbalRings() {
+        const rings = [];
+        const segs = 64;
+
+        // 1-Ring (Gorizontal X-Z)
+        const ring1 = [];
+        for (let i = 0; i < segs; i++) {
+            const a = (i / segs) * Math.PI * 2;
+            ring1.push({ x: Math.cos(a) * 195, y: 0, z: Math.sin(a) * 195 });
         }
-        return ring;
+        rings.push({ points: ring1, rotAxis: 'y', speed: 0.008, color: 'cyan', tilt: 0.25 });
+
+        // 2-Ring (Vertikal Y-Z)
+        const ring2 = [];
+        for (let i = 0; i < segs; i++) {
+            const a = (i / segs) * Math.PI * 2;
+            ring2.push({ x: 0, y: Math.cos(a) * 215, z: Math.sin(a) * 215 });
+        }
+        rings.push({ points: ring2, rotAxis: 'x', speed: -0.01, color: 'purple', tilt: -0.35 });
+
+        // 3-Ring (Diagonal Y-X)
+        const ring3 = [];
+        for (let i = 0; i < segs; i++) {
+            const a = (i / segs) * Math.PI * 2;
+            ring3.push({ x: Math.cos(a) * 228, y: Math.sin(a) * 228, z: 0 });
+        }
+        rings.push({ points: ring3, rotAxis: 'z', speed: 0.006, color: 'teal', tilt: 0.6 });
+
+        return rings;
     }
 
-    const ringA = createOrbitalRing(60, 175, Math.PI / 4);
-    const ringB = createOrbitalRing(60, 185, -Math.PI / 3.2);
+    const gimbalRings = buildGimbalRings();
 
     // -------------------------------------------------------------
-    // 3D BURISH VA PROYEKTSIYA MATRITSALARI
+    // 3. MATRITSA VA 3D PROYEKTSIYA
     // -------------------------------------------------------------
     function rotate3D(x, y, z, angleX, angleY, angleZ) {
-        // Y o'qi atrofida
+        // Y o'qi
         const cosY = Math.cos(angleY), sinY = Math.sin(angleY);
         let x1 = x * cosY + z * sinY;
         let z1 = -x * sinY + z * cosY;
 
-        // X o'qi atrofida
+        // X o'qi
         const cosX = Math.cos(angleX), sinX = Math.sin(angleX);
         let y2 = y * cosX - z1 * sinX;
         let z2 = y * sinX + z1 * cosX;
 
-        // Z o'qi atrofida
-        const cosZ = Math.cos(angleZ), sinZ = Math.sin(angleZ);
-        let x3 = x1 * cosZ - y2 * sinZ;
-        let y3 = x1 * sinZ + y2 * cosZ;
-
-        return { x: x3, y: y3, z: z2 };
+        // Z o'qi
+        if (angleZ) {
+            const cosZ = Math.cos(angleZ), sinZ = Math.sin(angleZ);
+            let x3 = x1 * cosZ - y2 * sinZ;
+            let y3 = x1 * sinZ + y2 * cosZ;
+            return { x: x3, y: y3, z: z2 };
+        }
+        return { x: x1, y: y2, z: z2 };
     }
 
-    function project(p, fov, cx, cy) {
-        const distance = 460;
-        const scale = distance / (distance + p.z);
+    function project3D(p, cx, cy, fov, zoom) {
+        const distance = 520;
+        const zEffective = p.z + distance;
+        if (zEffective <= 10) return null;
+        const scale = (distance / zEffective) * zoom;
         return {
             x: cx + p.x * scale,
             y: cy + p.y * scale,
@@ -188,7 +251,7 @@
     }
 
     // -------------------------------------------------------------
-    // RENDERING циклы (60-120 FPS RAF)
+    // 4. ASOSIY RENDERLASH SIKLI (60-120 FPS)
     // -------------------------------------------------------------
     function render(timestamp) {
         if (!isVisible || !ctx) {
@@ -198,112 +261,174 @@
 
         const t = (timestamp || performance.now()) * 0.001;
 
-        // Silliq inersiya (LERP) orqali sichqonchaga ergashish
-        mouse.x += (mouse.targetX - mouse.x) * 0.08;
-        mouse.y += (mouse.targetY - mouse.y) * 0.08;
+        // Butun ekran bo'ylab kursorni LERP bilan kuzatish
+        mouse.screenX += (mouse.targetScreenX - mouse.screenX) * 0.06;
+        mouse.screenY += (mouse.targetScreenY - mouse.screenY) * 0.06;
 
-        // Avtomatik tinch orbitadagi aylanish + sichqoncha qo'shimchasi
-        autoRotY += 0.006;
-        autoRotX = Math.sin(t * 0.5) * 0.15;
+        // Drag & Throw inersiya fizikasi
+        mouse.dragRotX += mouse.velX;
+        mouse.dragRotY += mouse.velY;
+        mouse.velX *= 0.94;
+        mouse.velY *= 0.94;
 
-        targetRotY = autoRotY + mouse.x * 0.85;
-        targetRotX = autoRotX - mouse.y * 0.75;
+        // Tinch holatdagi avto-aylanish + foydalanuvchi orqali burilish
+        autoRotY += 0.005;
+        const targetCamY = autoRotY + mouse.screenX * 0.9 + mouse.dragRotX;
+        const targetCamX = -mouse.screenY * 0.7 + mouse.dragRotY;
 
-        rotX += (targetRotX - rotX) * 0.08;
-        rotY += (targetRotY - rotY) * 0.08;
+        camRotX += (targetCamX - camRotX) * 0.08;
+        camRotY += (targetCamY - camRotY) * 0.08;
 
-        // Shockwave zarbasi damping
+        // Shockwave to'lqini
         if (shockwave > 0.001) {
             shockwave += shockwaveVel;
             shockwaveVel *= 0.92;
-            if (shockwave > 45) shockwaveVel = -shockwaveVel * 0.6;
+            if (shockwave > 55) shockwaveVel = -shockwaveVel * 0.7;
             if (shockwave < 0) shockwave = 0;
         }
 
+        // Tozalash
         ctx.clearRect(0, 0, width, height);
 
         const cx = width / 2;
         const cy = height / 2;
-        const fov = 380;
+        const fov = 500;
+        // Scroll bo'yicha kameraning yaqinlashishi (Apple fly-through)
+        const zoom = Math.max(0.7, 1.0 + scrollProgress * 0.55);
 
-        // Markaziy nurlanish (Radial Ambient Aura)
-        const auraGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, 180);
-        auraGrad.addColorStop(0, colors.coreGlow);
-        auraGrad.addColorStop(0.6, 'rgba(129, 140, 248, 0.04)');
+        // A. Radial chuqurlikdagi kiber-nur (Volumetric Aura)
+        const auraGrad = ctx.createRadialGradient(cx, cy, 20, cx, cy, 280 * zoom);
+        auraGrad.addColorStop(0, themeColors.coreGlow);
+        auraGrad.addColorStop(0.5, 'rgba(129, 140, 248, 0.08)');
         auraGrad.addColorStop(1, 'transparent');
         ctx.fillStyle = auraGrad;
         ctx.beginPath();
-        ctx.arc(cx, cy, 180, 0, Math.PI * 2);
+        ctx.arc(cx, cy, 280 * zoom, 0, Math.PI * 2);
         ctx.fill();
 
-        // 1. Orbital Ring A chizish
-        drawRing(ringA, t * 0.4, 0.35, colors.primary, cx, cy, fov);
-        // 2. Orbital Ring B chizish
-        drawRing(ringB, -t * 0.5, -0.4, colors.secondary, cx, cy, fov);
+        // B. 3D Zarrachalar Girdobi (Cosmic Dust Cloud)
+        for (let i = 0; i < cosmosParticles.length; i++) {
+            const cp = cosmosParticles[i];
+            cp.orbitAngle += cp.speed;
 
-        // Faol geometriya nuqtalarini tanlash
-        let activePoints;
-        if (currentShape === 0) activePoints = spherePoints;
-        else if (currentShape === 1) activePoints = torusPoints;
-        else activePoints = icosaPoints;
+            let px = cp.baseX * Math.cos(cp.orbitAngle) - cp.baseZ * Math.sin(cp.orbitAngle);
+            let py = cp.baseY + Math.sin(t * 1.5 + cp.pulse) * 12;
+            let pz = cp.baseX * Math.sin(cp.orbitAngle) + cp.baseZ * Math.cos(cp.orbitAngle);
 
-        // Nuqtalarni fazoda aylantirish va z-ordering uchun hisoblash
-        const projectedPoints = [];
-        const numPts = activePoints.length;
+            const rot = rotate3D(px, py, pz, camRotX * 0.6, camRotY * 0.6, 0);
+            const pr = project3D(rot, cx, cy, fov, zoom);
+            if (!pr) continue;
+
+            const pAlpha = Math.max(0.1, Math.min(0.8, (pr.scale - 0.4) * 1.2));
+            ctx.fillStyle = cp.colorType === 0 ? themeColors.cyan : (cp.colorType === 1 ? themeColors.purple : themeColors.teal);
+            ctx.globalAlpha = pAlpha;
+            ctx.beginPath();
+            ctx.arc(pr.x, pr.y, cp.size * pr.scale, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // C. 3D Giroskop Halqalari (Gimbal Rings)
+        gimbalRings.forEach(gRing => {
+            const ringAngle = t * gRing.speed * 40;
+            ctx.strokeStyle = gRing.color === 'cyan' ? themeColors.cyan : (gRing.color === 'purple' ? themeColors.purple : themeColors.teal);
+            ctx.lineWidth = 1.2 * zoom;
+            ctx.globalAlpha = 0.45;
+            ctx.beginPath();
+
+            let first = true;
+            for (let i = 0; i < gRing.points.length; i++) {
+                const rp = gRing.points[i];
+                let rx = rp.x, ry = rp.y, rz = rp.z;
+
+                // Halqaning o'z o'qida aylanishi
+                if (gRing.rotAxis === 'y') {
+                    const c = Math.cos(ringAngle), s = Math.sin(ringAngle);
+                    const tx = rx * c + rz * s;
+                    rz = -rx * s + rz * c;
+                    rx = tx;
+                } else if (gRing.rotAxis === 'x') {
+                    const c = Math.cos(ringAngle), s = Math.sin(ringAngle);
+                    const ty = ry * c - rz * s;
+                    rz = ry * s + rz * c;
+                    ry = ty;
+                }
+
+                const rot = rotate3D(rx, ry, rz, camRotX + gRing.tilt, camRotY + ringAngle * 0.2, 0);
+                const pr = project3D(rot, cx, cy, fov, zoom);
+                if (!pr) continue;
+
+                if (first) {
+                    ctx.moveTo(pr.x, pr.y);
+                    first = false;
+                } else {
+                    ctx.lineTo(pr.x, pr.y);
+                }
+            }
+            ctx.closePath();
+            ctx.stroke();
+        });
+
+        // D. Asosiy 3D Obyekt (Sphere / Torus Knot / Monolith)
+        let activeGeom;
+        if (currentShape === 0) activeGeom = geomGyro;
+        else if (currentShape === 1) activeGeom = geomKnot;
+        else activeGeom = geomMonolith;
+
+        const projPoints = [];
+        const numPts = activeGeom.length;
 
         for (let i = 0; i < numPts; i++) {
-            const pt = activePoints[i];
+            const pt = activeGeom[i];
+            const pulse = Math.sin(t * 2.5 + pt.pulseOffset) * 4.5;
+            const shock = shockwave ? (Math.sin(pt.pulseOffset * 4) * shockwave) : 0;
+            const rScale = 1 + (pulse + shock) * 0.012;
 
-            // Nafas olish / impuls effekti (breathing vibration)
-            const pulse = Math.sin(t * 2.2 + pt.pulseOffset) * 4;
-            const shock = shockwave ? (Math.sin(pt.pulseOffset * 3) * shockwave) : 0;
-            const currentRScale = 1 + (pulse + shock) * 0.01;
-
-            let bx = pt.baseX * currentRScale;
-            let by = pt.baseY * currentRScale;
-            let bz = pt.baseZ * currentRScale;
+            let bx = pt.baseX * rScale;
+            let by = pt.baseY * rScale;
+            let bz = pt.baseZ * rScale;
 
             if (pt.isSatellite) {
-                // Sun'iy yo'ldoshlarning o'z orbitasida aylanishi
-                const satAngle = pt.pulseOffset + t * pt.orbitSpeed * 40;
-                bx = Math.cos(satAngle) * 150;
-                by = Math.sin(satAngle * 0.6) * 55;
-                bz = Math.sin(satAngle) * 150;
+                const satAngle = pt.pulseOffset + t * pt.orbitSpeed * 45;
+                bx = Math.cos(satAngle) * 165;
+                by = Math.sin(satAngle * 0.8) * 60;
+                bz = Math.sin(satAngle) * 165;
             }
 
-            const rotated = rotate3D(bx, by, bz, rotX, rotY, t * 0.08);
-            const proj = project(rotated, fov, cx, cy);
+            const rot = rotate3D(bx, by, bz, camRotX, camRotY, t * 0.05);
+            const pr = project3D(rot, cx, cy, fov, zoom);
+            if (!pr) continue;
 
-            projectedPoints.push({
-                x: proj.x,
-                y: proj.y,
-                z: proj.z,
-                scale: proj.scale,
-                alpha: Math.max(0.15, Math.min(1, (proj.scale - 0.4) * 1.5)),
-                isSatellite: !!pt.isSatellite,
-                isCore: !!pt.isCore
+            projPoints.push({
+                x: pr.x,
+                y: pr.y,
+                z: pr.z,
+                scale: pr.scale,
+                alpha: Math.max(0.18, Math.min(1.0, (pr.scale - 0.4) * 1.6)),
+                isKnot: !!pt.isKnot,
+                isCore: !!pt.isCore,
+                isSatellite: !!pt.isSatellite
             });
         }
 
-        // Z-Index bo'yicha saralash (Chuqurlik illyuziyasi)
-        projectedPoints.sort((a, b) => a.z - b.z);
+        // Chuqurlik bo'yicha z-sorting
+        projPoints.sort((a, b) => a.z - b.z);
 
-        // O'zaro yaqin nuqtalarni chiziqlar bilan bog'lash (Constellation Wireframe)
-        const maxDist = currentShape === 1 ? 48 : (currentShape === 2 ? 65 : 44);
-        ctx.lineWidth = 0.9;
+        // O'zaro qirralar (Constellation Mesh & Torus Ribbon)
+        const maxDist = currentShape === 1 ? 55 : (currentShape === 2 ? 70 : 48);
+        ctx.lineWidth = 1.0 * zoom;
 
-        for (let i = 0; i < numPts; i += 2) {
-            const p1 = projectedPoints[i];
-            if (p1.z > 80 && currentShape === 0) continue; // Orqa chiziqlarni qisqartirib tezlikni oshirish
+        for (let i = 0; i < projPoints.length; i += 2) {
+            const p1 = projPoints[i];
+            if (p1.z > 90 && currentShape === 0) continue;
 
-            for (let j = i + 1; j < Math.min(i + 9, numPts); j++) {
-                const p2 = projectedPoints[j];
+            for (let j = i + 1; j < Math.min(i + 8, projPoints.length); j++) {
+                const p2 = projPoints[j];
                 const dx = p1.x - p2.x;
                 const dy = p1.y - p2.y;
                 const distSq = dx * dx + dy * dy;
 
                 if (distSq < maxDist * maxDist) {
-                    const lineAlpha = (1 - Math.sqrt(distSq) / maxDist) * 0.35 * Math.min(p1.alpha, p2.alpha);
+                    const lineAlpha = (1 - Math.sqrt(distSq) / maxDist) * themeColors.lineAlpha * Math.min(p1.alpha, p2.alpha);
                     ctx.strokeStyle = `rgba(56, 189, 248, ${lineAlpha.toFixed(3)})`;
                     ctx.beginPath();
                     ctx.moveTo(p1.x, p1.y);
@@ -313,25 +438,23 @@
             }
         }
 
-        // Zarrachalar (Vertex Nodes) chizish
-        for (let i = 0; i < numPts; i++) {
-            const p = projectedPoints[i];
-            const size = Math.max(1.2, (p.isSatellite ? 3.5 : (p.isCore ? 3.0 : 2.2)) * p.scale);
+        // Tugunlarni (Vertices) chizish
+        for (let i = 0; i < projPoints.length; i++) {
+            const p = projPoints[i];
+            const size = Math.max(1.4, (p.isSatellite ? 3.8 : (p.isCore ? 3.4 : 2.4)) * p.scale * zoom);
 
-            // Shaffoflik va rang chuqurligi
-            ctx.fillStyle = p.z > 0 ? colors.primary : colors.secondary;
+            ctx.fillStyle = p.z > 0 ? themeColors.cyan : themeColors.purple;
             ctx.globalAlpha = p.alpha;
-
             ctx.beginPath();
             ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
             ctx.fill();
 
-            // Eng oldingi nuqtalarga porlash (glow) berish
-            if (p.z < -40) {
+            // Yorug'lik aks etishi (Specular highlight)
+            if (p.z < -30) {
                 ctx.fillStyle = '#ffffff';
-                ctx.globalAlpha = p.alpha * 0.8;
+                ctx.globalAlpha = p.alpha * 0.9;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, size * 0.45, 0, Math.PI * 2);
+                ctx.arc(p.x - size * 0.25, p.y - size * 0.25, size * 0.45, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
@@ -340,44 +463,135 @@
         animationId = requestAnimationFrame(render);
     }
 
-    // Halqa chizish yordamchisi
-    function drawRing(ringPoints, speedOffset, tiltExtra, strokeColor, cx, cy, fov) {
-        ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = 1.1;
-        ctx.globalAlpha = 0.4;
-        ctx.beginPath();
+    // -------------------------------------------------------------
+    // 5. GLOBAL 3D CARD TILT DASTURI (BUTUN SAYT KARTALARI UCHUN)
+    // -------------------------------------------------------------
+    function initGlobalCard3DTilt() {
+        // Maqola kartochkalari, kun hikmati, loyihalar va modallarga fazoviy 3D burilish
+        const targets = document.querySelectorAll('.post-card, .atelier-quote-card, .project-card, .curr-topic-card');
 
-        let first = true;
-        for (let i = 0; i < ringPoints.length; i++) {
-            const rp = ringPoints[i];
-            const curAngle = rp.angle + speedOffset;
-            const rx = Math.cos(curAngle) * rp.radius;
-            const ry = Math.sin(curAngle) * rp.radius * Math.cos(rp.tiltAngle + tiltExtra);
-            const rz = Math.sin(curAngle) * rp.radius * Math.sin(rp.tiltAngle + tiltExtra);
+        targets.forEach(card => {
+            if (card.dataset.hasTilt) return;
+            card.dataset.hasTilt = 'true';
 
-            const rot = rotate3D(rx, ry, rz, rotX * 0.7, rotY * 0.7, 0);
-            const p = project(rot, fov, cx, cy);
-
-            if (first) {
-                ctx.moveTo(p.x, p.y);
-                first = false;
-            } else {
-                ctx.lineTo(p.x, p.y);
+            // Karta ustida dinamik yorug'lik qatlami (Specular Glare)
+            let glare = card.querySelector('.spatial-glare');
+            if (!glare) {
+                glare = document.createElement('div');
+                glare.className = 'spatial-glare';
+                card.style.position = 'relative';
+                card.style.transformStyle = 'preserve-3d';
+                card.appendChild(glare);
             }
-        }
-        ctx.closePath();
-        ctx.stroke();
-        ctx.globalAlpha = 1.0;
+
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const cx = rect.width / 2;
+                const cy = rect.height / 2;
+
+                const rotX = ((y - cy) / cy) * -9; // Max 9 deg
+                const rotY = ((x - cx) / cx) * 9;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateZ(12px)`;
+
+                // Nur dog'i koordinatasi
+                glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255, 255, 255, 0.22) 0%, rgba(56, 189, 248, 0.08) 40%, transparent 70%)`;
+                glare.style.opacity = '1';
+            }, { passive: true });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+                glare.style.opacity = '0';
+            }, { passive: true });
+        });
     }
 
     // -------------------------------------------------------------
-    // EVENT LISTENERS & RESIZE
+    // 6. EVENT TINGLOVCHILAR VA SICHQONCHA / TOUCH BOSHQARUVI
     // -------------------------------------------------------------
-    function handleResize() {
+    function handleWindowMouseMove(e) {
+        // Butun ekran bo'ylab kursorni hisoblash (-1 dan 1 gacha)
+        mouse.targetScreenX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.targetScreenY = (e.clientY / window.innerHeight) * 2 - 1;
+
+        if (mouse.isDown) {
+            const dx = e.clientX - mouse.dragStartX;
+            const dy = e.clientY - mouse.dragStartY;
+            mouse.velX = dx * 0.005;
+            mouse.velY = -dy * 0.005;
+            mouse.dragStartX = e.clientX;
+            mouse.dragStartY = e.clientY;
+        }
+
+        // Hero sarlavhasi va orqa fondagi elementlar uchun CSS o'zgaruvchilari
+        document.documentElement.style.setProperty('--mouse-norm-x', mouse.targetScreenX.toFixed(3));
+        document.documentElement.style.setProperty('--mouse-norm-y', mouse.targetScreenY.toFixed(3));
+    }
+
+    function handleMouseDown(e) {
         if (!canvas) return;
         const rect = canvas.getBoundingClientRect();
-        width = rect.width || 420;
-        height = rect.height || 420;
+        if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+            mouse.isDown = true;
+            mouse.dragStartX = e.clientX;
+            mouse.dragStartY = e.clientY;
+            canvas.style.cursor = 'grabbing';
+        }
+    }
+
+    function handleMouseUp() {
+        if (mouse.isDown) {
+            mouse.isDown = false;
+            if (canvas) canvas.style.cursor = 'grab';
+        }
+    }
+
+    function handleClickCanvas(e) {
+        shockwave = 15;
+        shockwaveVel = 4.2;
+        if (navigator.vibrate) {
+            try { navigator.vibrate(20); } catch (_) {}
+        }
+    }
+
+    function handleTouchStart(e) {
+        if (e.touches && e.touches[0]) {
+            mouse.isDown = true;
+            mouse.dragStartX = e.touches[0].clientX;
+            mouse.dragStartY = e.touches[0].clientY;
+        }
+    }
+
+    function handleTouchMove(e) {
+        if (!e.touches || !e.touches[0]) return;
+        const t = e.touches[0];
+        mouse.targetScreenX = (t.clientX / window.innerWidth) * 2 - 1;
+        mouse.targetScreenY = (t.clientY / window.innerHeight) * 2 - 1;
+
+        if (mouse.isDown) {
+            const dx = t.clientX - mouse.dragStartX;
+            const dy = t.clientY - mouse.dragStartY;
+            mouse.velX = dx * 0.006;
+            mouse.velY = -dy * 0.006;
+            mouse.dragStartX = t.clientX;
+            mouse.dragStartY = t.clientY;
+        }
+    }
+
+    function handleScroll() {
+        const scrollY = window.scrollY || window.pageYOffset;
+        scrollProgress = Math.min(1.5, Math.max(0, scrollY / (window.innerHeight * 0.85)));
+    }
+
+    function handleResize() {
+        if (!canvas) return;
+        const stage = canvas.closest('.spatial-hero-stage') || canvas.parentElement || canvas;
+        const rect = stage.getBoundingClientRect();
+
+        width = rect.width || window.innerWidth;
+        height = rect.height || 560;
         dpr = Math.min(window.devicePixelRatio || 1, 2);
 
         canvas.width = Math.floor(width * dpr);
@@ -388,106 +602,77 @@
         }
     }
 
-    function handleMouseMove(e) {
-        if (!canvas) return;
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.clientX;
-        const clientY = e.clientY;
-
-        // Canvas markaziga nisbatan -1 dan 1 gacha
-        const nx = ((clientX - rect.left) / rect.width) * 2 - 1;
-        const ny = ((clientY - rect.top) / rect.height) * 2 - 1;
-
-        mouse.targetX = Math.max(-1.5, Math.min(1.5, nx));
-        mouse.targetY = Math.max(-1.5, Math.min(1.5, ny));
-        mouse.isHover = true;
-    }
-
-    function handleMouseLeave() {
-        mouse.targetX = 0;
-        mouse.targetY = 0;
-        mouse.isHover = false;
-    }
-
-    function handleClick() {
-        shockwave = 5;
-        shockwaveVel = 3.5;
-        // Tovushsiz taktil titrash (qo'llab-quvvatlansa)
-        if (navigator.vibrate) {
-            try { navigator.vibrate(15); } catch (_) {}
-        }
-    }
-
-    function handleTouchMove(e) {
-        if (!canvas || !e.touches || !e.touches[0]) return;
-        const touch = e.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        const nx = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
-        const ny = ((touch.clientY - rect.top) / rect.height) * 2 - 1;
-
-        mouse.targetX = Math.max(-1.5, Math.min(1.5, nx));
-        mouse.targetY = Math.max(-1.5, Math.min(1.5, ny));
-    }
-
-    function switchShape(nextShapeIndex) {
-        if (typeof nextShapeIndex === 'number') {
-            currentShape = nextShapeIndex % 3;
+    function switchShape(nextIndex) {
+        if (typeof nextIndex === 'number') {
+            currentShape = nextIndex % 3;
         } else {
             currentShape = (currentShape + 1) % 3;
         }
 
-        // Shakl almashganda impuls to'lqini
-        shockwave = 12;
-        shockwaveVel = 4.0;
+        shockwave = 22;
+        shockwaveVel = 5.0;
 
-        const modeLabel = document.getElementById('cyber-mode-text');
-        if (modeLabel) {
-            const names = ['Sfera', 'Torus Halqa', 'Kvant Yadrosi'];
-            modeLabel.textContent = names[currentShape];
+        const label = document.getElementById('spatial-shape-name');
+        if (label) {
+            const names = ['Kvant Giroskopi', 'Torus Tuguni', 'Kiber Monolit'];
+            label.textContent = names[currentShape];
         }
+
+        // Tugma holatini yangilash
+        document.querySelectorAll('.spatial-shape-btn').forEach((btn, idx) => {
+            btn.classList.toggle('active', idx === currentShape);
+        });
     }
 
     // -------------------------------------------------------------
-    // INIT & INTERSECTION OBSERVER (Zero CPU Lag on Scroll)
+    // 7. ISHGA TUSHIRISH (INITIALIZATION)
     // -------------------------------------------------------------
-    function initCyberHero() {
-        canvas = document.getElementById('cyber-3d-canvas');
+    function init() {
+        canvas = document.getElementById('spatial-3d-canvas') || document.getElementById('cyber-3d-canvas');
         if (!canvas) return;
 
         ctx = canvas.getContext('2d', { alpha: true });
         if (!ctx) return;
 
-        updateColorsByTheme();
+        updateTheme();
+        initCosmosParticles();
         handleResize();
 
-        // Hodisalar ulanishi
-        const stageWrap = canvas.closest('.cyber-3d-stage') || canvas.parentElement || canvas;
-        stageWrap.addEventListener('mousemove', handleMouseMove, { passive: true });
-        stageWrap.addEventListener('mouseleave', handleMouseLeave, { passive: true });
-        canvas.addEventListener('click', handleClick);
+        // Butun oyna bo'yicha sichqoncha va skroll hodisalari
+        window.addEventListener('mousemove', handleWindowMouseMove, { passive: true });
+        window.addEventListener('mousedown', handleMouseDown);
+        window.addEventListener('mouseup', handleMouseUp);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', handleResize, { passive: true });
 
-        // Mobil sensorlar
+        // Sensorli ekranlar
+        canvas.addEventListener('touchstart', handleTouchStart, { passive: true });
         canvas.addEventListener('touchmove', handleTouchMove, { passive: true });
-        canvas.addEventListener('touchend', handleMouseLeave, { passive: true });
+        canvas.addEventListener('touchend', handleMouseUp, { passive: true });
+        canvas.addEventListener('click', handleClickCanvas);
 
-        // Shakl almashtirish tugmasi
-        const toggleBtn = document.getElementById('cyber-3d-toggle-btn');
+        // Shakl almashtirish tugmalari
+        document.querySelectorAll('[data-shape-idx]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const idx = parseInt(btn.dataset.shapeIdx, 10);
+                switchShape(idx);
+            });
+        });
+
+        const toggleBtn = document.getElementById('spatial-toggle-btn') || document.getElementById('cyber-3d-toggle-btn');
         if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => switchShape());
+            toggleBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchShape();
+            });
         }
 
-        // Oyna o'lchami o'zgarganda
-        window.addEventListener('resize', () => {
-            handleResize();
-        }, { passive: true });
+        // Mavzu o'zgarganda
+        const obs = new MutationObserver(() => updateTheme());
+        obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
-        // Mavzu (Dark/Light) o'zgarganda ranglarni sinxronlashtirish
-        const observer = new MutationObserver(() => {
-            updateColorsByTheme();
-        });
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-
-        // Scroll qilinganda GPU va batareyani 100% tejash (IntersectionObserver)
+        // Sahifa skroll qilinib ko'rinmay qolganda GPU tejash
         const io = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 isVisible = entry.isIntersecting;
@@ -495,20 +680,30 @@
         }, { threshold: 0.05 });
         io.observe(canvas);
 
-        // Animatsiyani ishga tushirish
+        // Butun sayt kartochkalariga 3D Tilt ulash
+        initGlobalCard3DTilt();
+
+        // Maqolalar kechroq yuklansa ham qayta ulash uchun observer
+        const blogGrid = document.getElementById('blog-grid');
+        if (blogGrid) {
+            const blogObs = new MutationObserver(() => initGlobalCard3DTilt());
+            blogObs.observe(blogGrid, { childList: true });
+        }
+
         if (animationId) cancelAnimationFrame(animationId);
         animationId = requestAnimationFrame(render);
     }
 
-    // Global eksport (tekshiruv va sinovlar uchun)
-    window.CyberHero3D = {
-        init: initCyberHero,
-        switchShape: switchShape
+    // Global api
+    window.Spatial3D = {
+        init: init,
+        switchShape: switchShape,
+        refreshTilts: initGlobalCard3DTilt
     };
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initCyberHero);
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        initCyberHero();
+        init();
     }
 })();

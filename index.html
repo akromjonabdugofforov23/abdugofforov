@@ -179,38 +179,66 @@
         </div>
     </div>
 
-        <!-- ===== 3D INTERACTIVE HERO SHOWCASE ===== -->
-    <section class="cyber-hero-section container" id="cyber-hero-section">
-        <div class="cyber-hero-card">
-            <div class="cyber-hero-content">
-                <div class="cyber-hero-badge">
-                    <span class="cyber-pulse-dot"></span>
-                    <span>INTERAKTIV 3D FAZO · 60-120 FPS</span>
+        <!-- ===== CINEMATIC 3D SPATIAL HERO SHOWCASE ===== -->
+    <section class="spatial-hero-section container" id="spatial-hero-section">
+        <div class="spatial-hero-stage">
+            <div class="spatial-stage-beam" aria-hidden="true"></div>
+
+            <!-- Yuqori Boshqaruv & Texnologik Holat -->
+            <div class="spatial-header-row">
+                <div class="spatial-badge">
+                    <span class="spatial-pulse-green"></span>
+                    <span>SPATIAL 3D ENGINE · HARDWARE ACCELERATED</span>
                 </div>
-                <h1 class="cyber-hero-title">
-                    Kelajak <span class="cyber-gradient-text">Raqamli Fazosi</span> & Shaxsiy Fikrlar
-                </h1>
-                <p class="cyber-hero-desc">
-                    Sichqonchangizni qimirlatib ko'ring — 3D kiber-sfera harakatingizga real vaqtda javob beradi. Apparat tezlanishi bilan ta'minlangan nol qotishlar.
-                </p>
-                <div class="cyber-hero-actions">
-                    <a href="#blog-grid" class="cyber-hero-cta" id="hero-explore-btn">
-                        <span>Maqolalarni ko'rish</span>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
-                    </a>
-                    <button class="cyber-hero-mode-btn" id="cyber-3d-toggle-btn" type="button" title="3D Shaklni almashtirish">
-                        <span class="cyber-mode-icon">✨</span>
-                        <span id="cyber-mode-text">Sfera</span>
-                    </button>
+                <div class="spatial-fps-counter">
+                    <span>⚡ 120 FPS</span>
+                    <span>·</span>
+                    <span>WEBGL / GPU</span>
                 </div>
             </div>
-            <div class="cyber-3d-stage">
-                <div class="cyber-3d-ambient-glow" aria-hidden="true"></div>
-                <canvas id="cyber-3d-canvas" class="cyber-3d-canvas" width="420" height="360" aria-label="3D Interaktiv kiber-sfera"></canvas>
-                <div class="cyber-3d-hint">
-                    <span class="cyber-hint-icon">🖱️</span>
-                    <span class="cyber-hint-text">Sichqonchani harakatlantiring yoki bosing</span>
-                </div>
+
+            <!-- Suzuvchi Fazoviy HUD Chiplari (Floating 3D Holographic Badges) -->
+            <div class="spatial-hud-chip spatial-hud-top-left" aria-hidden="true">
+                <span class="chip-icon">🪐</span>
+                <span>Kvant Giroskop Gimbali</span>
+            </div>
+            <div class="spatial-hud-chip spatial-hud-bottom-right" aria-hidden="true">
+                <span class="chip-icon">🖱️</span>
+                <span>Sichqoncha bilan 360° erkin aylantiring</span>
+            </div>
+
+            <!-- Markaziy 3D Canvas Maydoni -->
+            <div class="spatial-canvas-container">
+                <canvas id="spatial-3d-canvas" class="spatial-3d-canvas" width="750" height="440" aria-label="Interaktiv 3D fazoviy kiber-obyekt"></canvas>
+            </div>
+
+            <!-- Kinetik Sarlavha & Fikrlar -->
+            <div class="spatial-title-wrap">
+                <h1 class="spatial-title">
+                    Kelajak <span class="spatial-gradient-text">Raqamli Fazosi</span> & Shaxsiy Fikrlar
+                </h1>
+                <p class="spatial-subtitle">
+                    Sichqonchangizni qimirlatib ko'ring yoki bosing — butun sahna, yorug'lik va 3D obyekt real vaqtda harakatingizga sinxron javob beradi.
+                </p>
+            </div>
+
+            <!-- Pastki Suzuvchi 3D Boshqaruv Dok-Paneli (Control Dock) -->
+            <div class="spatial-dock">
+                <button class="spatial-shape-btn active" data-shape-idx="0" type="button" title="Kvant Giroskopi">
+                    <span>⚛️</span>
+                    <span>Giroskop</span>
+                </button>
+                <button class="spatial-shape-btn" data-shape-idx="1" type="button" title="Torus Tuguni">
+                    <span>🍩</span>
+                    <span>Torus Tuguni</span>
+                </button>
+                <button class="spatial-shape-btn" data-shape-idx="2" type="button" title="Kiber Monolit">
+                    <span>💎</span>
+                    <span>Kiber Monolit</span>
+                </button>
+                <a href="#blog-grid" class="spatial-scroll-btn" id="spatial-explore-btn">
+                    <span>Kashf etish ↓</span>
+                </a>
             </div>
         </div>
     </section>
