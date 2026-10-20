@@ -1,7 +1,9 @@
-// ===== SPATIAL 3D BACKGROUND ENGINE & WHOLE-PAGE 3D EXPERIENCE =====
-// Abdugofforov ekotizimi uchun to'liq ekranli, 60-120 FPS orqa fondagi
-// interaktiv 3D fazoviy kiber-dunyo. Sichqoncha harakatiga real vaqtda
-// sinxron aylanuvchi Giroskop halqalari, kvant zarrachalari va kartalarga 3D tilt.
+// ===== DUAL-FLANK SPATIAL 3D ENGINE (CHAP VA O'NG SIMMETRIK 3D OBYEKTLAR) =====
+// Abdugofforov ekotizimi uchun 60-120 FPS apparat tezlanishli ikki qanotli 3D fazo.
+// Chap tomonda: Kvant Giroskopi (3 ta gimbal halqasi + kvant sferasi)
+// O'ng tomonda: Kiber Torus Tuguni (Torus Knot + 16 ta plazma sun'iy yo'ldoshlari)
+// Markazdagi "Kun Hikmati" va "Postlar" toza, o'qishga 100% qulay bo'lib,
+// ikki chetdagi keng monitor bo'shlig'i sichqonchaga sinxron 3D koinot bilan to'ladi.
 
 (function () {
     'use strict';
@@ -11,87 +13,87 @@
     let animationId = null;
     let isVisible = true;
 
-    // Butun ekran bo'ylab sichqoncha koordinatalari
+    // Sichqoncha koordinatalari
     let mouse = {
-        screenX: 0, screenY: 0,
-        targetScreenX: 0, targetScreenY: 0,
+        x: 0, y: 0,
+        normX: 0, normY: 0, // -1 dan 1 gacha
+        targetNormX: 0, targetNormY: 0,
         isDown: false,
         dragStartX: 0, dragStartY: 0,
         dragRotX: 0, dragRotY: 0,
         velX: 0, velY: 0
     };
 
-    // 3D Kamera va Burilish
-    let camRotX = 0, camRotY = 0;
+    // 3D aylanish va dinamika
     let autoRotY = 0;
     let scrollOffset = 0;
     let shockwave = 0, shockwaveVel = 0;
 
-    // Ranglar palitrasi (Dark / Light)
+    // Mavzuga mos ranglar (Dark / Light)
     let themeColors = {
-        cyan: '#38bdf8',
-        purple: '#818cf8',
-        teal: '#2dd4bf',
-        amber: '#fbbf24',
-        coreGlow: 'rgba(56, 189, 248, 0.22)',
-        lineAlpha: 0.28,
-        nodeAlpha: 0.85
+        leftPrimary: '#38bdf8',    // Chap: Neon Cyan / Sapphire
+        leftSecondary: '#2dd4bf',  // Chap: Neon Teal
+        rightPrimary: '#818cf8',   // O'ng: Kiber Binafsha
+        rightSecondary: '#c084fc', // O'ng: Ametist
+        ambientDust: '#38bdf8',
+        coreGlowLeft: 'rgba(56, 189, 248, 0.22)',
+        coreGlowRight: 'rgba(129, 140, 248, 0.22)',
+        lineAlpha: 0.32
     };
 
     function updateTheme() {
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
         if (isLight) {
-            themeColors.cyan = '#4f46e5';
-            themeColors.purple = '#7c3aed';
-            themeColors.teal = '#0284c7';
-            themeColors.amber = '#d97706';
-            themeColors.coreGlow = 'rgba(79, 70, 229, 0.14)';
+            themeColors.leftPrimary = '#0284c7';
+            themeColors.leftSecondary = '#0d9488';
+            themeColors.rightPrimary = '#4f46e5';
+            themeColors.rightSecondary = '#7c3aed';
+            themeColors.ambientDust = '#4f46e5';
+            themeColors.coreGlowLeft = 'rgba(2, 132, 199, 0.14)';
+            themeColors.coreGlowRight = 'rgba(79, 70, 229, 0.14)';
             themeColors.lineAlpha = 0.22;
-            themeColors.nodeAlpha = 0.8;
         } else {
-            themeColors.cyan = '#38bdf8';
-            themeColors.purple = '#818cf8';
-            themeColors.teal = '#2dd4bf';
-            themeColors.amber = '#fbbf24';
-            themeColors.coreGlow = 'rgba(56, 189, 248, 0.22)';
-            themeColors.lineAlpha = 0.28;
-            themeColors.nodeAlpha = 0.85;
+            themeColors.leftPrimary = '#38bdf8';
+            themeColors.leftSecondary = '#2dd4bf';
+            themeColors.rightPrimary = '#818cf8';
+            themeColors.rightSecondary = '#c084fc';
+            themeColors.ambientDust = '#38bdf8';
+            themeColors.coreGlowLeft = 'rgba(56, 189, 248, 0.22)';
+            themeColors.coreGlowRight = 'rgba(129, 140, 248, 0.22)';
+            themeColors.lineAlpha = 0.32;
         }
     }
 
     // -------------------------------------------------------------
     // 1. ZARRACHALAR BULUTI (COSMIC DUST PARTICLES)
     // -------------------------------------------------------------
-    const PARTICLE_COUNT = 150;
-    const cosmosParticles = [];
+    const DUST_COUNT = 120;
+    const dustParticles = [];
 
-    function initCosmosParticles() {
-        cosmosParticles.length = 0;
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-            const radius = 220 + Math.random() * 450;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = (Math.random() - 0.5) * Math.PI;
-            cosmosParticles.push({
-                baseX: radius * Math.cos(phi) * Math.cos(theta),
-                baseY: radius * Math.sin(phi) * 0.7,
-                baseZ: radius * Math.cos(phi) * Math.sin(theta),
-                speed: 0.0015 + Math.random() * 0.003,
-                size: 1.0 + Math.random() * 2.2,
-                orbitAngle: theta,
+    function initDustParticles() {
+        dustParticles.length = 0;
+        for (let i = 0; i < DUST_COUNT; i++) {
+            dustParticles.push({
+                x: Math.random() * 2000 - 1000,
+                y: Math.random() * 1200 - 600,
+                z: Math.random() * 600 - 300,
+                baseSize: 1.0 + Math.random() * 2.0,
+                speedX: (Math.random() - 0.5) * 0.4,
+                speedY: (Math.random() - 0.5) * 0.3,
                 pulse: Math.random() * Math.PI * 2,
-                colorType: i % 3
+                colorType: i % 2 // 0: cyan, 1: purple
             });
         }
     }
 
     // -------------------------------------------------------------
-    // 2. 3D GEOMETRIYA (KVANT SFERA VA GIROSKOP HALQALARI)
+    // 2. CHAP OBYEKT: KVANT GIROSKOPI GEOMETRIYASI
     // -------------------------------------------------------------
-    function buildGyroSphere() {
+    function buildLeftGyroSphere() {
         const points = [];
-        const count = 150;
+        const count = 90;
         const phi = Math.PI * (3 - Math.sqrt(5));
-        const radius = 160;
+        const radius = 105;
 
         for (let i = 0; i < count; i++) {
             const y = 1 - (i / (count - 1)) * 2;
@@ -107,44 +109,85 @@
         return points;
     }
 
-    const spherePoints = buildGyroSphere();
-
-    // 3 ta Gigant Giroskop Halqasi (X, Y, Z tekisliklarida)
-    function buildGimbalRings() {
+    function buildLeftGimbalRings() {
         const rings = [];
-        const segs = 64;
+        const segs = 48;
 
-        // 1-Ring (X-Z Gorizontal tekislik)
+        // 1-Ring (X-Z Gorizontal)
         const ring1 = [];
         for (let i = 0; i < segs; i++) {
             const a = (i / segs) * Math.PI * 2;
-            ring1.push({ x: Math.cos(a) * 230, y: 0, z: Math.sin(a) * 230 });
+            ring1.push({ x: Math.cos(a) * 145, y: 0, z: Math.sin(a) * 145 });
         }
-        rings.push({ points: ring1, rotAxis: 'y', speed: 0.007, color: 'cyan', tilt: 0.25 });
+        rings.push({ points: ring1, rotAxis: 'y', speed: 0.012, tilt: 0.3 });
 
-        // 2-Ring (Y-Z Vertikal tekislik)
+        // 2-Ring (Y-Z Vertikal)
         const ring2 = [];
         for (let i = 0; i < segs; i++) {
             const a = (i / segs) * Math.PI * 2;
-            ring2.push({ x: 0, y: Math.cos(a) * 255, z: Math.sin(a) * 255 });
+            ring2.push({ x: 0, y: Math.cos(a) * 162, z: Math.sin(a) * 162 });
         }
-        rings.push({ points: ring2, rotAxis: 'x', speed: -0.009, color: 'purple', tilt: -0.32 });
+        rings.push({ points: ring2, rotAxis: 'x', speed: -0.014, tilt: -0.4 });
 
-        // 3-Ring (Diagonal Y-X tekislik)
+        // 3-Ring (Diagonal Y-X)
         const ring3 = [];
         for (let i = 0; i < segs; i++) {
             const a = (i / segs) * Math.PI * 2;
-            ring3.push({ x: Math.cos(a) * 275, y: Math.sin(a) * 275, z: 0 });
+            ring3.push({ x: Math.cos(a) * 175, y: Math.sin(a) * 175, z: 0 });
         }
-        rings.push({ points: ring3, rotAxis: 'z', speed: 0.005, color: 'teal', tilt: 0.55 });
+        rings.push({ points: ring3, rotAxis: 'z', speed: 0.009, tilt: 0.65 });
 
         return rings;
     }
 
-    const gimbalRings = buildGimbalRings();
+    const leftSpherePoints = buildLeftGyroSphere();
+    const leftGimbalRings = buildLeftGimbalRings();
 
     // -------------------------------------------------------------
-    // 3. 3D BURISH VA PROYEKTSIYA MATRITSALARI
+    // 3. O'NG OBYEKT: KIBER TORUS TUGUNI (TREFOIL KNOT & PLAZMA)
+    // -------------------------------------------------------------
+    function buildRightTorusKnot() {
+        const points = [];
+        const total = 110;
+        const scale = 28;
+
+        for (let i = 0; i < total; i++) {
+            const phi = (i / total) * Math.PI * 2 * 3;
+            const r = 2.4 + Math.cos(3 * phi) * 0.9;
+            const x = r * Math.cos(2 * phi) * scale;
+            const y = r * Math.sin(2 * phi) * scale;
+            const z = -Math.sin(3 * phi) * scale * 1.5;
+
+            points.push({
+                baseX: x,
+                baseY: y,
+                baseZ: z,
+                pulseOffset: phi
+            });
+        }
+        return points;
+    }
+
+    function buildRightSatellites() {
+        const sats = [];
+        for (let i = 0; i < 16; i++) {
+            const angle = (i / 16) * Math.PI * 2;
+            sats.push({
+                baseRadius: 135 + (i % 3) * 15,
+                angle: angle,
+                speed: 0.016 + (i % 4) * 0.006,
+                tilt: (i % 2 === 0 ? 0.45 : -0.55),
+                size: 2.2 + Math.random() * 1.8
+            });
+        }
+        return sats;
+    }
+
+    const rightKnotPoints = buildRightTorusKnot();
+    const rightSatellites = buildRightSatellites();
+
+    // -------------------------------------------------------------
+    // 4. 3D BURISH VA PROYEKTSIYA MATRITSALARI
     // -------------------------------------------------------------
     function rotate3D(x, y, z, angleX, angleY, angleZ) {
         const cosY = Math.cos(angleY), sinY = Math.sin(angleY);
@@ -164,11 +207,11 @@
         return { x: x1, y: y2, z: z2 };
     }
 
-    function project3D(p, cx, cy, fov) {
-        const distance = 580;
+    function project3D(p, cx, cy, fov, scaleMultiplier) {
+        const distance = 540;
         const zEffective = p.z + distance;
         if (zEffective <= 10) return null;
-        const scale = distance / zEffective;
+        const scale = (distance / zEffective) * scaleMultiplier;
         return {
             x: cx + p.x * scale,
             y: cy + p.y * scale,
@@ -178,7 +221,7 @@
     }
 
     // -------------------------------------------------------------
-    // 4. ASOSIY RENDERLASH SIKLI (60-120 FPS RAF)
+    // 5. ASOSIY RENDERLASH SIKLI (60-120 FPS RAF)
     // -------------------------------------------------------------
     function render(timestamp) {
         if (!isVisible || !ctx) {
@@ -188,9 +231,9 @@
 
         const t = (timestamp || performance.now()) * 0.001;
 
-        // Kursorni LERP orqali butun ekran bo'ylab silliq kuzatish
-        mouse.screenX += (mouse.targetScreenX - mouse.screenX) * 0.06;
-        mouse.screenY += (mouse.targetScreenY - mouse.screenY) * 0.06;
+        // Kursorni LERP bilan silliq kuzatish
+        mouse.normX += (mouse.targetNormX - mouse.normX) * 0.06;
+        mouse.normY += (mouse.targetNormY - mouse.normY) * 0.06;
 
         // Drag & Throw inersiyasi
         mouse.dragRotX += mouse.velX;
@@ -198,65 +241,112 @@
         mouse.velX *= 0.94;
         mouse.velY *= 0.94;
 
-        autoRotY += 0.004;
-        const targetCamY = autoRotY + mouse.screenX * 0.75 + mouse.dragRotX;
-        const targetCamX = -mouse.screenY * 0.55 + mouse.dragRotY;
-
-        camRotX += (targetCamX - camRotX) * 0.08;
-        camRotY += (targetCamY - camRotY) * 0.08;
+        autoRotY += 0.005;
 
         // Shockwave zarbasi
         if (shockwave > 0.001) {
             shockwave += shockwaveVel;
             shockwaveVel *= 0.92;
-            if (shockwave > 50) shockwaveVel = -shockwaveVel * 0.65;
+            if (shockwave > 45) shockwaveVel = -shockwaveVel * 0.65;
             if (shockwave < 0) shockwave = 0;
         }
 
         ctx.clearRect(0, 0, width, height);
 
-        // Markaz: Kun Hikmati va soatning orqa foniga to'g'ri keladigan koordinata
-        const cx = width / 2;
-        // Skroll qilinganda silliq parallaks bilan siljish
-        const cy = Math.min(height * 0.40, 320) - scrollOffset * 0.25;
-        const fov = 520;
+        // Keng ekranda o'lchamlarni hisoblash
+        const containerWidth = 1100;
+        const sideGutter = Math.max(0, (width - containerWidth) / 2);
 
-        // Markaziy Kvant Nur (Aura)
-        const auraGrad = ctx.createRadialGradient(cx, cy, 30, cx, cy, 320);
-        auraGrad.addColorStop(0, themeColors.coreGlow);
-        auraGrad.addColorStop(0.5, 'rgba(129, 140, 248, 0.06)');
+        // Katta monitorlarda (1440px - 1920px+) to'liq yonboshda turadi
+        let cxLeft, cxRight, cy, scaleFactor;
+
+        if (width >= 1380) {
+            cxLeft = Math.max(130, sideGutter * 0.52);
+            cxRight = width - cxLeft;
+            scaleFactor = 1.0;
+        } else if (width >= 1180) {
+            cxLeft = Math.max(90, sideGutter * 0.46);
+            cxRight = width - cxLeft;
+            scaleFactor = 0.82;
+        } else if (width >= 960) {
+            cxLeft = 70;
+            cxRight = width - 70;
+            scaleFactor = 0.65;
+        } else {
+            // Kichik ekranlarda (planshet/smartfon) matnlarga xalaqit bermaslik uchun
+            // markazda yengil fon rejimiga o'tadi
+            cxLeft = -9999;
+            cxRight = -9999;
+            scaleFactor = 0.5;
+        }
+
+        cy = Math.min(height * 0.40, 310) - scrollOffset * 0.2;
+        const fov = 500;
+
+        // Kichik ekranda faqat bitta markaziy ambient fon
+        if (width < 960) {
+            const cxCenter = width / 2;
+            renderLeftGuardian(cxCenter, cy, fov, 0.75, t);
+            animationId = requestAnimationFrame(render);
+            return;
+        }
+
+        // 1. Fon bo'ylab suzuvchi kosmik zarrachalar (Ambient Dust)
+        ctx.globalAlpha = 0.35;
+        for (let i = 0; i < dustParticles.length; i++) {
+            const dp = dustParticles[i];
+            dp.x += dp.speedX;
+            dp.y += dp.speedY;
+
+            if (dp.x < -width / 2) dp.x = width / 2;
+            if (dp.x > width / 2) dp.x = -width / 2;
+            if (dp.y < -height / 2) dp.y = height / 2;
+            if (dp.y > height / 2) dp.y = -height / 2;
+
+            const rot = rotate3D(dp.x, dp.y, dp.z, mouse.normY * 0.2, mouse.normX * 0.2, 0);
+            const pr = project3D(rot, width / 2, cy + 80, fov, 1.0);
+            if (!pr) continue;
+
+            ctx.fillStyle = dp.colorType === 0 ? themeColors.leftPrimary : themeColors.rightPrimary;
+            ctx.beginPath();
+            ctx.arc(pr.x, pr.y, dp.baseSize * pr.scale, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.globalAlpha = 1.0;
+
+        // 2. CHAP QANOT: KVANT GIROSKOPI
+        renderLeftGuardian(cxLeft, cy, fov, scaleFactor, t);
+
+        // 3. O'NG QANOT: KIBER TORUS TUGUNI
+        renderRightGuardian(cxRight, cy, fov, scaleFactor, t);
+
+        animationId = requestAnimationFrame(render);
+    }
+
+    // -------------------------------------------------------------
+    // CHAP QANOT (KVANT GIROSKOP) RENDERING
+    // -------------------------------------------------------------
+    function renderLeftGuardian(cx, cy, fov, scaleFactor, t) {
+        // Mahalliy kursorni hisoblash (chap markazga nisbatan burchak)
+        const localNormX = ((mouse.x - cx) / (width * 0.5));
+        const rotY = autoRotY + localNormX * 0.85 + mouse.dragRotX;
+        const rotX = -mouse.normY * 0.65 + mouse.dragRotY;
+
+        // Markaziy Kiber Aura
+        const auraGrad = ctx.createRadialGradient(cx, cy, 20, cx, cy, 190 * scaleFactor);
+        auraGrad.addColorStop(0, themeColors.coreGlowLeft);
+        auraGrad.addColorStop(0.6, 'rgba(56, 189, 248, 0.04)');
         auraGrad.addColorStop(1, 'transparent');
         ctx.fillStyle = auraGrad;
         ctx.beginPath();
-        ctx.arc(cx, cy, 320, 0, Math.PI * 2);
+        ctx.arc(cx, cy, 190 * scaleFactor, 0, Math.PI * 2);
         ctx.fill();
 
-        // 1. 3D Zarrachalar Girdobi (Cosmic Dust Cloud)
-        for (let i = 0; i < cosmosParticles.length; i++) {
-            const cp = cosmosParticles[i];
-            cp.orbitAngle += cp.speed;
-
-            let px = cp.baseX * Math.cos(cp.orbitAngle) - cp.baseZ * Math.sin(cp.orbitAngle);
-            let py = cp.baseY + Math.sin(t * 1.5 + cp.pulse) * 15;
-            let pz = cp.baseX * Math.sin(cp.orbitAngle) + cp.baseZ * Math.cos(cp.orbitAngle);
-
-            const rot = rotate3D(px, py, pz, camRotX * 0.6, camRotY * 0.6, 0);
-            const pr = project3D(rot, cx, cy, fov);
-            if (!pr) continue;
-
-            const pAlpha = Math.max(0.1, Math.min(0.75, (pr.scale - 0.4) * 1.2));
-            ctx.fillStyle = cp.colorType === 0 ? themeColors.cyan : (cp.colorType === 1 ? themeColors.purple : themeColors.teal);
-            ctx.globalAlpha = pAlpha;
-            ctx.beginPath();
-            ctx.arc(pr.x, pr.y, cp.size * pr.scale, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        // 2. 3D Giroskop Halqalari (Gimbal Rings)
-        gimbalRings.forEach(gRing => {
-            const ringAngle = t * gRing.speed * 35;
-            ctx.strokeStyle = gRing.color === 'cyan' ? themeColors.cyan : (gRing.color === 'purple' ? themeColors.purple : themeColors.teal);
-            ctx.lineWidth = 1.3;
+        // Giroskop Halqalari (Gimbal Rings)
+        leftGimbalRings.forEach(gRing => {
+            const ringAngle = t * gRing.speed * 40;
+            ctx.strokeStyle = themeColors.leftPrimary;
+            ctx.lineWidth = 1.3 * scaleFactor;
             ctx.globalAlpha = 0.42;
             ctx.beginPath();
 
@@ -277,8 +367,8 @@
                     ry = ty;
                 }
 
-                const rot = rotate3D(rx, ry, rz, camRotX + gRing.tilt, camRotY + ringAngle * 0.25, 0);
-                const pr = project3D(rot, cx, cy, fov);
+                const rot = rotate3D(rx, ry, rz, rotX + gRing.tilt, rotY + ringAngle * 0.2, 0);
+                const pr = project3D(rot, cx, cy, fov, scaleFactor);
                 if (!pr) continue;
 
                 if (first) {
@@ -292,44 +382,36 @@
             ctx.stroke();
         });
 
-        // 3. Kvant Sfera Nuqtalari va Yulduz Turkumlari (Constellation Mesh)
+        // Sfera Nuqtalari & To'rlari (Constellation Mesh)
         const projPoints = [];
-        const numPts = spherePoints.length;
-
-        for (let i = 0; i < numPts; i++) {
-            const pt = spherePoints[i];
-            const pulse = Math.sin(t * 2.2 + pt.pulseOffset) * 4.5;
+        for (let i = 0; i < leftSpherePoints.length; i++) {
+            const pt = leftSpherePoints[i];
+            const pulse = Math.sin(t * 2.2 + pt.pulseOffset) * 4;
             const shock = shockwave ? (Math.sin(pt.pulseOffset * 4) * shockwave) : 0;
             const rScale = 1 + (pulse + shock) * 0.012;
 
-            const bx = pt.baseX * rScale;
-            const by = pt.baseY * rScale;
-            const bz = pt.baseZ * rScale;
-
-            const rot = rotate3D(bx, by, bz, camRotX, camRotY, t * 0.05);
-            const pr = project3D(rot, cx, cy, fov);
+            const rot = rotate3D(pt.baseX * rScale, pt.baseY * rScale, pt.baseZ * rScale, rotX, rotY, t * 0.04);
+            const pr = project3D(rot, cx, cy, fov, scaleFactor);
             if (!pr) continue;
 
             projPoints.push({
-                x: pr.x,
-                y: pr.y,
-                z: pr.z,
+                x: pr.x, y: pr.y, z: pr.z,
                 scale: pr.scale,
-                alpha: Math.max(0.18, Math.min(1.0, (pr.scale - 0.4) * 1.5))
+                alpha: Math.max(0.2, Math.min(1.0, (pr.scale - 0.4) * 1.6))
             });
         }
 
         projPoints.sort((a, b) => a.z - b.z);
 
-        // Chiziqlar bilan bog'lash (Constellation Wireframe)
-        const maxDist = 50;
-        ctx.lineWidth = 1.0;
+        // Chiziqlar bilan bog'lash
+        ctx.lineWidth = 0.9 * scaleFactor;
+        const maxDist = 42 * scaleFactor;
 
         for (let i = 0; i < projPoints.length; i += 2) {
             const p1 = projPoints[i];
-            if (p1.z > 90) continue;
+            if (p1.z > 70) continue;
 
-            for (let j = i + 1; j < Math.min(i + 8, projPoints.length); j++) {
+            for (let j = i + 1; j < Math.min(i + 7, projPoints.length); j++) {
                 const p2 = projPoints[j];
                 const dx = p1.x - p2.x;
                 const dy = p1.y - p2.y;
@@ -346,33 +428,124 @@
             }
         }
 
-        // Tugunlarni (Vertices) chizish
+        // Tugunlar (Vertices)
         for (let i = 0; i < projPoints.length; i++) {
             const p = projPoints[i];
-            const size = Math.max(1.3, 2.4 * p.scale);
+            const size = Math.max(1.3, 2.3 * p.scale * scaleFactor);
 
-            ctx.fillStyle = p.z > 0 ? themeColors.cyan : themeColors.purple;
+            ctx.fillStyle = p.z > 0 ? themeColors.leftPrimary : themeColors.leftSecondary;
             ctx.globalAlpha = p.alpha;
             ctx.beginPath();
             ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
             ctx.fill();
 
-            // Yorug'lik aks etishi
-            if (p.z < -30) {
+            if (p.z < -25) {
                 ctx.fillStyle = '#ffffff';
-                ctx.globalAlpha = p.alpha * 0.9;
+                ctx.globalAlpha = p.alpha * 0.85;
                 ctx.beginPath();
-                ctx.arc(p.x - size * 0.2, p.y - size * 0.2, size * 0.45, 0, Math.PI * 2);
+                ctx.arc(p.x - size * 0.25, p.y - size * 0.25, size * 0.45, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
-
         ctx.globalAlpha = 1.0;
-        animationId = requestAnimationFrame(render);
     }
 
     // -------------------------------------------------------------
-    // 5. GLOBAL 3D CARD TILT (BUTUN SAYT KARTALARI UCHUN)
+    // O'NG QANOT (KIBER TORUS TUGUNI) RENDERING
+    // -------------------------------------------------------------
+    function renderRightGuardian(cx, cy, fov, scaleFactor, t) {
+        // Mahalliy kursorni hisoblash (o'ng markazga nisbatan burchak)
+        const localNormX = ((mouse.x - cx) / (width * 0.5));
+        const rotY = -autoRotY * 1.1 + localNormX * 0.85 + mouse.dragRotX;
+        const rotX = -mouse.normY * 0.65 + mouse.dragRotY;
+
+        // O'ng Aura
+        const auraGrad = ctx.createRadialGradient(cx, cy, 20, cx, cy, 190 * scaleFactor);
+        auraGrad.addColorStop(0, themeColors.coreGlowRight);
+        auraGrad.addColorStop(0.6, 'rgba(129, 140, 248, 0.04)');
+        auraGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = auraGrad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 190 * scaleFactor, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 1. Torus Tuguni Nuqtalari
+        const knotProj = [];
+        for (let i = 0; i < rightKnotPoints.length; i++) {
+            const pt = rightKnotPoints[i];
+            const pulse = Math.sin(t * 2.8 + pt.pulseOffset) * 4;
+            const shock = shockwave ? (Math.sin(pt.pulseOffset * 4) * shockwave) : 0;
+            const rScale = 1 + (pulse + shock) * 0.014;
+
+            const rot = rotate3D(pt.baseX * rScale, pt.baseY * rScale, pt.baseZ * rScale, rotX, rotY, t * 0.06);
+            const pr = project3D(rot, cx, cy, fov, scaleFactor);
+            if (!pr) continue;
+
+            knotProj.push({
+                x: pr.x, y: pr.y, z: pr.z,
+                scale: pr.scale,
+                alpha: Math.max(0.2, Math.min(1.0, (pr.scale - 0.4) * 1.6))
+            });
+        }
+
+        // Torus lentasini chizish (Continuous Ribbon)
+        if (knotProj.length > 2) {
+            ctx.strokeStyle = themeColors.rightPrimary;
+            ctx.lineWidth = 1.6 * scaleFactor;
+            ctx.globalAlpha = 0.55;
+            ctx.beginPath();
+            ctx.moveTo(knotProj[0].x, knotProj[0].y);
+            for (let i = 1; i < knotProj.length; i++) {
+                ctx.lineTo(knotProj[i].x, knotProj[i].y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        // Tugunlar
+        for (let i = 0; i < knotProj.length; i++) {
+            const p = knotProj[i];
+            const size = Math.max(1.4, 2.5 * p.scale * scaleFactor);
+
+            ctx.fillStyle = p.z > 0 ? themeColors.rightPrimary : themeColors.rightSecondary;
+            ctx.globalAlpha = p.alpha;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // 2. Plazma Sun'iy Yo'ldoshlari (Orbiting Satellites)
+        for (let i = 0; i < rightSatellites.length; i++) {
+            const sat = rightSatellites[i];
+            sat.angle += sat.speed;
+
+            const sx = Math.cos(sat.angle) * sat.baseRadius;
+            const sy = Math.sin(sat.angle * 0.8) * (sat.baseRadius * 0.45);
+            const sz = Math.sin(sat.angle) * sat.baseRadius;
+
+            const rot = rotate3D(sx, sy, sz, rotX + sat.tilt, rotY + sat.angle * 0.15, 0);
+            const pr = project3D(rot, cx, cy, fov, scaleFactor);
+            if (!pr) continue;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.globalAlpha = Math.max(0.3, Math.min(1.0, (pr.scale - 0.4) * 1.8));
+            ctx.beginPath();
+            ctx.arc(pr.x, pr.y, sat.size * pr.scale * scaleFactor, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Kichik porlash
+            ctx.fillStyle = themeColors.rightSecondary;
+            ctx.globalAlpha = 0.4;
+            ctx.beginPath();
+            ctx.arc(pr.x, pr.y, sat.size * 2.2 * pr.scale * scaleFactor, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.globalAlpha = 1.0;
+    }
+
+    // -------------------------------------------------------------
+    // 6. GLOBAL 3D CARD TILT (BUTUN SAYT KARTALARI UCHUN)
     // -------------------------------------------------------------
     function initGlobalCard3DTilt() {
         const targets = document.querySelectorAll('.post-card, .atelier-quote-card, .project-card, .curr-topic-card');
@@ -413,11 +586,13 @@
     }
 
     // -------------------------------------------------------------
-    // 6. EVENT TINGLOVCHILAR VA OYNA RESIZE
+    // 7. EVENT LISTENERS
     // -------------------------------------------------------------
     function handleMouseMove(e) {
-        mouse.targetScreenX = (e.clientX / window.innerWidth) * 2 - 1;
-        mouse.targetScreenY = (e.clientY / window.innerHeight) * 2 - 1;
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.targetNormX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.targetNormY = (e.clientY / window.innerHeight) * 2 - 1;
 
         if (mouse.isDown) {
             const dx = e.clientX - mouse.dragStartX;
@@ -430,7 +605,6 @@
     }
 
     function handleMouseDown(e) {
-        // Agar foydalanuvchi tugma, havola yoki input ustida bosmasa, fonni aylantirish imkonini berish
         if (e.target.closest('button, a, input, textarea, select, [data-action], .post-card, .atelier-quote-card')) {
             return;
         }
@@ -471,7 +645,7 @@
     }
 
     // -------------------------------------------------------------
-    // 7. INITIALIZATION
+    // 8. INITIALIZATION
     // -------------------------------------------------------------
     function init() {
         canvas = document.getElementById('spatial-3d-canvas');
@@ -481,7 +655,7 @@
         if (!ctx) return;
 
         updateTheme();
-        initCosmosParticles();
+        initDustParticles();
         handleResize();
 
         window.addEventListener('mousemove', handleMouseMove, { passive: true });
@@ -491,11 +665,9 @@
         window.addEventListener('scroll', handleScroll, { passive: true });
         window.addEventListener('resize', handleResize, { passive: true });
 
-        // Mavzu o'zgarganda
         const obs = new MutationObserver(() => updateTheme());
         obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
-        // Kartochkalarga 3D tilt ulash
         initGlobalCard3DTilt();
 
         const blogGrid = document.getElementById('blog-grid');
