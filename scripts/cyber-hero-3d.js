@@ -1,9 +1,8 @@
-// ===== DUAL-FLANK SPATIAL 3D ENGINE (CHAP VA O'NG SIMMETRIK 3D OBYEKTLAR) =====
-// Abdugofforov ekotizimi uchun 60-120 FPS apparat tezlanishli ikki qanotli 3D fazo.
-// Chap tomonda: Kvant Giroskopi (3 ta gimbal halqasi + kvant sferasi)
-// O'ng tomonda: Kiber Torus Tuguni (Torus Knot + 16 ta plazma sun'iy yo'ldoshlari)
-// Markazdagi "Kun Hikmati" va "Postlar" toza, o'qishga 100% qulay bo'lib,
-// ikki chetdagi keng monitor bo'shlig'i sichqonchaga sinxron 3D koinot bilan to'ladi.
+// ===== DUAL KINETIC NEURAL WAVE & MAGNETIC PARTICLE STREAM (3-VARIANT) =====
+// Abdugofforov ekotizimi uchun 60-120 FPS apparat tezlanishli kiber-neyron to'lqini.
+// Chap va o'ng bo'shliqlarda sichqoncha harakatiga magnit kabi egiluvchi,
+// oqib turuvchi 3D kiber-aurora to'lqinlari va neyron to'rlari (neural plexus).
+// Markazdagi "Kun Hikmati" va "Postlar" toza, o'qishga 100% qulay bo'lib qoladi.
 
 (function () {
     'use strict';
@@ -13,215 +12,123 @@
     let animationId = null;
     let isVisible = true;
 
-    // Sichqoncha koordinatalari
+    // Sichqoncha koordinatalari va magnit kuchi
     let mouse = {
-        x: 0, y: 0,
-        normX: 0, normY: 0, // -1 dan 1 gacha
+        x: -9999, y: -9999,
+        normX: 0, normY: 0,
         targetNormX: 0, targetNormY: 0,
         isDown: false,
-        dragStartX: 0, dragStartY: 0,
-        dragRotX: 0, dragRotY: 0,
-        velX: 0, velY: 0
+        shockwave: 0, shockwaveVel: 0
     };
 
-    // 3D aylanish va dinamika
-    let autoRotY = 0;
     let scrollOffset = 0;
-    let shockwave = 0, shockwaveVel = 0;
 
-    // Mavzuga mos ranglar (Dark / Light)
+    // Ranglar palitrasi (Dark / Light)
     let themeColors = {
-        leftPrimary: '#38bdf8',    // Chap: Neon Cyan / Sapphire
-        leftSecondary: '#2dd4bf',  // Chap: Neon Teal
-        rightPrimary: '#818cf8',   // O'ng: Kiber Binafsha
-        rightSecondary: '#c084fc', // O'ng: Ametist
-        ambientDust: '#38bdf8',
-        coreGlowLeft: 'rgba(56, 189, 248, 0.22)',
-        coreGlowRight: 'rgba(129, 140, 248, 0.22)',
-        lineAlpha: 0.32
+        leftGlow: 'rgba(56, 189, 248, ',     // Cyan
+        rightGlow: 'rgba(168, 85, 247, ',   // Binafsha / Purple
+        tealGlow: 'rgba(45, 212, 191, ',    // Teal
+        nodeLight: '#ffffff'
     };
 
     function updateTheme() {
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
         if (isLight) {
-            themeColors.leftPrimary = '#0284c7';
-            themeColors.leftSecondary = '#0d9488';
-            themeColors.rightPrimary = '#4f46e5';
-            themeColors.rightSecondary = '#7c3aed';
-            themeColors.ambientDust = '#4f46e5';
-            themeColors.coreGlowLeft = 'rgba(2, 132, 199, 0.14)';
-            themeColors.coreGlowRight = 'rgba(79, 70, 229, 0.14)';
-            themeColors.lineAlpha = 0.22;
+            themeColors.leftGlow = 'rgba(2, 132, 199, ';
+            themeColors.rightGlow = 'rgba(124, 58, 237, ';
+            themeColors.tealGlow = 'rgba(13, 148, 136, ';
+            themeColors.nodeLight = '#4f46e5';
         } else {
-            themeColors.leftPrimary = '#38bdf8';
-            themeColors.leftSecondary = '#2dd4bf';
-            themeColors.rightPrimary = '#818cf8';
-            themeColors.rightSecondary = '#c084fc';
-            themeColors.ambientDust = '#38bdf8';
-            themeColors.coreGlowLeft = 'rgba(56, 189, 248, 0.22)';
-            themeColors.coreGlowRight = 'rgba(129, 140, 248, 0.22)';
-            themeColors.lineAlpha = 0.32;
+            themeColors.leftGlow = 'rgba(56, 189, 248, ';
+            themeColors.rightGlow = 'rgba(168, 85, 247, ';
+            themeColors.tealGlow = 'rgba(45, 212, 191, ';
+            themeColors.nodeLight = '#ffffff';
         }
     }
 
     // -------------------------------------------------------------
-    // 1. ZARRACHALAR BULUTI (COSMIC DUST PARTICLES)
+    // 1. IKKI QANOTLI NEYRON TO'LQIN TUGUNLARI (NEURAL WAVE NODES)
     // -------------------------------------------------------------
-    const DUST_COUNT = 120;
-    const dustParticles = [];
+    const leftStreamNodes = [];
+    const rightStreamNodes = [];
+    const AMBIENT_SPARKS_COUNT = 70;
+    const ambientSparks = [];
 
-    function initDustParticles() {
-        dustParticles.length = 0;
-        for (let i = 0; i < DUST_COUNT; i++) {
-            dustParticles.push({
-                x: Math.random() * 2000 - 1000,
-                y: Math.random() * 1200 - 600,
-                z: Math.random() * 600 - 300,
-                baseSize: 1.0 + Math.random() * 2.0,
-                speedX: (Math.random() - 0.5) * 0.4,
-                speedY: (Math.random() - 0.5) * 0.3,
-                pulse: Math.random() * Math.PI * 2,
-                colorType: i % 2 // 0: cyan, 1: purple
+    function initStreamNodes() {
+        leftStreamNodes.length = 0;
+        rightStreamNodes.length = 0;
+        ambientSparks.length = 0;
+
+        const containerWidth = 1100;
+        const sideGutter = Math.max(120, (width - containerWidth) / 2);
+
+        const leftCenter = Math.max(90, sideGutter * 0.48);
+        const rightCenter = width - leftCenter;
+
+        const verticalStep = 38;
+        const totalRows = Math.ceil((height + 200) / verticalStep) + 4;
+        const cols = 3; // Har bir tomonda 3 ta parallel to'lqin zanjiri
+
+        // Chap To'lqin Tugunlari
+        for (let c = 0; c < cols; c++) {
+            const colOffset = (c - 1) * 38;
+            for (let r = -2; r < totalRows; r++) {
+                const baseY = r * verticalStep;
+                const baseX = leftCenter + colOffset;
+                leftStreamNodes.push({
+                    baseX: baseX,
+                    baseY: baseY,
+                    currentX: baseX,
+                    currentY: baseY,
+                    vx: 0, vy: 0,
+                    col: c,
+                    row: r,
+                    phase: r * 0.28 + c * 0.8,
+                    size: 1.6 + Math.random() * 1.6,
+                    side: 'left'
+                });
+            }
+        }
+
+        // O'ng To'lqin Tugunlari
+        for (let c = 0; c < cols; c++) {
+            const colOffset = (c - 1) * 38;
+            for (let r = -2; r < totalRows; r++) {
+                const baseY = r * verticalStep;
+                const baseX = rightCenter + colOffset;
+                rightStreamNodes.push({
+                    baseX: baseX,
+                    baseY: baseY,
+                    currentX: baseX,
+                    currentY: baseY,
+                    vx: 0, vy: 0,
+                    col: c,
+                    row: r,
+                    phase: r * 0.28 + c * 0.8 + Math.PI,
+                    size: 1.6 + Math.random() * 1.6,
+                    side: 'right'
+                });
+            }
+        }
+
+        // Erkin suzuvchi kiber uchqunlar (Ambient Sparks)
+        for (let i = 0; i < AMBIENT_SPARKS_COUNT; i++) {
+            const isLeft = i % 2 === 0;
+            const center = isLeft ? leftCenter : rightCenter;
+            ambientSparks.push({
+                x: center + (Math.random() - 0.5) * 160,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: -0.3 - Math.random() * 0.6,
+                size: 1.0 + Math.random() * 2.0,
+                alpha: 0.2 + Math.random() * 0.6,
+                isLeft: isLeft
             });
         }
     }
 
     // -------------------------------------------------------------
-    // 2. CHAP OBYEKT: KVANT GIROSKOPI GEOMETRIYASI
-    // -------------------------------------------------------------
-    function buildLeftGyroSphere() {
-        const points = [];
-        const count = 90;
-        const phi = Math.PI * (3 - Math.sqrt(5));
-        const radius = 105;
-
-        for (let i = 0; i < count; i++) {
-            const y = 1 - (i / (count - 1)) * 2;
-            const radiusAtY = Math.sqrt(1 - y * y);
-            const theta = phi * i;
-            points.push({
-                baseX: Math.cos(theta) * radiusAtY * radius,
-                baseY: y * radius,
-                baseZ: Math.sin(theta) * radiusAtY * radius,
-                pulseOffset: theta + y * 2
-            });
-        }
-        return points;
-    }
-
-    function buildLeftGimbalRings() {
-        const rings = [];
-        const segs = 48;
-
-        // 1-Ring (X-Z Gorizontal)
-        const ring1 = [];
-        for (let i = 0; i < segs; i++) {
-            const a = (i / segs) * Math.PI * 2;
-            ring1.push({ x: Math.cos(a) * 145, y: 0, z: Math.sin(a) * 145 });
-        }
-        rings.push({ points: ring1, rotAxis: 'y', speed: 0.012, tilt: 0.3 });
-
-        // 2-Ring (Y-Z Vertikal)
-        const ring2 = [];
-        for (let i = 0; i < segs; i++) {
-            const a = (i / segs) * Math.PI * 2;
-            ring2.push({ x: 0, y: Math.cos(a) * 162, z: Math.sin(a) * 162 });
-        }
-        rings.push({ points: ring2, rotAxis: 'x', speed: -0.014, tilt: -0.4 });
-
-        // 3-Ring (Diagonal Y-X)
-        const ring3 = [];
-        for (let i = 0; i < segs; i++) {
-            const a = (i / segs) * Math.PI * 2;
-            ring3.push({ x: Math.cos(a) * 175, y: Math.sin(a) * 175, z: 0 });
-        }
-        rings.push({ points: ring3, rotAxis: 'z', speed: 0.009, tilt: 0.65 });
-
-        return rings;
-    }
-
-    const leftSpherePoints = buildLeftGyroSphere();
-    const leftGimbalRings = buildLeftGimbalRings();
-
-    // -------------------------------------------------------------
-    // 3. O'NG OBYEKT: KIBER TORUS TUGUNI (TREFOIL KNOT & PLAZMA)
-    // -------------------------------------------------------------
-    function buildRightTorusKnot() {
-        const points = [];
-        const total = 110;
-        const scale = 28;
-
-        for (let i = 0; i < total; i++) {
-            const phi = (i / total) * Math.PI * 2 * 3;
-            const r = 2.4 + Math.cos(3 * phi) * 0.9;
-            const x = r * Math.cos(2 * phi) * scale;
-            const y = r * Math.sin(2 * phi) * scale;
-            const z = -Math.sin(3 * phi) * scale * 1.5;
-
-            points.push({
-                baseX: x,
-                baseY: y,
-                baseZ: z,
-                pulseOffset: phi
-            });
-        }
-        return points;
-    }
-
-    function buildRightSatellites() {
-        const sats = [];
-        for (let i = 0; i < 16; i++) {
-            const angle = (i / 16) * Math.PI * 2;
-            sats.push({
-                baseRadius: 135 + (i % 3) * 15,
-                angle: angle,
-                speed: 0.016 + (i % 4) * 0.006,
-                tilt: (i % 2 === 0 ? 0.45 : -0.55),
-                size: 2.2 + Math.random() * 1.8
-            });
-        }
-        return sats;
-    }
-
-    const rightKnotPoints = buildRightTorusKnot();
-    const rightSatellites = buildRightSatellites();
-
-    // -------------------------------------------------------------
-    // 4. 3D BURISH VA PROYEKTSIYA MATRITSALARI
-    // -------------------------------------------------------------
-    function rotate3D(x, y, z, angleX, angleY, angleZ) {
-        const cosY = Math.cos(angleY), sinY = Math.sin(angleY);
-        let x1 = x * cosY + z * sinY;
-        let z1 = -x * sinY + z * cosY;
-
-        const cosX = Math.cos(angleX), sinX = Math.sin(angleX);
-        let y2 = y * cosX - z1 * sinX;
-        let z2 = y * sinX + z1 * cosX;
-
-        if (angleZ) {
-            const cosZ = Math.cos(angleZ), sinZ = Math.sin(angleZ);
-            let x3 = x1 * cosZ - y2 * sinZ;
-            let y3 = x1 * sinZ + y2 * cosZ;
-            return { x: x3, y: y3, z: z2 };
-        }
-        return { x: x1, y: y2, z: z2 };
-    }
-
-    function project3D(p, cx, cy, fov, scaleMultiplier) {
-        const distance = 540;
-        const zEffective = p.z + distance;
-        if (zEffective <= 10) return null;
-        const scale = (distance / zEffective) * scaleMultiplier;
-        return {
-            x: cx + p.x * scale,
-            y: cy + p.y * scale,
-            scale: scale,
-            z: p.z
-        };
-    }
-
-    // -------------------------------------------------------------
-    // 5. ASOSIY RENDERLASH SIKLI (60-120 FPS RAF)
+    // 2. 3D TO'LQIN FIZIKASI VA RENDERLASH
     // -------------------------------------------------------------
     function render(timestamp) {
         if (!isVisible || !ctx) {
@@ -231,321 +138,173 @@
 
         const t = (timestamp || performance.now()) * 0.001;
 
-        // Kursorni LERP bilan silliq kuzatish
-        mouse.normX += (mouse.targetNormX - mouse.normX) * 0.06;
-        mouse.normY += (mouse.targetNormY - mouse.normY) * 0.06;
+        // Kursorni LERP bilan tekislash
+        mouse.normX += (mouse.targetNormX - mouse.normX) * 0.08;
+        mouse.normY += (mouse.targetNormY - mouse.normY) * 0.08;
 
-        // Drag & Throw inersiyasi
-        mouse.dragRotX += mouse.velX;
-        mouse.dragRotY += mouse.velY;
-        mouse.velX *= 0.94;
-        mouse.velY *= 0.94;
-
-        autoRotY += 0.005;
-
-        // Shockwave zarbasi
-        if (shockwave > 0.001) {
-            shockwave += shockwaveVel;
-            shockwaveVel *= 0.92;
-            if (shockwave > 45) shockwaveVel = -shockwaveVel * 0.65;
-            if (shockwave < 0) shockwave = 0;
+        // Shockwave to'lqini
+        if (mouse.shockwave > 0.001) {
+            mouse.shockwave += mouse.shockwaveVel;
+            mouse.shockwaveVel *= 0.91;
+            if (mouse.shockwave > 60) mouse.shockwaveVel = -mouse.shockwaveVel * 0.6;
+            if (mouse.shockwave < 0) mouse.shockwave = 0;
         }
 
         ctx.clearRect(0, 0, width, height);
 
-        // Keng ekranda o'lchamlarni hisoblash
-        const containerWidth = 1100;
-        const sideGutter = Math.max(0, (width - containerWidth) / 2);
-
-        // Katta monitorlarda (1440px - 1920px+) to'liq yonboshda turadi
-        let cxLeft, cxRight, cy, scaleFactor;
-
-        if (width >= 1380) {
-            cxLeft = Math.max(130, sideGutter * 0.52);
-            cxRight = width - cxLeft;
-            scaleFactor = 1.0;
-        } else if (width >= 1180) {
-            cxLeft = Math.max(90, sideGutter * 0.46);
-            cxRight = width - cxLeft;
-            scaleFactor = 0.82;
-        } else if (width >= 960) {
-            cxLeft = 70;
-            cxRight = width - 70;
-            scaleFactor = 0.65;
-        } else {
-            // Kichik ekranlarda (planshet/smartfon) matnlarga xalaqit bermaslik uchun
-            // markazda yengil fon rejimiga o'tadi
-            cxLeft = -9999;
-            cxRight = -9999;
-            scaleFactor = 0.5;
-        }
-
-        cy = Math.min(height * 0.40, 310) - scrollOffset * 0.2;
-        const fov = 500;
-
-        // Kichik ekranda faqat bitta markaziy ambient fon
-        if (width < 960) {
-            const cxCenter = width / 2;
-            renderLeftGuardian(cxCenter, cy, fov, 0.75, t);
+        // Kichik ekranda to'lqinlarni o'chirish (matnlarga xalal bermaslik uchun)
+        if (width < 980) {
             animationId = requestAnimationFrame(render);
             return;
         }
 
-        // 1. Fon bo'ylab suzuvchi kosmik zarrachalar (Ambient Dust)
-        ctx.globalAlpha = 0.35;
-        for (let i = 0; i < dustParticles.length; i++) {
-            const dp = dustParticles[i];
-            dp.x += dp.speedX;
-            dp.y += dp.speedY;
+        // 1. Orqa fondagi Vertikal Kiber-Aurora Nurlanishi (Neon Pillar Glow)
+        const containerWidth = 1100;
+        const sideGutter = Math.max(120, (width - containerWidth) / 2);
+        const leftCenter = Math.max(90, sideGutter * 0.48);
+        const rightCenter = width - leftCenter;
 
-            if (dp.x < -width / 2) dp.x = width / 2;
-            if (dp.x > width / 2) dp.x = -width / 2;
-            if (dp.y < -height / 2) dp.y = height / 2;
-            if (dp.y > height / 2) dp.y = -height / 2;
+        drawVerticalAura(leftCenter, themeColors.leftGlow);
+        drawVerticalAura(rightCenter, themeColors.rightGlow);
 
-            const rot = rotate3D(dp.x, dp.y, dp.z, mouse.normY * 0.2, mouse.normX * 0.2, 0);
-            const pr = project3D(rot, width / 2, cy + 80, fov, 1.0);
-            if (!pr) continue;
+        // 2. Chap To'lqinni hisoblash va chizish
+        updateAndDrawStream(leftStreamNodes, t, true);
 
-            ctx.fillStyle = dp.colorType === 0 ? themeColors.leftPrimary : themeColors.rightPrimary;
-            ctx.beginPath();
-            ctx.arc(pr.x, pr.y, dp.baseSize * pr.scale, 0, Math.PI * 2);
-            ctx.fill();
-        }
-        ctx.globalAlpha = 1.0;
+        // 3. O'ng To'lqinni hisoblash va chizish
+        updateAndDrawStream(rightStreamNodes, t, false);
 
-        // 2. CHAP QANOT: KVANT GIROSKOPI
-        renderLeftGuardian(cxLeft, cy, fov, scaleFactor, t);
-
-        // 3. O'NG QANOT: KIBER TORUS TUGUNI
-        renderRightGuardian(cxRight, cy, fov, scaleFactor, t);
+        // 4. Yuqoriga oquvchi kiber uchqunlar (Floating Sparks)
+        drawAmbientSparks(t);
 
         animationId = requestAnimationFrame(render);
     }
 
-    // -------------------------------------------------------------
-    // CHAP QANOT (KVANT GIROSKOP) RENDERING
-    // -------------------------------------------------------------
-    function renderLeftGuardian(cx, cy, fov, scaleFactor, t) {
-        // Mahalliy kursorni hisoblash (chap markazga nisbatan burchak)
-        const localNormX = ((mouse.x - cx) / (width * 0.5));
-        const rotY = autoRotY + localNormX * 0.85 + mouse.dragRotX;
-        const rotX = -mouse.normY * 0.65 + mouse.dragRotY;
-
-        // Markaziy Kiber Aura
-        const auraGrad = ctx.createRadialGradient(cx, cy, 20, cx, cy, 190 * scaleFactor);
-        auraGrad.addColorStop(0, themeColors.coreGlowLeft);
-        auraGrad.addColorStop(0.6, 'rgba(56, 189, 248, 0.04)');
-        auraGrad.addColorStop(1, 'transparent');
-        ctx.fillStyle = auraGrad;
+    // Vertikal Nur Ustuni (Aurora Beam)
+    function drawVerticalAura(centerX, colorPrefix) {
+        const grad = ctx.createRadialGradient(centerX, height * 0.4, 20, centerX, height * 0.4, 180);
+        grad.addColorStop(0, colorPrefix + '0.14)');
+        grad.addColorStop(0.6, colorPrefix + '0.03)');
+        grad.addColorStop(1, 'transparent');
+        ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(cx, cy, 190 * scaleFactor, 0, Math.PI * 2);
+        ctx.arc(centerX, height * 0.4, 180, 0, Math.PI * 2);
         ctx.fill();
+    }
 
-        // Giroskop Halqalari (Gimbal Rings)
-        leftGimbalRings.forEach(gRing => {
-            const ringAngle = t * gRing.speed * 40;
-            ctx.strokeStyle = themeColors.leftPrimary;
-            ctx.lineWidth = 1.3 * scaleFactor;
-            ctx.globalAlpha = 0.42;
-            ctx.beginPath();
+    // To'lqin Zanjirini Yangilash va Chizish
+    function updateAndDrawStream(nodes, t, isLeft) {
+        const colorPrefix = isLeft ? themeColors.leftGlow : themeColors.rightGlow;
+        const maxMagnetDist = 240;
+        const maxDistSq = maxMagnetDist * maxMagnetDist;
 
-            let first = true;
-            for (let i = 0; i < gRing.points.length; i++) {
-                const rp = gRing.points[i];
-                let rx = rp.x, ry = rp.y, rz = rp.z;
+        // Har bir tugun fizikasini hisoblash
+        for (let i = 0; i < nodes.length; i++) {
+            const p = nodes[i];
 
-                if (gRing.rotAxis === 'y') {
-                    const c = Math.cos(ringAngle), s = Math.sin(ringAngle);
-                    const tx = rx * c + rz * s;
-                    rz = -rx * s + rz * c;
-                    rx = tx;
-                } else if (gRing.rotAxis === 'x') {
-                    const c = Math.cos(ringAngle), s = Math.sin(ringAngle);
-                    const ty = ry * c - rz * s;
-                    rz = ry * s + rz * c;
-                    ry = ty;
-                }
+            // Garmonik 3D to'lqin harakati (Harmonic Silk Wave)
+            const waveX = Math.sin(t * 1.6 + p.phase) * 28 + Math.cos(t * 0.9 + p.baseY * 0.005) * 16;
+            const waveY = Math.sin(t * 1.2 + p.baseX * 0.01) * 12;
 
-                const rot = rotate3D(rx, ry, rz, rotX + gRing.tilt, rotY + ringAngle * 0.2, 0);
-                const pr = project3D(rot, cx, cy, fov, scaleFactor);
-                if (!pr) continue;
+            // Skroll bo'yicha siljish
+            const targetY = p.baseY + waveY - (scrollOffset % 38);
+            let targetX = p.baseX + waveX;
 
-                if (first) {
-                    ctx.moveTo(pr.x, pr.y);
-                    first = false;
-                } else {
-                    ctx.lineTo(pr.x, pr.y);
-                }
+            // Sichqonchaga nisbatan magnit tortilishi
+            const dx = mouse.x - p.currentX;
+            const dy = mouse.y - p.currentY;
+            const distSq = dx * dx + dy * dy;
+
+            if (distSq < maxDistSq) {
+                const dist = Math.sqrt(distSq);
+                const magnetFactor = (1 - dist / maxMagnetDist);
+                // Sichqoncha tomon mayin egilish
+                p.vx += (dx / dist) * magnetFactor * 2.8;
+                p.vy += (dy / dist) * magnetFactor * 1.8;
             }
-            ctx.closePath();
-            ctx.stroke();
-        });
 
-        // Sfera Nuqtalari & To'rlari (Constellation Mesh)
-        const projPoints = [];
-        for (let i = 0; i < leftSpherePoints.length; i++) {
-            const pt = leftSpherePoints[i];
-            const pulse = Math.sin(t * 2.2 + pt.pulseOffset) * 4;
-            const shock = shockwave ? (Math.sin(pt.pulseOffset * 4) * shockwave) : 0;
-            const rScale = 1 + (pulse + shock) * 0.012;
+            // Shockwave impulsi
+            if (mouse.shockwave > 0.001) {
+                const shockDx = p.currentX - (isLeft ? p.baseX : p.baseX);
+                p.vx += (isLeft ? -1 : 1) * Math.sin(p.phase * 3) * mouse.shockwave * 0.25;
+            }
 
-            const rot = rotate3D(pt.baseX * rScale, pt.baseY * rScale, pt.baseZ * rScale, rotX, rotY, t * 0.04);
-            const pr = project3D(rot, cx, cy, fov, scaleFactor);
-            if (!pr) continue;
+            // Prujina qaytishi (Spring Return Physics)
+            p.vx += (targetX - p.currentX) * 0.07;
+            p.vy += (targetY - p.currentY) * 0.07;
 
-            projPoints.push({
-                x: pr.x, y: pr.y, z: pr.z,
-                scale: pr.scale,
-                alpha: Math.max(0.2, Math.min(1.0, (pr.scale - 0.4) * 1.6))
-            });
+            // Damping (Ishqalanish)
+            p.vx *= 0.86;
+            p.vy *= 0.86;
+
+            p.currentX += p.vx;
+            p.currentY += p.vy;
         }
 
-        projPoints.sort((a, b) => a.z - b.z);
+        // Tugunlarni o'zaro chiziqlar bilan bog'lash (Neural Mesh Connections)
+        const connectionDist = 65;
+        const connDistSq = connectionDist * connectionDist;
+        ctx.lineWidth = 1.0;
 
-        // Chiziqlar bilan bog'lash
-        ctx.lineWidth = 0.9 * scaleFactor;
-        const maxDist = 42 * scaleFactor;
-
-        for (let i = 0; i < projPoints.length; i += 2) {
-            const p1 = projPoints[i];
-            if (p1.z > 70) continue;
-
-            for (let j = i + 1; j < Math.min(i + 7, projPoints.length); j++) {
-                const p2 = projPoints[j];
-                const dx = p1.x - p2.x;
-                const dy = p1.y - p2.y;
+        for (let i = 0; i < nodes.length; i++) {
+            const p1 = nodes[i];
+            for (let j = i + 1; j < Math.min(i + 8, nodes.length); j++) {
+                const p2 = nodes[j];
+                const dx = p1.currentX - p2.currentX;
+                const dy = p1.currentY - p2.currentY;
                 const distSq = dx * dx + dy * dy;
 
-                if (distSq < maxDist * maxDist) {
-                    const lineAlpha = (1 - Math.sqrt(distSq) / maxDist) * themeColors.lineAlpha * Math.min(p1.alpha, p2.alpha);
-                    ctx.strokeStyle = `rgba(56, 189, 248, ${lineAlpha.toFixed(3)})`;
+                if (distSq < connDistSq) {
+                    const dist = Math.sqrt(distSq);
+                    const alpha = (1 - dist / connectionDist) * 0.38;
+                    ctx.strokeStyle = colorPrefix + alpha.toFixed(3) + ')';
                     ctx.beginPath();
-                    ctx.moveTo(p1.x, p1.y);
-                    ctx.lineTo(p2.x, p2.y);
+                    ctx.moveTo(p1.currentX, p1.currentY);
+                    ctx.lineTo(p2.currentX, p2.currentY);
                     ctx.stroke();
                 }
             }
         }
 
-        // Tugunlar (Vertices)
-        for (let i = 0; i < projPoints.length; i++) {
-            const p = projPoints[i];
-            const size = Math.max(1.3, 2.3 * p.scale * scaleFactor);
+        // Tugunlarni chizish (Glowing Nodes)
+        for (let i = 0; i < nodes.length; i++) {
+            const p = nodes[i];
+            const pulse = 1 + Math.sin(t * 3 + p.phase) * 0.25;
 
-            ctx.fillStyle = p.z > 0 ? themeColors.leftPrimary : themeColors.leftSecondary;
-            ctx.globalAlpha = p.alpha;
+            // Tugun atrofidagi mikroskopik nurlanish
+            ctx.fillStyle = colorPrefix + '0.65)';
             ctx.beginPath();
-            ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            ctx.arc(p.currentX, p.currentY, p.size * pulse, 0, Math.PI * 2);
             ctx.fill();
 
-            if (p.z < -25) {
-                ctx.fillStyle = '#ffffff';
-                ctx.globalAlpha = p.alpha * 0.85;
-                ctx.beginPath();
-                ctx.arc(p.x - size * 0.25, p.y - size * 0.25, size * 0.45, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            // Oq nur markazi
+            ctx.fillStyle = themeColors.nodeLight;
+            ctx.beginPath();
+            ctx.arc(p.currentX, p.currentY, p.size * 0.45, 0, Math.PI * 2);
+            ctx.fill();
         }
-        ctx.globalAlpha = 1.0;
+    }
+
+    // Suzuvchi Kiber Uchqunlar (Floating Sparks)
+    function drawAmbientSparks(t) {
+        for (let i = 0; i < ambientSparks.length; i++) {
+            const sp = ambientSparks[i];
+            sp.y += sp.vy;
+            sp.x += sp.vx + Math.sin(t + sp.y * 0.01) * 0.3;
+
+            if (sp.y < -10) {
+                sp.y = height + 10;
+            }
+
+            const colorPrefix = sp.isLeft ? themeColors.leftGlow : themeColors.rightGlow;
+            ctx.fillStyle = colorPrefix + sp.alpha.toFixed(2) + ')';
+            ctx.beginPath();
+            ctx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
     }
 
     // -------------------------------------------------------------
-    // O'NG QANOT (KIBER TORUS TUGUNI) RENDERING
-    // -------------------------------------------------------------
-    function renderRightGuardian(cx, cy, fov, scaleFactor, t) {
-        // Mahalliy kursorni hisoblash (o'ng markazga nisbatan burchak)
-        const localNormX = ((mouse.x - cx) / (width * 0.5));
-        const rotY = -autoRotY * 1.1 + localNormX * 0.85 + mouse.dragRotX;
-        const rotX = -mouse.normY * 0.65 + mouse.dragRotY;
-
-        // O'ng Aura
-        const auraGrad = ctx.createRadialGradient(cx, cy, 20, cx, cy, 190 * scaleFactor);
-        auraGrad.addColorStop(0, themeColors.coreGlowRight);
-        auraGrad.addColorStop(0.6, 'rgba(129, 140, 248, 0.04)');
-        auraGrad.addColorStop(1, 'transparent');
-        ctx.fillStyle = auraGrad;
-        ctx.beginPath();
-        ctx.arc(cx, cy, 190 * scaleFactor, 0, Math.PI * 2);
-        ctx.fill();
-
-        // 1. Torus Tuguni Nuqtalari
-        const knotProj = [];
-        for (let i = 0; i < rightKnotPoints.length; i++) {
-            const pt = rightKnotPoints[i];
-            const pulse = Math.sin(t * 2.8 + pt.pulseOffset) * 4;
-            const shock = shockwave ? (Math.sin(pt.pulseOffset * 4) * shockwave) : 0;
-            const rScale = 1 + (pulse + shock) * 0.014;
-
-            const rot = rotate3D(pt.baseX * rScale, pt.baseY * rScale, pt.baseZ * rScale, rotX, rotY, t * 0.06);
-            const pr = project3D(rot, cx, cy, fov, scaleFactor);
-            if (!pr) continue;
-
-            knotProj.push({
-                x: pr.x, y: pr.y, z: pr.z,
-                scale: pr.scale,
-                alpha: Math.max(0.2, Math.min(1.0, (pr.scale - 0.4) * 1.6))
-            });
-        }
-
-        // Torus lentasini chizish (Continuous Ribbon)
-        if (knotProj.length > 2) {
-            ctx.strokeStyle = themeColors.rightPrimary;
-            ctx.lineWidth = 1.6 * scaleFactor;
-            ctx.globalAlpha = 0.55;
-            ctx.beginPath();
-            ctx.moveTo(knotProj[0].x, knotProj[0].y);
-            for (let i = 1; i < knotProj.length; i++) {
-                ctx.lineTo(knotProj[i].x, knotProj[i].y);
-            }
-            ctx.closePath();
-            ctx.stroke();
-        }
-
-        // Tugunlar
-        for (let i = 0; i < knotProj.length; i++) {
-            const p = knotProj[i];
-            const size = Math.max(1.4, 2.5 * p.scale * scaleFactor);
-
-            ctx.fillStyle = p.z > 0 ? themeColors.rightPrimary : themeColors.rightSecondary;
-            ctx.globalAlpha = p.alpha;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        // 2. Plazma Sun'iy Yo'ldoshlari (Orbiting Satellites)
-        for (let i = 0; i < rightSatellites.length; i++) {
-            const sat = rightSatellites[i];
-            sat.angle += sat.speed;
-
-            const sx = Math.cos(sat.angle) * sat.baseRadius;
-            const sy = Math.sin(sat.angle * 0.8) * (sat.baseRadius * 0.45);
-            const sz = Math.sin(sat.angle) * sat.baseRadius;
-
-            const rot = rotate3D(sx, sy, sz, rotX + sat.tilt, rotY + sat.angle * 0.15, 0);
-            const pr = project3D(rot, cx, cy, fov, scaleFactor);
-            if (!pr) continue;
-
-            ctx.fillStyle = '#ffffff';
-            ctx.globalAlpha = Math.max(0.3, Math.min(1.0, (pr.scale - 0.4) * 1.8));
-            ctx.beginPath();
-            ctx.arc(pr.x, pr.y, sat.size * pr.scale * scaleFactor, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Kichik porlash
-            ctx.fillStyle = themeColors.rightSecondary;
-            ctx.globalAlpha = 0.4;
-            ctx.beginPath();
-            ctx.arc(pr.x, pr.y, sat.size * 2.2 * pr.scale * scaleFactor, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        ctx.globalAlpha = 1.0;
-    }
-
-    // -------------------------------------------------------------
-    // 6. GLOBAL 3D CARD TILT (BUTUN SAYT KARTALARI UCHUN)
+    // 3. GLOBAL 3D CARD TILT (BUTUN SAYT KARTALARI UCHUN)
     // -------------------------------------------------------------
     function initGlobalCard3DTilt() {
         const targets = document.querySelectorAll('.post-card, .atelier-quote-card, .project-card, .curr-topic-card');
@@ -586,22 +345,13 @@
     }
 
     // -------------------------------------------------------------
-    // 7. EVENT LISTENERS
+    // 4. EVENT LISTENERS
     // -------------------------------------------------------------
     function handleMouseMove(e) {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
         mouse.targetNormX = (e.clientX / window.innerWidth) * 2 - 1;
         mouse.targetNormY = (e.clientY / window.innerHeight) * 2 - 1;
-
-        if (mouse.isDown) {
-            const dx = e.clientX - mouse.dragStartX;
-            const dy = e.clientY - mouse.dragStartY;
-            mouse.velX = dx * 0.005;
-            mouse.velY = -dy * 0.005;
-            mouse.dragStartX = e.clientX;
-            mouse.dragStartY = e.clientY;
-        }
     }
 
     function handleMouseDown(e) {
@@ -609,8 +359,6 @@
             return;
         }
         mouse.isDown = true;
-        mouse.dragStartX = e.clientX;
-        mouse.dragStartY = e.clientY;
     }
 
     function handleMouseUp() {
@@ -619,8 +367,8 @@
 
     function handleClick(e) {
         if (e.target.closest('button, a, input, textarea, select, [data-action]')) return;
-        shockwave = 15;
-        shockwaveVel = 4.0;
+        mouse.shockwave = 18;
+        mouse.shockwaveVel = 4.5;
         if (navigator.vibrate) {
             try { navigator.vibrate(15); } catch (_) {}
         }
@@ -642,10 +390,12 @@
         if (ctx) {
             ctx.scale(dpr, dpr);
         }
+
+        initStreamNodes();
     }
 
     // -------------------------------------------------------------
-    // 8. INITIALIZATION
+    // 5. INITIALIZATION
     // -------------------------------------------------------------
     function init() {
         canvas = document.getElementById('spatial-3d-canvas');
@@ -655,7 +405,6 @@
         if (!ctx) return;
 
         updateTheme();
-        initDustParticles();
         handleResize();
 
         window.addEventListener('mousemove', handleMouseMove, { passive: true });
