@@ -63,8 +63,8 @@ async function initKay() {
     // 2. Foydalanuvchi ma'lumotlaridan adminlikni tekshirish
     try {
         const u = JSON.parse(localStorage.getItem('abdu_user_data') || localStorage.getItem('kay_auth_user') || 'null');
-        const adminNames = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
-        if (u && (u.role === 'admin' || (u.username && adminNames.includes(u.username.toLowerCase())))) {
+        const adminNames = ['abdugofforov', 'admin'];
+        if (u && (u.role === 'admin' || (u.role !== 'student' && u.username && adminNames.includes(u.username.toLowerCase())))) {
             sessionStorage.setItem('kay_admin', 'true');
             if (u.token && !sessionStorage.getItem('kay_admin_token')) {
                 sessionStorage.setItem('kay_admin_token', u.token);
@@ -688,8 +688,10 @@ function renderStudentsList(filterQuery = '') {
         );
     }
 
-    const adminNames = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
-    const adminCount = users.filter(u => u.role === 'admin' || (u.username && adminNames.includes(u.username.toLowerCase()))).length;
+    const isMasterAdmin = (username) => ['abdugofforov', 'admin'].includes(String(username || '').toLowerCase());
+    const isUserAdminRole = (u) => u.role === 'admin' || (u.role !== 'student' && isMasterAdmin(u.username));
+
+    const adminCount = users.filter(isUserAdminRole).length;
     const adminCountEl = document.getElementById('admins-count');
     if (adminCountEl) adminCountEl.textContent = adminCount;
 
@@ -720,7 +722,7 @@ function renderStudentsList(filterQuery = '') {
         <tbody>
             ${users.map(u => {
                 const d = u.createdAt ? new Date(u.createdAt).toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
-                const isAdmin = u.role === 'admin' || (u.username && adminNames.includes(u.username.toLowerCase()));
+                const isAdmin = isUserAdminRole(u);
                 const initial = (u.name || u.username || 'U').charAt(0).toUpperCase();
 
                 return `
@@ -842,29 +844,33 @@ function renderResultsTable(filterQuery = '') {
 async function toggleUserRole(username, currentRole) {
     if (!username) return;
     const newRole = currentRole === 'admin' ? 'student' : 'admin';
-    if (!confirm(`@${username} foydalanuvchisi rolini "${newRole === 'admin' ? 'Admin' : 'O\'quvchi'}" ga o'zgartirishni tasdiqlaysizmi?`)) return;
+    const actionLabel = newRole === 'admin' ? 'Administrator (Admin) huquqini berish' : 'Admin huquqini bekor qilib O\'quvchi qilish';
+    if (!confirm(`@${username} foydalanuvchisiga "${actionLabel}"ni tasdiqlaysizmi?`)) return;
 
     try {
+        const payload = { username, role: newRole };
         const res = await safeAdminFetch(
             `/api/admin/users/${encodeURIComponent(username)}/role`,
             `/admin/users/${encodeURIComponent(username)}/role`,
             {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, role: newRole })
+                body: JSON.stringify(payload)
             }
         );
         const data = res ? await res.json().catch(() => ({})) : null;
-        if (data && data.ok) {
-            showToast(`@${username} roli "${newRole}" ga o'zgartirildi! ✅`, 'success');
+        if (res && res.ok && data && data.ok) {
+            showToast(`@${username} roli "${newRole === 'admin' ? 'Admin' : 'O\'quvchi'}" ga o'zgartirildi! ✅`, 'success');
+            const u = cachedUsers.find(item => (item.username || '').toLowerCase() === username.toLowerCase());
+            if (u) u.role = newRole;
+            renderStudentsList();
+            renderRealDataMetrics();
+            addLog('info', `@${username} roli yangilandi: ${newRole}`);
+            try { await loadUsers('', true); } catch (_) {}
         } else {
-            showToast((data && data.error) || 'Rolni o\'zgartirib bo\'lmadi', 'error');
+            const msg = (data && (data.error || data.message)) || 'Rolni o\'zgartirib bo\'lmadi';
+            showToast(msg, 'error');
         }
-        const u = cachedUsers.find(item => (item.username || '').toLowerCase() === username.toLowerCase());
-        if (u) u.role = newRole;
-        renderStudentsList();
-        renderRealDataMetrics();
-        addLog('info', `@${username} roli yangilandi: ${newRole}`);
     } catch (e) {
         console.error('Toggle role error:', e);
         showToast('Rolni o\'zgartirishda xatolik yuz berdi', 'error');
@@ -1995,32 +2001,26 @@ async function handleCreateUser(e) {
     }
 
     try {
-        await fetch('/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, username, password, role })
-        }).catch(() => null);
-
-        const newUser = {
-            id: 'user_' + Date.now(),
-            name,
-            username: username.toLowerCase().replace(/[^a-z0-9_]/g, ''),
-            role,
-            createdAt: new Date().toISOString()
-        };
-
-        const existingIdx = cachedUsers.findIndex(u => (u.username || '').toLowerCase() === newUser.username);
-        if (existingIdx >= 0) {
-            cachedUsers[existingIdx] = newUser;
+        const payload = { name, username, password, role };
+        const res = await safeAdminFetch(
+            '/api/admin/users',
+            '/admin/users',
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }
+        );
+        const data = res ? await res.json().catch(() => ({})) : null;
+        if (res && res.ok && data && data.ok) {
+            showToast(`Foydalanuvchi @${username} muvaffaqiyatli qo'shildi! (${role === 'admin' ? 'Admin' : 'O\'quvchi'}) ✅`, 'success');
+            addLog('info', `Yangi foydalanuvchi yaratildi: @${username} (${role})`);
+            document.getElementById('user-create-form')?.reset();
+            await loadUsers('', true);
         } else {
-            cachedUsers.unshift(newUser);
+            const errMsg = (data && (data.error || data.message)) || 'Foydalanuvchini yaratib bo\'lmadi';
+            showToast(errMsg, 'error');
         }
-
-        renderStudentsList();
-        renderRealDataMetrics();
-        addLog('info', `Yangi foydalanuvchi yaratildi: @${newUser.username}`);
-        showToast(`Foydalanuvchi @${newUser.username} muvaffaqiyatli qo'shildi! ✅`, 'success');
-        document.getElementById('user-create-form')?.reset();
     } catch (err) {
         console.error('User create error:', err);
         showToast('Foydalanuvchi yaratishda xato: ' + err.message, 'error');

@@ -41,7 +41,7 @@ router.post('/check-pin', (req, res) => {
     }
 
     const tokenGenerated = crypto.randomBytes(32).toString('hex');
-    let adminUser = db.findOne('users', u => u.username && ['abdugofforov', 'admin', 'akrin4477', 'akrin'].includes(u.username.toLowerCase())) ||
+    let adminUser = db.findOne('users', u => u.username && ['abdugofforov', 'admin'].includes(u.username.toLowerCase())) ||
                     db.findOne('users', u => u.role === 'admin');
     if (adminUser) {
         db.update('users', adminUser.id, { token: tokenGenerated, tokenCreatedAt: Date.now(), lastLoginAt: Date.now() });

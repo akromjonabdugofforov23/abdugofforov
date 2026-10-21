@@ -156,7 +156,7 @@ router.post('/verify-code', (req, res) => {
     twoFactorSessions.delete(cleanSessionId);
 
     const token = crypto.randomBytes(32).toString('hex');
-    let adminUser = db.findOne('users', u => u.role === 'admin' || (u.username && ['abdugofforov', 'admin', 'akrin4477', 'akrin'].includes(u.username.toLowerCase())));
+    let adminUser = db.findOne('users', u => u.role === 'admin' || (u.username && ['abdugofforov', 'admin'].includes(u.username.toLowerCase())));
     if (adminUser) {
         db.update('users', adminUser.id, { token, tokenCreatedAt: Date.now(), lastLoginAt: Date.now() });
     }
@@ -576,13 +576,20 @@ router.put('/users/:id/role', (req, res) => {
         return res.status(400).json({ ok: false, error: "Noto'g'ri rol (faqat admin yoki student)" });
     }
 
-    const targetUser = db.findById('users', req.params.id) || db.findOne('users', u => u.username && u.username.toLowerCase() === String(req.params.id).toLowerCase());
+    const targetId = String(req.params.id || req.body?.username || req.body?.id || '').trim();
+    const targetUser = db.findById('users', targetId) || db.findOne('users', u => u.username && u.username.toLowerCase() === targetId.toLowerCase());
     if (!targetUser) {
         return res.status(404).json({ ok: false, error: "Foydalanuvchi topilmadi" });
     }
 
-    if (targetUser.id === req.user?.id && role !== 'admin') {
+    const isSelf = (targetUser.id && targetUser.id === req.user?.id) || 
+                   (targetUser.username && req.user?.username && targetUser.username.toLowerCase() === req.user.username.toLowerCase());
+    if (isSelf && role !== 'admin') {
         return res.status(400).json({ ok: false, error: "O'zingizning admin rolingizni o'chira olmaysiz" });
+    }
+
+    if (['abdugofforov', 'admin'].includes(targetUser.username?.toLowerCase()) && role !== 'admin') {
+        return res.status(400).json({ ok: false, error: "Bosh administrator rolining huquqini bekor qilib bo'lmaydi" });
     }
 
     const updated = db.update('users', targetUser.id, { role });

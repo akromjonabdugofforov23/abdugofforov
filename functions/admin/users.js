@@ -29,26 +29,46 @@ export async function onRequestOptions(context) {
 
 // Yordamchi: so'rovdan username ni ajratib olish
 function extractTargetUsername(context, body) {
-  const { request, params } = context;
-  if (params && params.path && params.path.length > 0) {
-    const raw = params.path[0];
-    if (raw && raw !== 'users' && raw !== 'role') return normUsername(raw);
-  }
-
-  try {
-    const url = new URL(request.url);
-    const m = url.pathname.match(/\/(?:api\/)?admin\/users\/([^/]+)/);
-    if (m && m[1] && m[1] !== 'users' && m[1] !== 'role') {
-      return normUsername(decodeURIComponent(m[1]));
-    }
-    const q = url.searchParams.get('username') || url.searchParams.get('id');
-    if (q) return normUsername(q);
-  } catch (_) {}
-
+  // 1. Agar body'da username ko'rsatilgan bo'lsa (eng ishonchli)
   if (body) {
     const b = body.username || body.id;
-    if (b) return normUsername(b);
+    if (b && typeof b === 'string' && b.trim()) return normUsername(b);
   }
+
+  // 2. Query parameter orqali
+  const { request, params } = context || {};
+  if (request) {
+    try {
+      const url = new URL(request.url);
+      const q = url.searchParams.get('username') || url.searchParams.get('id');
+      if (q) return normUsername(q);
+    } catch (_) {}
+  }
+
+  // 3. params.path (Cloudflare Pages Functions array yoki string)
+  if (params && params.path) {
+    let segment = '';
+    if (Array.isArray(params.path) && params.path.length > 0) {
+      segment = String(params.path[0]).trim();
+    } else if (typeof params.path === 'string') {
+      segment = params.path.split('/')[0].trim();
+    }
+    if (segment && segment !== 'users' && segment !== 'role') {
+      return normUsername(segment);
+    }
+  }
+
+  // 4. URL pathname regex
+  if (request) {
+    try {
+      const url = new URL(request.url);
+      const m = url.pathname.match(/\/(?:api\/)?admin\/users\/([^/]+)/);
+      if (m && m[1] && m[1] !== 'users' && m[1] !== 'role') {
+        return normUsername(decodeURIComponent(m[1]));
+      }
+    } catch (_) {}
+  }
+
   return '';
 }
 
@@ -177,6 +197,11 @@ export async function onRequestPut(context) {
   const sessionUsername = await getSessionUsername(env, request);
   if (sessionUsername && normUsername(user.username) === normUsername(sessionUsername) && role !== 'admin') {
     return jsonResponse({ ok: false, error: "O'zingizning admin rolingizni o'chira olmaysiz" }, 400, request, env);
+  }
+
+  // Tizim bosh administratorini (abdugofforov) o'chirib bo'lmaydi
+  if (['abdugofforov', 'admin'].includes(normUsername(user.username)) && role !== 'admin') {
+    return jsonResponse({ ok: false, error: "Bosh administrator rolining huquqini bekor qilib bo'lmaydi" }, 400, request, env);
   }
 
   user.role = role;

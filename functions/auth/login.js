@@ -74,8 +74,8 @@ export async function onRequestPost(context) {
     return jsonResponse({ ok: false, message: "Username yoki parol noto'g'ri" }, 401, request, env);
   }
 
-  // Admin ro'yxatidagi foydalanuvchi bo'lsa, rolni yangilaymiz
-  if (adminUsers.includes(username) && user.role !== 'admin') {
+  // Bosh admin hisobi bo'lsa, rolni kafolatlaymiz
+  if (['abdugofforov', 'admin'].includes(username) && user.role !== 'admin') {
     user.role = 'admin';
     await putUser(env, user);
   }

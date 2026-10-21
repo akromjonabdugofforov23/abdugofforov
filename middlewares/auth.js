@@ -130,7 +130,7 @@ function requireAdmin(req, res, next) {
     // 1. PIN tekshiruvi (x-admin-pin fallback sifatida)
     const adminPin = req.headers['x-admin-pin'] || req.headers['x-pin'];
     if (adminPin && checkAdminPin(adminPin)) {
-        let adminUser = db.findOne('users', u => u.role === 'admin' || (u.username && ['abdugofforov', 'admin', 'akrin4477', 'akrin'].includes(u.username.toLowerCase())));
+        let adminUser = db.findOne('users', u => u.role === 'admin' || (u.username && ['abdugofforov', 'admin'].includes(u.username.toLowerCase())));
         req.user = adminUser || { id: 'admin_pin', username: 'admin', role: 'admin', name: 'Administrator' };
         return next();
     }
@@ -146,9 +146,9 @@ function requireAdmin(req, res, next) {
     }
 
     authenticateUser(req, res, () => {
-        const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+        const adminUsers = ['abdugofforov', 'admin'];
         const isUsernameAdmin = req.user.username && adminUsers.includes(req.user.username.toLowerCase());
-        if (req.user.role === 'admin' || isUsernameAdmin) {
+        if (req.user.role === 'admin' || (req.user.role !== 'student' && isUsernameAdmin)) {
             return next();
         }
         return res.status(403).json({

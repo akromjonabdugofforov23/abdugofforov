@@ -92,8 +92,8 @@ function generateToken() {
 
 // Foydalanuvchini formatlash (role bilan, parolsiz)
 function formatUser(u) {
-    const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
-    const isAdmin = u.role === 'admin' || (u.username && adminUsers.includes(u.username.toLowerCase()));
+    const adminUsers = ['abdugofforov', 'admin'];
+    const isAdmin = u.role === 'admin' || (u.role !== 'student' && u.username && adminUsers.includes(u.username.toLowerCase()));
     return {
         id: u.id || u.username,
         name: u.name,
@@ -152,7 +152,7 @@ router.post('/register', (req, res) => {
         });
     }
 
-    const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+    const adminUsers = ['abdugofforov', 'admin'];
     const inputPin = String(adminPin || pin || '').trim();
     const isPinValid = inputPin ? checkAdminPin(inputPin) : false;
 
@@ -204,7 +204,7 @@ router.post('/login', (req, res) => {
         });
     }
 
-    const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+    const adminUsers = ['abdugofforov', 'admin'];
     let user = db.findOne('users', u => u.username && u.username.toLowerCase() === normUsername);
     const isAdminAccount = adminUsers.includes(normUsername) || (user && user.role === 'admin');
 
@@ -344,7 +344,7 @@ router.post('/profile', authenticateUser, (req, res) => {
             return res.status(400).json({ ok: false, message: "Parolni o'zgartirish uchun joriy parolni kiriting" });
         }
         const { valid } = verifyPassword(currentPassword, user);
-        const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+        const adminUsers = ['abdugofforov', 'admin'];
         const isAdmin = user.role === 'admin' || (user.username && adminUsers.includes(user.username.toLowerCase()));
         
         if (!valid) {
@@ -398,7 +398,7 @@ router.post('/change-password', authenticateUser, (req, res) => {
 
     const user = req.user;
     const { valid } = verifyPassword(oldPass, user);
-    const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+    const adminUsers = ['abdugofforov', 'admin'];
     const isAdmin = user.role === 'admin' || (user.username && adminUsers.includes(user.username.toLowerCase()));
 
     let isOldPassValid = valid;
@@ -439,7 +439,7 @@ function handleMagicGate(req, res) {
                       req.query.token || req.query.pin || req.query.key || req.query.secret || '';
     const clean = candidate != null ? String(candidate).trim() : '';
 
-    const adminUsers = ['abdugofforov', 'admin', 'akrin4477', 'akrin'];
+    const adminUsers = ['abdugofforov', 'admin'];
     let isValid = false;
 
     if (clean) {

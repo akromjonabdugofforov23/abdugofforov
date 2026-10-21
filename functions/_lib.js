@@ -336,13 +336,14 @@ export async function verifyAdminPin(env, pin) {
 // ---- Admin foydalanuvchilar ro'yxati va tekshiruvi ----
 export function getAdminUsernames(env) {
   const custom = env && env.ADMIN_USERNAMES ? String(env.ADMIN_USERNAMES).split(',') : [];
-  const list = ['abdugofforov', 'admin', 'akrin4477', 'akrin', ...custom.map(s => s.trim().toLowerCase())];
+  const list = ['abdugofforov', 'admin', ...custom.map(s => s.trim().toLowerCase())];
   return Array.from(new Set(list.filter(Boolean)));
 }
 
 export function isUserAdmin(user, env) {
   if (!user) return false;
   if (user.role === 'admin') return true;
+  if (user.role === 'student') return false;
   const adminUsers = getAdminUsernames(env);
   if (user.username && adminUsers.includes(String(user.username).toLowerCase())) return true;
   if (env && env.TELEGRAM_CHAT_ID && user.tgId && String(user.tgId) === String(env.TELEGRAM_CHAT_ID)) return true;
