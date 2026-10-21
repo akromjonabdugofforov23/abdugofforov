@@ -10,7 +10,9 @@ import {
   corsHeaders,
   isAdmin,
   rateLimit,
-  tooManyRequests
+  tooManyRequests,
+  escapeHtml,
+  getTelegramConfig
 } from './_lib.js';
 
 const KV_KEY = 'posts:list';
@@ -41,22 +43,26 @@ function extractPostId(context, body) {
   return '';
 }
 
-async function sendTelegramPost(env, post) {
-  if (!env || !env.TELEGRAM_BOT_TOKEN) return;
-  const chatId = env.TELEGRAM_CHANNEL_ID || env.TELEGRAM_ADMIN_CHAT_ID || env.TELEGRAM_CHAT_ID;
-  if (!chatId) return;
+async function sendTelegramPost(env, post, isUpdate = false) {
+  const cfg = await getTelegramConfig(env);
+  if (!cfg.botToken || !cfg.channelId) return;
 
-  const text = `📰 <b>Yangi Hikoya / Maqola!</b>\n\n` +
-               `✨ <b>${post.title}</b>\n\n` +
-               `${post.excerpt || (post.content ? post.content.slice(0, 180) : '')}...\n\n` +
-               `🔗 Saytda o'qish: <a href="https://abdugofforov.uz/#blog">abdugofforov.uz</a>`;
+  const title = escapeHtml(post.title || '');
+  const excerpt = escapeHtml(post.excerpt || (post.content ? post.content.slice(0, 180) : ''));
+  const tags = Array.isArray(post.tags) ? post.tags.map(t => `#${t.replace(/\s+/g, '_')}`).join(' ') : '';
+
+  const text = `${isUpdate ? '♻️' : '📰'} <b>${isUpdate ? "Maqola Yangilandi / O'zgarishlar!" : 'Yangi Hikoya / Maqola!'}</b>\n\n` +
+               `✨ <b>${title}</b>\n\n` +
+               `${excerpt}...\n\n` +
+               (tags ? `${tags}\n\n` : '') +
+               `🔗 Saytda to'liq o'qish: <a href="https://abdugofforov.uz/#blog">abdugofforov.uz</a>`;
 
   try {
-    await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    await fetch(`https://api.telegram.org/bot${cfg.botToken}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        chat_id: chatId,
+        chat_id: cfg.channelId,
         text,
         parse_mode: 'HTML',
         disable_web_page_preview: false
@@ -114,7 +120,8 @@ export async function onRequestPost(context) {
 
   try {
     const body = await request.json().catch(() => ({}));
-    const { id, title, content, excerpt, tags, published, slug, image, coverImage } = body;
+    const { id, title, content, excerpt, tags, category, published, slug, image, coverImage } = body;
+    const postCategory = category ? String(category).trim() : (Array.isArray(tags) && tags[0] ? String(tags[0]).trim() : 'Texnologiya');
     if (!title || !content) {
       return jsonResponse({ ok: false, error: "Sarlavha va kontent kiritilishi shart" }, 400, request, env);
     }
@@ -134,6 +141,7 @@ export async function onRequestPost(context) {
         image: postImage || posts[idx].image || '',
         published: published !== false,
         slug: slug ? String(slug).trim() : posts[idx].slug,
+        category: postCategory || posts[idx].category || 'Texnologiya',
         updatedAt: Date.now()
       };
       posts[idx] = updated;
@@ -142,7 +150,7 @@ export async function onRequestPost(context) {
 
       const shouldNotifyTg = body.telegram === true || body.sendTelegram === true || body.notifyTelegram === true;
       if (updated.published && shouldNotifyTg) {
-        await sendTelegramPost(env, updated);
+        await sendTelegramPost(env, updated, true);
       }
 
       return jsonResponse({ ok: true, post: updated, posts, message: "Post muvaffaqiyatli yangilandi" }, 200, request, env);
@@ -158,6 +166,7 @@ export async function onRequestPost(context) {
       image: postImage,
       published: published !== false,
       slug: slug ? String(slug).trim() : undefined,
+      category: postCategory,
       author: "Abdug'afforov",
       authorId: 'admin',
       views: 0,

@@ -61,10 +61,15 @@
             if (window.Auth && typeof window.Auth.getUser === 'function') {
                 const user = window.Auth.getUser();
                 if (user && update.testPassed && typeof window.Auth.submitResult === 'function') {
+                    const totalQ = update.total || 10;
+                    const finalScore = update.score !== undefined ? update.score : Math.round((update.pct || 100) * totalQ / 100);
                     window.Auth.submitResult({
-                        topicId,
-                        level: currentLevel,
-                        score: update.score || 100,
+                        testId: topicId,
+                        testTitle: `${update.level || currentLevel || 'A1'} - ${update.topicTitle || topicId}`,
+                        score: finalScore,
+                        total: totalQ,
+                        wrong: Math.max(0, totalQ - finalScore),
+                        pct: update.pct !== undefined ? update.pct : Math.round((finalScore / totalQ) * 100),
                         type: 'curriculum-quiz'
                     }).catch(() => {});
                 }
@@ -628,7 +633,7 @@
             if (currentQIdx >= questions.length) {
                 const percentage = Math.round((score / questions.length) * 100);
                 const passed = percentage >= 70;
-                saveTopicProgress(topic.id, { testPassed: passed, quiz: passed, score: percentage, completed: true });
+                saveTopicProgress(topic.id, { testPassed: passed, quiz: passed, score: score, total: questions.length, pct: percentage, topicTitle: topic.title, level: currentLevel || 'A1', completed: true });
 
                 container.innerHTML = `
                     <div style="text-align: center; max-width: 480px; margin: 30px auto; padding: 30px; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;">

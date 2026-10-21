@@ -387,3 +387,51 @@ export function publicUser(user, env) {
     createdAt: user.createdAt
   };
 }
+
+// Telegram chat / channel ID tozalash
+export function normalizeTelegramChatId(id) {
+  if (!id) return '';
+  let clean = String(id).trim();
+  clean = clean.replace(/^https?:\/\/t\.me\//i, '').replace(/^t\.me\//i, '');
+  clean = clean.replace(/\/+$/, '');
+  if (!clean) return '';
+  if (!/^-?\d+$/.test(clean) && !clean.startsWith('@')) {
+    clean = '@' + clean;
+  }
+  return clean;
+}
+
+// Telegram HTML parse_mode xavfsizligi uchun maxsus belgilarni almashtirish
+export function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// Cloudflare muhit va KV'dan dinamik Telegram konfiguratsiyasini olish
+export async function getTelegramConfig(env) {
+  let siteSettings = {};
+  if (env && env.POSTS_KV) {
+    try {
+      const raw = await env.POSTS_KV.get('site_settings');
+      if (raw) siteSettings = JSON.parse(raw) || {};
+    } catch (_) {}
+  }
+
+  const botToken = (env && env.TELEGRAM_BOT_TOKEN) || siteSettings.telegramBotToken || '';
+  let channelId = (env && env.TELEGRAM_CHANNEL_ID) || siteSettings.telegramChannelId || '';
+  let adminChatId = (env && (env.TELEGRAM_ADMIN_CHAT_ID || env.TELEGRAM_CHAT_ID)) || siteSettings.telegramAdminChatId || '';
+
+  channelId = normalizeTelegramChatId(channelId);
+  adminChatId = normalizeTelegramChatId(adminChatId);
+
+  return {
+    botToken,
+    channelId,
+    adminChatId,
+    isConfigured: Boolean(botToken && (channelId || adminChatId))
+  };
+}

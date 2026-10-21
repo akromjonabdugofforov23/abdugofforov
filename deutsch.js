@@ -60,7 +60,7 @@ window.runDataClickAction = runDataClickAction;
     // Theme Management
     const themeBtn = document.getElementById('theme-btn');
     function initTheme() {
-        const savedTheme = localStorage.getItem('abdu_theme') || 'dark';
+        const savedTheme = localStorage.getItem('abdu_theme') || localStorage.getItem('kay_theme') || localStorage.getItem('abdugofforov_theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
     }
     if (themeBtn) {
@@ -68,9 +68,18 @@ window.runDataClickAction = runDataClickAction;
             const current = document.documentElement.getAttribute('data-theme') || 'dark';
             const next = current === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('abdu_theme', next);
+            try {
+                localStorage.setItem('abdu_theme', next);
+                localStorage.setItem('kay_theme', next);
+                localStorage.setItem('abdugofforov_theme', next);
+            } catch (_) {}
         });
     }
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'abdu_theme' || e.key === 'kay_theme' || e.key === 'abdugofforov_theme') {
+            if (e.newValue) document.documentElement.setAttribute('data-theme', e.newValue);
+        }
+    });
     initTheme();
 
     // Carousel Logic
@@ -346,104 +355,584 @@ window.runDataClickAction = runDataClickAction;
         }
     };
 
+    // ============================================================
+    // 1. INTERAKTIV TANDEM MULOQOT SIMULYATORI
+    // ============================================================
+    const TANDEM_SCENARIOS = [
+        {
+            id: 'cafe',
+            icon: '☕',
+            title: 'Im Café (Kafeda buyurtma berish)',
+            level: 'A1-A2',
+            desc: 'Kafeda ofitsiant bilan muloqot va hisob-kitob qilish',
+            dialogue: [
+                { role: 'partner', name: 'Kellner', de: 'Guten Tag! Was darf ich Ihnen bringen?', uz: 'Assalomu alaykum! Sizga nima keltiray?', tip: 'Salomlashish va taklif' },
+                { role: 'user', name: 'Siz', de: 'Guten Tag! Ich möchte bitte einen Kaffee und ein Stück Apfelkuchen.', uz: 'Assalomu alaykum! Menga iltimos bitta kofe va bir bo\'lak olma pirogi bering.', options: ['Ich möchte bitte einen Kaffee.', 'Ein Wasser, bitte.', 'Haben Sie Tee?'] },
+                { role: 'partner', name: 'Kellner', de: 'Sehr gerne. Mit Milch und Zucker?', uz: 'Jon deb. Sut va shakar bilanmi?', tip: 'Qo\'shimchalar haqida so\'rash' },
+                { role: 'user', name: 'Siz', de: 'Nur mit etwas Milch, bitte. Ohne Zucker.', uz: 'Faqat ozgina sut bilan, iltimos. Shakarsiz.', options: ['Mit Milch, bitte.', 'Schwarz, bitte.', 'Mit viel Zucker!'] },
+                { role: 'partner', name: 'Kellner', de: 'Kommt sofort! Hat es Ihnen geschmeckt?', uz: 'Hozir keltiraman! Taom yoqdimi?', tip: 'Xizmat yakuni' },
+                { role: 'user', name: 'Siz', de: 'Ja, es war sehr lecker! Ich möchte bitte zahlen.', uz: 'Ha, juda mazali bo\'ldi! Hisobni olsam degandim.', options: ['Die Rechnung, bitte.', 'Zusammen, bitte.', 'Kann ich mit Karte zahlen?'] }
+            ]
+        },
+        {
+            id: 'train',
+            icon: '🚆',
+            title: 'Am Bahnhof (Poyezd chiptasi va platforma)',
+            level: 'A2',
+            desc: 'Kassadan chipta xarid qilish va yo\'nalishni so\'rash',
+            dialogue: [
+                { role: 'partner', name: 'Schaffner', de: 'Guten Morgen! Wohin möchten Sie reisen?', uz: 'Xayrli tong! Qayerga sayohat qilmoqchisiz?', tip: 'Yo\'nalish so\'rovi' },
+                { role: 'user', name: 'Siz', de: 'Guten Morgen! Eine Fahrkarte nach München, bitte. Einfach.', uz: 'Xayrli tong! Myunxenga bitta chipta, iltimos. Bir tomonga.', options: ['Nach Berlin, bitte.', 'Hin und zurück, bitte.', 'Wann fährt der Zug?'] },
+                { role: 'partner', name: 'Schaffner', de: 'Der nächste ICE fährt um 10:15 Uhr von Gleis 7 ab.', uz: 'Keyingi tezyurar poyezd 10:15 da 7-yo\'ldan jo\'naydi.', tip: 'Jo\'nash vaqti va perron' },
+                { role: 'user', name: 'Siz', de: 'Muss ich umsteigen oder fährt er direkt?', uz: 'Poyezd almashtirishim kerakmi yoki to\'g\'ridan-to\'g\'ri boradimi?', options: ['Fährt er direkt?', 'Muss ich umsteigen?', 'Wie lange dauert die Fahrt?'] },
+                { role: 'partner', name: 'Schaffner', de: 'Er fährt direkt. Gute Reise!', uz: 'To\'g\'ridan-to\'g\'ri boradi. Oq yo\'l!', tip: 'Muvaffaqiyatli yakun' }
+            ]
+        },
+        {
+            id: 'doctor',
+            icon: '🏥',
+            title: 'Beim Arzt (Shifokor qabulida)',
+            level: 'B1',
+            desc: 'O\'zingizni his qilishingiz va alomatlarni tushuntirish',
+            dialogue: [
+                { role: 'partner', name: 'Frau Dr. Weber', de: 'Guten Tag! Was fehlt Ihnen denn? Wo haben Sie Schmerzen?', uz: 'Assalomu alaykum! Sizni nima bezovta qilyapti? Qayeringiz og\'riyapti?', tip: 'Shifokor shikoyat so\'ramoqda' },
+                { role: 'user', name: 'Siz', de: 'Guten Tag, Frau Doktor. Ich habe seit zwei Tagen starke Halsschmerzen und Fieber.', uz: 'Salom, doktor. Ikki kundan beri tomog\'im qattiq og\'riyapti va isitmayapman.', options: ['Ich habe Kopfschmerzen.', 'Mir ist schwindelig.', 'Ich fühle mich schwach.'] },
+                { role: 'partner', name: 'Frau Dr. Weber', de: 'Ich verstehe. Bitte machen Sie den Mund auf und sagen Sie "Aah".', uz: 'Tushundim. Iltimos og\'zingizni oching va "Aah" deng.', tip: 'Tekshirish' },
+                { role: 'user', name: 'Siz', de: 'Aah... Ist es eine schwere Erkältung?', uz: 'Aah... Bu og\'ir shamollashmi?', options: ['Brauche ich Antibiotika?', 'Muss ich im Bett bleiben?', 'Wie lange dauert das?'] },
+                { role: 'partner', name: 'Frau Dr. Weber', de: 'Es ist eine leichte Mandelentzündung. Ich verschreibe Ihnen Tabletten.', uz: 'Bu yengil angina. Sizga dorilar yozib beraman.', tip: 'Retsept berish' }
+            ]
+        },
+        {
+            id: 'interview',
+            icon: '💼',
+            title: 'Im Vorstellungsgespräch (Ish suhbati)',
+            level: 'B1-B2',
+            desc: 'Rezyume, tajriba va kuchli tomonlarni taqdim etish',
+            dialogue: [
+                { role: 'partner', name: 'Personalchef', de: 'Herzlich willkommen! Erzählen Sie mir bitte etwas über sich.', uz: 'Xush kelibsiz! Iltimos, o\'zingiz haqingizda gapirib bering.', tip: 'O\'zini tanishtirish' },
+                { role: 'user', name: 'Siz', de: 'Vielen Dank! Ich bin Softwareentwickler und interessiere mich sehr für moderne Webtechnologien.', uz: 'Katta rahmat! Men dasturchiman va zamonaviy veb-texnologiyalarga juda qiziqaman.', options: ['Ich lerne schnell.', 'Ich habe viel Erfahrung.', 'Ich arbeite gerne im Team.'] },
+                { role: 'partner', name: 'Personalchef', de: 'Sehr gut. Warum möchten Sie ausgerechnet bei unserem Unternehmen arbeiten?', uz: 'Juda yaxshi. Nega aynan bizning kompaniyamizda ishlashni xohlaysiz?', tip: 'Motivatsiya so\'rovi' },
+                { role: 'user', name: 'Siz', de: 'Weil Ihre innovativen Projekte und die Unternehmenskultur mich sehr begeistern.', uz: 'Chunki sizning innovatsion loyihalaringiz va jamoaviy madaniyatingiz menda katta qiziqish uyg\'otdi.', options: ['Wegen der Herausforderung.', 'Wegen der guten Zukunft.', 'Um mich weiterzuentwickeln.'] }
+            ]
+        },
+        {
+            id: 'flat',
+            icon: '🏠',
+            title: 'Wohnungssuche & WG (Xonadon ijarasi)',
+            level: 'A2-B1',
+            desc: 'Germaniyada kvartira ko\'rish va shartlarni muhokama qilish',
+            dialogue: [
+                { role: 'partner', name: 'Vermieter', de: 'Hallo! Kommen Sie rein, das ist das Zimmer zur Miete.', uz: 'Salom! Kiring, mana bu ijaraga beriladigan xona.', tip: 'Xonani ko\'rsatish' },
+                { role: 'user', name: 'Siz', de: 'Guten Tag! Das Zimmer ist wirklich sehr hell und geräumig.', uz: 'Salom! Xona haqiqatan ham juda yorug\' va shinam ekan.', options: ['Wie hoch ist die Warmmiete?', 'Ist die Küche möbliert?', 'Sind Haustiere erlaubt?'] },
+                { role: 'partner', name: 'Vermieter', de: 'Die Warmmiete beträgt 450 Euro inklusive Nebenkosten und Internet.', uz: 'To\'liq ijara haqi kommunal va internet bilan 450 yevro.', tip: 'Narx va shartlar' },
+                { role: 'user', name: 'Siz', de: 'Das passt mir sehr gut. Ab wann ist das Zimmer frei?', uz: 'Bu menga juda ma\'qul. Xona qachondan bo\'sh bo\'ladi?', options: ['Ab sofort?', 'Ab nächstem Monat?', 'Gibt es eine Kaution?'] }
+            ]
+        },
+        {
+            id: 'supermarket',
+            icon: '🛒',
+            title: 'Im Supermarkt (Do\'konda xarid)',
+            level: 'A1',
+            desc: 'Mahsulotlar joyini so\'rash va kassada to\'lov qilish',
+            dialogue: [
+                { role: 'user', name: 'Siz', de: 'Entschuldigung, wo finde ich frisches Obst und Gemüse?', uz: 'Kechirasiz, yangi meva va sabzavotlar qayerda joylashgan?', options: ['Wo ist die Milch?', 'Wo finde ich Brot?', 'Haben Sie Käse?'] },
+                { role: 'partner', name: 'Mitarbeiter', de: 'Gleich vorne rechts neben dem Eingang.', uz: 'To\'g\'rida o\'ng tomonda, kiraverishning yonida.', tip: 'Yo\'nalish ko\'rsatish' },
+                { role: 'user', name: 'Siz', de: 'Vielen Dank für Ihre Hilfe!', uz: 'Yordamingiz uchun katta rahmat!', options: ['Danke schön!', 'Einen schönen Tag noch!', 'Auf Wiedersehen!'] }
+            ]
+        }
+    ];
+
+    let _activeTandemIdx = 0;
+    let _activeTandemStep = 0;
+
     function renderFallbackTandem() {
         const c = document.getElementById('tandem-inline-content');
-        if (!c || c.dataset.loaded) return;
-        c.dataset.loaded = '1';
+        if (!c) return;
+
+        const scenario = TANDEM_SCENARIOS[_activeTandemIdx] || TANDEM_SCENARIOS[0];
+        const dialogues = scenario.dialogue || [];
+        const currentLine = dialogues[_activeTandemStep] || dialogues[0];
+
         c.innerHTML = `
-            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:20px; padding:28px 24px; max-width:860px; margin:0 auto; box-shadow:var(--shadow-sm);">
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
-                    <div style="font-size:32px;">💬</div>
-                    <div>
-                        <h2 style="font-size:22px; font-weight:700; color:var(--text-primary); margin:0;">Tandem Muloqot Simulyatori</h2>
-                        <p style="color:var(--text-secondary); font-size:13px; margin:4px 0 0 0;">Kundalik hayotdagi real dialog ssenariylari orqali nemischa gapirishni mashq qiling</p>
+            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:24px; padding:28px 24px; max-width:920px; margin:0 auto; box-shadow:var(--shadow-sm);">
+                <!-- Header -->
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border-color);">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-size:36px;">${scenario.icon}</span>
+                        <div>
+                            <h2 style="font-size:22px; font-weight:700; color:var(--text-primary); margin:0;">Tandem Muloqot Simulyatori</h2>
+                            <p style="color:var(--text-secondary); font-size:13px; margin:4px 0 0 0;">Kundalik hayotdagi real vaziyatlar bo'yicha dialoglarni mashq qiling</p>
+                        </div>
                     </div>
+                    <span style="font-size:11px; font-weight:700; background:rgba(45,212,191,0.15); color:#2dd4bf; padding:4px 10px; border-radius:999px;">${scenario.level}</span>
                 </div>
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
-                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:14px; padding:18px;">
-                        <span style="font-size:11px; font-weight:700; color:#2dd4bf; text-transform:uppercase; letter-spacing:0.05em;">☕ Ssenariy 1</span>
-                        <h4 style="font-size:16px; margin:6px 0 10px 0; color:var(--text-primary);">Im Café (Kafeda)</h4>
-                        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">– Guten Tag! Was darf es sein?<br>– Ein Cappuccino bitte, und ein Stück Kuchen.</p>
-                        <button type="button" class="btn-primary" style="padding:6px 14px; font-size:12px;" onclick="speakGermanText('Guten Tag! Was darf es sein? Ein Cappuccino bitte, und ein Stück Kuchen.')">🔊 Tinglash</button>
+
+                <!-- Ssenariylar Kapsula Menyusi -->
+                <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:12px; margin-bottom:20px; scrollbar-width:none;">
+                    ${TANDEM_SCENARIOS.map((sc, idx) => `
+                        <button type="button" class="btn-secondary" style="white-space:nowrap; padding:8px 14px; font-size:12.5px; border-radius:12px; ${idx === _activeTandemIdx ? 'border-color:#2dd4bf; color:#2dd4bf; background:rgba(45,212,191,0.1);' : ''}" onclick="selectTandemScenario(${idx})">
+                            ${sc.icon} ${escapeHTML(sc.title.split('(')[0].trim())}
+                        </button>
+                    `).join('')}
+                </div>
+
+                <!-- Dialog oynasi -->
+                <div style="background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:18px; padding:20px; min-height:260px; margin-bottom:20px; display:flex; flex-direction:column; gap:14px;" id="tandem-chat-box">
+                    ${dialogues.slice(0, _activeTandemStep + 1).map((dItem, sIdx) => {
+                        const isPartner = dItem.role === 'partner';
+                        return `
+                            <div style="display:flex; flex-direction:column; align-items:${isPartner ? 'flex-start' : 'flex-end'}; max-width:85%; align-self:${isPartner ? 'flex-start' : 'flex-end'};">
+                                <span style="font-size:11px; color:var(--text-muted); margin-bottom:4px; margin-left:${isPartner ? '6px' : '0'}; margin-right:${isPartner ? '0' : '6px'};">
+                                    ${isPartner ? '🤖 ' + dItem.name : '👤 ' + dItem.name}
+                                </span>
+                                <div style="padding:14px 18px; border-radius:16px; ${isPartner ? 'background:rgba(255,255,255,0.06); border:1px solid var(--border-color); border-bottom-left-radius:4px;' : 'background:linear-gradient(135deg, rgba(45,212,191,0.2), rgba(56,189,248,0.2)); border:1px solid rgba(45,212,191,0.3); border-bottom-right-radius:4px;'}">
+                                    <p style="font-size:15px; font-weight:600; color:var(--text-primary); margin:0 0 6px 0; line-height:1.5;">${escapeHTML(dItem.de)}</p>
+                                    <p style="font-size:12.5px; color:var(--text-secondary); margin:0; font-style:italic;">${escapeHTML(dItem.uz)}</p>
+                                </div>
+                                <div style="display:flex; gap:8px; margin-top:6px;">
+                                    <button type="button" class="btn-icon" style="width:26px; height:26px; font-size:11px; border-radius:6px;" onclick="speakGermanText('${dItem.de.replace(/'/g, "\\'")}')" title="Tinglash">🔊</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+
+                <!-- Boshqaruv & Keyingi qadam -->
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+                    <div style="font-size:12.5px; color:var(--text-secondary);">
+                        Bosqich: <strong>${Math.min(_activeTandemStep + 1, dialogues.length)} / ${dialogues.length}</strong>
                     </div>
-                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:14px; padding:18px;">
-                        <span style="font-size:11px; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:0.05em;">🚆 Ssenariy 2</span>
-                        <h4 style="font-size:16px; margin:6px 0 10px 0; color:var(--text-primary);">Am Bahnhof (Vokzalda)</h4>
-                        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">– Entschuldigung, wann fährt der nächste Zug nach Berlin?<br>– Gleis 4, in zehn Minuten.</p>
-                        <button type="button" class="btn-primary" style="padding:6px 14px; font-size:12px;" onclick="speakGermanText('Entschuldigung, wann fährt der nächste Zug nach Berlin? Gleis 4, in zehn Minuten.')">🔊 Tinglash</button>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:14px; padding:18px;">
-                        <span style="font-size:11px; font-weight:700; color:#a855f7; text-transform:uppercase; letter-spacing:0.05em;">🤝 Ssenariy 3</span>
-                        <h4 style="font-size:16px; margin:6px 0 10px 0; color:var(--text-primary);">Kennenlernen (Tanishuv)</h4>
-                        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">– Hallo! Ich heiße Anna, wie heißt du?<br>– Freut mich! Ich bin Akrom und lerne Deutsch.</p>
-                        <button type="button" class="btn-primary" style="padding:6px 14px; font-size:12px;" onclick="speakGermanText('Hallo! Ich heiße Anna, wie heißt du? Freut mich! Ich bin Akrom und lerne Deutsch.')">🔊 Tinglash</button>
+                    <div style="display:flex; gap:10px;">
+                        <button type="button" class="btn-secondary" style="padding:8px 16px; font-size:13px;" onclick="resetTandemScenario()">🔄 Boshidan boshlash</button>
+                        ${_activeTandemStep < dialogues.length - 1 ? `
+                            <button type="button" class="btn-primary" style="padding:8px 20px; font-size:13px;" onclick="nextTandemStep()">Keyingi gap &rarr;</button>
+                        ` : `
+                            <button type="button" class="btn-primary" style="padding:8px 20px; font-size:13px; background:#10b981;" onclick="finishTandemScenario()">🎉 Tugatish</button>
+                        `}
                     </div>
                 </div>
             </div>
         `;
+
+        // Avtomatik chat oxiriga siljitish
+        setTimeout(() => {
+            const box = document.getElementById('tandem-chat-box');
+            if (box) box.scrollTop = box.scrollHeight;
+        }, 50);
     }
+
+    window.selectTandemScenario = function(idx) {
+        _activeTandemIdx = idx;
+        _activeTandemStep = 0;
+        renderFallbackTandem();
+    };
+
+    window.nextTandemStep = function() {
+        const scenario = TANDEM_SCENARIOS[_activeTandemIdx];
+        if (scenario && _activeTandemStep < scenario.dialogue.length - 1) {
+            _activeTandemStep++;
+            renderFallbackTandem();
+            const curr = scenario.dialogue[_activeTandemStep];
+            if (curr && curr.de) speakGermanText(curr.de);
+        }
+    };
+
+    window.resetTandemScenario = function() {
+        _activeTandemStep = 0;
+        renderFallbackTandem();
+    };
+
+    window.finishTandemScenario = function() {
+        if (window.showToast) window.showToast('🎉 Ssenariy muvaffaqiyatli yakunlandi!', 'success');
+        _activeTandemStep = 0;
+        _activeTandemIdx = (_activeTandemIdx + 1) % TANDEM_SCENARIOS.length;
+        renderFallbackTandem();
+    };
+
+    // ============================================================
+    // 2. TALAFFUZ MURABBIYI VA OVOZLI TANISH (SPEECH RECOGNITION)
+    // ============================================================
+    const PRONOUNCE_DATA = [
+        {
+            category: "ä, ö, ü (Umlautlar)",
+            color: "#2dd4bf",
+            examples: "Äpfel, schön, über, für, hören",
+            tip: "Og'iz lablarini doira qilib 'i' yoki 'e' tovushini chiqarish orqali hosil qilinadi."
+        },
+        {
+            category: "ch & sch tovushlari",
+            color: "#38bdf8",
+            examples: "ich, nicht, Buch, Sprache, Schule",
+            tip: "Unlilardan keyin (a, o, u) qattiq [x], boshqa hollarda yumshoq [sh/hy] eshitiladi."
+        },
+        {
+            category: "sp & st tovushlari",
+            color: "#a855f7",
+            examples: "Sport, sprechen, Stadt, stehen",
+            tip: "So'z boshida 'sp' va 'st' birikmalari mos ravishda [shp] va [sht] deb o'qiladi."
+        },
+        {
+            category: "ei vs ie birikmalari",
+            color: "#f59e0b",
+            examples: "mein, sein, Liebe, Lied, sieben",
+            tip: "'ei' [ay] deb, 'ie' esa cho'ziq [i:] deb talaffuz qilinadi."
+        }
+    ];
+
+    const TONGUE_TWISTERS = [
+        { de: "Fischers Fritz fischt frische Fische, frische Fische fischt Fischers Fritz.", uz: "Baliqchi Frits yangi baliqlarni ovlaydi." },
+        { de: "Braune Borstenviecher bürsten brave Bauernburschen.", uz: "Jigarrang qiltiqli hayvonlar botir dehqon yigitlarini cho'tkalaydi." },
+        { de: "Kleine Kinder können keine Kaffeebohnen knacken.", uz: "Kichik bolalar qahva donalarini chaqa olmaydilar." },
+        { de: "Zehn zahme Ziegen zogen zehn Zentner Zucker zum Zoo.", uz: "O'nta yuvosh echki o'n sentner shakarni hayvonot bog'iga tortib bordi." }
+    ];
 
     function renderFallbackPronounce() {
         const c = document.getElementById('pronounce-inline-content');
-        if (!c || c.dataset.loaded) return;
-        c.dataset.loaded = '1';
+        if (!c) return;
         c.innerHTML = `
-            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:20px; padding:28px 24px; max-width:860px; margin:0 auto; box-shadow:var(--shadow-sm);">
+            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:24px; padding:28px 24px; max-width:880px; margin:0 auto; box-shadow:var(--shadow-sm);">
                 <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
-                    <div style="font-size:32px;">🎙️</div>
+                    <div style="font-size:36px;">🎙️</div>
                     <div>
                         <h2 style="font-size:22px; font-weight:700; color:var(--text-primary); margin:0;">Nemis Tili Talaffuz Murabbiyi</h2>
-                        <p style="color:var(--text-secondary); font-size:13px; margin:4px 0 0 0;">Nemis tilidagi murakkab tovushlar va tez aytishlar (Zungenbrecher)</p>
+                        <p style="color:var(--text-secondary); font-size:13px; margin:4px 0 0 0;">Nemischa tovushlar, qoidalar va ovozli talaffuzni real vaqtda tekshirish</p>
                     </div>
                 </div>
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-bottom:24px;">
-                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:12px; padding:14px;">
-                        <strong style="color:#2dd4bf; font-size:15px;">ä, ö, ü (Umlautlar)</strong>
-                        <p style="font-size:12.5px; color:var(--text-secondary); margin:6px 0 10px 0;">Äpfel, schön, über, für, hören</p>
-                        <button type="button" class="btn-primary" style="padding:5px 12px; font-size:11px;" onclick="speakGermanText('Äpfel, schön, über, für, hören')">🔊 Tinglash</button>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:12px; padding:14px;">
-                        <strong style="color:#38bdf8; font-size:15px;">ch & sch tovushlari</strong>
-                        <p style="font-size:12.5px; color:var(--text-secondary); margin:6px 0 10px 0;">ich, nicht, Buch, Sprache, Schule</p>
-                        <button type="button" class="btn-primary" style="padding:5px 12px; font-size:11px;" onclick="speakGermanText('ich, nicht, Buch, Sprache, Schule')">🔊 Tinglash</button>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:12px; padding:14px;">
-                        <strong style="color:#a855f7; font-size:15px;">sp & st tovushlari</strong>
-                        <p style="font-size:12.5px; color:var(--text-secondary); margin:6px 0 10px 0;">Sport, sprechen, Stadt, stehen</p>
-                        <button type="button" class="btn-primary" style="padding:5px 12px; font-size:11px;" onclick="speakGermanText('Sport, sprechen, Stadt, stehen')">🔊 Tinglash</button>
-                    </div>
+
+                <!-- Tovushlar panjarasi -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-bottom:26px;">
+                    ${PRONOUNCE_DATA.map(item => `
+                        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:14px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+                            <div>
+                                <strong style="color:${item.color}; font-size:15px; display:block; margin-bottom:6px;">${escapeHTML(item.category)}</strong>
+                                <p style="font-size:13.5px; font-weight:600; color:var(--text-primary); margin:0 0 4px 0;">${escapeHTML(item.examples)}</p>
+                                <p style="font-size:12px; color:var(--text-secondary); margin:0 0 12px 0;">${escapeHTML(item.tip)}</p>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <button type="button" class="btn-primary" style="padding:6px 12px; font-size:12px;" onclick="speakGermanText('${item.examples.replace(/'/g, "\\'")}')">🔊 Tinglash</button>
+                                <button type="button" class="btn-secondary" style="padding:6px 12px; font-size:12px;" onclick="startPronounceRecognition('${item.examples.split(',')[0].trim().replace(/'/g, "\\'")}')">🎤 Sinash</button>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
-                <h4 style="font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:12px;">⚡ Mashhur Nemis Tez Aytishlari:</h4>
-                <div style="display:flex; flex-direction:column; gap:10px;">
-                    <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:12px; padding:14px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-                        <span style="font-size:13.5px; color:var(--text-primary); flex:1; min-width:240px;">"Fischers Fritz fischt frische Fische, frische Fische fischt Fischers Fritz."</span>
-                        <button type="button" class="btn-primary" style="padding:6px 12px; font-size:11.5px;" onclick="speakGermanText('Fischers Fritz fischt frische Fische, frische Fische fischt Fischers Fritz.')">🔊 Tinglash</button>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:12px; padding:14px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-                        <span style="font-size:13.5px; color:var(--text-primary); flex:1; min-width:240px;">"Braune Borstenviecher bürsten brave Bauernburschen."</span>
-                        <button type="button" class="btn-primary" style="padding:6px 12px; font-size:11.5px;" onclick="speakGermanText('Braune Borstenviecher bürsten brave Bauernburschen.')">🔊 Tinglash</button>
-                    </div>
+
+                <!-- Tez aytishlar (Zungenbrecher) -->
+                <h3 style="font-size:16px; font-weight:700; color:var(--text-primary); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                    <span>⚡ Mashhur Nemis Tez Aytishlari (Zungenbrecher):</span>
+                </h3>
+                <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px;">
+                    ${TONGUE_TWISTERS.map((tw, idx) => `
+                        <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:14px; padding:16px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+                            <div style="flex:1; min-width:260px;">
+                                <p style="font-size:14px; font-weight:600; color:var(--text-primary); margin:0 0 4px 0;">"${escapeHTML(tw.de)}"</p>
+                                <small style="color:var(--text-secondary); font-size:12px;">${escapeHTML(tw.uz)}</small>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <button type="button" class="btn-primary" style="padding:6px 14px; font-size:12px;" onclick="speakGermanText('${tw.de.replace(/'/g, "\\'")}')">🔊 Tinglash</button>
+                                <button type="button" class="btn-secondary" style="padding:6px 14px; font-size:12px;" onclick="startPronounceRecognition('${tw.de.replace(/'/g, "\\'")}')">🎤 Ovozli sinash</button>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
+
+                <!-- Ovozli sinov natijasi indikatori -->
+                <div id="pronounce-feedback-box" style="display:none; padding:14px 18px; border-radius:14px; font-size:13.5px; text-align:center;"></div>
             </div>
         `;
     }
 
+    // Brauzer Web Speech API orqali talaffuzni tekshirish
+    window.startPronounceRecognition = function(targetText) {
+        const fb = document.getElementById('pronounce-feedback-box');
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRec) {
+            if (fb) {
+                fb.style.display = 'block';
+                fb.style.background = 'rgba(239, 68, 68, 0.15)';
+                fb.style.color = '#f87171';
+                fb.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                fb.innerHTML = '⚠️ Brauzeringiz mikrofon orqali tanishni qo\'llab-quvvatlamaydi (Google Chrome yoki Microsoft Edge tavsiya etiladi).';
+            }
+            return;
+        }
+
+        try {
+            const rec = new SpeechRec();
+            rec.lang = 'de-DE';
+            rec.interimResults = false;
+            rec.maxAlternatives = 1;
+
+            if (fb) {
+                fb.style.display = 'block';
+                fb.style.background = 'rgba(56, 189, 248, 0.15)';
+                fb.style.color = '#38bdf8';
+                fb.style.border = '1px solid rgba(56, 189, 248, 0.3)';
+                fb.innerHTML = `🎙️ <b>Eshitilmoqda...</b> Iltimos nemischa ayting: <i>"${escapeHTML(targetText)}"</i>`;
+            }
+
+            rec.onresult = (e) => {
+                const spoken = e.results[0][0].transcript.trim();
+                const cleanTarget = targetText.toLowerCase().replace(/[^a-zäöüß0-9]/gi, '');
+                const cleanSpoken = spoken.toLowerCase().replace(/[^a-zäöüß0-9]/gi, '');
+
+                let match = false;
+                if (cleanTarget === cleanSpoken || cleanTarget.includes(cleanSpoken) || cleanSpoken.includes(cleanTarget)) {
+                    match = true;
+                }
+
+                if (fb) {
+                    if (match) {
+                        fb.style.background = 'rgba(16, 185, 129, 0.15)';
+                        fb.style.color = '#34d399';
+                        fb.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+                        fb.innerHTML = `🎉 <b>A'lo darajada!</b> Siz aytdingiz: "${escapeHTML(spoken)}" (100% Moslik)`;
+                    } else {
+                        fb.style.background = 'rgba(245, 158, 11, 0.15)';
+                        fb.style.color = '#fbbf24';
+                        fb.style.border = '1px solid rgba(245, 158, 11, 0.4)';
+                        fb.innerHTML = `💡 <b>Yaxshi harakat!</b> Siz aytdingiz: "${escapeHTML(spoken)}". Kutilgan so'z: "${escapeHTML(targetText)}"`;
+                    }
+                }
+            };
+
+            rec.onerror = (err) => {
+                if (fb) {
+                    fb.style.background = 'rgba(239, 68, 68, 0.15)';
+                    fb.style.color = '#f87171';
+                    fb.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                    fb.innerHTML = `⚠️ Ovoz eshitilmadi yoki ruxsat berilmadi (${err.error || 'Xatolik'}). Qayta urinib ko'ring.`;
+                }
+            };
+
+            rec.start();
+        } catch (err) {
+            console.warn('Speech recognition xatosi:', err);
+        }
+    };
+
+    // ============================================================
+    // 3. MATN VA INSHO TAHRIRCHISI (SMART GRAMMAR ASSISTANT)
+    // ============================================================
+    const GERMAN_COMMON_NOUNS = new Set([
+        'haus', 'auto', 'buch', 'mensch', 'zeit', 'tag', 'jahr', 'freund', 'schule', 'arbeit',
+        'familie', 'stadt', 'kind', 'land', 'leben', 'frage', 'problem', 'mann', 'frau', 'wasser',
+        'essen', 'geld', 'student', 'lehrer', 'tisch', 'fenster', 'zimmer', 'nacht', 'morgen',
+        'abend', 'woche', 'monat', 'name', 'ort', 'sprache', 'glück', 'liebe', 'hilfe', 'arzt',
+        'zug', 'bus', 'reise', 'musik', 'film', 'foto', 'brief', 'post', 'kaffee', 'tee', 'brot',
+        'kuchen', 'apfel', 'handy', 'beruf', 'wohnung', 'kurs', 'klasse', 'leute', 'sonne', 'mond'
+    ]);
+
+    function analyzeGermanText(text) {
+        if (!text || !text.trim()) {
+            return { words: 0, chars: 0, sentences: 0, level: 'A1', issues: [] };
+        }
+
+        const rawWords = text.trim().split(/\s+/);
+        const chars = text.length;
+        const sentences = (text.match(/[.!?]+/g) || []).length || 1;
+        const words = rawWords.length;
+
+        const issues = [];
+
+        // 1. Otlar bosh harfda yozilishi qoidasi
+        rawWords.forEach(w => {
+            const clean = w.replace(/[^a-zA-ZäöüÄÖÜß]/g, '');
+            const lower = clean.toLowerCase();
+            if (GERMAN_COMMON_NOUNS.has(lower) && clean[0] === lower[0]) {
+                const proper = clean.charAt(0).toUpperCase() + clean.slice(1);
+                issues.push({
+                    type: 'capitalization',
+                    word: clean,
+                    suggest: proper,
+                    msg: `Nemis tilida barcha otlar katta harf bilan boshlanadi: "${proper}"`
+                });
+            }
+        });
+
+        // 2. Ergash gaplarda fe'l oxirida kelishi (weil, dass, wenn, ob)
+        const subConjRegex = /\b(weil|dass|wenn|obwohl|damit)\s+([^,.]+)/gi;
+        let match;
+        while ((match = subConjRegex.exec(text)) !== null) {
+            const clause = match[2].trim().toLowerCase();
+            if (/\b(ist|sind|habe|hat|kann|muss|will|war)\b/.test(clause) && !clause.endsWith('ist') && !clause.endsWith('sind') && !clause.endsWith('hat') && !clause.endsWith('kann')) {
+                issues.push({
+                    type: 'subordinate',
+                    word: match[1],
+                    suggest: match[1],
+                    msg: `"${match[1]}" ergash gapida tuslangan fe'l gapning eng oxiriga o'tishi tavsiya etiladi.`
+                });
+            }
+        }
+
+        // 3. Prepozitsiyalar eslatmasi
+        if (/\bmit\s+den\s+([A-ZÄÖÜa-zäöü]+)\b/.test(text) && !/\bmit\s+den\s+([A-ZÄÖÜa-zäöü]+)n\b/.test(text)) {
+            issues.push({
+                type: 'dativ',
+                word: 'mit',
+                suggest: 'mit dem / mit der / mit den ...n',
+                msg: `"mit" predlogidan keyin doim Dativ keladi (ko'plikda -n qo'shiladi).`
+            });
+        }
+
+        // O'qish darajasini aniqlash (A1-B2)
+        let level = 'A1';
+        if (words > 60 || text.includes('obwohl') || text.includes('deshalb')) level = 'B2';
+        else if (words > 30 || text.includes('weil') || text.includes('dass')) level = 'B1';
+        else if (words > 12) level = 'A2';
+
+        return { words, chars, sentences, level, issues: issues.slice(0, 5) };
+    }
+
+    function renderFallbackCorrector() {
+        const c = document.getElementById('corrector-inline-content');
+        if (!c) return;
+
+        c.innerHTML = `
+            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:24px; padding:28px 24px; max-width:880px; margin:0 auto; box-shadow:var(--shadow-sm);">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="font-size:36px;">✍️</div>
+                        <div>
+                            <h2 style="font-size:22px; font-weight:700; color:var(--text-primary); margin:0;">Insho va Grammatika Tahrirchisi</h2>
+                            <p style="color:var(--text-secondary); font-size:13px; margin:4px 0 0 0;">Nemischa matn yozing — otlar registri, grammatik qoidalar va statistika real vaqtda tahlil qilinadi</p>
+                        </div>
+                    </div>
+                    <span id="corrector-level-badge" style="font-size:11px; font-weight:700; background:rgba(56,189,248,0.15); color:#38bdf8; padding:4px 12px; border-radius:999px;">Daraja: A1</span>
+                </div>
+
+                <!-- Tezkor nemis harflari -->
+                <div style="margin-bottom:12px; display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                    <span style="font-size:12px; color:var(--text-secondary);">Tezkor harflar:</span>
+                    ${['ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü', 'ß'].map(ch => `
+                        <button type="button" class="btn-icon" style="width:32px; height:32px; font-size:13px; border-radius:6px; background:rgba(255,255,255,0.05); border:1px solid var(--border-color); color:var(--text-primary);" onclick="insertCorrectorChar('${ch}')">${ch}</button>
+                    `).join('')}
+                </div>
+
+                <!-- Matn maydoni -->
+                <textarea id="corrector-textarea" placeholder="Nemis tilidagi gapingiz yoki inshongizni shu yerga yozing..." style="width:100%; min-height:170px; padding:16px; border-radius:14px; background:rgba(0,0,0,0.25); border:1px solid var(--border-color); color:var(--text-primary); font-family:inherit; font-size:15px; line-height:1.6; resize:vertical; outline:none; box-sizing:border-box;"></textarea>
+
+                <!-- Status va Hisob-kitob paneli -->
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-top:12px; flex-wrap:wrap; gap:10px;">
+                    <div style="font-size:13px; color:var(--text-secondary);" id="corrector-stats">
+                        So'zlar: <strong>0</strong> | Belgilar: <strong>0</strong> | Gaplar: <strong>0</strong>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button type="button" class="btn-secondary" style="padding:6px 14px; font-size:12.5px;" id="corrector-clear-btn">Tozalash</button>
+                        <button type="button" class="btn-secondary" style="padding:6px 14px; font-size:12.5px;" id="corrector-copy-btn">📋 Nusxalash</button>
+                        <button type="button" class="btn-primary" style="padding:6px 16px; font-size:12.5px;" id="corrector-speak-btn">🔊 Tinglash</button>
+                    </div>
+                </div>
+
+                <!-- Grammatik xatoliklar va Tavsiyalar paneli -->
+                <div id="corrector-suggestions-box" style="margin-top:18px; display:none;">
+                    <h4 style="font-size:14px; margin:0 0 10px 0; color:#38bdf8; display:flex; align-items:center; gap:6px;">
+                        <span>💡 Grammatik tavsiyalar & Imlo tekshiruvi:</span>
+                    </h4>
+                    <div id="corrector-suggestions-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+                </div>
+            </div>
+        `;
+
+        const ta = document.getElementById('corrector-textarea');
+        const stats = document.getElementById('corrector-stats');
+        const speakBtn = document.getElementById('corrector-speak-btn');
+        const clearBtn = document.getElementById('corrector-clear-btn');
+        const copyBtn = document.getElementById('corrector-copy-btn');
+        const lvlBadge = document.getElementById('corrector-level-badge');
+        const suggBox = document.getElementById('corrector-suggestions-box');
+        const suggList = document.getElementById('corrector-suggestions-list');
+
+        function updateAnalysis() {
+            if (!ta) return;
+            const res = analyzeGermanText(ta.value);
+            if (stats) stats.innerHTML = `So'zlar: <strong>${res.words}</strong> | Belgilar: <strong>${res.chars}</strong> | Gaplar: <strong>${res.sentences}</strong>`;
+            if (lvlBadge) lvlBadge.textContent = `Taxminiy daraja: ${res.level}`;
+
+            if (suggBox && suggList) {
+                if (res.issues && res.issues.length) {
+                    suggBox.style.display = 'block';
+                    suggList.innerHTML = res.issues.map(iss => `
+                        <div style="background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); border-radius:10px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+                            <span style="font-size:13px; color:#fde68a;">${escapeHTML(iss.msg)}</span>
+                            ${iss.type === 'capitalization' ? `
+                                <button type="button" class="btn-primary" style="padding:4px 10px; font-size:11.5px; background:#f59e0b; color:#000;" onclick="replaceCorrectorWord('${iss.word}', '${iss.suggest}')">
+                                    Tuzatish (${iss.suggest})
+                                </button>
+                            ` : ''}
+                        </div>
+                    `).join('');
+                } else {
+                    suggBox.style.display = 'none';
+                    suggList.innerHTML = '';
+                }
+            }
+        }
+
+        if (ta) {
+            ta.addEventListener('input', updateAnalysis);
+        }
+        if (speakBtn && ta) {
+            speakBtn.addEventListener('click', () => {
+                const text = ta.value.trim();
+                if (text) speakGermanText(text);
+            });
+        }
+        if (clearBtn && ta) {
+            clearBtn.addEventListener('click', () => {
+                ta.value = '';
+                updateAnalysis();
+                ta.focus();
+            });
+        }
+        if (copyBtn && ta) {
+            copyBtn.addEventListener('click', () => {
+                if (ta.value.trim()) {
+                    navigator.clipboard.writeText(ta.value.trim()).then(() => {
+                        if (window.showToast) window.showToast("📋 Matn buferga nusxalandi!", "success");
+                    });
+                }
+            });
+        }
+
+        window.insertCorrectorChar = function(ch) {
+            if (!ta) return;
+            const start = ta.selectionStart || 0;
+            const end = ta.selectionEnd || 0;
+            ta.value = ta.value.substring(0, start) + ch + ta.value.substring(end);
+            ta.focus();
+            ta.setSelectionRange(start + ch.length, start + ch.length);
+            updateAnalysis();
+        };
+
+        window.replaceCorrectorWord = function(oldWord, newWord) {
+            if (!ta) return;
+            const regex = new RegExp('\\b' + oldWord + '\\b', 'g');
+            ta.value = ta.value.replace(regex, newWord);
+            updateAnalysis();
+        };
+    }
+
+    // ============================================================
+    // 4. NEMIS TILI IBORALARI (REDEWENDUNGEN)
+    // ============================================================
     function renderFallbackIdioms() {
         const c = document.getElementById('idioms-inline-content');
-        if (!c || c.dataset.loaded) return;
-        c.dataset.loaded = '1';
+        if (!c) return;
         const IDIOMS = [
             { de: "Daumen drücken", uz: "Omad tilamoq", lit: "Bosh barmoqlarni qismoq", ex: "Ich drücke dir die Daumen!" },
             { de: "Ich verstehe nur Bahnhof", uz: "Hech narsaga tushunmayapman", lit: "Faqat vokzalni tushunyapman", ex: "Rede langsamer, ich verstehe nur Bahnhof." },
             { de: "Das ist nicht mein Bier", uz: "Bu mening ishim emas", lit: "Bu mening pivom emas", ex: "Lass mich in Ruhe, das ist nicht mein Bier." },
             { de: "Tomaten auf den Augen haben", uz: "Ko'rib ko'rmaslikka olmoq", lit: "Ko'zida pomidor bo'lmoq", ex: "Hast du Tomaten auf den Augen? Da steht es doch!" },
             { de: "Ins Fettnäpfchen treten", uz: "Noo'rin gap aytib qo'ymoq", lit: "Yog' kosasiga qadam bosmoq", ex: "Er ist gestern ins Fettnäpfchen getreten." },
-            { de: "Alles in Butter", uz: "Hammasi joyida, hammasi a'lo", lit: "Hammasi sariyog' ichida", ex: "Keine Sorge, alles ist in Butter." }
+            { de: "Alles in Butter", uz: "Hammasi joyida, hammasi a'lo", lit: "Hammasi sariyog' ichida", ex: "Keine Sorge, alles ist in Butter." },
+            { de: "Schwein haben", uz: "Juda omadi kelmoq", lit: "Cho'chqaga ega bo'lmoq", ex: "Du hast wirklich Schwein gehabt!" },
+            { de: "Die Kirche im Dorf lassen", uz: "Ortiqcha vahima qilmaslik", lit: "Cherkovni qishloqda qoldirmoq", ex: "Lass mal die Kirche im Dorf." }
         ];
         c.innerHTML = `
-            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:20px; padding:28px 24px; max-width:860px; margin:0 auto; box-shadow:var(--shadow-sm);">
+            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:24px; padding:28px 24px; max-width:880px; margin:0 auto; box-shadow:var(--shadow-sm);">
                 <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
-                    <div style="font-size:32px;">🥨</div>
+                    <div style="font-size:36px;">🥨</div>
                     <div>
                         <h2 style="font-size:22px; font-weight:700; color:var(--text-primary); margin:0;">Nemis Tili Iboralari (Redewendungen)</h2>
                         <p style="color:var(--text-secondary); font-size:13px; margin:4px 0 0 0;">Nemis xalqining eng mashhur iboralari, ko'chma ma'nosi va jonli talaffuzi</p>
@@ -464,64 +953,6 @@ window.runDataClickAction = runDataClickAction;
                 </div>
             </div>
         `;
-    }
-
-    function renderFallbackCorrector() {
-        const c = document.getElementById('corrector-inline-content');
-        if (!c || c.dataset.loaded) return;
-        c.dataset.loaded = '1';
-        c.innerHTML = `
-            <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:20px; padding:28px 24px; max-width:860px; margin:0 auto; box-shadow:var(--shadow-sm);">
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
-                    <div style="font-size:32px;">✍️</div>
-                    <div>
-                        <h2 style="font-size:22px; font-weight:700; color:var(--text-primary); margin:0;">Insho va Matn Tahrirchisi</h2>
-                        <p style="color:var(--text-secondary); font-size:13px; margin:4px 0 0 0;">Nemis tilida gap yoki insho yozing — so'zlar va qoidalar hisobi real vaqtda ko'rsatiladi</p>
-                    </div>
-                </div>
-                <div style="margin-bottom:12px; display:flex; gap:6px; flex-wrap:wrap;">
-                    <span style="font-size:12px; color:var(--text-secondary); align-self:center;">Tezkor harflar:</span>
-                    ${['ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü', 'ß'].map(ch => `
-                        <button type="button" class="btn-icon" style="width:32px; height:32px; min-width:32px; min-height:32px; font-size:13px; border-radius:6px;" onclick="insertCorrectorChar('${ch}')">${ch}</button>
-                    `).join('')}
-                </div>
-                <textarea id="corrector-textarea" placeholder="Nemis tilidagi matningizni bu yerga yozing..." style="width:100%; min-height:160px; padding:14px; border-radius:12px; background:rgba(0,0,0,0.25); border:1px solid var(--border-color); color:var(--text-primary); font-family:inherit; font-size:14.5px; line-height:1.6; resize:vertical; outline:none;"></textarea>
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-top:12px; flex-wrap:wrap; gap:10px;">
-                    <div style="font-size:12.5px; color:var(--text-secondary);" id="corrector-stats">
-                        So'zlar: <strong>0</strong> | Belgilar: <strong>0</strong>
-                    </div>
-                    <div style="display:flex; gap:8px;">
-                        <button type="button" class="btn-primary" style="padding:8px 16px; font-size:13px;" id="corrector-speak-btn">🔊 O'qib berish</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        const ta = document.getElementById('corrector-textarea');
-        const stats = document.getElementById('corrector-stats');
-        const speakBtn = document.getElementById('corrector-speak-btn');
-        if (ta && stats) {
-            ta.addEventListener('input', () => {
-                const text = ta.value.trim();
-                const words = text ? text.split(/\s+/).length : 0;
-                const chars = text.length;
-                stats.innerHTML = `So'zlar: <strong>${words}</strong> | Belgilar: <strong>${chars}</strong>`;
-            });
-        }
-        if (speakBtn && ta) {
-            speakBtn.addEventListener('click', () => {
-                const text = ta.value.trim();
-                if (text) speakGermanText(text);
-            });
-        }
-        window.insertCorrectorChar = function(ch) {
-            if (!ta) return;
-            const start = ta.selectionStart || 0;
-            const end = ta.selectionEnd || 0;
-            ta.value = ta.value.substring(0, start) + ch + ta.value.substring(end);
-            ta.focus();
-            ta.setSelectionRange(start + ch.length, start + ch.length);
-            ta.dispatchEvent(new Event('input'));
-        };
     }
 
     window.openDeutschTandem = function(pushHistory = true) {

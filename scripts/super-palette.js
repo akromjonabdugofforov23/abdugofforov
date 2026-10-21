@@ -461,14 +461,18 @@
             return;
         }
 
-        // 8. Umumiy qidiruv (saytdagi maqola va darslar)
+        // 8. Umumiy qidiruv (saytdagi maqolalar, loyihalar va vositalar)
         const genResults = [];
-        if (window.App && Array.isArray(window.App.posts)) {
-            window.App.posts.forEach(p => {
-                if ((p.title && p.title.toLowerCase().includes(q.toLowerCase())) || (p.excerpt && p.excerpt.toLowerCase().includes(q.toLowerCase()))) {
+        const allPosts = window.posts || (window.App && Array.isArray(window.App.posts) ? window.App.posts : []);
+        if (allPosts && allPosts.length) {
+            allPosts.forEach(p => {
+                const titleMatch = p.title && p.title.toLowerCase().includes(q.toLowerCase());
+                const excerptMatch = p.excerpt && p.excerpt.toLowerCase().includes(q.toLowerCase());
+                const catMatch = p.category && p.category.toLowerCase().includes(q.toLowerCase());
+                if (titleMatch || excerptMatch || catMatch) {
                     genResults.push({
                         title: p.title,
-                        subtitle: p.excerpt || 'Blog maqolasi',
+                        subtitle: `${p.category || 'Maqola'} · ${(p.excerpt || '').slice(0, 85)}`,
                         badge: '📰 Maqola',
                         action: () => {
                             if (typeof window.openPostDetail === 'function') {
@@ -479,6 +483,44 @@
                         }
                     });
                 }
+            });
+        }
+
+        // Loyihalar (Projects) dan qidiruv
+        if (typeof window.getPortfolioProjects === 'function') {
+            const projs = window.getPortfolioProjects() || [];
+            projs.forEach(p => {
+                const titleMatch = p.title && p.title.toLowerCase().includes(q.toLowerCase());
+                const descMatch = (p.desc || p.description) && (p.desc || p.description).toLowerCase().includes(q.toLowerCase());
+                const catMatch = (p.cat || p.category) && (p.cat || p.category).toLowerCase().includes(q.toLowerCase());
+                if (titleMatch || descMatch || catMatch) {
+                    genResults.push({
+                        title: `🚀 ${p.title}`,
+                        subtitle: `${p.cat || p.category || 'Loyiha'} · ${(p.desc || p.description || '').slice(0, 85)}`,
+                        badge: '🚀 Loyiha',
+                        action: () => {
+                            if (p.link) window.location.href = p.link;
+                        }
+                    });
+                }
+            });
+        }
+
+        // Maxsus tezkor buyruqlar
+        if ('soat'.includes(q.toLowerCase()) || 'clock'.includes(q.toLowerCase()) || 'vaqt'.includes(q.toLowerCase())) {
+            genResults.push({
+                title: '⌚ Swiss Luxury Chronometer',
+                subtitle: 'Hashamatli Shveysariya uslubidagi analog xronometr',
+                badge: '⌚ Soat',
+                action: () => { window.location.href = 'clock.html'; }
+            });
+        }
+        if ('loyiha'.includes(q.toLowerCase()) || 'portfolio'.includes(q.toLowerCase()) || 'project'.includes(q.toLowerCase())) {
+            genResults.push({
+                title: '🚀 Barcha Loyihalar (Portfolio)',
+                subtitle: 'Abdugofforov ekotizimidagi barcha dasturiy loyihalar',
+                badge: '🚀 Loyihalar',
+                action: () => { window.location.href = '/#projects'; }
             });
         }
 

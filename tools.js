@@ -27,7 +27,7 @@
     const themeBtn = document.getElementById('theme-btn');
     const htmlEl = document.documentElement;
 
-    const savedTheme = localStorage.getItem('abdugofforov_theme') || 'dark';
+    const savedTheme = localStorage.getItem('abdu_theme') || localStorage.getItem('kay_theme') || localStorage.getItem('abdugofforov_theme') || 'dark';
     htmlEl.setAttribute('data-theme', savedTheme);
 
     if (themeBtn) {
@@ -35,9 +35,19 @@
             const current = htmlEl.getAttribute('data-theme') || 'dark';
             const next = current === 'dark' ? 'light' : 'dark';
             htmlEl.setAttribute('data-theme', next);
-            localStorage.setItem('abdugofforov_theme', next);
+            try {
+                localStorage.setItem('abdu_theme', next);
+                localStorage.setItem('kay_theme', next);
+                localStorage.setItem('abdugofforov_theme', next);
+            } catch (_) {}
         });
     }
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'abdu_theme' || e.key === 'kay_theme' || e.key === 'abdugofforov_theme') {
+            if (e.newValue) htmlEl.setAttribute('data-theme', e.newValue);
+        }
+    });
 
     // ---------- ADMIN HAQIQIYLIK VA KO'RINISHLIK BOSHQARUVI ----------
     function checkIsAdmin() {

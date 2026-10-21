@@ -65,21 +65,26 @@ export async function onRequestPost(context) {
   const sessionUser = await getSessionUsername(env, request);
   const username = sessionUser || (body && body.username) || 'mehmon';
 
-  const total = Math.max(0, Math.min(200, parseInt(body.total, 10) || 0));
-  const score = Math.max(0, Math.min(total, parseInt(body.score, 10) || 0));
-  const wrong = Math.max(0, total - score);
+  const rawTotal = body && (body.total !== undefined ? body.total : (body.maxScore !== undefined ? body.maxScore : 10));
+  const total = Math.max(1, Math.min(200, parseInt(rawTotal, 10) || 10));
+  const rawScore = body && (body.score !== undefined ? body.score : (body.correct !== undefined ? body.correct : 0));
+  const score = Math.max(0, Math.min(total, parseInt(rawScore, 10) || 0));
+  const wrong = body && body.wrong !== undefined ? parseInt(body.wrong, 10) : Math.max(0, total - score);
+
+  const testId = String(body && (body.testId || body.topicId || 'quiz')).slice(0, 40);
+  const testTitle = String(body && (body.testTitle || body.topicTitle || (body.level ? body.level + ' Test' : 'Nemis tili testi'))).slice(0, 80);
 
   const user = sessionUser ? await getUser(env, sessionUser) : null;
   const entry = {
     id: randomHex(8),
     username,
     name: (user && user.name) || (body && (body.name || body.username)) || username,
-    testId: String(body.testId || '').slice(0, 40),
-    testTitle: String(body.testTitle || '').slice(0, 80),
+    testId,
+    testTitle,
     score,
     total,
     wrong,
-    pct: total ? Math.round((score / total) * 100) : 0,
+    pct: Math.round((score / total) * 100),
     date: new Date().toISOString(),
   };
 

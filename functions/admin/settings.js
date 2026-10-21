@@ -25,7 +25,11 @@ const DEFAULT_SETTINGS = {
   socialLc: "https://leetcode.com/u/akrin4477",
   socialIg: "https://instagram.com/abdugofforov",
   bannerActive: true,
-  bannerText: "🚀 2026-yilgi yangi ekotizim yangilanishi e'lon qilindi! Tools Lab va 3D tajribalarni sinab ko'ring."
+  bannerText: "🚀 2026-yilgi yangi ekotizim yangilanishi e'lon qilindi! Tools Lab va 3D tajribalarni sinab ko'ring.",
+  telegramBotToken: "",
+  telegramChannelId: "@abdugofforov_uz",
+  telegramAdminChatId: "",
+  telegramAutoBroadcast: true
 };
 
 export async function onRequestOptions(context) {
@@ -63,6 +67,16 @@ export async function onRequestGet(context) {
   delete safeSettings.admin_pin;
   delete safeSettings.pin;
   delete safeSettings.adminPinHash;
+
+  if (!safeSettings.telegramBotToken && env && env.TELEGRAM_BOT_TOKEN) {
+    safeSettings.telegramBotToken = env.TELEGRAM_BOT_TOKEN;
+  }
+  if (!safeSettings.telegramChannelId && env && env.TELEGRAM_CHANNEL_ID) {
+    safeSettings.telegramChannelId = env.TELEGRAM_CHANNEL_ID;
+  }
+  if (!safeSettings.telegramAdminChatId && env && (env.TELEGRAM_ADMIN_CHAT_ID || env.TELEGRAM_CHAT_ID)) {
+    safeSettings.telegramAdminChatId = env.TELEGRAM_ADMIN_CHAT_ID || env.TELEGRAM_CHAT_ID;
+  }
 
   return jsonResponse({ ok: true, settings: safeSettings }, 200, request, env);
 }

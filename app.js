@@ -371,6 +371,15 @@ function initTheme() {
     updateThemeButton(savedTheme);
 }
 
+window.addEventListener('storage', (e) => {
+    if (e.key === 'abdu_theme' || e.key === 'kay_theme' || e.key === 'abdugofforov_theme') {
+        const t = e.newValue || 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+        if (document.body) document.body.setAttribute('data-theme', t);
+        updateThemeButton(t);
+    }
+});
+
 function updateThemeButton(theme) {
     const themeBtns = document.querySelectorAll('.theme-toggle, #theme-btn, #dock-theme, #drawer-theme-btn');
     themeBtns.forEach(btn => {
@@ -404,6 +413,10 @@ document.addEventListener('click', (e) => {
         document.documentElement.setAttribute('data-theme', newTheme);
         if (document.body) document.body.setAttribute('data-theme', newTheme);
         localStorage.setItem('kay_theme', newTheme);
+        try {
+            localStorage.setItem('abdu_theme', newTheme);
+            localStorage.setItem('abdugofforov_theme', newTheme);
+        } catch (_) {}
         updateThemeButton(newTheme);
         if (typeof refreshParticlesTheme === 'function') refreshParticlesTheme();
     }

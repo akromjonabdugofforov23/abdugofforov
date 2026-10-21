@@ -678,11 +678,26 @@
             from { transform: scale(0.98); }
             to { transform: scale(1.02); }
         }
+    
+        /* Mobile Tool Styles */
+        @media (max-width: 600px) {
+            .tools-nav-inner { height: 54px; gap: 6px; }
+            .tools-brand { font-size: 1rem; gap: 6px; }
+            .tools-brand-badge { display: none; }
+            .tools-ecosystem-links { gap: 4px; }
+            .eco-link { padding: 6px 8px; font-size: 13px; }
+            .eco-link .eco-text { display: none; }
+            .tools-hero { padding: 24px 0 16px; }
+            .tools-hero h1 { font-size: 1.45rem; }
+            .tools-tabs-wrap { margin: 16px 0 24px; gap: 6px; }
+            .tool-tab-btn { padding: 8px 12px; font-size: 0.82rem; }
+            .tool-panel { padding: 18px 14px; border-radius: 16px; }
+        }
     </style>
 </head>
 <body>
     <!-- 3D Interaktiv Kosmik Neyron To'lqinlar (Orqa Fondagi 3D Dvigatel) -->
-    <canvas id="spatial-3d-canvas" class="spatial-bg-canvas" aria-hidden="true"></canvas>
+    <canvas id="spatial-3d-canvas" class="spatial-bg-canvas" aria-hidden="true" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0;display:block;"></canvas>
 
 
     <!-- Header & Navigatsiya -->
@@ -696,8 +711,8 @@
 
             <!-- Ekotizim navigatsiyasi -->
             <nav class="tools-ecosystem-links">
-                <a href="https://abdugofforov.uz/" class="eco-link">🏠 Blog</a>
-                <a href="https://deutsch.abdugofforov.uz/" class="eco-link">🇩🇪 Deutsch</a>
+                <a href="https://abdugofforov.uz/" class="eco-link"><span class="eco-icon">🏠</span> <span class="eco-text">Blog</span></a>
+                <a href="https://deutsch.abdugofforov.uz/" class="eco-link"><span class="eco-icon">🇩🇪</span> <span class="eco-text">Deutsch</span></a>
                 <span id="tools-admin-slot"></span>
 
                 <button class="btn-icon theme-toggle" id="theme-btn" type="button" aria-label="Mavzuni o'zgartirish" style="margin-left: 8px;">

@@ -21,6 +21,11 @@ router.get(['/tools', '/tools/', '/tools.html'], (req, res) => {
     res.sendFile(path.join(__dirname, '../tools.html'));
 });
 
+// Swiss Luxury Clock
+router.get(['/clock', '/clock/', '/clock.html'], (req, res) => {
+    res.sendFile(path.join(__dirname, '../clock.html'));
+});
+
 // Kay Admin Paneli
 router.get(['/kay', '/kay/', '/kay.html'], (req, res) => {
     res.sendFile(path.join(__dirname, '../kay.html'));
@@ -55,7 +60,8 @@ router.get('/sitemap.xml', (req, res) => {
     const staticPages = [
         { loc: '/', priority: '1.0', changefreq: 'daily' },
         { loc: '/deutsch', priority: '0.9', changefreq: 'weekly' },
-        { loc: '/tools', priority: '0.8', changefreq: 'monthly' }
+        { loc: '/tools', priority: '0.8', changefreq: 'monthly' },
+        { loc: '/clock', priority: '0.7', changefreq: 'monthly' }
     ];
 
     staticPages.forEach(p => {
@@ -164,17 +170,22 @@ router.get(['/results', '/api/results'], (req, res) => {
 });
 
 router.post(['/results', '/api/results'], (req, res) => {
-    const { testId, testTitle, score, total, wrong, name, username } = req.body || {};
-    const tTotal = Math.max(0, Math.min(200, parseInt(total, 10) || 0));
-    const tScore = Math.max(0, Math.min(tTotal, parseInt(score, 10) || 0));
-    const tWrong = wrong !== undefined ? parseInt(wrong, 10) : Math.max(0, tTotal - tScore);
-    const pct = tTotal ? Math.round((tScore / tTotal) * 100) : 0;
+    const b = req.body || {};
+    const rawTotal = b.total !== undefined ? b.total : (b.maxScore !== undefined ? b.maxScore : 10);
+    const tTotal = Math.max(1, Math.min(200, parseInt(rawTotal, 10) || 10));
+    const rawScore = b.score !== undefined ? b.score : (b.correct !== undefined ? b.correct : 0);
+    const tScore = Math.max(0, Math.min(tTotal, parseInt(rawScore, 10) || 0));
+    const tWrong = b.wrong !== undefined ? parseInt(b.wrong, 10) : Math.max(0, tTotal - tScore);
+    const pct = Math.round((tScore / tTotal) * 100);
+
+    const testId = String(b.testId || b.topicId || 'quiz').slice(0, 40);
+    const testTitle = String(b.testTitle || b.topicTitle || (b.level ? b.level + ' Test' : 'Nemis tili testi')).slice(0, 80);
 
     const entry = db.insert('results', {
-        username: username || 'mehmon',
-        name: name || username || 'Foydalanuvchi',
-        testId: String(testId || '').slice(0, 40),
-        testTitle: String(testTitle || '').slice(0, 80),
+        username: b.username || 'mehmon',
+        name: b.name || b.username || 'Foydalanuvchi',
+        testId,
+        testTitle,
         score: tScore,
         total: tTotal,
         wrong: tWrong,

@@ -3,21 +3,31 @@
    ============================================================ */
 
 /* 1. Orqa Fondagi To'liq Ekranli 3D Canvas (Full-Screen Ambient Stage) */
+#spatial-3d-canvas,
 .spatial-bg-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 0;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
     opacity: 0.95;
-    contain: strict;
+    contain: strict !important;
     will-change: transform;
 }
 
+[data-theme="light"] #spatial-3d-canvas,
 [data-theme="light"] .spatial-bg-canvas {
     opacity: 0.75;
+}
+
+/* Mobilda (≤ 768px) 3D canvas butunlay yashiriladi — Zero-lag CSS gallaktika qoladi */
+@media (max-width: 768px) {
+    #spatial-3d-canvas,
+    .spatial-bg-canvas {
+        display: none !important;
+    }
 }
 
 /* 2. Sahifa Elementlari 3D Fon Ustida Chiroyli Suzib Yurishi Uchun */

@@ -6,12 +6,39 @@
  * ============================================================
  */
 
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 const db = require('../database');
 const { requireAdmin, checkAdminPin } = require('../middlewares/auth');
-const { broadcastPost, sendMessage } = require('../services/telegram');
+const {
+    broadcastPost,
+    broadcastProject,
+    broadcastQuote,
+    broadcastSiteUpdate,
+    testConnection,
+    sendMessage
+} = require('../services/telegram');
+
+function syncEnvFile(updates) {
+    try {
+        const envPath = path.join(__dirname, '..', '.env');
+        if (!fs.existsSync(envPath)) return;
+        let content = fs.readFileSync(envPath, 'utf8');
+        for (const [key, val] of Object.entries(updates)) {
+            if (val === undefined) continue;
+            const regex = new RegExp(`^${key}=.*$`, 'm');
+            if (regex.test(content)) {
+                content = content.replace(regex, `${key}=${val}`);
+            } else {
+                content += `\n${key}=${val}`;
+            }
+        }
+        fs.writeFileSync(envPath, content, 'utf8');
+    } catch (_) {}
+}
 
 // Scrypt xavfsiz shifrlash parametrlari
 const SCRYPT_PARAMS = { N: 16384, r: 8, p: 1, maxmem: 32 * 1024 * 1024 };
@@ -164,8 +191,9 @@ router.get('/posts', (req, res) => {
     res.json({ ok: true, posts });
 });
 
-router.post('/posts', (req, res) => {
-    const { id, title, content, excerpt, tags, published, slug, image, coverImage } = req.body || {};
+router.post('/posts', async (req, res) => {
+    const { id, title, content, excerpt, tags, category, published, slug, image, coverImage } = req.body || {};
+    const postCategory = category ? String(category).trim() : (Array.isArray(tags) && tags[0] ? String(tags[0]).trim() : 'Texnologiya');
     if (!title || !content) {
         return res.status(400).json({ ok: false, error: "Sarlavha va kontent kiritilishi shart" });
     }
@@ -185,10 +213,15 @@ router.post('/posts', (req, res) => {
         });
 
         const shouldNotifyTg = req.body.telegram === true || req.body.sendTelegram === true || req.body.notifyTelegram === true;
+        let tgResult = null;
         if (updated.published && shouldNotifyTg) {
-            broadcastPost(updated).catch(() => {});
+            try {
+                tgResult = await broadcastPost(updated, true);
+            } catch (err) {
+                tgResult = { ok: false, error: err.message };
+            }
         }
-        return res.json({ ok: true, post: updated, message: "Post muvaffaqiyatli yangilandi" });
+        return res.json({ ok: true, post: updated, telegram: tgResult, message: "Post muvaffaqiyatli yangilandi" });
     }
 
     // Yangi post yaratish
@@ -208,14 +241,19 @@ router.post('/posts', (req, res) => {
     });
 
     const shouldNotifyTg = req.body.telegram === true || req.body.sendTelegram === true || req.body.notifyTelegram === true;
+    let tgResult = null;
     if (newPost.published && shouldNotifyTg) {
-        broadcastPost(newPost).catch(() => {});
+        try {
+            tgResult = await broadcastPost(newPost, false);
+        } catch (err) {
+            tgResult = { ok: false, error: err.message };
+        }
     }
 
-    res.json({ ok: true, post: newPost, message: "Yangi post yaratildi" });
+    res.json({ ok: true, post: newPost, telegram: tgResult, message: "Yangi post yaratildi" });
 });
 
-router.put('/posts/:id', (req, res) => {
+router.put('/posts/:id', async (req, res) => {
     const post = db.findById('posts', req.params.id);
     if (!post) {
         return res.status(404).json({ ok: false, error: "Post topilmadi" });
@@ -235,11 +273,16 @@ router.put('/posts/:id', (req, res) => {
     const updated = db.update('posts', req.params.id, updates);
 
     const shouldNotifyTg = req.body.telegram === true || req.body.sendTelegram === true || req.body.notifyTelegram === true;
+    let tgResult = null;
     if (updated.published && shouldNotifyTg) {
-        broadcastPost(updated).catch(() => {});
+        try {
+            tgResult = await broadcastPost(updated, true);
+        } catch (err) {
+            tgResult = { ok: false, error: err.message };
+        }
     }
 
-    res.json({ ok: true, post: updated, message: "Post muvaffaqiyatli tahrirlandi" });
+    res.json({ ok: true, post: updated, telegram: tgResult, message: "Post muvaffaqiyatli tahrirlandi" });
 });
 
 router.delete('/posts/:id', (req, res) => {
@@ -258,7 +301,7 @@ router.get('/projects', (req, res) => {
     res.json({ ok: true, projects });
 });
 
-router.post('/projects', (req, res) => {
+router.post('/projects', async (req, res) => {
     const { title, description, desc, link, category, cat, tags, tech, status, techStack, icon, github, image } = req.body || {};
     const finalDesc = description || desc;
     if (!title || !finalDesc) {
@@ -282,10 +325,20 @@ router.post('/projects', (req, res) => {
         image: image ? String(image).trim() : ''
     });
 
-    res.json({ ok: true, project: newProject, message: "Loyiha muvaffaqiyatli qo'shildi" });
+    const shouldNotifyTg = req.body.telegram === true || req.body.sendTelegram === true || req.body.notifyTelegram === true;
+    let tgResult = null;
+    if (shouldNotifyTg) {
+        try {
+            tgResult = await broadcastProject(newProject, false);
+        } catch (err) {
+            tgResult = { ok: false, error: err.message };
+        }
+    }
+
+    res.json({ ok: true, project: newProject, telegram: tgResult, message: "Loyiha muvaffaqiyatli qo'shildi" });
 });
 
-router.put('/projects/:id', (req, res) => {
+router.put('/projects/:id', async (req, res) => {
     const project = db.findById('projects', req.params.id);
     if (!project) {
         return res.status(404).json({ ok: false, error: "Loyiha topilmadi" });
@@ -317,7 +370,18 @@ router.put('/projects/:id', (req, res) => {
     if (image !== undefined) updates.image = String(image).trim();
 
     const updated = db.update('projects', req.params.id, updates);
-    res.json({ ok: true, project: updated, message: "Loyiha muvaffaqiyatli tahrirlandi" });
+
+    const shouldNotifyTg = req.body.telegram === true || req.body.sendTelegram === true || req.body.notifyTelegram === true;
+    let tgResult = null;
+    if (shouldNotifyTg) {
+        try {
+            tgResult = await broadcastProject(updated, true);
+        } catch (err) {
+            tgResult = { ok: false, error: err.message };
+        }
+    }
+
+    res.json({ ok: true, project: updated, telegram: tgResult, message: "Loyiha muvaffaqiyatli tahrirlandi" });
 });
 
 router.delete('/projects/:id', (req, res) => {
@@ -336,7 +400,7 @@ router.get('/quotes', (req, res) => {
     res.json({ ok: true, quotes });
 });
 
-router.post('/quotes', (req, res) => {
+router.post('/quotes', async (req, res) => {
     const { uz, de, author, category, text, quote } = req.body || {};
     const uzText = uz || text || quote || '';
     if (!uzText && !de) {
@@ -353,7 +417,17 @@ router.post('/quotes', (req, res) => {
         cat: category ? String(category).trim() : 'General'
     });
 
-    res.json({ ok: true, quote: newQuote, message: "Iqtibos muvaffaqiyatli qo'shildi" });
+    const shouldNotifyTg = req.body.telegram === true || req.body.sendTelegram === true || req.body.notifyTelegram === true;
+    let tgResult = null;
+    if (shouldNotifyTg) {
+        try {
+            tgResult = await broadcastQuote(newQuote);
+        } catch (err) {
+            tgResult = { ok: false, error: err.message };
+        }
+    }
+
+    res.json({ ok: true, quote: newQuote, telegram: tgResult, message: "Iqtibos muvaffaqiyatli qo'shildi" });
 });
 
 router.put('/quotes/:id', (req, res) => {
@@ -624,17 +698,82 @@ router.delete('/results', (req, res) => {
 // 8. SAYT SOZLAMALARI (SETTINGS)
 // ============================================================
 router.get('/settings', (req, res) => {
-    const settings = db.getSettings();
+    const settings = Object.assign({}, db.getSettings());
+    delete settings.adminPin;
+    delete settings.admin_pin;
+    delete settings.pin;
+    delete settings.adminPinHash;
+
+    if (!settings.telegramBotToken && process.env.TELEGRAM_BOT_TOKEN) {
+        settings.telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+    }
+    if (!settings.telegramChannelId && process.env.TELEGRAM_CHANNEL_ID) {
+        settings.telegramChannelId = process.env.TELEGRAM_CHANNEL_ID;
+    }
+    if (!settings.telegramAdminChatId && (process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID)) {
+        settings.telegramAdminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID;
+    }
+
     res.json({ ok: true, settings });
 });
 
 router.post('/settings', (req, res) => {
-    const updated = db.updateSettings(req.body);
+    const body = req.body || {};
+    const envUpdates = {};
+
+    if (body.telegramBotToken !== undefined && !String(body.telegramBotToken).startsWith('••••')) {
+        const cleanToken = String(body.telegramBotToken).trim();
+        process.env.TELEGRAM_BOT_TOKEN = cleanToken;
+        envUpdates.TELEGRAM_BOT_TOKEN = cleanToken;
+    }
+    if (body.telegramChannelId !== undefined) {
+        const cleanChan = String(body.telegramChannelId).trim();
+        process.env.TELEGRAM_CHANNEL_ID = cleanChan;
+        envUpdates.TELEGRAM_CHANNEL_ID = cleanChan;
+    }
+    if (body.telegramAdminChatId !== undefined) {
+        const cleanChat = String(body.telegramAdminChatId).trim();
+        process.env.TELEGRAM_ADMIN_CHAT_ID = cleanChat;
+        process.env.TELEGRAM_CHAT_ID = cleanChat;
+        envUpdates.TELEGRAM_ADMIN_CHAT_ID = cleanChat;
+        envUpdates.TELEGRAM_CHAT_ID = cleanChat;
+    }
+
+    if (Object.keys(envUpdates).length > 0) {
+        syncEnvFile(envUpdates);
+    }
+
+    const updated = db.updateSettings(body);
     res.json({ ok: true, settings: updated, message: "Sozlamalar saqlandi" });
 });
 
 router.put('/settings', (req, res) => {
-    const updated = db.updateSettings(req.body);
+    const body = req.body || {};
+    const envUpdates = {};
+
+    if (body.telegramBotToken !== undefined && !String(body.telegramBotToken).startsWith('••••')) {
+        const cleanToken = String(body.telegramBotToken).trim();
+        process.env.TELEGRAM_BOT_TOKEN = cleanToken;
+        envUpdates.TELEGRAM_BOT_TOKEN = cleanToken;
+    }
+    if (body.telegramChannelId !== undefined) {
+        const cleanChan = String(body.telegramChannelId).trim();
+        process.env.TELEGRAM_CHANNEL_ID = cleanChan;
+        envUpdates.TELEGRAM_CHANNEL_ID = cleanChan;
+    }
+    if (body.telegramAdminChatId !== undefined) {
+        const cleanChat = String(body.telegramAdminChatId).trim();
+        process.env.TELEGRAM_ADMIN_CHAT_ID = cleanChat;
+        process.env.TELEGRAM_CHAT_ID = cleanChat;
+        envUpdates.TELEGRAM_ADMIN_CHAT_ID = cleanChat;
+        envUpdates.TELEGRAM_CHAT_ID = cleanChat;
+    }
+
+    if (Object.keys(envUpdates).length > 0) {
+        syncEnvFile(envUpdates);
+    }
+
+    const updated = db.updateSettings(body);
     res.json({ ok: true, settings: updated, message: "Sozlamalar yangilandi" });
 });
 
@@ -673,16 +812,58 @@ router.post('/backup/restore', (req, res) => {
 // ============================================================
 router.post('/notify/telegram', async (req, res) => {
     try {
-        const { post, message } = req.body || {};
+        const { type, post, project, quote, update, message, config } = req.body || {};
+
+        // 1. Ulanishni sinovdan o'tkazish (Test Connection)
+        if (type === 'test') {
+            const testResult = await testConnection(config || req.body);
+            if (!testResult.ok) {
+                return res.status(400).json(testResult);
+            }
+            return res.json(testResult);
+        }
+
+        // 2. Loyiha (Project) e'loni
+        if (type === 'project' && project) {
+            const result = await broadcastProject(project, Boolean(req.body.isUpdate));
+            if (!result.ok) {
+                return res.status(result.configured === false ? 400 : 502).json(result);
+            }
+            return res.json({ ok: true, result, message: "Loyiha haqida Telegram kanalga xabar yuborildi" });
+        }
+
+        // 3. Iqtibos (Quote) e'loni
+        if (type === 'quote' && quote) {
+            const result = await broadcastQuote(quote);
+            if (!result.ok) {
+                return res.status(result.configured === false ? 400 : 502).json(result);
+            }
+            return res.json({ ok: true, result, message: "Iqtibos haqida Telegram kanalga xabar yuborildi" });
+        }
+
+        // 4. Umumiy sayt yangilanishi (Site Update)
+        if (type === 'update') {
+            const updatePayload = update || { title: req.body.title, description: message || req.body.desc };
+            const result = await broadcastSiteUpdate(updatePayload);
+            if (!result.ok) {
+                return res.status(result.configured === false ? 400 : 502).json(result);
+            }
+            return res.json({ ok: true, result, message: "Sayt yangilanishi haqida Telegram kanalga xabar yuborildi" });
+        }
+
+        // 5. Post (Maqola) e'loni (standart fallback)
         const targetPost = post || {
             title: message || 'Yangi xabar',
             excerpt: message ? message.slice(0, 160) : '',
             content: message || ''
         };
-        const result = await broadcastPost(targetPost);
+        const result = await broadcastPost(targetPost, Boolean(req.body.isUpdate));
+        if (!result.ok) {
+            return res.status(result.configured === false ? 400 : 502).json(result);
+        }
         res.json({ ok: true, result, message: "Telegram kanalga xabar yuborildi" });
     } catch (err) {
-        res.status(500).json({ ok: false, error: err.message });
+        res.status(500).json({ ok: false, error: err.message, message: "Serverda xatolik yuz berdi: " + err.message });
     }
 });
 

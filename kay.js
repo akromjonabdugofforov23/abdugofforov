@@ -1482,7 +1482,18 @@ function saveProjects(projects) {
     localStorage.setItem('abdu_portfolio', JSON.stringify(projects));
 }
 
-function loadProjects(filterQuery = '') {
+function loadProjects(filterQuery = '', fetchFromServer = false) {
+    if (fetchFromServer) {
+        safeAdminFetch('/api/admin/projects', '/projects').then(async res => {
+            if (res && res.ok) {
+                const d = await res.json().catch(() => ({}));
+                if (d && Array.isArray(d.projects)) {
+                    saveProjects(d.projects);
+                    loadProjects(filterQuery, false);
+                }
+            }
+        }).catch(() => {});
+    }
     const listEl = document.getElementById('projects-list');
     const badgeEl = document.getElementById('projects-count-badge');
     const projects = getProjects();
@@ -1567,6 +1578,8 @@ function handleProjectSubmit(e) {
         image: imageInput?.value.trim() || ''
     };
 
+    const isTgChecked = !!document.getElementById('project-telegram-notify')?.checked;
+
     if (editId) {
         const idx = projects.findIndex(p => String(p.id) === String(editId));
         if (idx >= 0) projects[idx] = projectData;
@@ -1587,7 +1600,9 @@ function handleProjectSubmit(e) {
                 cat: projectData.cat,
                 techStack: projectData.tech,
                 tech: projectData.tech,
-                image: projectData.image
+                image: projectData.image,
+                notifyTelegram: isTgChecked,
+                sendTelegram: isTgChecked
             })
         }).then(async res => {
             if (res && res.ok) {
@@ -1617,7 +1632,9 @@ function handleProjectSubmit(e) {
                 cat: projectData.cat,
                 techStack: projectData.tech,
                 tech: projectData.tech,
-                image: projectData.image
+                image: projectData.image,
+                notifyTelegram: isTgChecked,
+                sendTelegram: isTgChecked
             })
         }).then(async res => {
             if (res && res.ok) {
@@ -1625,6 +1642,20 @@ function handleProjectSubmit(e) {
                 if (d && Array.isArray(d.projects) && d.projects.length) {
                     saveProjects(d.projects);
                     loadProjects();
+                }
+            }
+        }).catch(() => {});
+    }
+
+    if (isTgChecked) {
+        safeAdminFetch('/api/admin/notify/telegram', '/admin/notify/telegram', {
+            method: 'POST',
+            body: JSON.stringify({ type: 'project', project: projectData, isUpdate: !!editId })
+        }).then(async r => {
+            if (r && r.ok) {
+                const d = await r.json().catch(() => ({}));
+                if (d && d.ok) {
+                    showToast('📢 Loyiha Telegram kanalga ham e\'lon qilindi!', 'info');
                 }
             }
         }).catch(() => {});
@@ -1721,7 +1752,18 @@ function saveQuotes(quotes) {
     localStorage.setItem('abdu_quotes', JSON.stringify(quotes));
 }
 
-function loadQuotes(filterQuery = '') {
+function loadQuotes(filterQuery = '', fetchFromServer = false) {
+    if (fetchFromServer) {
+        safeAdminFetch('/api/admin/quotes', '/quotes').then(async res => {
+            if (res && res.ok) {
+                const d = await res.json().catch(() => ({}));
+                if (d && Array.isArray(d.quotes)) {
+                    saveQuotes(d.quotes);
+                    loadQuotes(filterQuery, false);
+                }
+            }
+        }).catch(() => {});
+    }
     const listEl = document.getElementById('quotes-list');
     const badgeEl = document.getElementById('quotes-count-badge');
     const quotes = getQuotes();
@@ -1785,6 +1827,8 @@ function handleQuoteSubmit(e) {
         cat: catInput?.value.trim() || 'ILHOM'
     };
 
+    const isTgChecked = !!document.getElementById('quote-telegram-notify')?.checked;
+
     if (editId) {
         const idx = quotes.findIndex(q => String(q.id) === String(editId));
         if (idx >= 0) quotes[idx] = quoteData;
@@ -1800,7 +1844,9 @@ function handleQuoteSubmit(e) {
                 quote: quoteData.quote,
                 author: quoteData.author,
                 category: quoteData.cat,
-                de: quoteData.de
+                de: quoteData.de,
+                notifyTelegram: isTgChecked,
+                sendTelegram: isTgChecked
             })
         }).then(async res => {
             if (res && res.ok) {
@@ -1825,7 +1871,9 @@ function handleQuoteSubmit(e) {
                 quote: quoteData.quote,
                 author: quoteData.author,
                 category: quoteData.cat,
-                de: quoteData.de
+                de: quoteData.de,
+                notifyTelegram: isTgChecked,
+                sendTelegram: isTgChecked
             })
         }).then(async res => {
             if (res && res.ok) {
@@ -1833,6 +1881,20 @@ function handleQuoteSubmit(e) {
                 if (d && Array.isArray(d.quotes) && d.quotes.length) {
                     saveQuotes(d.quotes);
                     loadQuotes();
+                }
+            }
+        }).catch(() => {});
+    }
+
+    if (isTgChecked) {
+        safeAdminFetch('/api/admin/notify/telegram', '/admin/notify/telegram', {
+            method: 'POST',
+            body: JSON.stringify({ type: 'quote', quote: quoteData })
+        }).then(async r => {
+            if (r && r.ok) {
+                const d = await r.json().catch(() => ({}));
+                if (d && d.ok) {
+                    showToast('💡 Hikmat Telegram kanalga ham e\'lon qilindi!', 'info');
                 }
             }
         }).catch(() => {});
@@ -1975,6 +2037,10 @@ async function loadSettingsInputs() {
                 if (s.socialIg) localStorage.setItem('kay_social_ig', s.socialIg);
                 if (s.bannerText) localStorage.setItem('kay_banner_text', s.bannerText);
                 if (s.bannerActive !== undefined) localStorage.setItem('kay_banner_active', String(s.bannerActive));
+                if (s.telegramBotToken) localStorage.setItem('kay_tg_bot_token', s.telegramBotToken);
+                if (s.telegramChannelId) localStorage.setItem('kay_tg_channel', s.telegramChannelId);
+                if (s.telegramAdminChatId) localStorage.setItem('kay_tg_admin_chat', s.telegramAdminChatId);
+                if (s.telegramAutoBroadcast !== undefined) localStorage.setItem('kay_tg_auto_broadcast', String(s.telegramAutoBroadcast));
             }
         }
     } catch (_) {}
@@ -1992,6 +2058,11 @@ async function loadSettingsInputs() {
     const bannerActive = localStorage.getItem('kay_banner_active') !== 'false';
     const bannerText = localStorage.getItem('kay_banner_text') || '🚀 2026-yilgi yangi ekotizim yangilanishi e\'lon qilindi! Tools Lab va 3D tajribalarni sinab ko\'ring.';
 
+    const tgBotToken = localStorage.getItem('kay_tg_bot_token') || '';
+    const tgChannel = localStorage.getItem('kay_tg_channel') || '@abdugofforov_uz';
+    const tgAdminChat = localStorage.getItem('kay_tg_admin_chat') || '';
+    const tgAutoBroadcast = localStorage.getItem('kay_tg_auto_broadcast') !== 'false';
+
     const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
     setVal('setting-site-name', siteName);
     setVal('setting-site-desc', siteDesc);
@@ -2006,6 +2077,23 @@ async function loadSettingsInputs() {
     setVal('setting-banner-text', bannerText);
     const bCheck = document.getElementById('setting-banner-active');
     if (bCheck) bCheck.checked = bannerActive;
+
+    setVal('setting-tg-bot-token', tgBotToken);
+    setVal('setting-tg-channel', tgChannel);
+    setVal('setting-tg-admin-chat', tgAdminChat);
+    const tgAutoCheck = document.getElementById('setting-tg-auto-broadcast');
+    if (tgAutoCheck) tgAutoCheck.checked = tgAutoBroadcast;
+
+    const tgBadge = document.getElementById('tg-status-badge');
+    if (tgBadge) {
+        if (tgBotToken && tgChannel) {
+            tgBadge.textContent = 'Faol & Sozlangan';
+            tgBadge.className = 'cyber-badge emerald';
+        } else {
+            tgBadge.textContent = 'Sozlanmagan';
+            tgBadge.className = 'cyber-badge amber';
+        }
+    }
 }
 
 function saveSettingsInputs() {
@@ -2024,6 +2112,12 @@ function saveSettingsInputs() {
     const bCheck = document.getElementById('setting-banner-active');
     const bannerActive = bCheck ? bCheck.checked : true;
 
+    const tgBotToken = getVal('setting-tg-bot-token') || '';
+    const tgChannel = getVal('setting-tg-channel') || '';
+    const tgAdminChat = getVal('setting-tg-admin-chat') || '';
+    const tgAutoCheck = document.getElementById('setting-tg-auto-broadcast');
+    const tgAutoBroadcast = tgAutoCheck ? tgAutoCheck.checked : true;
+
     localStorage.setItem('kay_site_name', siteName);
     localStorage.setItem('kay_site_desc', siteDesc);
     localStorage.setItem('kay_author_name', authorName);
@@ -2036,6 +2130,11 @@ function saveSettingsInputs() {
     localStorage.setItem('kay_social_ig', socialIg);
     localStorage.setItem('kay_banner_text', bannerText);
     localStorage.setItem('kay_banner_active', String(bannerActive));
+
+    localStorage.setItem('kay_tg_bot_token', tgBotToken);
+    localStorage.setItem('kay_tg_channel', tgChannel);
+    localStorage.setItem('kay_tg_admin_chat', tgAdminChat);
+    localStorage.setItem('kay_tg_auto_broadcast', String(tgAutoBroadcast));
 
     safeAdminFetch('/api/admin/settings', '/admin/settings', {
         method: 'POST',
@@ -2052,12 +2151,115 @@ function saveSettingsInputs() {
             socialLc,
             socialIg,
             bannerText,
-            bannerActive
+            bannerActive,
+            telegramBotToken: tgBotToken,
+            telegramChannelId: tgChannel,
+            telegramAdminChatId: tgAdminChat,
+            telegramAutoBroadcast: tgAutoBroadcast
         })
     }).catch(() => {});
 
+    const tgBadge = document.getElementById('tg-status-badge');
+    if (tgBadge) {
+        if (tgBotToken && tgChannel) {
+            tgBadge.textContent = 'Faol & Sozlangan';
+            tgBadge.className = 'cyber-badge emerald';
+        } else {
+            tgBadge.textContent = 'Sozlanmagan';
+            tgBadge.className = 'cyber-badge amber';
+        }
+    }
+
     addLog('info', 'Sayt sozlamalari yangilandi');
     showToast('Sayt sozlamalari muvaffaqiyatli saqlandi! ✅', 'success');
+}
+
+// ===== TELEGRAM ULIK VA INTEGRATSIYANI SINASH =====
+async function testTelegramConnection() {
+    const btn = document.getElementById('test-tg-connection-btn');
+    const feedback = document.getElementById('tg-test-feedback');
+    const botTokenInput = document.getElementById('setting-tg-bot-token');
+    const channelInput = document.getElementById('setting-tg-channel');
+    const adminChatInput = document.getElementById('setting-tg-admin-chat');
+
+    const botToken = botTokenInput?.value?.trim();
+    const channelId = channelInput?.value?.trim();
+    const adminChatId = adminChatInput?.value?.trim();
+
+    if (!botToken) {
+        showToast('Iltimos, avval Telegram Bot Tokenni kiriting!', 'warning');
+        if (botTokenInput) botTokenInput.focus();
+        return;
+    }
+
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = '⏳ Tekshirilmoqda...';
+    }
+    if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(56, 189, 248, 0.1)';
+        feedback.style.border = '1px solid rgba(56, 189, 248, 0.3)';
+        feedback.style.color = '#38bdf8';
+        feedback.textContent = 'Telegram API ga ulanish sinovdan o\'tkazilmoqda...';
+    }
+
+    try {
+        const res = await safeAdminFetch('/api/admin/notify/telegram', '/admin/notify/telegram', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'test',
+                config: { botToken, channelId, adminChatId }
+            })
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (data && data.ok) {
+            if (feedback) {
+                feedback.style.display = 'block';
+                feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+                feedback.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+                feedback.style.color = '#34d399';
+                feedback.textContent = '✅ ' + (data.message || 'Telegram ulanishi muvaffaqiyatli!');
+            }
+            const tgBadge = document.getElementById('tg-status-badge');
+            if (tgBadge) {
+                tgBadge.textContent = 'Faol & Ulangan';
+                tgBadge.className = 'cyber-badge emerald';
+            }
+            showToast('✅ Telegram ulanishi muvaffaqiyatli!', 'success');
+        } else {
+            const errText = data?.message || data?.error || 'Telegram serveriga ulanib bo\'lmadi';
+            if (feedback) {
+                feedback.style.display = 'block';
+                feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+                feedback.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+                feedback.style.color = '#f87171';
+                feedback.textContent = '❌ Xatolik: ' + errText;
+            }
+            const tgBadge = document.getElementById('tg-status-badge');
+            if (tgBadge) {
+                tgBadge.textContent = 'Ulanishda xato';
+                tgBadge.className = 'cyber-badge rose';
+            }
+            showToast('⚠️ Telegram: ' + errText, 'warning');
+        }
+    } catch (err) {
+        if (feedback) {
+            feedback.style.display = 'block';
+            feedback.style.background = 'rgba(239, 68, 68, 0.15)';
+            feedback.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+            feedback.style.color = '#f87171';
+            feedback.textContent = '❌ Tarmoq xatosi: ' + err.message;
+        }
+        showToast('Xatolik: ' + err.message, 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = '⚡ Telegram Ulanishini Tekshirish';
+        }
+    }
 }
 
 // ===== ZAXIRA NUSXA (EXPORT & IMPORT) =====
@@ -2245,6 +2447,7 @@ document.getElementById('clear-log-btn')?.addEventListener('click', () => {
 
 // Sozlamalar va Zaxira tugmalari
 document.getElementById('save-settings-btn')?.addEventListener('click', saveSettingsInputs);
+document.getElementById('test-tg-connection-btn')?.addEventListener('click', testTelegramConnection);
 document.getElementById('backup-download-btn')?.addEventListener('click', downloadBackup);
 document.getElementById('backup-upload-file')?.addEventListener('change', e => {
     const file = e.target.files && e.target.files[0];
@@ -2627,13 +2830,21 @@ async function handlePostEditorSubmit(e) {
         }
 
         // 2. Telegram kanalga avtomatik e'lon yuborish (agar checkbox belgilangan bo'lsa)
+        let telegramResult = null;
         if (isTelegramChecked) {
             try {
-                await fetch('/api/admin/notify/telegram', {
+                const tgRes = await safeAdminFetch('/api/admin/notify/telegram', '/admin/notify/telegram', {
                     method: 'POST',
-                    headers: _adminHeaders({ 'Content-Type': 'application/json' }),
-                    body: JSON.stringify({ post: postPayload })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'post',
+                        post: postPayload,
+                        isUpdate: !!(idInput && idInput.value)
+                    })
                 });
+                if (tgRes) {
+                    telegramResult = await tgRes.json().catch(() => ({}));
+                }
             } catch (tgErr) {
                 console.warn('Telegram bildirishnoma yuborishda ogohlantirish:', tgErr);
             }
@@ -2676,12 +2887,22 @@ async function handlePostEditorSubmit(e) {
         const modeBadge = document.getElementById('post-editor-mode-badge');
         if (modeBadge) modeBadge.textContent = 'Yangi Post';
 
-        showPostFeedback(
-            isTelegramChecked 
-                ? '✅ Post muvaffaqiyatli saqlandi va Telegram kanalga e\'lon qilindi!' 
-                : '✅ Post muvaffaqiyatli saqlandi va chop etildi!',
-            'success'
-        );
+        if (isTelegramChecked) {
+            if (telegramResult && telegramResult.ok) {
+                showPostFeedback('✅ Post muvaffaqiyatli saqlandi va Telegram kanalga e\'lon qilindi! 📢', 'success');
+                showToast('✅ Post saqlandi va Telegram kanalga e\'lon qilindi!', 'success');
+            } else if (telegramResult && telegramResult.configured === false) {
+                showPostFeedback('ℹ️ Post saqlandi, lekin Telegram bot sozlanmagani sababli kanalga yuborilmadi (Sozlamalar bo\'limida botni sozlang)', 'info');
+                showToast('ℹ️ Post saqlandi (Telegram bot sozlanmagan)', 'info');
+            } else {
+                const tgMsg = telegramResult?.message || telegramResult?.error || 'Telegramga yuborib bo\'lmadi';
+                showPostFeedback(`⚠️ Post saqlandi, lekin Telegram xatosi: ${tgMsg}`, 'error');
+                showToast(`⚠️ Telegramga yuborilmadi: ${tgMsg}`, 'warning');
+            }
+        } else {
+            showPostFeedback('✅ Post muvaffaqiyatli saqlandi va chop etildi!', 'success');
+            showToast('✅ Post muvaffaqiyatli saqlandi!', 'success');
+        }
 
         await loadDashboardAndRealData(true);
         loadCreatorPosts();
@@ -2875,4 +3096,5 @@ window.editCreatorPost = editCreatorPost;
 window.deleteCreatorPost = deleteCreatorPost;
 window.focusNewPostEditor = focusNewPostEditor;
 window.updatePostImagePreview = updatePostImagePreview;
+window.testTelegramConnection = testTelegramConnection;
 

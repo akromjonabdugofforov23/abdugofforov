@@ -382,8 +382,27 @@
         if (!canvas) return;
         width = window.innerWidth;
         height = window.innerHeight;
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
 
+        // Mobilda (≤ 768px) og'ir 3D to'lqinlarni o'chirib, toza va batareyani tejaydigan rejimga o'tkazamiz
+        if (width <= 768) {
+            canvas.style.display = 'none';
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            return;
+        }
+
+        canvas.style.display = 'block';
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100vw';
+        canvas.style.height = '100vh';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = '0';
+
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = Math.floor(width * dpr);
         canvas.height = Math.floor(height * dpr);
 
@@ -392,6 +411,10 @@
         }
 
         initStreamNodes();
+
+        if (!animationId && isVisible) {
+            animationId = requestAnimationFrame(render);
+        }
     }
 
     // -------------------------------------------------------------
@@ -400,6 +423,15 @@
     function init() {
         canvas = document.getElementById('spatial-3d-canvas');
         if (!canvas) return;
+
+        // Boshlang'ich holatda inline stillarni qat'iy o'rnatamiz (layoutni mutlaqo surmaydi)
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100vw';
+        canvas.style.height = '100vh';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = '0';
 
         ctx = canvas.getContext('2d', { alpha: true });
         if (!ctx) return;
@@ -425,8 +457,10 @@
             blogObs.observe(blogGrid, { childList: true });
         }
 
-        if (animationId) cancelAnimationFrame(animationId);
-        animationId = requestAnimationFrame(render);
+        if (window.innerWidth > 768) {
+            if (animationId) cancelAnimationFrame(animationId);
+            animationId = requestAnimationFrame(render);
+        }
     }
 
     window.Spatial3D = {
