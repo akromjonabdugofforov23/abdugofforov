@@ -1,3 +1,4 @@
+import { verifyAdminPin, isAdmin, parseCookies, FORBIDDEN_HTML } from './_lib.js';
 // ============================================================
 // Global Cloudflare Pages Middleware
 // Xavfsizlik protokollari: CORS, CSP, HSTS, va boshqa HTTP himoya sarlavhalari
@@ -30,6 +31,105 @@ export async function onRequest(context) {
       }
     });
   }
+
+  // 3. Kay Admin Stealth Shield (403 Forbidden himoyasi)
+  const isKayPath = url.pathname === '/kay' || url.pathname === '/kay/' || 
+                    url.pathname === '/kay.html' || url.pathname === '/dist/kay.html';
+  const isKayScript = url.pathname === '/kay.js' || url.pathname === '/dist/kay.js' || 
+                      url.pathname === '/kay.min.js' || url.pathname === '/dist/kay.min.js';
+
+  if (isKayPath || isKayScript) {
+    const cookies = parseCookies(context.request.headers.get('Cookie') || '');
+    const secretKey = url.searchParams.get('key') || url.searchParams.get('secret') || 
+                      url.searchParams.get('pin') || url.searchParams.get('token') || 
+                      url.searchParams.get('gate');
+
+    let isAuthorized = false;
+    let shouldSetStealthCookie = false;
+
+    // A) URL Query parametri orqali to'g'ri PIN yoki maxfiy token uzatilgan bo'lsa
+    if (secretKey) {
+      if (await verifyAdminPin(context.env, secretKey)) {
+        isAuthorized = true;
+        shouldSetStealthCookie = true;
+      } else if (context.env && context.env.MAGIC_GATE_TOKEN && secretKey === context.env.MAGIC_GATE_TOKEN) {
+        isAuthorized = true;
+        shouldSetStealthCookie = true;
+      } else if (context.env && context.env.ADMIN_TOKEN && secretKey === context.env.ADMIN_TOKEN) {
+        isAuthorized = true;
+        shouldSetStealthCookie = true;
+      } else if (/^[a-f0-9]{32,128}$/i.test(secretKey) && context.env && context.env.POSTS_KV) {
+        try {
+          const t = await context.env.POSTS_KV.get('auth:token:' + secretKey);
+          if (t) {
+            isAuthorized = true;
+            shouldSetStealthCookie = true;
+          }
+        } catch (_) {}
+      }
+    }
+
+    // B) Cookie yoki mavjud admin sessiyasi orqali tekshirish
+    if (!isAuthorized) {
+      if (cookies.kay_stealth_pass === '1' || cookies.kay_admin_token) {
+        isAuthorized = true;
+      } else if (cookies.abdu_session_token && context.env && context.env.POSTS_KV) {
+        try {
+          const raw = await context.env.POSTS_KV.get('session:' + cookies.abdu_session_token);
+          if (raw) {
+            const data = JSON.parse(raw);
+            const adminUsers = ['abdugofforov', 'admin'];
+            if (data && data.username && adminUsers.includes(String(data.username).toLowerCase())) {
+              isAuthorized = true;
+            }
+          }
+        } catch (_) {}
+      } else {
+        try {
+          if (await isAdmin(context.env, context.request)) {
+            isAuthorized = true;
+          }
+        } catch (_) {}
+      }
+    }
+
+    // C) Ruxsat berilmagan bo'lsa -> Qat'iy 403 Forbidden qaytariladi
+    if (!isAuthorized) {
+      if (isKayScript) {
+        return new Response('// 403 Forbidden: Unauthorized access.', {
+          status: 403,
+          headers: {
+            'Content-Type': 'application/javascript; charset=utf-8',
+            'X-Robots-Tag': 'noindex, nofollow, noarchive'
+          }
+        });
+      }
+
+      return new Response(FORBIDDEN_HTML, {
+        status: 403,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'X-Robots-Tag': 'noindex, nofollow, noarchive',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, private'
+        }
+      });
+    }
+
+    // D) Agar ruxsat berilgan bo'lsa va /kay sahifasi bo'lsa
+    if (isKayPath) {
+      const resp = await context.env.ASSETS.fetch(new URL('/kay.html', context.request.url));
+      const modifiedResp = new Response(resp.body, resp);
+      if (shouldSetStealthCookie) {
+        const isSecure = url.protocol === 'https:';
+        modifiedResp.headers.append(
+          'Set-Cookie',
+          `kay_stealth_pass=1; Path=/; Max-Age=2592000; SameSite=Lax${isSecure ? '; Secure' : ''}`
+        );
+      }
+      return applySecurityHeaders(modifiedResp, context, url);
+    }
+  }
+
 
   // 1. Subdomain routing: deutsch.abdugofforov.uz -> serve deutsch.html
   if (url.hostname.startsWith('deutsch.') || url.searchParams.get('subdomain') === 'deutsch') {

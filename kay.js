@@ -86,9 +86,24 @@ function updateThemeToggleUI(theme) {
 // DOM tayyor bo'lgach admin holatini tekshiramiz
 async function initKay() {
     initAdminTheme();
-    // 1. URL orqali token uzatilgan bo'lsa (Magic Gate redirect yoki havola)
+    // 1. URL orqali token yoki PIN/kalit uzatilgan bo'lsa (Stealth Gate redirect yoki havola)
     const params = new URLSearchParams(window.location.search);
     const urlToken = params.get('token');
+    const urlKey = params.get('key') || params.get('pin') || params.get('secret') || params.get('gate');
+
+    if (urlKey) {
+        const pinInputEl = document.getElementById('pin-input');
+        if (pinInputEl) pinInputEl.value = urlKey;
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        document.documentElement.style.display = '';
+        showPinScreen();
+        setTimeout(() => {
+            if (typeof tryLogin === 'function') tryLogin();
+        }, 150);
+        return;
+    }
 
     if (urlToken) {
         try {
@@ -509,6 +524,14 @@ async function triggerPanicLogout() {
         localStorage.removeItem('kay_admin_token');
         localStorage.removeItem('kay_admin_pin');
         localStorage.removeItem('abdu_user_token');
+
+        // Stealth pass va avtorizatsiya cookielarini tozalash
+        try {
+            const domain = (window.location.hostname.endsWith('abdugofforov.uz')) ? '; Domain=.abdugofforov.uz' : '';
+            document.cookie = `kay_stealth_pass=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/${domain}`;
+            document.cookie = `kay_admin_token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/${domain}`;
+            document.cookie = `abdu_session_token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/${domain}`;
+        } catch (_) {}
 
         // Serverda sessiyani bekor qilish
         try {

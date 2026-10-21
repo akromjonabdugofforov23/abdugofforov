@@ -436,3 +436,147 @@ export async function getTelegramConfig(env) {
     isConfigured: Boolean(botToken && (channelId || adminChatId))
   };
 }
+
+// Cookie sarlavhasini tahlil qilish (parse)
+export function parseCookies(header) {
+  const map = {};
+  if (!header) return map;
+  const parts = header.split(';');
+  for (const p of parts) {
+    const idx = p.indexOf('=');
+    if (idx > -1) {
+      const key = p.slice(0, idx).trim();
+      const val = p.slice(idx + 1).trim();
+      if (key) {
+        try {
+          map[key] = decodeURIComponent(val);
+        } catch (_) {
+          map[key] = val;
+        }
+      }
+    }
+  }
+  return map;
+}
+
+// 403 Forbidden HTML sahifasi shabloni (Stealth Shield)
+export const FORBIDDEN_HTML = `<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 Forbidden — Kirish Taqiqlangan</title>
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <link rel="icon" type="image/svg+xml" href="/icon.svg">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #07111c;
+            color: #f0f6fc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: 
+                radial-gradient(ellipse 60% 50% at 50% 0%, rgba(244, 63, 94, 0.15) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 50% at 50% 100%, rgba(14, 165, 233, 0.08) 0%, transparent 70%);
+        }
+        .forbidden-card {
+            background: rgba(14, 30, 48, 0.85);
+            border: 1px solid rgba(244, 63, 94, 0.35);
+            border-radius: 20px;
+            padding: 44px 36px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(244, 63, 94, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .shield-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(225, 29, 72, 0.05));
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 0 20px rgba(244, 63, 94, 0.25);
+        }
+        .status-badge {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #f43f5e;
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            padding: 4px 14px;
+            border-radius: 999px;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+        p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #9cb3c9;
+            margin-bottom: 28px;
+        }
+        .btn-home {
+            display: inline-block;
+            width: 100%;
+            padding: 13px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            border: none;
+            border-radius: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+        }
+        .btn-home:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 22px rgba(37, 99, 235, 0.45);
+        }
+        .meta-notice {
+            margin-top: 24px;
+            font-size: 11px;
+            color: #627d98;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="forbidden-card">
+        <div class="shield-icon">🛡️</div>
+        <div class="status-badge">403 Forbidden</div>
+        <h1>Kirish Taqiqlangan</h1>
+        <p>Ushbu boshqaruv qismiga to'g'ridan-to'g'ri kirish cheklangan. Tizim xavfsizlik protokoli tomonidan so'rov bloklandi.</p>
+        <a href="/" class="btn-home">← Asosiy sahifaga qaytish</a>
+        <div class="meta-notice">Security Shield: Access Denied</div>
+    </div>
+</body>
+</html>`;
+
+
+
