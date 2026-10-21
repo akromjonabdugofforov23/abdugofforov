@@ -370,6 +370,9 @@
                 if (typeof window.updateAuthUI === 'function' && window.updateAuthUI !== this.updateUIState) {
                     try { window.updateAuthUI(); } catch (uiErr) {}
                 }
+                try {
+                    window.dispatchEvent(new CustomEvent('auth:state-change', { detail: { isLoggedIn: this.isLoggedIn(), user: this.user } }));
+                } catch (_) {}
             } catch (e) {
                 console.error("UI state update error:", e);
             }

@@ -533,5 +533,25 @@ function handleMagicGate(req, res) {
 router.get('/magic-gate', handleMagicGate);
 router.post('/magic-gate', handleMagicGate);
 
+// 7. FOYDALANUVCHILAR VA SAHIFA FAOLLIGI (PRESENCE / ONLINE)
+// ============================================================
+router.post('/presence', (req, res) => {
+    const token = req.headers['x-user-token'];
+    const page = String(req.body?.page || 'deutsch').slice(0, 30);
+    let username = null;
+    if (token) {
+        const u = db.findOne('users', x => x.token === token);
+        if (u) username = u.username;
+    }
+    const stats = db.recordPresence(username, page);
+    res.json({ ok: true, stats });
+});
+
+router.get('/presence', (req, res) => {
+    const page = String(req.query?.page || 'deutsch').slice(0, 30);
+    const stats = db.getPresenceStats(page);
+    res.json({ ok: true, stats });
+});
+
 module.exports = router;
 

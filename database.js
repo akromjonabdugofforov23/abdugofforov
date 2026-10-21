@@ -207,10 +207,43 @@ class Database {
         return limit ? sorted.slice(0, limit) : sorted;
     }
 
+    // Foydalanuvchi faolligini qayd etish (Presence / Online status)
+    recordPresence(username, page = 'deutsch') {
+        if (username) {
+            const user = this.findOne('users', u => u.username && u.username.toLowerCase() === String(username).toLowerCase());
+            if (user) {
+                this.update('users', user.id, {
+                    lastSeen: Date.now(),
+                    lastPage: String(page || 'deutsch').slice(0, 30)
+                });
+            }
+        }
+        return this.getPresenceStats(page);
+    }
+
+    // Faol foydalanuvchilar soni statistikasi
+    getPresenceStats(page = 'deutsch') {
+        const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
+        const users = this.getCollection('users');
+        const activeOnPage = users.filter(u => u.lastSeen && u.lastSeen > fiveMinutesAgo && (!page || u.lastPage === page)).length;
+        const totalActive = users.filter(u => u.lastSeen && u.lastSeen > fiveMinutesAgo).length;
+        return {
+            activeOnPage: Math.max(1, activeOnPage),
+            totalActive: Math.max(1, totalActive),
+            totalUsers: users.length
+        };
+    }
+
     // Statistika hisoblash
     getStats() {
+        const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
+        const users = this.getCollection('users');
+        const activeDeutschCount = users.filter(u => u.lastSeen && u.lastSeen > fiveMinutesAgo && u.lastPage === 'deutsch').length;
+        const activeUsersCount = users.filter(u => u.lastSeen && u.lastSeen > fiveMinutesAgo).length;
         return {
-            usersCount: this.getCollection('users').length,
+            usersCount: users.length,
+            activeUsersCount: Math.max(1, activeUsersCount),
+            activeDeutschCount: Math.max(1, activeDeutschCount),
             postsCount: this.getCollection('posts').length,
             projectsCount: this.getCollection('projects').length,
             quotesCount: this.getCollection('quotes').length,

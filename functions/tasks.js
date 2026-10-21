@@ -9,12 +9,6 @@ import { jsonResponse, corsHeaders, isAdmin, rateLimit, tooManyRequests } from '
 
 const KV_TASKS_KEY = 'tasks:list';
 
-const DEFAULT_TASKS = [
-  { id: 'task-1', title: 'Deutsch Akademiya B2 grammatika modulini yangilash', status: 'progress', createdAt: Date.now() - 86400000 },
-  { id: 'task-2', title: "O'quvchilar o'rtasida haftalik grammatika turnirini boshlash", status: 'todo', createdAt: Date.now() - 43200000 },
-  { id: 'task-3', title: 'Sayt xavfsizligini A+ darajasiga chiqarish va CSP ni sozlash', status: 'done', createdAt: Date.now() - 172800000 }
-];
-
 export async function onRequestOptions(context) {
   return new Response(null, { headers: corsHeaders(context.request, context.env) });
 }
@@ -46,11 +40,11 @@ async function getStoredTasks(env) {
       const raw = await env.POSTS_KV.get(KV_TASKS_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch (_) {}
   }
-  return [...DEFAULT_TASKS];
+  return [];
 }
 
 // GET /tasks

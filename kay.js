@@ -586,7 +586,7 @@ async function loadDashboardAndRealData(forceRefresh = false) {
 
         if (tasksRes && tasksRes.ok) {
             const tData = await tasksRes.json().catch(() => ({}));
-            if (tData.ok && Array.isArray(tData.tasks) && tData.tasks.length) {
+            if (tData.ok && Array.isArray(tData.tasks)) {
                 try { localStorage.setItem('abdu_tasks', JSON.stringify(tData.tasks)); } catch (_) {}
             }
         }
@@ -1039,29 +1039,37 @@ async function handleResetPasswordSubmit(e) {
 }
 
 // ===== INTERAKTIV REJALAR (TASKS) =====
+// Server va frontend status nomlarini sinxronlashtirish
+function normalizeTaskStatus(status) {
+    const map = { 'in_progress': 'progress', 'completed': 'done', 'pending': 'todo' };
+    return map[status] || status || 'todo';
+}
+function toServerStatus(status) {
+    const map = { 'progress': 'in_progress', 'done': 'completed' };
+    return map[status] || status || 'todo';
+}
+function normalizeTasks(tasks) {
+    if (!Array.isArray(tasks)) return [];
+    return tasks.map(t => ({ ...t, status: normalizeTaskStatus(t.status) }));
+}
+
 function getTasks() {
     const raw = localStorage.getItem('abdu_tasks');
     if (raw) {
         try {
             const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed) && parsed.length) return parsed;
+            if (Array.isArray(parsed)) return normalizeTasks(parsed);
         } catch (e) {
             // parse error
         }
     }
-
-    // Dastlabki namunaviy rejalar
-    const defaultTasks = [
-        { id: 1, title: 'B1 darajasi uchun yangi nemis tili testlari kiritish', status: 'progress', createdAt: Date.now() - 86400000 },
-        { id: 2, title: "O'quvchilar o'rtasida haftalik grammatika turnirini boshlash", status: 'todo', createdAt: Date.now() - 43200000 },
-        { id: 3, title: 'Sayt xavfsizligini A+ darajasiga chiqarish va CSP ni sozlash', status: 'done', createdAt: Date.now() - 172800000 }
-    ];
-    localStorage.setItem('abdu_tasks', JSON.stringify(defaultTasks));
-    return defaultTasks;
+    // Bo'sh massiv qaytarish — hardcoded default rejalar yo'q
+    return [];
 }
 
 function saveTasks(tasks) {
-    localStorage.setItem('abdu_tasks', JSON.stringify(tasks));
+    const normalized = normalizeTasks(tasks);
+    localStorage.setItem('abdu_tasks', JSON.stringify(normalized));
 }
 
 function loadTasks() {
@@ -1149,7 +1157,7 @@ async function cycleTaskStatus(id) {
     saveTasks(tasks);
     loadTasks();
 
-    const payload = { id: task.id, status: task.status, title: task.title };
+    const payload = { id: task.id, status: toServerStatus(task.status), title: task.title };
     try {
         const res = await safeAdminFetch(
             `/api/admin/tasks/${encodeURIComponent(task.id)}`,
@@ -1258,7 +1266,7 @@ document.getElementById('admin-task-form')?.addEventListener('submit', async e =
             saveTasks(tasks);
             loadTasks();
 
-            const payload = { id: editId, title, status };
+            const payload = { id: editId, title, status: toServerStatus(status) };
             try {
                 const res = await safeAdminFetch(
                     `/api/admin/tasks/${encodeURIComponent(editId)}`,
@@ -1293,6 +1301,8 @@ document.getElementById('admin-task-form')?.addEventListener('submit', async e =
         saveTasks(tasks);
         loadTasks();
 
+        // Serverga yuborishda statusni server formatiga o'girish
+        const serverPayload = { ...newTaskItem, status: toServerStatus(status) };
         try {
             const res = await safeAdminFetch(
                 '/api/admin/tasks',
@@ -1300,7 +1310,7 @@ document.getElementById('admin-task-form')?.addEventListener('submit', async e =
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newTaskItem)
+                    body: JSON.stringify(serverPayload)
                 }
             );
             if (res && res.ok) {

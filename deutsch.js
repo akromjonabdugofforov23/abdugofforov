@@ -1217,10 +1217,268 @@ window.runDataClickAction = runDataClickAction;
         }
     }
 
+
+    // ============================================================
+    // DEUTSCH AUTH GATE & LIVE PRESENCE TRACKING
+    // ============================================================
+    function initDeutschAuthGate() {
+        const wall = document.getElementById('deutsch-auth-wall');
+        if (!wall) return;
+
+        const tabLogin = document.getElementById('wall-tab-login');
+        const tabRegister = document.getElementById('wall-tab-register');
+        const formLogin = document.getElementById('wall-login-form');
+        const formRegister = document.getElementById('wall-register-form');
+
+        const inputLoginUser = document.getElementById('wall-login-username');
+        const inputLoginPass = document.getElementById('wall-login-password');
+        const errLogin = document.getElementById('wall-login-error');
+        const btnLogin = document.getElementById('wall-login-submit');
+
+        const inputRegName = document.getElementById('wall-reg-name');
+        const inputRegUser = document.getElementById('wall-reg-username');
+        const inputRegPass = document.getElementById('wall-reg-password');
+        const errReg = document.getElementById('wall-reg-error');
+        const btnReg = document.getElementById('wall-reg-submit');
+
+        const linkToReg = document.getElementById('wall-link-to-register');
+        const linkToLogin = document.getElementById('wall-link-to-login');
+
+        const liveActiveEls = [document.getElementById('deutsch-live-active'), document.getElementById('wall-live-active')];
+        const liveTotalEls = [document.getElementById('deutsch-live-total'), document.getElementById('wall-live-total')];
+
+        let presenceInterval = null;
+
+        function updatePresenceUI(stats) {
+            if (!stats) return;
+            const active = stats.activeOnPage || stats.totalActive || 1;
+            const total = stats.totalUsers || stats.totalLearners || '—';
+            liveActiveEls.forEach(el => { if (el) el.textContent = active; });
+            liveTotalEls.forEach(el => { if (el) el.textContent = total; });
+        }
+
+        async function fetchPresenceStats() {
+            try {
+                const res = await fetch('/auth/presence?page=deutsch');
+                const data = await res.json().catch(() => ({}));
+                if (data.ok && data.stats) {
+                    updatePresenceUI(data.stats);
+                }
+            } catch (_) {}
+        }
+
+        async function sendPresenceHeartbeat() {
+            if (!window.Auth || !window.Auth.isLoggedIn()) return;
+            try {
+                const res = await fetch('/auth/presence', {
+                    method: 'POST',
+                    headers: typeof window.Auth._headers === 'function' ? window.Auth._headers() : { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ page: 'deutsch' })
+                });
+                const data = await res.json().catch(() => ({}));
+                if (data.ok && data.stats) {
+                    updatePresenceUI(data.stats);
+                }
+            } catch (_) {}
+        }
+
+        function startPresenceTracker() {
+            if (presenceInterval) clearInterval(presenceInterval);
+            sendPresenceHeartbeat();
+            presenceInterval = setInterval(sendPresenceHeartbeat, 45000);
+        }
+
+        function stopPresenceTracker() {
+            if (presenceInterval) clearInterval(presenceInterval);
+            presenceInterval = null;
+        }
+
+        function unlockPage(userName) {
+            document.documentElement.classList.remove('deutsch-auth-required');
+            document.body.classList.remove('deutsch-locked');
+            wall.style.display = 'none';
+            document.body.style.overflow = '';
+            startPresenceTracker();
+            if (userName && window.notifyToast) {
+                window.notifyToast("Xush kelibsiz, " + userName + "! Darslar ochildi 🇩🇪", 'success');
+            }
+        }
+
+        function lockPage() {
+            document.documentElement.classList.add('deutsch-auth-required');
+            document.body.classList.add('deutsch-locked');
+            wall.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            stopPresenceTracker();
+            fetchPresenceStats();
+        }
+
+        function checkGate() {
+            if (window.Auth && window.Auth.isLoggedIn()) {
+                unlockPage();
+            } else {
+                lockPage();
+            }
+        }
+
+        // Tab almashtirish
+        function showLoginTab() {
+            if (tabLogin) tabLogin.classList.add('active');
+            if (tabRegister) tabRegister.classList.remove('active');
+            if (formLogin) formLogin.style.display = 'block';
+            if (formRegister) formRegister.style.display = 'none';
+            if (errLogin) errLogin.style.display = 'none';
+        }
+
+        function showRegisterTab() {
+            if (tabRegister) tabRegister.classList.add('active');
+            if (tabLogin) tabLogin.classList.remove('active');
+            if (formRegister) formRegister.style.display = 'block';
+            if (formLogin) formLogin.style.display = 'none';
+            if (errReg) errReg.style.display = 'none';
+        }
+
+        if (tabLogin) tabLogin.addEventListener('click', showLoginTab);
+        if (tabRegister) tabRegister.addEventListener('click', showRegisterTab);
+        if (linkToReg) linkToReg.addEventListener('click', (e) => { e.preventDefault(); showRegisterTab(); });
+        if (linkToLogin) linkToLogin.addEventListener('click', (e) => { e.preventDefault(); showLoginTab(); });
+
+        // Kirish formasi submit
+        if (formLogin) {
+            formLogin.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (errLogin) errLogin.style.display = 'none';
+                const username = inputLoginUser ? inputLoginUser.value.trim() : '';
+                const password = inputLoginPass ? inputLoginPass.value : '';
+
+                if (!username || !password) {
+                    if (errLogin) {
+                        errLogin.textContent = "Username va parolni kiriting";
+                        errLogin.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (btnLogin) {
+                    btnLogin.disabled = true;
+                    btnLogin.textContent = "Tekshirilmoqda...";
+                }
+
+                try {
+                    const res = await window.Auth.login(username, password);
+                    if (res && res.ok) {
+                        const name = res.user?.name || username;
+                        unlockPage(name);
+                    } else {
+                        if (errLogin) {
+                            errLogin.textContent = (res && (res.error || res.message)) ? (res.error || res.message) : "Username yoki parol noto'g'ri";
+                            errLogin.style.display = 'block';
+                        }
+                    }
+                } catch (err) {
+                    if (errLogin) {
+                        errLogin.textContent = "Tarmoq xatosi. Qaytadan urinib ko'ring.";
+                        errLogin.style.display = 'block';
+                    }
+                } finally {
+                    if (btnLogin) {
+                        btnLogin.disabled = false;
+                        btnLogin.textContent = "🚀 Tizimga kirish";
+                    }
+                }
+            });
+        }
+
+        // Ro'yxatdan o'tish formasi submit
+        if (formRegister) {
+            formRegister.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (errReg) errReg.style.display = 'none';
+                const name = inputRegName ? inputRegName.value.trim() : '';
+                const username = inputRegUser ? inputRegUser.value.trim().toLowerCase() : '';
+                const password = inputRegPass ? inputRegPass.value : '';
+
+                if (!name || name.length < 2) {
+                    if (errReg) {
+                        errReg.textContent = "Ism kamida 2 ta belgidan iborat bo'lishi kerak";
+                        errReg.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (!/^[a-z0-9_]{3,20}$/.test(username)) {
+                    if (errReg) {
+                        errReg.textContent = "Username 3-20 ta belgi (faqat kichik harf, raqam va _)";
+                        errReg.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (password.length < 8) {
+                    if (errReg) {
+                        errReg.textContent = "Parol kamida 8 ta belgidan iborat bo'lishi kerak";
+                        errReg.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (btnReg) {
+                    btnReg.disabled = true;
+                    btnReg.textContent = "Ro'yxatdan o'tkazilmoqda...";
+                }
+
+                try {
+                    const res = await window.Auth.register(name, username, password);
+                    if (res && res.ok) {
+                        unlockPage(name);
+                    } else {
+                        if (errReg) {
+                            errReg.textContent = (res && (res.error || res.message)) ? (res.error || res.message) : "Ro'yxatdan o'tishda xatolik";
+                            errReg.style.display = 'block';
+                        }
+                    }
+                } catch (err) {
+                    if (errReg) {
+                        errReg.textContent = "Tarmoq xatosi. Qaytadan urinib ko'ring.";
+                        errReg.style.display = 'block';
+                    }
+                } finally {
+                    if (btnReg) {
+                        btnReg.disabled = false;
+                        btnReg.textContent = "✨ Bepul Ro'yxatdan O'tish";
+                    }
+                }
+            });
+        }
+
+        // Auth holati o'zgarganda tekshirish
+        window.addEventListener('auth:state-change', (e) => {
+            if (e.detail && e.detail.isLoggedIn) {
+                unlockPage(e.detail.user?.name);
+            } else {
+                lockPage();
+            }
+        });
+
+        // Dastlabki tekshiruv
+        if (window.Auth && typeof window.Auth.restore === 'function') {
+            window.Auth.restore().then(() => {
+                checkGate();
+            }).catch(() => {
+                checkGate();
+            });
+        } else {
+            checkGate();
+        }
+
+        fetchPresenceStats();
+    }
+
     // Boot
     document.addEventListener('DOMContentLoaded', () => {
         initBackToMain();
         initCarousel();
         applyRoute();
+        initDeutschAuthGate();
     });
 })();

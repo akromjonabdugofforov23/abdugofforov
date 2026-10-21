@@ -28,8 +28,90 @@
     <noscript>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap">
     </noscript>
+    <!-- Deutsch Majburiy Autentifikatsiya Ilk Tekshiruvi (FOUC oldini olish) -->
+    <script>
+        (function() {
+            try {
+                var token = localStorage.getItem('abdu_user_token');
+                var cookieMatch = document.cookie.match(/(?:^|;\s*)abdu_session_token=([^;]+)/);
+                var isAdmin = sessionStorage.getItem('kay_admin') === 'true';
+                if (!token && !cookieMatch && !isAdmin) {
+                    document.documentElement.classList.add('deutsch-auth-required');
+                }
+            } catch (_) {}
+        })();
+    </script>
 </head>
 <body>
+    <!-- ===== DEUTSCH AKADEMIYASI — MAJBURIY AUTH DEVORI (AUTH WALL) ===== -->
+    <div id="deutsch-auth-wall" class="deutsch-auth-wall" role="dialog" aria-modal="true" aria-labelledby="auth-wall-title">
+        <div class="auth-wall-card">
+            <div class="auth-wall-flag-box" aria-hidden="true">🇩🇪</div>
+            <div class="auth-wall-badge">🔒 Nemis Tili Akademiyasi — Kirish Talab Qilinadi</div>
+            <h1 class="auth-wall-title" id="auth-wall-title">Nemis Tili Darslariga Xush Kelibsiz!</h1>
+            <p class="auth-wall-subtitle">Barcha A1–B2 darslari, interaktiv audio mashg'ulotlar, tandem muloqot va testlardan foydalanish uchun tizimga kiring yoki ro'yxatdan o'ting.</p>
+            
+            <div class="auth-wall-info-box">
+                <span style="font-size:18px;">👥</span>
+                <span>Saytdagi o'quvchilar sonini hisobga olish va test natijalaringizni shaxsiy kabinetingizda saqlash uchun autentifikatsiya zarur.</span>
+            </div>
+
+            <div class="auth-wall-presence-chip" id="auth-wall-presence-chip">
+                <span>🟢 <strong id="wall-live-active">1</strong> nafar faol o'quvchi</span>
+                <span>•</span>
+                <span>📚 <strong id="wall-live-total">...</strong> ta ro'yxatdan o'tgan</span>
+            </div>
+
+            <div class="auth-wall-tabs">
+                <button type="button" class="auth-wall-tab-btn active" id="wall-tab-login">🔑 Tizimga kirish</button>
+                <button type="button" class="auth-wall-tab-btn" id="wall-tab-register">📝 Ro'yxatdan o'tish</button>
+            </div>
+
+            <!-- Kirish Formasi -->
+            <form class="auth-wall-form" id="wall-login-form">
+                <div class="form-group">
+                    <label for="wall-login-username">Username</label>
+                    <input type="text" id="wall-login-username" class="form-input" placeholder="masalan: akrom" autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="wall-login-password">Parol</label>
+                    <input type="password" id="wall-login-password" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+                </div>
+                <div class="auth-wall-error" id="wall-login-error"></div>
+                <button type="submit" class="auth-wall-submit" id="wall-login-submit">🚀 Tizimga kirish</button>
+                <div style="margin-top:12px; font-size:12.5px; color:#94a3b8;">
+                    Akkauntingiz yo'qmi? <a href="#" id="wall-link-to-register" style="color:#2dd4bf; text-decoration:none; font-weight:600;">Ro'yxatdan o'ting →</a>
+                </div>
+            </form>
+
+            <!-- Ro'yxatdan O'tish Formasi -->
+            <form class="auth-wall-form" id="wall-register-form" style="display:none;">
+                <div class="form-group">
+                    <label for="wall-reg-name">Ismingiz va familiyangiz</label>
+                    <input type="text" id="wall-reg-name" class="form-input" placeholder="Masalan: Akromjon" autocomplete="name" maxlength="50" required>
+                </div>
+                <div class="form-group">
+                    <label for="wall-reg-username">Username</label>
+                    <input type="text" id="wall-reg-username" class="form-input" placeholder="kamida 3 ta belgi (a-z, 0-9, _)" autocomplete="username" maxlength="20" required>
+                </div>
+                <div class="form-group">
+                    <label for="wall-reg-password">Parol</label>
+                    <input type="password" id="wall-reg-password" class="form-input" placeholder="Kamida 8 ta belgi" autocomplete="new-password" minlength="8" required>
+                </div>
+                <div class="auth-wall-error" id="wall-reg-error"></div>
+                <button type="submit" class="auth-wall-submit" id="wall-reg-submit">✨ Bepul Ro'yxatdan O'tish</button>
+                <div style="margin-top:12px; font-size:12.5px; color:#94a3b8;">
+                    Allaqachon akkauntingiz bormi? <a href="#" id="wall-link-to-login" style="color:#38bdf8; text-decoration:none; font-weight:600;">Kiring →</a>
+                </div>
+            </form>
+
+            <div class="auth-wall-footer">
+                <a href="https://abdugofforov.uz" class="auth-wall-back-link">
+                    <span>←</span> 🏠 Asosiy saytga qaytish
+                </a>
+            </div>
+        </div>
+    </div>
     <!-- 3D Interaktiv Kosmik Neyron To'lqinlar (Orqa Fondagi 3D Dvigatel) -->
     
 
@@ -82,6 +164,14 @@
             </div>
         </div>
     </nav>
+
+        <!-- Jonli Faol O'quvchilar Ko'rsatkichi -->
+    <div class="deutsch-presence-bar" id="deutsch-presence-bar">
+        <span class="deutsch-presence-dot" aria-hidden="true"></span>
+        <span>Hozirda <strong id="deutsch-live-active">1</strong> nafar o'quvchi o'rganmoqda</span>
+        <span style="opacity:0.4;">|</span>
+        <span>Jami <strong id="deutsch-live-total">...</strong> ta nemis tili o'quvchisi</span>
+    </div>
 
     <!-- Germany Carousel -->
     <section class="germany-carousel" id="germany-carousel" style="margin-top: 18px;">
