@@ -31,13 +31,165 @@
         }
 
         [data-theme="light"] {
-            --tools-accent: #4f46e5;
-            --tools-accent-hover: #4338ca;
-            --tools-accent-glow: rgba(79, 70, 229, 0.2);
-            --tools-surface: rgba(255, 255, 255, 0.92);
-            --tools-border: rgba(0, 0, 0, 0.08);
-            --tools-border-hover: rgba(79, 70, 229, 0.35);
-            --tools-card-bg: rgba(248, 250, 252, 0.85);
+            --tools-accent: #2563eb;
+            --tools-accent-hover: #1d4ed8;
+            --tools-accent-glow: rgba(37, 99, 235, 0.25);
+            --tools-surface: rgba(255, 255, 255, 0.95);
+            --tools-border: rgba(203, 213, 225, 0.85);
+            --tools-border-hover: rgba(37, 99, 235, 0.45);
+            --tools-card-bg: #ffffff;
+            --bg-color: #f0f4f9;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --shadow-md: 0 10px 30px -4px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+        }
+
+        /* Kunduzgi rejim (Light Mode) — Yorqin, kontrastli va zamonaviy uslub */
+        [data-theme="light"] body {
+            background-color: #f0f4f9;
+            background-image: 
+                radial-gradient(circle at 10% 8%, rgba(37, 99, 235, 0.08), transparent 35%),
+                radial-gradient(circle at 90% 12%, rgba(124, 58, 237, 0.06), transparent 40%),
+                radial-gradient(circle at 50% 85%, rgba(203, 213, 225, 0.35), transparent 60%);
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .tools-header {
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom-color: rgba(203, 213, 225, 0.85);
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        [data-theme="light"] .eco-link {
+            color: #334155;
+        }
+        [data-theme="light"] .eco-link:hover, [data-theme="light"] .eco-link.active {
+            color: #0f172a;
+            background: rgba(241, 245, 249, 0.9);
+        }
+
+        [data-theme="light"] .tool-tab-btn {
+            background: #ffffff;
+            border-color: rgba(203, 213, 225, 0.9);
+            color: #334155;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+        }
+        [data-theme="light"] .tool-tab-btn:hover {
+            color: #0f172a;
+            border-color: #94a3b8;
+            background: #f8fafc;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+        }
+        [data-theme="light"] .tool-tab-btn.active {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            border-color: #2563eb !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35) !important;
+        }
+
+        [data-theme="light"] .tool-panel {
+            background: #ffffff !important;
+            border: 1px solid rgba(226, 232, 240, 0.95) !important;
+            box-shadow: 0 10px 32px -4px rgba(15, 23, 42, 0.08), inset 0 1px 0 #ffffff !important;
+        }
+
+        [data-theme="light"] .tool-btn {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #0f172a;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+        }
+        [data-theme="light"] .tool-btn:hover {
+            background: #f0f7ff;
+            border-color: #2563eb;
+            color: #1d4ed8;
+        }
+        [data-theme="light"] .tool-btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            border-color: #2563eb !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
+        }
+        [data-theme="light"] .tool-btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+        }
+
+        [data-theme="light"] .tool-textarea {
+            background: #f8fafc !important;
+            border: 1.5px solid #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+        [data-theme="light"] .tool-textarea:focus {
+            background: #ffffff !important;
+            border-color: #2563eb !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        [data-theme="light"] .dropzone {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        [data-theme="light"] .dropzone:hover, [data-theme="light"] .dropzone.dragover {
+            background: #eff6ff;
+            border-color: #2563eb;
+        }
+
+        [data-theme="light"] .preview-card {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        [data-theme="light"] .preview-img-container {
+            background: #e2e8f0;
+        }
+
+        [data-theme="light"] .slider-control {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .diff-result-wrap {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        [data-theme="light"] .diff-added {
+            background: rgba(34, 197, 94, 0.15);
+            color: #15803d;
+        }
+        [data-theme="light"] .diff-removed {
+            background: rgba(239, 68, 68, 0.15);
+            color: #b91c1c;
+        }
+        [data-theme="light"] .diff-unchanged {
+            color: #475569;
+        }
+
+        /* Converter va natija qutilari */
+        [data-theme="light"] .converter-box {
+            background: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+        [data-theme="light"] #spell-metrics-bar {
+            background: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+            color: #334155 !important;
+        }
+        [data-theme="light"] #tools-search-modal .tools-search-card {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18) !important;
+        }
+        [data-theme="light"] #tools-search-input {
+            background: #f8fafc !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+        [data-theme="light"] .tools-search-result-item:hover {
+            background: #f1f5f9 !important;
         }
 
         body {

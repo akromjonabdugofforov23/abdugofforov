@@ -27,8 +27,65 @@ function showToast(message, type = 'info') {
 }
 window.showToast = showToast;
 
+// Mavzuni boshqarish (Kunduzgi / Tungi rejim sinxronizatsiyasi)
+function initAdminTheme() {
+    const savedTheme = localStorage.getItem('kay_theme') || localStorage.getItem('abdu_theme') || localStorage.getItem('abdugofforov_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeToggleUI(savedTheme);
+
+    const toggleBtn = document.getElementById('admin-theme-toggle');
+    if (toggleBtn && !toggleBtn._bound) {
+        toggleBtn._bound = true;
+        toggleBtn.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('kay_theme', next);
+            localStorage.setItem('abdu_theme', next);
+            localStorage.setItem('abdugofforov_theme', next);
+            updateThemeToggleUI(next);
+            showToast(next === 'light' ? '☀️ Kunduzgi rejim yoqildi' : '🌙 Tungi rejim yoqildi', 'success');
+        });
+    }
+
+    const pinToggleBtn = document.getElementById('pin-theme-toggle');
+    if (pinToggleBtn && !pinToggleBtn._bound) {
+        pinToggleBtn._bound = true;
+        pinToggleBtn.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('kay_theme', next);
+            localStorage.setItem('abdu_theme', next);
+            localStorage.setItem('abdugofforov_theme', next);
+            updateThemeToggleUI(next);
+        });
+    }
+
+    if (!window._adminThemeStorageBound) {
+        window._adminThemeStorageBound = true;
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'abdu_theme' || e.key === 'kay_theme' || e.key === 'abdugofforov_theme') {
+                if (e.newValue) {
+                    document.documentElement.setAttribute('data-theme', e.newValue);
+                    updateThemeToggleUI(e.newValue);
+                }
+            }
+        });
+    }
+}
+
+function updateThemeToggleUI(theme) {
+    const iconSpan = document.getElementById('admin-theme-icon');
+    const pinIconSpan = document.getElementById('pin-theme-icon');
+    const icon = theme === 'light' ? '🌙' : '☀️';
+    if (iconSpan) iconSpan.textContent = icon;
+    if (pinIconSpan) pinIconSpan.textContent = icon;
+}
+
 // DOM tayyor bo'lgach admin holatini tekshiramiz
 async function initKay() {
+    initAdminTheme();
     // 1. URL orqali token uzatilgan bo'lsa (Magic Gate redirect yoki havola)
     const params = new URLSearchParams(window.location.search);
     const urlToken = params.get('token');

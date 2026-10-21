@@ -7,6 +7,16 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
 
+    <!-- Early Theme Guard -->
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('kay_theme') || localStorage.getItem('abdu_theme') || localStorage.getItem('abdugofforov_theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (_) {}
+        })();
+    </script>
+
     <!-- Google Fonts: Inter, Playfair Display & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,6 +57,242 @@
             --shadow-glow: 0 0 25px rgba(45, 212, 191, 0.25);
             
             --glz-sidebar: 270px;
+        }
+
+        /* ===== KUNDUZGI REJIM (LIGHT MODE) — YORQIN VA ZAMONAVIY GLASSMORHISM ===== */
+        [data-theme="light"] {
+            --bg-space: #f0f4f9;
+            --bg-deep: #e2e8f0;
+            --bg-card: rgba(255, 255, 255, 0.94);
+            --bg-card-hover: #ffffff;
+            --bg-card-solid: #ffffff;
+            --border-color: rgba(203, 213, 225, 0.85);
+            --border-subtle: rgba(226, 232, 240, 0.85);
+            --border-highlight: rgba(13, 148, 136, 0.4);
+            
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            
+            --accent-teal: #0d9488;
+            --accent-teal-glow: rgba(13, 148, 136, 0.25);
+            --accent-cyan: #0284c7;
+            --accent-cyan-glow: rgba(2, 132, 199, 0.25);
+            --accent-emerald: #059669;
+            --accent-amber: #d97706;
+            --accent-rose: #e11d48;
+            --accent-purple: #7c3aed;
+            
+            --shadow-glass: 0 10px 30px -4px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+            --shadow-glow: 0 0 20px rgba(13, 148, 136, 0.2);
+        }
+
+        [data-theme="light"] body {
+            background-color: #f0f4f9 !important;
+            background-image:
+                radial-gradient(circle at 10% 8%, rgba(13, 148, 136, 0.08), transparent 38%),
+                radial-gradient(circle at 92% 14%, rgba(2, 132, 199, 0.08), transparent 42%),
+                radial-gradient(circle at 50% 88%, rgba(5, 150, 105, 0.06), transparent 48%),
+                linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%) !important;
+            color: #0f172a !important;
+        }
+
+        [data-theme="light"] body::before {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+        }
+
+        [data-theme="light"] .glz-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-right-color: rgba(203, 213, 225, 0.85);
+            box-shadow: 4px 0 20px rgba(15, 23, 42, 0.04);
+        }
+
+        [data-theme="light"] .glz-topbar {
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom-color: rgba(203, 213, 225, 0.85);
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        [data-theme="light"] .glz-search input {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        [data-theme="light"] .glz-search input:focus {
+            background: #ffffff;
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        }
+
+        [data-theme="light"] .glz-nav-item {
+            color: #334155;
+            background: transparent;
+        }
+        [data-theme="light"] .glz-nav-item:hover {
+            color: var(--accent-teal);
+            background: rgba(13, 148, 136, 0.08);
+        }
+        [data-theme="light"] .glz-nav-item.active {
+            color: #0f766e;
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.14), rgba(2, 132, 199, 0.08));
+            border-left-color: var(--accent-teal);
+            font-weight: 600;
+        }
+
+        [data-theme="light"] .form-input,
+        [data-theme="light"] .form-textarea,
+        [data-theme="light"] .form-select {
+            background: #ffffff !important;
+            border: 1.5px solid #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+        [data-theme="light"] .form-input:focus,
+        [data-theme="light"] .form-textarea:focus,
+        [data-theme="light"] .form-select:focus {
+            background: #ffffff !important;
+            border-color: var(--accent-teal) !important;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.18) !important;
+        }
+
+        [data-theme="light"] .data-table-wrapper {
+            background: #ffffff;
+            border-color: rgba(203, 213, 225, 0.9);
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        }
+        [data-theme="light"] .cyber-table th {
+            background: #f8fafc;
+            color: #475569;
+            border-bottom-color: #cbd5e1;
+        }
+        [data-theme="light"] .cyber-table td {
+            color: #0f172a;
+            border-bottom-color: #f1f5f9;
+        }
+        [data-theme="light"] .cyber-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        [data-theme="light"] .btn-secondary {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #0f172a;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+        }
+        [data-theme="light"] .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .icon-btn {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        [data-theme="light"] .icon-btn:hover {
+            background: rgba(13, 148, 136, 0.1);
+            border-color: var(--accent-teal);
+            color: var(--accent-teal);
+        }
+
+        [data-theme="light"] .glz-ecosystem-box {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        [data-theme="light"] .ecosystem-link-btn {
+            background: #ffffff;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+        }
+        [data-theme="light"] .ecosystem-link-btn:hover {
+            background: rgba(13, 148, 136, 0.08);
+            color: var(--accent-teal);
+            border-color: var(--accent-teal);
+        }
+
+        [data-theme="light"] .pin-screen {
+            background: transparent;
+        }
+        [data-theme="light"] .pin-logo {
+            color: #0f172a;
+        }
+        [data-theme="light"] .pin-subtitle {
+            color: #475569;
+        }
+        [data-theme="light"] .pin-input-wrap input {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            color: #0f172a;
+        }
+        [data-theme="light"] .pin-input-wrap input:focus {
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.18);
+        }
+
+        [data-theme="light"] .dashboard-hero-card {
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.1), rgba(2, 132, 199, 0.08), #ffffff);
+            border: 1px solid rgba(203, 213, 225, 0.9);
+        }
+        [data-theme="light"] .dashboard-hero-info h2 {
+            color: #0f172a;
+        }
+        [data-theme="light"] .dashboard-hero-info p {
+            color: #475569;
+        }
+
+        [data-theme="light"] .stat-card {
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+        }
+        [data-theme="light"] .stat-card:hover {
+            box-shadow: 0 8px 26px rgba(15, 23, 42, 0.09);
+        }
+        [data-theme="light"] .stat-card-title {
+            color: #64748b;
+        }
+        [data-theme="light"] .stat-card-val {
+            color: #0f172a;
+        }
+        [data-theme="light"] .glz-page-head h1 {
+            color: #0f172a;
+        }
+        [data-theme="light"] .glz-breadcrumb {
+            color: #64748b;
+        }
+        [data-theme="light"] .glz-date-pill {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+        [data-theme="light"] .admin-modal-card {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.22) !important;
+        }
+        [data-theme="light"] .admin-modal-title {
+            color: #0f172a !important;
+        }
+        [data-theme="light"] .task-card {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        }
+        [data-theme="light"] .task-card-title {
+            color: #0f172a;
+        }
+        [data-theme="light"] .post-item-row {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+        [data-theme="light"] .post-item-row:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        [data-theme="light"] .post-item-title {
+            color: #0f172a;
         }
 
         * {
@@ -1547,6 +1793,11 @@
         <button class="btn-primary pin-btn" id="pin-submit-btn">🔐 Kirish</button>
         <div class="pin-attempts" id="pin-attempts"></div>
         <a href="/" class="pin-back">← Asosiy saytga qaytish</a>
+        <div style="margin-top: 14px;">
+            <button type="button" class="icon-btn theme-toggle" id="pin-theme-toggle" title="Mavzuni almashtirish (Kunduzgi / Tungi)" aria-label="Mavzu">
+                <span id="pin-theme-icon">☀️</span>
+            </button>
+        </div>
     </div>
 
     <!-- ===== 2. TELEGRAM 2FA TASDIQLASH EKRANI ===== -->
@@ -1639,6 +1890,9 @@
                     <input type="text" id="admin-search" placeholder="Qidirish (maqola, o'quvchi, loyiha, reja)...">
                 </div>
                 <div class="glz-topbar-actions">
+                    <button type="button" class="icon-btn theme-toggle" id="admin-theme-toggle" title="Mavzuni almashtirish (Kunduzgi / Tungi)" aria-label="Mavzu">
+                        <span id="admin-theme-icon">☀️</span>
+                    </button>
                     <button type="button" class="btn-secondary" id="dash-top-new-post-btn" data-action="goto-tab" data-tab="posts" style="font-size:12px;padding:7px 12px;">
                         ✍️ Yangi Post
                     </button>
