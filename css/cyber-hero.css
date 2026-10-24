@@ -19,7 +19,7 @@
 
 [data-theme="light"] #spatial-3d-canvas,
 [data-theme="light"] .spatial-bg-canvas {
-    opacity: 0.75;
+    opacity: 1 !important;
 }
 
 /* Mobilda (≤ 768px) 3D canvas butunlay yashiriladi — Zero-lag CSS gallaktika qoladi */

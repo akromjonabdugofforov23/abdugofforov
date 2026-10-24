@@ -553,5 +553,153 @@ router.get('/presence', (req, res) => {
     res.json({ ok: true, stats });
 });
 
+// 8. TELEGRAM AUTH (MINI APP & LOGIN WIDGET)
+// ============================================================
+function verifyTelegramWidgetHashNode(tgData, botToken) {
+    if (!botToken || !tgData || !tgData.hash) return false;
+    const { hash, ...data } = tgData;
+    const dataCheckString = Object.keys(data)
+        .filter(k => data[k] !== undefined && data[k] !== null && data[k] !== '')
+        .sort()
+        .map(k => `${k}=${data[k]}`)
+        .join('\n');
+    const secretKey = crypto.createHash('sha256').update(botToken).digest();
+    const calculatedHash = crypto.createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
+    try {
+        return crypto.timingSafeEqual(Buffer.from(calculatedHash, 'hex'), Buffer.from(String(hash), 'hex'));
+    } catch (_) {
+        return false;
+    }
+}
+
+function verifyTelegramMiniAppInitDataNode(initDataRaw, botToken) {
+    if (!botToken || !initDataRaw || typeof initDataRaw !== 'string') return null;
+    try {
+        const params = new URLSearchParams(initDataRaw);
+        const hash = params.get('hash');
+        if (!hash) return null;
+
+        const authDate = params.get('auth_date');
+        if (authDate) {
+            const authTime = parseInt(authDate, 10);
+            const nowSec = Math.floor(Date.now() / 1000);
+            if (isNaN(authTime) || Math.abs(nowSec - authTime) > 86400) {
+                return { error: "Eskirgan autentifikatsiya ma'lumoti" };
+            }
+        }
+
+        const pairs = [];
+        params.forEach((value, key) => {
+            if (key !== 'hash') pairs.push(`${key}=${value}`);
+        });
+        pairs.sort();
+        const dataCheckString = pairs.join('\n');
+
+        const secretKey = crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
+        const calculatedHash = crypto.createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
+
+        let isValid = false;
+        try {
+            isValid = crypto.timingSafeEqual(Buffer.from(calculatedHash, 'hex'), Buffer.from(hash, 'hex'));
+        } catch (_) {
+            isValid = false;
+        }
+        if (!isValid) return null;
+
+        let userObj = null;
+        const userStr = params.get('user');
+        if (userStr) {
+            try { userObj = JSON.parse(userStr); } catch (_) {}
+        }
+        return { isValid: true, user: userObj };
+    } catch (_) {
+        return null;
+    }
+}
+
+router.post('/telegram', (req, res) => {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN || '8618994977:AAHWWDfLHHmr4JhpxnNSMyWsu7OQfcYB6p4';
+    const body = req.body || {};
+    let tgUser = null;
+
+    // A) Telegram Mini App (initData)
+    if (body.initData && typeof body.initData === 'string') {
+        const verified = verifyTelegramMiniAppInitDataNode(body.initData, botToken);
+        if (!verified || !verified.isValid) {
+            return res.status(401).json({
+                ok: false,
+                message: verified?.error || "Telegram Mini App autentifikatsiyasi tasdiqlanmadi!"
+            });
+        }
+        tgUser = verified.user;
+        if (!tgUser) {
+            return res.status(400).json({ ok: false, message: "Telegram foydalanuvchi ma'lumoti topilmadi" });
+        }
+    } 
+    // B) Telegram Login Widget
+    else {
+        const tgData = body.user || body;
+        if (!tgData || (!tgData.id && !tgData.username && !tgData.first_name)) {
+            return res.status(400).json({ ok: false, message: "Telegram ma'lumotlari yetarsiz" });
+        }
+        if (!tgData.hash) {
+            return res.status(401).json({ ok: false, message: "Xavfsizlik xatosi: Telegram imzosi (hash) topilmadi!" });
+        }
+        const isVerified = verifyTelegramWidgetHashNode(tgData, botToken);
+        if (!isVerified) {
+            return res.status(401).json({ ok: false, message: "Telegram autentifikatsiya xatosi: imzo mos emas!" });
+        }
+        tgUser = tgData;
+    }
+
+    const rawUsername = tgUser.username || ('tg_' + tgUser.id);
+    const username = String(rawUsername).toLowerCase().trim().replace(/[^a-z0-9_]/g, '_').slice(0, 20);
+    let name = (tgUser.first_name || '') + (tgUser.last_name ? (' ' + tgUser.last_name) : '');
+    if (!name.trim()) name = tgUser.name || username;
+    name = name.trim().slice(0, 50);
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const tokenExpires = Date.now() + SESSION_TTL_MS;
+
+    let user = db.findOne('users', u => u.username === username || (u.tgId && u.tgId === tgUser.id));
+    if (!user) {
+        user = {
+            id: 'u_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+            username,
+            name,
+            tgId: tgUser.id || null,
+            photo: tgUser.photo_url || tgUser.photo || '',
+            provider: 'telegram',
+            role: 'student',
+            verified: true,
+            token,
+            tokenExpires,
+            createdAt: new Date().toISOString()
+        };
+        db.insert('users', user);
+    } else {
+        user.name = name || user.name;
+        if (tgUser.photo_url || tgUser.photo) user.photo = tgUser.photo_url || tgUser.photo;
+        if (tgUser.id) user.tgId = tgUser.id;
+        user.token = token;
+        user.tokenExpires = tokenExpires;
+        user.provider = 'telegram';
+        user.verified = true;
+        db.update('users', user.id, user);
+    }
+
+    const cookieOptions = [
+        `abdu_session_token=${token}`,
+        'Path=/',
+        `Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}`,
+        'SameSite=Lax'
+    ];
+    if (process.env.NODE_ENV === 'production') cookieOptions.push('Secure');
+    res.setHeader('Set-Cookie', cookieOptions.join('; '));
+
+    const { passwordHash, salt, failedAttempts, lockUntil, ...safeUser } = user;
+    return res.json({ ok: true, token, user: safeUser });
+});
+
 module.exports = router;
 

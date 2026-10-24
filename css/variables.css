@@ -65,69 +65,73 @@
    KUNDUZGI REJIM (Light Mode) — Zamonaviy, toza, yuqori sifatli
    Vercel / Linear / Apple minimalistik uslubi
    ============================================================ */
+/* ============================================================
+   KUNDUZGI REJIM (Light Mode) — Ultra-kontrastli, toza va nafis
+   Apple Vision Pro / Linear / Stripe minimalistik arxitekturasi
+   ============================================================ */
 [data-theme="light"] {
     --color-bg-primary: #f8fafc;
     --color-bg-secondary: #ffffff;
     --bg-color: #f8fafc;
-    --card-bg: rgba(255, 255, 255, 0.85);
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
-    --accent-color: #4f46e5;
-    --accent-hover: #4338ca;
-    --border-color: rgba(15, 23, 42, 0.08);
-    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-    --shadow-md: 0 6px 16px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-    --shadow-lg: 0 16px 32px -4px rgba(15, 23, 42, 0.10);
+    --card-bg: rgba(255, 255, 255, 0.94);
+    --text-primary: #090d16;
+    --text-secondary: #1e293b;
+    --text-muted: #334155;
+    --accent-color: #2563eb;
+    --accent-hover: #1d4ed8;
+    --border-color: rgba(148, 163, 184, 0.35);
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 6px 18px -2px rgba(15, 23, 42, 0.09), 0 2px 6px -1px rgba(15, 23, 42, 0.05);
+    --shadow-lg: 0 18px 36px -4px rgba(15, 23, 42, 0.12);
 
     /* Shaffof kristal shisha */
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-bg-strong: rgba(255, 255, 255, 0.92);
-    --glass-border: rgba(15, 23, 42, 0.08);
-    --glass-border-hover: rgba(79, 70, 229, 0.35);
-    --glass-highlight: rgba(255, 255, 255, 0.95);
-    --glass-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-    --glass-blur: 16px;
-    --backdrop-blur: blur(16px);
+    --glass-bg: rgba(255, 255, 255, 0.92);
+    --glass-bg-strong: rgba(255, 255, 255, 0.98);
+    --glass-border: rgba(203, 213, 225, 0.85);
+    --glass-border-hover: rgba(37, 99, 235, 0.45);
+    --glass-highlight: rgba(255, 255, 255, 1);
+    --glass-shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+    --glass-blur: 20px;
+    --backdrop-blur: blur(20px);
 
-    /* Professional ranglar */
-    --color-purple: #4f46e5;
-    --color-purple-light: #6366f1;
-    --color-silver: #475569;
-    --color-silver-bright: #0f172a;
-    --color-silver-dim: #64748b;
+    /* Professional to'q va tiniq ranglar */
+    --color-purple: #2563eb;
+    --color-purple-light: #3b82f6;
+    --color-silver: #334155;
+    --color-silver-bright: #090d16;
+    --color-silver-dim: #475569;
 
     /* Toza gradientlar */
-    --grad-primary: linear-gradient(135deg, #4f46e5, #6366f1);
-    --grad-primary-soft: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(99, 102, 241, 0.05));
-    --grad-text: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+    --grad-primary: linear-gradient(135deg, #2563eb, #4f46e5);
+    --grad-primary-soft: linear-gradient(135deg, rgba(37, 99, 235, 0.10), rgba(79, 70, 229, 0.06));
+    --grad-text: linear-gradient(135deg, #090d16 0%, #1e293b 100%);
 
-    --glow-purple: 0 4px 14px rgba(79, 70, 229, 0.20);
-    --tag-bg: rgba(79, 70, 229, 0.06);
+    --glow-purple: 0 4px 16px rgba(37, 99, 235, 0.25);
+    --tag-bg: rgba(37, 99, 235, 0.08);
     --modal-bg: rgba(255, 255, 255, 0.98);
     --transition-speed: 0.25s;
     --container-pad: 20px;
 
     /* Editorial Tokens (Light) */
     --atelier-bg: #f8fafc;
-    --atelier-surface: rgba(255, 255, 255, 0.92);
+    --atelier-surface: rgba(255, 255, 255, 0.94);
     --atelier-surface-raised: #ffffff;
     --atelier-surface-inset: #f1f5f9;
-    --atelier-ink-primary: #0f172a;
-    --atelier-ink-secondary: #475569;
-    --atelier-ink-muted: #64748b;
-    --atelier-ink-quote: #1e293b;
-    --atelier-accent: #4f46e5;
-    --atelier-accent-hover: #4338ca;
-    --atelier-accent-glow: rgba(79, 70, 229, 0.15);
-    --atelier-accent-tint: rgba(79, 70, 229, 0.06);
-    --atelier-border: rgba(15, 23, 42, 0.08);
-    --atelier-border-subtle: rgba(15, 23, 42, 0.05);
-    --atelier-border-highlight: rgba(79, 70, 229, 0.30);
+    --atelier-ink-primary: #090d16;
+    --atelier-ink-secondary: #1e293b;
+    --atelier-ink-muted: #334155;
+    --atelier-ink-quote: #090d16;
+    --atelier-accent: #2563eb;
+    --atelier-accent-hover: #1d4ed8;
+    --atelier-accent-glow: rgba(37, 99, 235, 0.20);
+    --atelier-accent-tint: rgba(37, 99, 235, 0.08);
+    --atelier-border: rgba(203, 213, 225, 0.85);
+    --atelier-border-subtle: rgba(226, 232, 240, 0.80);
+    --atelier-border-highlight: rgba(37, 99, 235, 0.40);
     --atelier-shadow-ambient: 0 12px 32px -8px rgba(15, 23, 42, 0.08);
     --atelier-shadow-tactile: 0 1px 3px rgba(15, 23, 42, 0.06), inset 0 1px 0 #ffffff;
-    --atelier-glass-blur: blur(20px);
-    --atelier-quote-watermark: rgba(15, 23, 42, 0.04);
+    --atelier-glass-blur: blur(24px);
+    --atelier-quote-watermark: rgba(15, 23, 42, 0.05);
 }
 
 /* Base Settings */

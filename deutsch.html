@@ -28,6 +28,9 @@
     <noscript>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap">
     </noscript>
+    <!-- Telegram WebApp (Mini App) SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <!-- Deutsch Majburiy Autentifikatsiya Ilk Tekshiruvi (FOUC oldini olish) -->
     <script>
         (function() {
@@ -35,7 +38,14 @@
                 var token = localStorage.getItem('abdu_user_token');
                 var cookieMatch = document.cookie.match(/(?:^|;\s*)abdu_session_token=([^;]+)/);
                 var isAdmin = sessionStorage.getItem('kay_admin') === 'true';
-                if (!token && !cookieMatch && !isAdmin) {
+                // Telegram Mini App ichida ochilgan bo'lsa (initData bor bo'lsa), devor bilan to'sib qo'ymaymiz (avto-login bo'ladi)
+                var isTgMiniApp = false;
+                try {
+                    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
+                        isTgMiniApp = true;
+                    }
+                } catch (_) {}
+                if (!token && !cookieMatch && !isAdmin && !isTgMiniApp) {
                     document.documentElement.classList.add('deutsch-auth-required');
                 }
             } catch (_) {}

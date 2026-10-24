@@ -139,6 +139,40 @@
             return { ok: false, message: "Server bilan bog'lanishda xatolik." };
         },
 
+        // Telegram Mini App (WebAppData initData) orqali 1-klikda xavfsiz avto-kirish
+        async loginWithTelegramMiniApp(initData) {
+            if (!initData || typeof initData !== 'string') {
+                return { ok: false, message: "Telegram Mini App ma'lumoti topilmadi" };
+            }
+
+            try {
+                const res = await fetch('/auth/telegram', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initData }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (data.ok && data.token) {
+                    this.token = data.token;
+                    this.user = data.user;
+                    localStorage.setItem(TOKEN_KEY, data.token);
+                    setAuthCookie(data.token);
+                    localStorage.setItem('abdu_user_data', JSON.stringify(this.user));
+                    this.updateUIState();
+                    window.dispatchEvent(new CustomEvent('auth:state-change', {
+                        detail: { isLoggedIn: true, user: this.user }
+                    }));
+                    return { ok: true, user: this.user };
+                } else if (data.message) {
+                    return { ok: false, message: data.message };
+                }
+            } catch (e) {
+                console.warn('Server Telegram Mini App Auth xatolik:', e);
+            }
+
+            return { ok: false, message: "Server bilan bog'lanishda xatolik yuz berdi." };
+        },
+
         async updateProfile(name, photo, extra = {}) {
             if (!this.user) return { ok: false, message: "Tizimga kirilmagan" };
             if (name && typeof name === 'string' && name.trim()) this.user.name = name.trim();
@@ -424,7 +458,7 @@
         if (!container) return;
         container.innerHTML = '';
 
-        const botName = botUsername || window.TELEGRAM_BOT_USERNAME || 'abdugofforov_admin_bot';
+        const botName = botUsername || window.TELEGRAM_BOT_USERNAME || 'deutsch_akademiyasi_bot';
         const script = document.createElement('script');
         script.src = 'https://telegram.org/js/telegram-widget.js?22';
         script.setAttribute('data-telegram-login', botName);

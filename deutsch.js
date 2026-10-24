@@ -1460,17 +1460,63 @@ window.runDataClickAction = runDataClickAction;
             }
         });
 
-        // Dastlabki tekshiruv
-        if (window.Auth && typeof window.Auth.restore === 'function') {
-            window.Auth.restore().then(() => {
-                checkGate();
-            }).catch(() => {
-                checkGate();
-            });
-        } else {
+        // Telegram Mini App tekshiruvi va dastlabki kirish
+        async function performInitialAuthCheck() {
+            if (window.Auth && typeof window.Auth.restore === 'function') {
+                await window.Auth.restore().catch(() => {});
+            }
+
+            // Telegram Mini App muhiti va 1-klikda avto-kirish
+            const tg = window.Telegram?.WebApp;
+            if (tg) {
+                try {
+                    tg.ready();
+                    tg.expand();
+                    if (typeof tg.setHeaderColor === 'function') {
+                        tg.setHeaderColor('#07111c');
+                    }
+                    if (typeof tg.setBackgroundColor === 'function') {
+                        tg.setBackgroundColor('#07111c');
+                    }
+                } catch (_) {}
+
+                if (window.Auth && !window.Auth.isLoggedIn() && tg.initData) {
+                    const card = wall.querySelector('.auth-wall-card');
+                    const prevCardHtml = card ? card.innerHTML : null;
+                    if (card) {
+                        card.innerHTML = `
+                            <div class="auth-wall-flag-box" style="animation: pulse 1.5s infinite;">🇩🇪</div>
+                            <div class="auth-wall-badge" style="background:rgba(56,189,248,0.15);color:#38bdf8;border-color:rgba(56,189,248,0.3);">✈️ Telegram Mini App</div>
+                            <h2 style="font-size:20px;font-weight:700;margin:12px 0 6px;color:#f1f5f9;">Telegram orqali ulanmoqda...</h2>
+                            <p style="color:#94a3b8;font-size:14px;margin-bottom:16px;">Profilingiz tasdiqlanmoqda, bir soniya kuting...</p>
+                            <div style="display:inline-block;width:32px;height:32px;border:3px solid rgba(56,189,248,0.2);border-top-color:#38bdf8;border-radius:50%;animation:spin 0.8s linear infinite;margin:8px auto 16px;"></div>
+                        `;
+                    }
+
+                    try {
+                        const res = await window.Auth.loginWithTelegramMiniApp(tg.initData);
+                        if (res && res.ok) {
+                            unlockPage(res.user?.name || tg.initDataUnsafe?.user?.first_name);
+                            return;
+                        } else {
+                            if (card && prevCardHtml) {
+                                card.innerHTML = prevCardHtml;
+                                initDeutschAuthGate(); // handlerlarni qayta ulash
+                            }
+                        }
+                    } catch (tgErr) {
+                        if (card && prevCardHtml) {
+                            card.innerHTML = prevCardHtml;
+                            initDeutschAuthGate();
+                        }
+                    }
+                }
+            }
+
             checkGate();
         }
 
+        performInitialAuthCheck();
         fetchPresenceStats();
     }
 

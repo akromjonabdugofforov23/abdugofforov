@@ -28,16 +28,18 @@
         leftGlow: 'rgba(56, 189, 248, ',     // Cyan
         rightGlow: 'rgba(168, 85, 247, ',   // Binafsha / Purple
         tealGlow: 'rgba(45, 212, 191, ',    // Teal
-        nodeLight: '#ffffff'
+        nodeLight: '#ffffff',
+        isLight: false
     };
 
     function updateTheme() {
-        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light' || (document.body && document.body.getAttribute('data-theme') === 'light');
+        themeColors.isLight = isLight;
         if (isLight) {
-            themeColors.leftGlow = 'rgba(2, 132, 199, ';
-            themeColors.rightGlow = 'rgba(124, 58, 237, ';
-            themeColors.tealGlow = 'rgba(13, 148, 136, ';
-            themeColors.nodeLight = '#4f46e5';
+            themeColors.leftGlow = 'rgba(2, 132, 199, ';    // Radiant Azure Cyan
+            themeColors.rightGlow = 'rgba(124, 58, 237, ';  // Electric Royal Violet
+            themeColors.tealGlow = 'rgba(13, 148, 136, ';   // Vibrant Emerald Teal
+            themeColors.nodeLight = '#0f172a';              // To'q obsidian markaz
         } else {
             themeColors.leftGlow = 'rgba(56, 189, 248, ';
             themeColors.rightGlow = 'rgba(168, 85, 247, ';
@@ -45,6 +47,7 @@
             themeColors.nodeLight = '#ffffff';
         }
     }
+    window.refreshParticlesTheme = updateTheme;
 
     // -------------------------------------------------------------
     // 1. IKKI QANOTLI NEYRON TO'LQIN TUGUNLARI (NEURAL WAVE NODES)
@@ -166,6 +169,7 @@
 
         drawVerticalAura(leftCenter, themeColors.leftGlow);
         drawVerticalAura(rightCenter, themeColors.rightGlow);
+        drawCenterAmbientGlow(t);
 
         // 2. Chap To'lqinni hisoblash va chizish
         updateAndDrawStream(leftStreamNodes, t, true);
@@ -181,19 +185,38 @@
 
     // Vertikal Nur Ustuni (Aurora Beam)
     function drawVerticalAura(centerX, colorPrefix) {
-        const grad = ctx.createRadialGradient(centerX, height * 0.4, 20, centerX, height * 0.4, 180);
-        grad.addColorStop(0, colorPrefix + '0.14)');
-        grad.addColorStop(0.6, colorPrefix + '0.03)');
+        const isLight = !!themeColors.isLight;
+        const grad = ctx.createRadialGradient(centerX, height * 0.4, 20, centerX, height * 0.4, 220);
+        grad.addColorStop(0, colorPrefix + (isLight ? '0.36)' : '0.14)'));
+        grad.addColorStop(0.55, colorPrefix + (isLight ? '0.14)' : '0.03)'));
         grad.addColorStop(1, 'transparent');
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(centerX, height * 0.4, 180, 0, Math.PI * 2);
+        ctx.arc(centerX, height * 0.4, 220, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Markaziy Nafis Nurlanish (Light Mode Soft Stage Glow)
+    function drawCenterAmbientGlow(t) {
+        if (!themeColors.isLight) return;
+        const centerX = width * 0.5;
+        const centerY = Math.min(height * 0.35, 340);
+        const radius = Math.min(width * 0.52, 480);
+        const grad = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, radius);
+        const pulse = 0.14 + Math.sin(t * 0.8) * 0.03;
+        grad.addColorStop(0, 'rgba(99, 102, 241, ' + pulse.toFixed(3) + ')');
+        grad.addColorStop(0.45, 'rgba(56, 189, 248, ' + (pulse * 0.55).toFixed(3) + ')');
+        grad.addColorStop(1, 'transparent');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
         ctx.fill();
     }
 
     // To'lqin Zanjirini Yangilash va Chizish
     function updateAndDrawStream(nodes, t, isLeft) {
         const colorPrefix = isLeft ? themeColors.leftGlow : themeColors.rightGlow;
+        const isLight = !!themeColors.isLight;
         const maxMagnetDist = 240;
         const maxDistSq = maxMagnetDist * maxMagnetDist;
 
@@ -224,7 +247,6 @@
 
             // Shockwave impulsi
             if (mouse.shockwave > 0.001) {
-                const shockDx = p.currentX - (isLeft ? p.baseX : p.baseX);
                 p.vx += (isLeft ? -1 : 1) * Math.sin(p.phase * 3) * mouse.shockwave * 0.25;
             }
 
@@ -243,7 +265,7 @@
         // Tugunlarni o'zaro chiziqlar bilan bog'lash (Neural Mesh Connections)
         const connectionDist = 65;
         const connDistSq = connectionDist * connectionDist;
-        ctx.lineWidth = 1.0;
+        ctx.lineWidth = isLight ? 1.75 : 1.0;
 
         for (let i = 0; i < nodes.length; i++) {
             const p1 = nodes[i];
@@ -255,7 +277,8 @@
 
                 if (distSq < connDistSq) {
                     const dist = Math.sqrt(distSq);
-                    const alpha = (1 - dist / connectionDist) * 0.38;
+                    const baseFactor = (1 - dist / connectionDist);
+                    const alpha = isLight ? (baseFactor * 0.72) : (baseFactor * 0.38);
                     ctx.strokeStyle = colorPrefix + alpha.toFixed(3) + ')';
                     ctx.beginPath();
                     ctx.moveTo(p1.currentX, p1.currentY);
@@ -270,22 +293,25 @@
             const p = nodes[i];
             const pulse = 1 + Math.sin(t * 3 + p.phase) * 0.25;
 
-            // Tugun atrofidagi mikroskopik nurlanish
-            ctx.fillStyle = colorPrefix + '0.65)';
+            // Tugun atrofidagi nurlanish
+            const haloAlpha = isLight ? '0.85)' : '0.65)';
+            const haloSize = isLight ? p.size * 1.35 * pulse : p.size * pulse;
+            ctx.fillStyle = colorPrefix + haloAlpha;
             ctx.beginPath();
-            ctx.arc(p.currentX, p.currentY, p.size * pulse, 0, Math.PI * 2);
+            ctx.arc(p.currentX, p.currentY, haloSize, 0, Math.PI * 2);
             ctx.fill();
 
-            // Oq nur markazi
+            // Nur markazi
             ctx.fillStyle = themeColors.nodeLight;
             ctx.beginPath();
-            ctx.arc(p.currentX, p.currentY, p.size * 0.45, 0, Math.PI * 2);
+            ctx.arc(p.currentX, p.currentY, isLight ? p.size * 0.55 : p.size * 0.45, 0, Math.PI * 2);
             ctx.fill();
         }
     }
 
     // Suzuvchi Kiber Uchqunlar (Floating Sparks)
     function drawAmbientSparks(t) {
+        const isLight = !!themeColors.isLight;
         for (let i = 0; i < ambientSparks.length; i++) {
             const sp = ambientSparks[i];
             sp.y += sp.vy;
@@ -296,9 +322,10 @@
             }
 
             const colorPrefix = sp.isLeft ? themeColors.leftGlow : themeColors.rightGlow;
-            ctx.fillStyle = colorPrefix + sp.alpha.toFixed(2) + ')';
+            const alphaVal = isLight ? Math.min(0.95, sp.alpha * 1.6) : sp.alpha;
+            ctx.fillStyle = colorPrefix + alphaVal.toFixed(2) + ')';
             ctx.beginPath();
-            ctx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2);
+            ctx.arc(sp.x, sp.y, isLight ? sp.size * 1.35 : sp.size, 0, Math.PI * 2);
             ctx.fill();
         }
     }

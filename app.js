@@ -2742,9 +2742,17 @@ async function bootstrap() {
     try {
         if (window.Auth) {
             await Auth.restore();
-            // Agar hali tizimga kirilmagan bo'lsa va sayt Telegram ichida (WebApp/Mini App) ochilgan bo'lsa, avto 1-click kirish
-            if (!Auth.isLoggedIn() && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-                await Auth.loginWithTelegram(window.Telegram.WebApp.initDataUnsafe.user);
+            // Agar sayt Telegram ichida (WebApp/Mini App) ochilgan bo'lsa, avto 1-click kirish
+            const tg = window.Telegram?.WebApp;
+            if (tg) {
+                try { tg.ready(); tg.expand(); } catch (_) {}
+                if (!Auth.isLoggedIn() && tg.initData) {
+                    await Auth.loginWithTelegramMiniApp(tg.initData);
+                } else if (!Auth.isLoggedIn() && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    await Auth.loginWithTelegram(tg.initDataUnsafe.user);
+                } else {
+                    Auth.updateUIState();
+                }
             } else {
                 Auth.updateUIState();
             }
