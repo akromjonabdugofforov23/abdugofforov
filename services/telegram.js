@@ -325,6 +325,44 @@ async function broadcastSiteUpdate(update) {
     return sendMessage(targetChat, text);
 }
 
+// 7. Xavfsizlik signallari va WAF ogohlantirishlari (Security Alert)
+const alertCooldownNode = new Map();
+const NODE_ALERT_COOLDOWN_MS = 60000; // 60s cooldown bir xil IP uchun
+
+async function sendSecurityAlert({ ip, type, target, agent, status = '403 Forbidden' }) {
+    const config = getTelegramConfig();
+    if (!config.botToken) return { ok: false, message: 'Bot token sozlanmagan' };
+    const adminChatId = config.adminChatId || config.channelId;
+    if (!adminChatId) return { ok: false, message: 'Admin chat ID sozlanmagan' };
+
+    // Cooldown tekshiruvi (Telegram spam bo'lishining oldini olish)
+    const cooldownKey = `${ip}:${type}`;
+    const now = Date.now();
+    const lastAlert = alertCooldownNode.get(cooldownKey) || 0;
+    if (now - lastAlert < NODE_ALERT_COOLDOWN_MS) {
+        return { ok: true, throttled: true };
+    }
+    alertCooldownNode.set(cooldownKey, now);
+
+    if (alertCooldownNode.size > 1000) {
+        alertCooldownNode.clear();
+    }
+
+    const timeStr = new Date().toLocaleString('uz-UZ', { timeZone: 'Asia/Tashkent' });
+    const text = 
+        `🚨 <b>[XAVFSIZLIK OGOHLANTIRISHI]</b>\n` +
+        `Saytingizda shubhali skaner aniqlandi va bloklandi!\n\n` +
+        `🌐 <b>IP manzil:</b> <code>${escapeHtml(ip || 'unknown')}</code>\n` +
+        `🛡 <b>Holat:</b> <code>${escapeHtml(status)}</code>\n` +
+        `⚠️ <b>Xavf turi:</b> ${escapeHtml(type || 'Skaner / Exploit')}\n` +
+        `🎯 <b>Nishon:</b> <code>${escapeHtml(String(target || '').slice(0, 120))}</code>\n` +
+        `🛠 <b>Vosita (UA):</b> <code>${escapeHtml(String(agent || 'Noma\'lum').slice(0, 100))}</code>\n` +
+        `⏰ <b>Vaqt:</b> ${timeStr}\n\n` +
+        `🔒 <i>Abdugofforov WAF Qalqoni tomonidan to'xtatildi.</i>`;
+
+    return sendMessage(adminChatId, text, 'HTML', true);
+}
+
 module.exports = {
     normalizeTelegramChatId,
     escapeHtml,
@@ -336,5 +374,6 @@ module.exports = {
     broadcastPost,
     broadcastProject,
     broadcastQuote,
-    broadcastSiteUpdate
+    broadcastSiteUpdate,
+    sendSecurityAlert
 };

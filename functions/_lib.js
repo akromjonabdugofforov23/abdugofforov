@@ -578,5 +578,59 @@ export const FORBIDDEN_HTML = `<!DOCTYPE html>
 </body>
 </html>`;
 
+// ---- WAF Xavfsizlik Signallari (Telegram Auto-Alert) ----
+const ALERT_COOLDOWN_SEC = 60; // 60 soniyalik spamdan himoya
+
+export async function sendTelegramSecurityAlert(context, alert = {}) {
+  const { env, request } = context;
+  if (!env || !env.TELEGRAM_BOT_TOKEN) return;
+
+  const chatId = env.TELEGRAM_ADMIN_CHAT_ID || env.TELEGRAM_CHAT_ID;
+  if (!chatId) return;
+
+  const ip = alert.ip || getClientIp(request);
+  const now = Math.floor(Date.now() / 1000);
+
+  // Spam bo'lmasligi uchun Cloudflare KV orqali cooldown tekshiruvi
+  if (env.POSTS_KV) {
+    try {
+      const cooldownKey = `sec_alert:${ip}:${alert.type || 'scan'}`;
+      const existing = await env.POSTS_KV.get(cooldownKey);
+      if (existing) return;
+      await env.POSTS_KV.put(cooldownKey, String(now), { expirationTtl: ALERT_COOLDOWN_SEC });
+    } catch (_) {}
+  }
+
+  const timeStr = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+  const text = 
+    `🚨 <b>[XAVFSIZLIK OGOHLANTIRISHI]</b>\n` +
+    `Saytingizda shubhali skaner aniqlandi va bloklandi!\n\n` +
+    `🌐 <b>IP manzil:</b> <code>${ip}</code>\n` +
+    `🛡 <b>Holat:</b> <code>${alert.status || '403 Forbidden'}</code>\n` +
+    `⚠️ <b>Xavf turi:</b> ${alert.type || 'Skaner / Exploit'}\n` +
+    `🎯 <b>Nishon:</b> <code>${(alert.target || '').slice(0, 120)}</code>\n` +
+    `🛠 <b>Vosita (UA):</b> <code>${(alert.agent || 'Noma\'lum').slice(0, 100)}</code>\n` +
+    `⏰ <b>Vaqt:</b> ${timeStr}\n\n` +
+    `🔒 <i>Abdugofforov Cloudflare Edge WAF tomonidan to'xtatildi.</i>`;
+
+  const sendPromise = fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: text,
+      parse_mode: 'HTML',
+      disable_web_page_preview: true
+    })
+  }).catch(() => {});
+
+  if (context.waitUntil) {
+    context.waitUntil(sendPromise);
+  } else {
+    await sendPromise;
+  }
+}
+
+
 
 

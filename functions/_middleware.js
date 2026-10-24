@@ -1,4 +1,4 @@
-import { verifyAdminPin, isAdmin, parseCookies, FORBIDDEN_HTML } from './_lib.js';
+import { verifyAdminPin, isAdmin, parseCookies, FORBIDDEN_HTML, sendTelegramSecurityAlert, getClientIp } from './_lib.js';
 // ============================================================
 // Global Cloudflare Pages Middleware
 // Xavfsizlik protokollari: CORS, CSP, HSTS, va boshqa HTTP himoya sarlavhalari
@@ -11,6 +11,13 @@ export async function onRequest(context) {
   const userAgent = (context.request.headers.get('User-Agent') || '').toLowerCase();
   const scannerPattern = /(sqlmap|nikto|acunetix|dirbuster|gobuster|wpscan|masscan|zgrab|censys|shodan|nmap|nessus|openvas|nuclei|projectdiscovery|burpcollaborator|ffuf|hydra|metasploit|whatweb)/i;
   if (scannerPattern.test(userAgent)) {
+    sendTelegramSecurityAlert(context, {
+      type: 'Zararli Skaner (Malicious Scanner)',
+      target: url.pathname + url.search,
+      agent: userAgent,
+      ip: getClientIp(context.request),
+      status: '403 Forbidden'
+    });
     return new Response('403 Forbidden: Automated scan detected and blocked by edge shield.', {
       status: 403,
       headers: {
@@ -23,6 +30,13 @@ export async function onRequest(context) {
   // 2. Yashirin tizim fayllari va umumiy xakerlik yo'llarini (reconnaissance probing) to'sish
   const blockedProbes = /(\.env|\.git|\.aws|\.svn|\.htaccess|wp-admin|wp-login|phpmyadmin|cgi-bin|web\.config|xmlrpc\.php|db\.json|users\.json|package(-lock)?\.json|gemini\.md|readme\.md)/i;
   if (blockedProbes.test(url.pathname)) {
+    sendTelegramSecurityAlert(context, {
+      type: 'Maxfiy Faylni Titkilash (Sensitive Probe)',
+      target: url.pathname,
+      agent: userAgent || 'Noma\'lum',
+      ip: getClientIp(context.request),
+      status: '404 Not Found'
+    });
     return new Response('Not Found', {
       status: 404,
       headers: {

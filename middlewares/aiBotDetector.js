@@ -76,6 +76,19 @@ function checkStringForInjection(str) {
     return null;
 }
 
+let telegramService = null;
+try {
+    telegramService = require('../services/telegram');
+} catch (_) {}
+
+function notifyAlertAsync(payload) {
+    if (telegramService && typeof telegramService.sendSecurityAlert === 'function') {
+        try {
+            telegramService.sendSecurityAlert(payload).catch(() => {});
+        } catch (_) {}
+    }
+}
+
 const aiBotDetector = (req, res, next) => {
     const userAgent = ((req.get ? req.get('User-Agent') : req.headers?.['user-agent']) || '').toLowerCase();
     const headers = req.headers || {};
@@ -91,6 +104,13 @@ const aiBotDetector = (req, res, next) => {
     const isMaliciousScanner = MALICIOUS_AGENTS.some(scanner => userAgent.includes(scanner));
     if (isMaliciousScanner) {
         console.warn(`🛑 [WAF BLOKLANDI] Zararli vosita/bot aniqlandi: [${userAgent}] IP: [${clientIp}]`);
+        notifyAlertAsync({
+            ip: clientIp,
+            type: 'Zararli Skaner (Malicious Scanner)',
+            target: originalUrl,
+            agent: userAgent,
+            status: '403 Forbidden'
+        });
         return res.status(403).json({
             ok: false,
             error: "Xavfsizlik protokoli: So'rov rad etildi (Malicious Agent Detected)."
@@ -101,6 +121,13 @@ const aiBotDetector = (req, res, next) => {
     const isProbingSensitive = BLOCKED_PATHS.some(pattern => pattern.test(originalUrl));
     if (isProbingSensitive) {
         console.warn(`🛑 [WAF BLOKLANDI] Himoyalangan resursga so'rov: [${originalUrl}] IP: [${clientIp}]`);
+        notifyAlertAsync({
+            ip: clientIp,
+            type: 'Maxfiy Faylni Titkilash (Sensitive Probe)',
+            target: originalUrl,
+            agent: userAgent,
+            status: '403 Forbidden'
+        });
         return res.status(403).json({
             ok: false,
             error: "Xavfsizlik protokoli: Ruxsat berilmagan resurs."
@@ -111,6 +138,13 @@ const aiBotDetector = (req, res, next) => {
     const urlInjection = checkStringForInjection(originalUrl);
     if (urlInjection) {
         console.warn(`🛑 [WAF BLOKLANDI] Inyeksiya namunasi (URL): [${originalUrl}] IP: [${clientIp}]`);
+        notifyAlertAsync({
+            ip: clientIp,
+            type: 'Inyeksiya Urinishi (SQLi/XSS/Traversal)',
+            target: originalUrl,
+            agent: userAgent,
+            status: '400 Bad Request'
+        });
         return res.status(400).json({
             ok: false,
             error: "Xavfsizlik protokoli: Noto'g'ri yoki xavfli so'rov aniqlandi."
