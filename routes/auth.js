@@ -618,7 +618,13 @@ function verifyTelegramMiniAppInitDataNode(initDataRaw, botToken) {
 }
 
 router.post('/telegram', (req, res) => {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN || '8618994977:AAHWWDfLHHmr4JhpxnNSMyWsu7OQfcYB6p4';
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    if (!botToken) {
+        return res.status(503).json({
+            ok: false,
+            message: "Telegram autentifikatsiyasi serverda sozlanmagan (TELEGRAM_BOT_TOKEN muhit o'zgaruvchisi topilmadi)."
+        });
+    }
     const body = req.body || {};
     let tgUser = null;
 

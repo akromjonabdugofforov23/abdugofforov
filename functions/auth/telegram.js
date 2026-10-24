@@ -112,8 +112,14 @@ export async function onRequestPost(context) {
     return jsonResponse({ ok: false, message: "Server ombori (KV) sozlanmagan" }, 503, request, env);
   }
 
-  // Telegram bot tokeni bo'lishi shart (env yoki default)
-  const botToken = env.TELEGRAM_BOT_TOKEN || '8618994977:AAHWWDfLHHmr4JhpxnNSMyWsu7OQfcYB6p4';
+  // Telegram bot tokeni bo'lishi shart (faqat Cloudflare Environment Variable orqali olinadi)
+  const botToken = env.TELEGRAM_BOT_TOKEN;
+  if (!botToken) {
+    return jsonResponse({
+      ok: false,
+      message: "Telegram autentifikatsiyasi serverda sozlanmagan (TELEGRAM_BOT_TOKEN muhit o'zgaruvchisi topilmadi)."
+    }, 503, request, env);
+  }
 
   const rl = await rateLimit(env, request, 'auth-telegram', 25, 60);
   if (!rl.ok) return tooManyRequests(request, rl.retryAfter, env);
