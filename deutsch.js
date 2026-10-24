@@ -146,9 +146,22 @@ window.runDataClickAction = runDataClickAction;
 
     function setActiveDock(page) {
         const p = (page || '').toUpperCase();
+        const isCurriculum = ['A1', 'A2', 'B1', 'B2', 'CURRICULUM'].includes(p);
+        const isTests = p === 'TESTS';
+        const isFlashcards = p === 'FLASHCARDS';
+        const isTournament = p === 'TOURNAMENT';
+        const isTools = ['TANDEM', 'PRONOUNCE', 'IDIOMS', 'CORRECTOR', 'GAMES', 'VIDEO-LESSONS', 'VERB-TRAINER', 'HORROR'].includes(p);
+
         document.querySelectorAll('.dock-item').forEach(item => {
             const itemPage = (item.getAttribute('data-page') || '').toUpperCase();
-            if (itemPage === p) {
+            let shouldBeActive = false;
+            if (isCurriculum && (itemPage === 'CURRICULUM' || itemPage === 'A1')) shouldBeActive = true;
+            else if (isTests && itemPage === 'TESTS') shouldBeActive = true;
+            else if (isFlashcards && itemPage === 'FLASHCARDS') shouldBeActive = true;
+            else if (isTournament && itemPage === 'TOURNAMENT') shouldBeActive = true;
+            else if (isTools && item.id === 'dock-tools-trigger') shouldBeActive = true;
+
+            if (shouldBeActive) {
                 item.classList.add('active');
             } else {
                 item.classList.remove('active');
@@ -1197,11 +1210,82 @@ window.runDataClickAction = runDataClickAction;
         const dockItem = e.target.closest('.desktop-dock .dock-item');
         if (dockItem) {
             e.preventDefault();
+            if (dockItem.id === 'dock-tools-trigger') {
+                openToolsSheet();
+                return;
+            }
             const page = dockItem.getAttribute('data-page');
-            navigateToModule(page, true);
+            if (page === 'curriculum') {
+                navigateToModule(currentLevel || 'A1', true);
+            } else if (page) {
+                navigateToModule(page, true);
+            }
             return;
         }
     });
+
+    // ===== AMALIY VOSITALAR PARDASI (TOOLS BOTTOM SHEET) =====
+    function openToolsSheet() {
+        const sheet = document.getElementById('tools-sheet-backdrop');
+        if (sheet) {
+            sheet.classList.add('active');
+            sheet.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeToolsSheet() {
+        const sheet = document.getElementById('tools-sheet-backdrop');
+        if (sheet) {
+            sheet.classList.remove('active');
+            sheet.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+    }
+
+    function initToolsSheet() {
+        const trigger = document.getElementById('dock-tools-trigger');
+        const sheet = document.getElementById('tools-sheet-backdrop');
+        const closeBtn = document.getElementById('tools-sheet-close');
+        if (trigger) {
+            trigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openToolsSheet();
+            });
+        }
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeToolsSheet();
+            });
+        }
+        if (sheet) {
+            sheet.addEventListener('click', (e) => {
+                if (e.target === sheet) {
+                    closeToolsSheet();
+                }
+            });
+        }
+        document.querySelectorAll('.sheet-tool-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeToolsSheet();
+                const tool = card.getAttribute('data-tool');
+                if (tool === 'myresults') {
+                    if (typeof openResultsModal === 'function') openResultsModal();
+                } else if (tool === 'verb-trainer') {
+                    navigateToModule(currentLevel || 'A1', false);
+                    setTimeout(() => {
+                        const vtEl = document.getElementById('verb-trainer-mount');
+                        if (vtEl) vtEl.scrollIntoView({ behavior: 'smooth' });
+                    }, 120);
+                } else if (tool) {
+                    navigateToModule(tool, true);
+                }
+            });
+        });
+    }
 
     // Asosiy saytga qaytish linki (Local vs Prod domenni avtomatik aniqlash)
     function initBackToMain() {
@@ -1526,5 +1610,6 @@ window.runDataClickAction = runDataClickAction;
         initCarousel();
         applyRoute();
         initDeutschAuthGate();
+        initToolsSheet();
     });
 })();

@@ -3,7 +3,7 @@
 (function() {
     window.App = window.App || {};
 
-    const QUOTES_SYS_VERSION = '2026-w39-v3';
+    const QUOTES_SYS_VERSION = '2026-w43-v1';
 
     // 0. Cache tozalash & Versiya migratsiyasi:
     // Yangi versiya chiqqanida eski kesh darhol tozalanadi va yangi hikmatlar chiqadi
@@ -19,854 +19,1574 @@
     } catch(e) {}
 
     const LOCAL_QUOTES_DB = {
-        "uz": [
-                {
-                        "quote": "Mantiq sizni A nuqtadan B nuqtaga olib boradi, tasavvur esa har qanday manzilga yetaklay oladi.",
-                        "author": "Albert Eynshteyn",
-                        "de": "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
-                        "category": "✦ KUN HIKMATI · ILHOM"
-                },
-                {
-                        "quote": "Kurashgan inson yutqazishi mumkin. Kurashmagan esa allaqachon mag'lubdir.",
-                        "author": "Bertolt Brext",
-                        "de": "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
-                        "category": "✦ KUN HIKMATI · SHIDDAT"
-                },
-                {
-                        "quote": "Biz takror va takror nima qilsak, o'shamiz. Demak, yuksaklik — bu harakat emas, balki odatdir.",
-                        "author": "Aristotel",
-                        "de": "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
-                        "category": "✦ KUN HIKMATI · ODATLAR"
-                },
-                {
-                        "quote": "Ming chaqirimlik yo'l ham birgina kichik qadam bilan boshlanadi.",
-                        "author": "Lao-szi",
-                        "de": "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
-                        "category": "✦ KUN HIKMATI · SABOT"
-                },
-                {
-                        "quote": "Qayerda bo'lsang o'sha yerda, bor imkoniyating bilan qo'lingdan kelganini qil.",
-                        "author": "Teodor Ruzvelt",
-                        "de": "Tu, was du kannst, mit dem, was du hast, dort, wo du bist.",
-                        "category": "✦ KUN HIKMATI · MATONAT"
-                },
-                {
-                        "quote": "Qo'limdan keladi deb o'ylasang ham, kelmaydi deb o'ylasang ham — ikkala holatda ham haqsiz.",
-                        "author": "Genri Ford",
-                        "de": "Egal, ob du denkst, du kannst es, oder du kannst es nicht – du wirst recht behalten.",
-                        "category": "✦ KUN HIKMATI · ISHONCH"
-                },
-                {
-                        "quote": "Vaqtingiz cheklangan, uni o'zgalarning hayotini yashash bilan sovurmang. Qalbingizga ergashing.",
-                        "author": "Stiv Jobs",
-                        "de": "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
-                        "category": "✦ KUN HIKMATI · SHAXSIYAT"
-                },
-                {
-                        "quote": "Kecha aqlli edim — dunyoni o'zgartirmoqchi edim. Bugun esa donoman — o'zimni o'zgartiryapman.",
-                        "author": "Jaloliddin Rumiy",
-                        "de": "Gestern war ich klug und wollte die Welt verändern. Heute bin ich weise und verändere mich selbst.",
-                        "category": "✦ KUN HIKMATI · DONOLIK"
-                },
-                {
-                        "quote": "Bilingki, eng buyuk boylik — aql va odob, eng og'ir qashshoqlik esa nodonlikdir.",
-                        "author": "Alisher Navoiy",
-                        "de": "Der größte Reichtum ist Verstand und Anstand, die schwerste Armut aber die Unwissenheit.",
-                        "category": "✦ KUN HIKMATI · AXLOQ"
-                },
-                {
-                        "quote": "Vahima kasallikning yarmi, xotirjamlik sog'liqning yarmi, sabr esa shifoning boshlanishidir.",
-                        "author": "Ibn Sino (Avitsenna)",
-                        "de": "Panik ist die halbe Krankheit, Ruhe die halbe Gesundheit und Geduld der Beginn der Heilung.",
-                        "category": "✦ KUN HIKMATI · SALOMATLIK"
-                },
-                {
-                        "quote": "Siz tashqi hodisalarni emas, o'z ongingizni boshqarasiz. Buni tushunganingizda chinakam qudratga ega bo'lasiz.",
-                        "author": "Mark Avreliy",
-                        "de": "Du hast die Macht über deinen Geist, nicht über die äußeren Ereignisse. Erkenne dies, und du wirst Stärke finden.",
-                        "category": "✦ KUN HIKMATI · STOYATSIZM"
-                },
-                {
-                        "quote": "Ishlar qiyin bo'lgani uchun jur'at etolmayotganimiz yo'q, aksincha jur'at etmaganimiz tufayli ular qiyindir.",
-                        "author": "Seneka",
-                        "de": "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.",
-                        "category": "✦ KUN HIKMATI · JUR'AT"
-                },
-                {
-                        "quote": "Yashash uchun o'zining «Nega»siga ega inson har qanday «Qanday»ga bardosh bera oladi.",
-                        "author": "Fridrix Nitsshe",
-                        "de": "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.",
-                        "category": "✦ KUN HIKMATI · MAQSAD"
-                },
-                {
-                        "quote": "O'z aqlingdan foydalanishga jur'at et! Mustaqil fikrlash — ma'rifatning asosidir.",
-                        "author": "Immanuel Kant",
-                        "de": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
-                        "category": "✦ KUN HIKMATI · FALSAFA"
-                },
-                {
-                        "quote": "Sog'lik barcha narsa emas, lekin sog'liksiz qolgan barcha narsa hech narsaga aylanadi.",
-                        "author": "Artur Shopengauer",
-                        "de": "Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.",
-                        "category": "✦ KUN HIKMATI · SALOMATLIK"
-                },
-                {
-                        "quote": "Vaziyatni o'zgartirish qo'limizdan kelmasa, o'zimizni o'zgartirish vaqti yetgan bo'ladi.",
-                        "author": "Viktor Frankl",
-                        "de": "Wenn wir eine Situation nicht mehr ändern können, müssen wir uns selbst ändern.",
-                        "category": "✦ KUN HIKMATI · RUHIYAT"
-                },
-                {
-                        "quote": "Bilishning o'zi kifoya emas, uni qo'llash kerak. Istashning o'zi kifoya emas, amal qilish kerak.",
-                        "author": "Iogann Volfgang fon Gyote",
-                        "de": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
-                        "category": "✦ KUN HIKMATI · HARAKAT"
-                },
-                {
-                        "quote": "Zulmatdan nolib o'tirgandan ko'ra, kichik bir sham yoqib qo'yganing ming bor afzal.",
-                        "author": "Konfutsiy",
-                        "de": "Es ist besser, ein einziges kleines Licht anzuzünden, als die Dunkelheit zu verfluchen.",
-                        "category": "✦ KUN HIKMATI · AMAL"
-                },
-                {
-                        "quote": "Ilm — barcha qorong'u yo'llarni yorituvchi so'nmas mash'aladir.",
-                        "author": "Mirzo Ulug'bek",
-                        "de": "Die Wissenschaft ist die unvergängliche Fackel, die alle dunklen Pfade erhellt.",
-                        "category": "✦ KUN HIKMATI · ILM-FAN"
-                },
-                {
-                        "quote": "Kuch — adolatdadir. Har bir ishda sabot, qat'iyat va aql bilan yo'l tut.",
-                        "author": "Amir Temur",
-                        "de": "Die Kraft liegt in der Gerechtigkeit. Handle in allen Dingen mit Entschlossenheit und Verstand.",
-                        "category": "✦ KUN HIKMATI · ADOLAT"
-                },
-                {
-                        "quote": "Tilimning chegaralari — mening olamim chegaralaridir.",
-                        "author": "Lyudvig Vitgenshteyn",
-                        "de": "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt.",
-                        "category": "✦ KUN HIKMATI · TAFAKKUR"
-                },
-                {
-                        "quote": "Tarbiya — bu alangani yoqishdir, bo'sh idishni to'ldirish emas.",
-                        "author": "Sokrat",
-                        "de": "Erziehung ist das Entzünden einer Flamme, nicht das Füllen eines Gefäßes.",
-                        "category": "✦ KUN HIKMATI · TA'LIM"
-                },
-                {
-                        "quote": "Men fikrlayapman, demak men mavjudman.",
-                        "author": "Rene Dekart",
-                        "de": "Ich denke, also bin ich.",
-                        "category": "✦ KUN HIKMATI · ONGLILIK"
-                },
-                {
-                        "quote": "G'alabalarning eng ulug'i — o'z nafsi va ojizliklari ustidan qozonilgan g'alabadir.",
-                        "author": "Platon (Aflotun)",
-                        "de": "Der erste und beste Sieg ist, sich selbst zu besiegen.",
-                        "category": "✦ KUN HIKMATI · IRODA"
-                },
-                {
-                        "quote": "Har bir yangi ibtidoda bizni asrovchi va hayot baxsh etuvchi sehr yashiringan.",
-                        "author": "German Gesse",
-                        "de": "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben.",
-                        "category": "✦ KUN HIKMATI · YANGILIK"
-                },
-                {
-                        "quote": "Kecha — bugungi kunning xotirasi, ertaga esa — bugungi kunning orzusidir.",
-                        "author": "Xalil Jibron",
-                        "de": "Das Gestern ist die Erinnerung von heute, das Morgen ist der Traum von heute.",
-                        "category": "✦ KUN HIKMATI · HAYOT"
-                },
-                {
-                        "quote": "Hamma insoniyatni o'zgartirishni istaydi, ammo hech kim o'zini o'zgartirish haqida o'ylamaydi.",
-                        "author": "Lev Tolstoy",
-                        "de": "Alle wollen die Menschheit verändern, doch niemand denkt daran, sich selbst zu verändern.",
-                        "category": "✦ KUN HIKMATI · HAQIQAT"
-                },
-                {
-                        "quote": "Baxtga yetishish uchun inson o'z aql-zakovati va axloqini kamolotga yetkazishi zarur.",
-                        "author": "Al-Forobiy",
-                        "de": "Um Glückseligkeit zu erlangen, muss der Mensch Verstand und Tugend vervollkommnen.",
-                        "category": "✦ KUN HIKMATI · SAODAT"
-                },
-                {
-                        "quote": "Ilm — bu dunyoni o'zgartirish uchun ishlatish mumkin bo'lgan eng qudratli quroldir.",
-                        "author": "Nelson Mandela",
-                        "de": "Bildung ist die mächtigste Waffe, die man verwenden kann, um die Welt zu verändern.",
-                        "category": "✦ KUN HIKMATI · ZIYO"
-                },
-                {
-                        "quote": "Bilim — bu qudratdir.",
-                        "author": "Frensis Bekon",
-                        "de": "Wissen ist Macht.",
-                        "category": "✦ KUN HIKMATI · BILIM"
-                },
-                {
-                        "quote": "Bizni tashqi hodisalar emas, balki ularga berayotgan shaxsiy munosabatimiz bezovta qiladi.",
-                        "author": "Epiktet",
-                        "de": "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Meinungen über die Dinge.",
-                        "category": "✦ KUN HIKMATI · XOTIRJAMLIK"
-                },
-                {
-                        "quote": "Bugundan 20 yil o'tib, qilgan ishlaringizdan emas, jur'at etolmay qilmagan ishlaringizdan ko'proq afsuslanasiz.",
-                        "author": "Mark Tven",
-                        "de": "In zwanzig Jahren wirst du mehr bereuen, was du nicht getan hast, als was du getan hast.",
-                        "category": "✦ KUN HIKMATI · IMKONIYAT"
-                },
-                {
-                        "quote": "Qayerda jarohat bo'lsa, nur o'sha yerdan qalbingga kirib keladi.",
-                        "author": "Jaloliddin Rumiy",
-                        "de": "Die Wunde ist der Ort, an dem das Licht in dich eintritt.",
-                        "category": "✦ KUN HIKMATI · UMID"
-                },
-                {
-                        "quote": "Eshitdim — unutdim, ko'rdim — eslab qoldim, bajardim — angladim.",
-                        "author": "Konfutsiy",
-                        "de": "Ich hörte und vergaß; ich sah und erinnerte mich; ich tat und verstand.",
-                        "category": "✦ KUN HIKMATI · TAJRIBA"
-                },
-                {
-                        "quote": "Insonning har bir jihati go'zal bo'lmog'i lozim: yuzi ham, kiyimi ham, qalbi ham, fikri ham.",
-                        "author": "Anton Chexov",
-                        "de": "Am Menschen muss alles schön sein: das Gesicht, die Kleidung, die Seele und die Gedanken.",
-                        "category": "✦ KUN HIKMATI · GO'ZALLIK"
-                }
-        ],
-        "ru": [
-                {
-                        "quote": "Вчера я был умным и хотел изменить мир. Сегодня я мудр, поэтому меняю себя.",
-                        "author": "Джалаладдин Руми",
-                        "de": "Gestern war ich klug und wollte die Welt verändern. Heute bin ich weise und verändere mich selbst.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · СМЫСЛ"
-                },
-                {
-                        "quote": "Наивысшее богатство — это разум и благовоспитанность, а тягчайшая бедность — невежество.",
-                        "author": "Алишер Навои",
-                        "de": "Der größte Reichtum ist Verstand und Anstand, die schwerste Armut aber die Unwissenheit.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ЭТИКА"
-                },
-                {
-                        "quote": "Паника — это половина болезни, спокойствие — половина здоровья, а терпение — начало исцеления.",
-                        "author": "Ибн Сина (Авиценна)",
-                        "de": "Panik ist die halbe Krankheit, Ruhe die halbe Gesundheit und Geduld der Beginn der Heilung.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ЗДОРОВЬЕ"
-                },
-                {
-                        "quote": "У вас есть власть над своим разумом, а не над внешними событиями. Осознайте это, и вы обретете силу.",
-                        "author": "Марк Аврелий",
-                        "de": "Du hast die Macht über deinen Geist, nicht über die äußeren Ereignisse. Erkenne dies, und du wirst Stärke finden.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · СТОИЦИЗМ"
-                },
-                {
-                        "quote": "Не потому мы не смеем, что это трудно, а потому это трудно, что мы не смеем.",
-                        "author": "Сенека",
-                        "de": "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · СМЕЛОСТЬ"
-                },
-                {
-                        "quote": "Тот, у кого есть «Зачем» жить, может выдержать почти любое «Как».",
-                        "author": "Фридрих Ницше",
-                        "de": "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ЦЕЛЬ"
-                },
-                {
-                        "quote": "Имей мужество пользоваться собственным умом!",
-                        "author": "Иммануил Кант",
-                        "de": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ФИЛОСОФИЯ"
-                },
-                {
-                        "quote": "Здоровье до того перевешивает все остальные блага, что истинно здоровый нищий счастливее больного короля.",
-                        "author": "Артур Шопенгауэр",
-                        "de": "Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ЗДОРОВЬЕ"
-                },
-                {
-                        "quote": "Когда мы больше не можем изменить ситуацию, мы призваны изменить самих себя.",
-                        "author": "Виктор Франкл",
-                        "de": "Wenn wir eine Situation nicht mehr ändern können, müssen wir uns selbst ändern.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ПСИХОЛОГИЯ"
-                },
-                {
-                        "quote": "Недостаточно только знать, нужно применять; недостаточно только желать, нужно действовать.",
-                        "author": "Иоганн Вольфганг фон Гёте",
-                        "de": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ДЕЙСТВИЕ"
-                },
-                {
-                        "quote": "Логика приведет вас из пункта А в пункт Б. Воображение доставит вас куда угодно.",
-                        "author": "Альберт Эйнштейн",
-                        "de": "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ВДОХНОВЕНИЕ"
-                },
-                {
-                        "quote": "Лучше зажечь одну маленькую свечу, чем вечно проклинать темноту.",
-                        "author": "Конфуций",
-                        "de": "Es ist besser, ein einziges kleines Licht anzuzünden, als die Dunkelheit zu verfluchen.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ПОСТУПКИ"
-                },
-                {
-                        "quote": "Наука — это неугасимый факел, освещающий все темные пути.",
-                        "author": "Мирзо Улугбек",
-                        "de": "Die Wissenschaft ist die unvergängliche Fackel, die alle dunklen Pfade erhellt.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · НАУКА"
-                },
-                {
-                        "quote": "Сила — в справедливости. В каждом деле действуй с твердостью и разумом.",
-                        "author": "Амир Темур",
-                        "de": "Die Kraft liegt in der Gerechtigkeit. Handle in allen Dingen mit Entschlossenheit und Verstand.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · СПРАВЕДЛИВОСТЬ"
-                },
-                {
-                        "quote": "Границы моего языка означают границы моего мира.",
-                        "author": "Людвиг Витгенштейн",
-                        "de": "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · МЫШЛЕНИЕ"
-                },
-                {
-                        "quote": "Тот, кто борется, может проиграть. Тот, кто не борется, уже проиграл.",
-                        "author": "Бертольт Брехт",
-                        "de": "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · СИЛА ДУХА"
-                },
-                {
-                        "quote": "Воспитание — это зажжение факела, а не наполнение пустого сосуда.",
-                        "author": "Сократ",
-                        "de": "Erziehung ist das Entzünden einer Flamme, nicht das Füllen eines Gefäßes.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ОБРАЗОВАНИЕ"
-                },
-                {
-                        "quote": "Я мыслю, следовательно, я существую.",
-                        "author": "Рене Декарт",
-                        "de": "Ich denke, also bin ich.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ОСОЗНАННОСТЬ"
-                },
-                {
-                        "quote": "Мы то, что мы делаем изо дня в день. Совершенство, таким образом, не действие, а привычка.",
-                        "author": "Аристотель",
-                        "de": "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ПРИВЫЧКИ"
-                },
-                {
-                        "quote": "Первая и величайшая победа — это победа над самим собой.",
-                        "author": "Платон",
-                        "de": "Der erste und beste Sieg ist, sich selbst zu besiegen.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ВОЛЯ"
-                },
-                {
-                        "quote": "В каждом начале таится волшебная сила, которая защищает нас и помогает нам жить.",
-                        "author": "Герман Гессе",
-                        "de": "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · НАДЕЖДА"
-                },
-                {
-                        "quote": "Вчера — это память сегодняшнего дня, а завтра — мечта сегодняшнего дня.",
-                        "author": "Халиль Джебран",
-                        "de": "Das Gestern ist die Erinnerung von heute, das Morgen ist der Traum von heute.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ЖИЗНЬ"
-                },
-                {
-                        "quote": "Все думают о том, как изменить мир, но никто не думает о том, как изменить себя.",
-                        "author": "Лев Толстой",
-                        "de": "Alle wollen die Menschheit verändern, doch niemand denkt daran, sich selbst zu verändern.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ИСТИНА"
-                },
-                {
-                        "quote": "Для достижения счастья человеку необходимо совершенствовать свой разум и нравственность.",
-                        "author": "Аль-Фараби",
-                        "de": "Um Glückseligkeit zu erlangen, muss der Mensch Verstand und Tugend vervollkommnen.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · СЧАСТЬЕ"
-                },
-                {
-                        "quote": "Путь в тысячу ли начинается с одного-единственного первого шага.",
-                        "author": "Лао-цзы",
-                        "de": "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · СТОЙКОСТЬ"
-                },
-                {
-                        "quote": "Образование — самое мощное оружие, с помощью которого можно изменить мир.",
-                        "author": "Нельсон Мандела",
-                        "de": "Bildung ist die mächtigste Waffe, die man verwenden kann, um die Welt zu verändern.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ЗНАНИЯ"
-                },
-                {
-                        "quote": "Знание — сила.",
-                        "author": "Фрэнсис Бэкон",
-                        "de": "Wissen ist Macht.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · СИЛА"
-                },
-                {
-                        "quote": "Людей мучают не сами вещи, а их представления о них.",
-                        "author": "Эпиктет",
-                        "de": "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Meinungen über die Dinge.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · СПОКОЙСТВИЕ"
-                },
-                {
-                        "quote": "Делай, что можешь, с тем, что имеешь, прямо там, где ты находишься.",
-                        "author": "Теодор Рузвельт",
-                        "de": "Tu, was du kannst, mit dem, was du hast, dort, wo du bist.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · РЕШИМОСТЬ"
-                },
-                {
-                        "quote": "Думаете ли вы, что сможете, или думаете, что не сможете, — в обоих случаях вы правы.",
-                        "author": "Генри Форд",
-                        "de": "Egal, ob du denkst, du kannst es, oder du kannst es nicht – du wirst recht behalten.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ВЕРА В СЕБЯ"
-                },
-                {
-                        "quote": "Ваше время ограничено, не тратьте его, живя чужой жизнью. Имейте смелость следовать своему сердцу.",
-                        "author": "Стив Джобс",
-                        "de": "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ИНДИВИДУАЛЬНОСТЬ"
-                },
-                {
-                        "quote": "Через двадцать лет вы будете больше сожалеть о том, чего не сделали, чем о том, что сделали.",
-                        "author": "Марк Твен",
-                        "de": "In zwanzig Jahren wirst du mehr bereuen, was du nicht getan hast, als was du getan hast.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ВОЗМОЖНОСТИ"
-                },
-                {
-                        "quote": "Рана — это то самое место, через которое в тебя проникает Свет.",
-                        "author": "Джалаладдин Руми",
-                        "de": "Die Wunde ist der Ort, an dem das Licht in dich eintritt.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · НАДЕЖДА"
-                },
-                {
-                        "quote": "Я услышал и забыл; я увидел и запомнил; я сделал и понял.",
-                        "author": "Конфуций",
-                        "de": "Ich hörte und vergaß; ich sah und erinnerte mich; ich tat und verstand.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · ПРАКТИКА"
-                },
-                {
-                        "quote": "В человеке должно быть всё прекрасно: и лицо, и одежда, и душа, и мысли.",
-                        "author": "Антон Чехов",
-                        "de": "Am Menschen muss alles schön sein: das Gesicht, die Kleidung, die Seele und die Gedanken.",
-                        "category": "✦ МУДРОСТЬ ДНЯ · КРАСОТА"
-                }
-        ],
-        "de": [
-                {
-                        "quote": "Gestern war ich klug und wollte die Welt verändern. Heute bin ich weise und verändere mich selbst.",
-                        "author": "Dschalal ad-Din Rumi",
-                        "de": "Gestern war ich klug und wollte die Welt verändern. Heute bin ich weise und verändere mich selbst.",
-                        "category": "✦ WEISHEIT DES TAGES · WEISHEIT"
-                },
-                {
-                        "quote": "Der größte Reichtum ist Verstand und Anstand, die schwerste Armut aber die Unwissenheit.",
-                        "author": "Alischer Nawoi",
-                        "de": "Der größte Reichtum ist Verstand und Anstand, die schwerste Armut aber die Unwissenheit.",
-                        "category": "✦ WEISHEIT DES TAGES · ETHIK"
-                },
-                {
-                        "quote": "Panik ist die halbe Krankheit, Ruhe die halbe Gesundheit und Geduld der Beginn der Heilung.",
-                        "author": "Avicenna (Ibn Sina)",
-                        "de": "Panik ist die halbe Krankheit, Ruhe die halbe Gesundheit und Geduld der Beginn der Heilung.",
-                        "category": "✦ WEISHEIT DES TAGES · GESUNDHEIT"
-                },
-                {
-                        "quote": "Du hast die Macht über deinen Geist, nicht über die äußeren Ereignisse. Erkenne dies, und du wirst Stärke finden.",
-                        "author": "Marc Aurel",
-                        "de": "Du hast die Macht über deinen Geist, nicht über die äußeren Ereignisse. Erkenne dies, und du wirst Stärke finden.",
-                        "category": "✦ WEISHEIT DES TAGES · STOIZISMUS"
-                },
-                {
-                        "quote": "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.",
-                        "author": "Seneca",
-                        "de": "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.",
-                        "category": "✦ WEISHEIT DES TAGES · MUT"
-                },
-                {
-                        "quote": "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.",
-                        "author": "Friedrich Nietzsche",
-                        "de": "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.",
-                        "category": "✦ WEISHEIT DES TAGES · SINN"
-                },
-                {
-                        "quote": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
-                        "author": "Immanuel Kant",
-                        "de": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
-                        "category": "✦ WEISHEIT DES TAGES · PHILOSOPHIE"
-                },
-                {
-                        "quote": "Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.",
-                        "author": "Arthur Schopenhauer",
-                        "de": "Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.",
-                        "category": "✦ WEISHEIT DES TAGES · GESUNDHEIT"
-                },
-                {
-                        "quote": "Wenn wir eine Situation nicht mehr ändern können, müssen wir uns selbst ändern.",
-                        "author": "Viktor Frankl",
-                        "de": "Wenn wir eine Situation nicht mehr ändern können, müssen wir uns selbst ändern.",
-                        "category": "✦ WEISHEIT DES TAGES · PSYCHOLOGIE"
-                },
-                {
-                        "quote": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
-                        "author": "Johann Wolfgang von Goethe",
-                        "de": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
-                        "category": "✦ WEISHEIT DES TAGES · TATKRAFT"
-                },
-                {
-                        "quote": "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
-                        "author": "Albert Einstein",
-                        "de": "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
-                        "category": "✦ WEISHEIT DES TAGES · INSPIRATION"
-                },
-                {
-                        "quote": "Es ist besser, ein einziges kleines Licht anzuzünden, als die Dunkelheit zu verfluchen.",
-                        "author": "Konfuzius",
-                        "de": "Es ist besser, ein einziges kleines Licht anzuzünden, als die Dunkelheit zu verfluchen.",
-                        "category": "✦ WEISHEIT DES TAGES · HANDELN"
-                },
-                {
-                        "quote": "Die Wissenschaft ist die unvergängliche Fackel, die alle dunklen Pfade erhellt.",
-                        "author": "Mirzo Ulugh Beg",
-                        "de": "Die Wissenschaft ist die unvergängliche Fackel, die alle dunklen Pfade erhellt.",
-                        "category": "✦ WEISHEIT DES TAGES · WISSENSCHAFT"
-                },
-                {
-                        "quote": "Die Kraft liegt in der Gerechtigkeit. Handle in allen Dingen mit Entschlossenheit und Verstand.",
-                        "author": "Amir Timur",
-                        "de": "Die Kraft liegt in der Gerechtigkeit. Handle in allen Dingen mit Entschlossenheit und Verstand.",
-                        "category": "✦ WEISHEIT DES TAGES · GERECHTIGKEIT"
-                },
-                {
-                        "quote": "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt.",
-                        "author": "Ludwig Wittgenstein",
-                        "de": "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt.",
-                        "category": "✦ WEISHEIT DES TAGES · SPRACHE"
-                },
-                {
-                        "quote": "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
-                        "author": "Bertolt Brecht",
-                        "de": "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
-                        "category": "✦ WEISHEIT DES TAGES · MUT"
-                },
-                {
-                        "quote": "Erziehung ist das Entzünden einer Flamme, nicht das Füllen eines Gefäßes.",
-                        "author": "Sokrates",
-                        "de": "Erziehung ist das Entzünden einer Flamme, nicht das Füllen eines Gefäßes.",
-                        "category": "✦ WEISHEIT DES TAGES · BILDUNG"
-                },
-                {
-                        "quote": "Ich denke, also bin ich.",
-                        "author": "René Descartes",
-                        "de": "Ich denke, also bin ich.",
-                        "category": "✦ WEISHEIT DES TAGES · BEWUSSTSEIN"
-                },
-                {
-                        "quote": "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
-                        "author": "Aristoteles",
-                        "de": "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
-                        "category": "✦ WEISHEIT DES TAGES · GEWOHNHEIT"
-                },
-                {
-                        "quote": "Der erste und beste Sieg ist, sich selbst zu besiegen.",
-                        "author": "Platon",
-                        "de": "Der erste und beste Sieg ist, sich selbst zu besiegen.",
-                        "category": "✦ WEISHEIT DES TAGES · WILLE"
-                },
-                {
-                        "quote": "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben.",
-                        "author": "Hermann Hesse",
-                        "de": "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben.",
-                        "category": "✦ WEISHEIT DES TAGES · HOFFNUNG"
-                },
-                {
-                        "quote": "Das Gestern ist die Erinnerung von heute, das Morgen ist der Traum von heute.",
-                        "author": "Khalil Gibran",
-                        "de": "Das Gestern ist die Erinnerung von heute, das Morgen ist der Traum von heute.",
-                        "category": "✦ WEISHEIT DES TAGES · LEBEN"
-                },
-                {
-                        "quote": "Alle wollen die Menschheit verändern, doch niemand denkt daran, sich selbst zu verändern.",
-                        "author": "Leo Tolstoi",
-                        "de": "Alle wollen die Menschheit verändern, doch niemand denkt daran, sich selbst zu verändern.",
-                        "category": "✦ WEISHEIT DES TAGES · WAHRHEIT"
-                },
-                {
-                        "quote": "Um Glückseligkeit zu erlangen, muss der Mensch Verstand und Tugend vervollkommnen.",
-                        "author": "Al-Farabi",
-                        "de": "Um Glückseligkeit zu erlangen, muss der Mensch Verstand und Tugend vervollkommnen.",
-                        "category": "✦ WEISHEIT DES TAGES · GLÜCK"
-                },
-                {
-                        "quote": "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
-                        "author": "Laotse",
-                        "de": "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
-                        "category": "✦ WEISHEIT DES TAGES · AUSDAUER"
-                },
-                {
-                        "quote": "Bildung ist die mächtigste Waffe, die man verwenden kann, um die Welt zu verändern.",
-                        "author": "Nelson Mandela",
-                        "de": "Bildung ist die mächtigste Waffe, die man verwenden kann, um die Welt zu verändern.",
-                        "category": "✦ WEISHEIT DES TAGES · BILDUNG"
-                },
-                {
-                        "quote": "Wissen ist Macht.",
-                        "author": "Francis Bacon",
-                        "de": "Wissen ist Macht.",
-                        "category": "✦ WEISHEIT DES TAGES · WISSEN"
-                },
-                {
-                        "quote": "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Meinungen über die Dinge.",
-                        "author": "Epiktet",
-                        "de": "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Meinungen über die Dinge.",
-                        "category": "✦ WEISHEIT DES TAGES · GELASSENHEIT"
-                },
-                {
-                        "quote": "Tu, was du kannst, mit dem, was du hast, dort, wo du bist.",
-                        "author": "Theodore Roosevelt",
-                        "de": "Tu, was du kannst, mit dem, was du hast, dort, wo du bist.",
-                        "category": "✦ WEISHEIT DES TAGES · ENTSCHLOSSENHEIT"
-                },
-                {
-                        "quote": "Egal, ob du denkst, du kannst es, oder du kannst es nicht – du wirst recht behalten.",
-                        "author": "Henry Ford",
-                        "de": "Egal, ob du denkst, du kannst es, oder du kannst es nicht – du wirst recht behalten.",
-                        "category": "✦ WEISHEIT DES TAGES · ZUVERSICHT"
-                },
-                {
-                        "quote": "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
-                        "author": "Steve Jobs",
-                        "de": "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
-                        "category": "✦ WEISHEIT DES TAGES · INDIVIDUALITÄT"
-                },
-                {
-                        "quote": "In zwanzig Jahren wirst du mehr bereuen, was du nicht getan hast, als was du getan hast.",
-                        "author": "Mark Twain",
-                        "de": "In zwanzig Jahren wirst du mehr bereuen, was du nicht getan hast, als was du getan hast.",
-                        "category": "✦ WEISHEIT DES TAGES · CHANCE"
-                },
-                {
-                        "quote": "Die Wunde ist der Ort, an dem das Licht in dich eintritt.",
-                        "author": "Dschalal ad-Din Rumi",
-                        "de": "Die Wunde ist der Ort, an dem das Licht in dich eintritt.",
-                        "category": "✦ WEISHEIT DES TAGES · HOFFNUNG"
-                },
-                {
-                        "quote": "Ich hörte und vergaß; ich sah und erinnerte mich; ich tat und verstand.",
-                        "author": "Konfuzius",
-                        "de": "Ich hörte und vergaß; ich sah und erinnerte mich; ich tat und verstand.",
-                        "category": "✦ WEISHEIT DES TAGES · ERFAHRUNG"
-                },
-                {
-                        "quote": "Am Menschen muss alles schön sein: das Gesicht, die Kleidung, die Seele und die Gedanken.",
-                        "author": "Anton Tschechow",
-                        "de": "Am Menschen muss alles schön sein: das Gesicht, die Kleidung, die Seele und die Gedanken.",
-                        "category": "✦ WEISHEIT DES TAGES · SCHÖNHEIT"
-                }
-        ],
-        "en": [
-                {
-                        "quote": "Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.",
-                        "author": "Rumi",
-                        "de": "Gestern war ich klug und wollte die Welt verändern. Heute bin ich weise und verändere mich selbst.",
-                        "category": "✦ QUOTE OF THE DAY · WISDOM"
-                },
-                {
-                        "quote": "The greatest wealth is wisdom and virtue, and the heaviest poverty is ignorance.",
-                        "author": "Alisher Navoiy",
-                        "de": "Der größte Reichtum ist Verstand und Anstand, die schwerste Armut aber die Unwissenheit.",
-                        "category": "✦ QUOTE OF THE DAY · VIRTUE"
-                },
-                {
-                        "quote": "Panic is half of disease, calmness is half of health, and patience is the beginning of healing.",
-                        "author": "Avicenna (Ibn Sina)",
-                        "de": "Panik ist die halbe Krankheit, Ruhe die halbe Gesundheit und Geduld der Beginn der Heilung.",
-                        "category": "✦ QUOTE OF THE DAY · HEALTH"
-                },
-                {
-                        "quote": "You have power over your mind - not outside events. Realize this, and you will find strength.",
-                        "author": "Marcus Aurelius",
-                        "de": "Du hast die Macht über deinen Geist, nicht über die äußeren Ereignisse. Erkenne dies, und du wirst Stärke finden.",
-                        "category": "✦ QUOTE OF THE DAY · STOICISM"
-                },
-                {
-                        "quote": "It is not because things are difficult that we do not dare; it is because we do not dare that they are difficult.",
-                        "author": "Seneca",
-                        "de": "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.",
-                        "category": "✦ QUOTE OF THE DAY · COURAGE"
-                },
-                {
-                        "quote": "He who has a why to live can bear almost any how.",
-                        "author": "Friedrich Nietzsche",
-                        "de": "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.",
-                        "category": "✦ QUOTE OF THE DAY · PURPOSE"
-                },
-                {
-                        "quote": "Have the courage to use your own understanding!",
-                        "author": "Immanuel Kant",
-                        "de": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
-                        "category": "✦ QUOTE OF THE DAY · PHILOSOPHY"
-                },
-                {
-                        "quote": "Health is not everything, but without health, everything is nothing.",
-                        "author": "Arthur Schopenhauer",
-                        "de": "Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.",
-                        "category": "✦ QUOTE OF THE DAY · HEALTH"
-                },
-                {
-                        "quote": "When we are no longer able to change a situation, we are challenged to change ourselves.",
-                        "author": "Viktor Frankl",
-                        "de": "Wenn wir eine Situation nicht mehr ändern können, müssen wir uns selbst ändern.",
-                        "category": "✦ QUOTE OF THE DAY · PSYCHOLOGY"
-                },
-                {
-                        "quote": "Knowing is not enough; we must apply. Willing is not enough; we must do.",
-                        "author": "Johann Wolfgang von Goethe",
-                        "de": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
-                        "category": "✦ QUOTE OF THE DAY · ACTION"
-                },
-                {
-                        "quote": "Logic will get you from A to B. Imagination will take you everywhere.",
-                        "author": "Albert Einstein",
-                        "de": "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
-                        "category": "✦ QUOTE OF THE DAY · INSPIRATION"
-                },
-                {
-                        "quote": "It is better to light a candle than curse the darkness.",
-                        "author": "Confucius",
-                        "de": "Es ist besser, ein einziges kleines Licht anzuzünden, als die Dunkelheit zu verfluchen.",
-                        "category": "✦ QUOTE OF THE DAY · DEEDS"
-                },
-                {
-                        "quote": "Science is the imperishable torch that illuminates every dark path.",
-                        "author": "Mirzo Ulugh Beg",
-                        "de": "Die Wissenschaft ist die unvergängliche Fackel, die alle dunklen Pfade erhellt.",
-                        "category": "✦ QUOTE OF THE DAY · SCIENCE"
-                },
-                {
-                        "quote": "Power lies in justice. Act with resolve, perseverance, and wisdom in all matters.",
-                        "author": "Amir Timur",
-                        "de": "Die Kraft liegt in der Gerechtigkeit. Handle in allen Dingen mit Entschlossenheit und Verstand.",
-                        "category": "✦ QUOTE OF THE DAY · JUSTICE"
-                },
-                {
-                        "quote": "The limits of my language mean the limits of my world.",
-                        "author": "Ludwig Wittgenstein",
-                        "de": "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt.",
-                        "category": "✦ QUOTE OF THE DAY · THOUGHT"
-                },
-                {
-                        "quote": "Those who fight, may fail. Those who do not fight, have already failed.",
-                        "author": "Bertolt Brecht",
-                        "de": "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
-                        "category": "✦ QUOTE OF THE DAY · DETERMINATION"
-                },
-                {
-                        "quote": "Education is the kindling of a flame, not the filling of a vessel.",
-                        "author": "Socrates",
-                        "de": "Erziehung ist das Entzünden einer Flamme, nicht das Füllen eines Gefäßes.",
-                        "category": "✦ QUOTE OF THE DAY · EDUCATION"
-                },
-                {
-                        "quote": "I think, therefore I am.",
-                        "author": "René Descartes",
-                        "de": "Ich denke, also bin ich.",
-                        "category": "✦ QUOTE OF THE DAY · CONSCIOUSNESS"
-                },
-                {
-                        "quote": "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
-                        "author": "Aristotle",
-                        "de": "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
-                        "category": "✦ QUOTE OF THE DAY · HABITS"
-                },
-                {
-                        "quote": "The first and greatest victory is to conquer yourself.",
-                        "author": "Plato",
-                        "de": "Der erste und beste Sieg ist, sich selbst zu besiegen.",
-                        "category": "✦ QUOTE OF THE DAY · WILLPOWER"
-                },
-                {
-                        "quote": "And in every beginning there is a magic dwelling that protects us and helps us to live.",
-                        "author": "Hermann Hesse",
-                        "de": "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben.",
-                        "category": "✦ QUOTE OF THE DAY · HOPE"
-                },
-                {
-                        "quote": "Yesterday is but today's memory, and tomorrow is today's dream.",
-                        "author": "Kahlil Gibran",
-                        "de": "Das Gestern ist die Erinnerung von heute, das Morgen ist der Traum von heute.",
-                        "category": "✦ QUOTE OF THE DAY · LIFE"
-                },
-                {
-                        "quote": "Everyone thinks of changing the world, but no one thinks of changing himself.",
-                        "author": "Leo Tolstoy",
-                        "de": "Alle wollen die Menschheit verändern, doch niemand denkt daran, sich selbst zu verändern.",
-                        "category": "✦ QUOTE OF THE DAY · TRUTH"
-                },
-                {
-                        "quote": "To achieve true happiness, one must perfect their intellect and virtue.",
-                        "author": "Al-Farabi",
-                        "de": "Um Glückseligkeit zu erlangen, muss der Mensch Verstand und Tugend vervollkommnen.",
-                        "category": "✦ QUOTE OF THE DAY · HAPPINESS"
-                },
-                {
-                        "quote": "A journey of a thousand miles begins with a single step.",
-                        "author": "Lao Tzu",
-                        "de": "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
-                        "category": "✦ QUOTE OF THE DAY · PERSEVERANCE"
-                },
-                {
-                        "quote": "Education is the most powerful weapon which you can use to change the world.",
-                        "author": "Nelson Mandela",
-                        "de": "Bildung ist die mächtigste Waffe, die man verwenden kann, um die Welt zu verändern.",
-                        "category": "✦ QUOTE OF THE DAY · KNOWLEDGE"
-                },
-                {
-                        "quote": "Knowledge is power.",
-                        "author": "Francis Bacon",
-                        "de": "Wissen ist Macht.",
-                        "category": "✦ QUOTE OF THE DAY · POWER"
-                },
-                {
-                        "quote": "Men are disturbed not by things, but by the view which they take of them.",
-                        "author": "Epictetus",
-                        "de": "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Meinungen über die Dinge.",
-                        "category": "✦ QUOTE OF THE DAY · SERENITY"
-                },
-                {
-                        "quote": "Do what you can, with what you have, where you are.",
-                        "author": "Theodore Roosevelt",
-                        "de": "Tu, was du kannst, mit dem, was du hast, dort, wo du bist.",
-                        "category": "✦ QUOTE OF THE DAY · RESILIENCE"
-                },
-                {
-                        "quote": "Whether you think you can, or you think you can't — you're right.",
-                        "author": "Henry Ford",
-                        "de": "Egal, ob du denkst, du kannst es, oder du kannst es nicht – du wirst recht behalten.",
-                        "category": "✦ QUOTE OF THE DAY · BELIEF"
-                },
-                {
-                        "quote": "Your time is limited, don't waste it living someone else's life. Have the courage to follow your heart.",
-                        "author": "Steve Jobs",
-                        "de": "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
-                        "category": "✦ QUOTE OF THE DAY · INDIVIDUALITY"
-                },
-                {
-                        "quote": "Twenty years from now you will be more disappointed by the things that you didn't do than by the ones you did do.",
-                        "author": "Mark Twain",
-                        "de": "In zwanzig Jahren wirst du mehr bereuen, was du nicht getan hast, als was du getan hast.",
-                        "category": "✦ QUOTE OF THE DAY · OPPORTUNITY"
-                },
-                {
-                        "quote": "The wound is the place where the Light enters you.",
-                        "author": "Rumi",
-                        "de": "Die Wunde ist der Ort, an dem das Licht in dich eintritt.",
-                        "category": "✦ QUOTE OF THE DAY · HOPE"
-                },
-                {
-                        "quote": "I hear and I forget; I see and I remember; I do and I understand.",
-                        "author": "Confucius",
-                        "de": "Ich hörte und vergaß; ich sah und erinnerte mich; ich tat und verstand.",
-                        "category": "✦ QUOTE OF THE DAY · EXPERIENCE"
-                },
-                {
-                        "quote": "Man must be beautiful in every respect: in the face, in the clothes, in the soul and in the thoughts.",
-                        "author": "Anton Chekhov",
-                        "de": "Am Menschen muss alles schön sein: das Gesicht, die Kleidung, die Seele und die Gedanken.",
-                        "category": "✦ QUOTE OF THE DAY · BEAUTY"
-                }
-        ]
+    "uz": [
+        {
+            "quote": "Mantiq sizni A nuqtadan B nuqtaga olib boradi, tasavvur esa har qanday manzilga yetaklay oladi.",
+            "author": "Albert Eynshteyn",
+            "de": "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
+            "category": "✦ KUN HIKMATI · ILHOM"
+        },
+        {
+            "quote": "Kurashgan inson yutqazishi mumkin. Kurashmagan esa allaqachon mag'lubdir.",
+            "author": "Bertolt Brext",
+            "de": "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
+            "category": "✦ KUN HIKMATI · SHIDDAT"
+        },
+        {
+            "quote": "Biz takror va takror nima qilsak, o'shamiz. Demak, yuksaklik — bu harakat emas, balki odatdir.",
+            "author": "Aristotel",
+            "de": "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
+            "category": "✦ KUN HIKMATI · ODATLAR"
+        },
+        {
+            "quote": "Ming chaqirimlik yo'l ham birgina kichik qadam bilan boshlanadi.",
+            "author": "Lao-szi",
+            "de": "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
+            "category": "✦ KUN HIKMATI · SABOT"
+        },
+        {
+            "quote": "Qayerda bo'lsang o'sha yerda, bor imkoniyating bilan qo'lingdan kelganini qil.",
+            "author": "Teodor Ruzvelt",
+            "de": "Tu, was du kannst, mit dem, was du hast, dort, wo du bist.",
+            "category": "✦ KUN HIKMATI · MATONAT"
+        },
+        {
+            "quote": "Qo'limdan keladi deb o'ylasang ham, kelmaydi deb o'ylasang ham — ikkala holatda ham haqsiz.",
+            "author": "Genri Ford",
+            "de": "Egal, ob du denkst, du kannst es, oder du kannst es nicht – du wirst recht behalten.",
+            "category": "✦ KUN HIKMATI · ISHONCH"
+        },
+        {
+            "quote": "Vaqtingiz cheklangan, uni o'zgalarning hayotini yashash bilan sovurmang. Qalbingizga ergashing.",
+            "author": "Stiv Jobs",
+            "de": "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
+            "category": "✦ KUN HIKMATI · SHAXSIYAT"
+        },
+        {
+            "quote": "Kecha aqlli edim — dunyoni o'zgartirmoqchi edim. Bugun esa donoman — o'zimni o'zgartiryapman.",
+            "author": "Jaloliddin Rumiy",
+            "de": "Gestern war ich klug und wollte die Welt verändern. Heute bin ich weise und verändere mich selbst.",
+            "category": "✦ KUN HIKMATI · DONOLIK"
+        },
+        {
+            "quote": "Bilingki, eng buyuk boylik — aql va odob, eng og'ir qashshoqlik esa nodonlikdir.",
+            "author": "Alisher Navoiy",
+            "de": "Der größte Reichtum ist Verstand und Anstand, die schwerste Armut aber die Unwissenheit.",
+            "category": "✦ KUN HIKMATI · AXLOQ"
+        },
+        {
+            "quote": "Vahima kasallikning yarmi, xotirjamlik sog'liqning yarmi, sabr esa shifoning boshlanishidir.",
+            "author": "Ibn Sino (Avitsenna)",
+            "de": "Panik ist die halbe Krankheit, Ruhe die halbe Gesundheit und Geduld der Beginn der Heilung.",
+            "category": "✦ KUN HIKMATI · SALOMATLIK"
+        },
+        {
+            "quote": "Siz tashqi hodisalarni emas, o'z ongingizni boshqarasiz. Buni tushunganingizda chinakam qudratga ega bo'lasiz.",
+            "author": "Mark Avreliy",
+            "de": "Du hast die Macht über deinen Geist, nicht über die äußeren Ereignisse. Erkenne dies, und du wirst Stärke finden.",
+            "category": "✦ KUN HIKMATI · STOYATSIZM"
+        },
+        {
+            "quote": "Ishlar qiyin bo'lgani uchun jur'at etolmayotganimiz yo'q, aksincha jur'at etmaganimiz tufayli ular qiyindir.",
+            "author": "Seneka",
+            "de": "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.",
+            "category": "✦ KUN HIKMATI · JUR'AT"
+        },
+        {
+            "quote": "Yashash uchun o'zining «Nega»siga ega inson har qanday «Qanday»ga bardosh bera oladi.",
+            "author": "Fridrix Nitsshe",
+            "de": "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.",
+            "category": "✦ KUN HIKMATI · MAQSAD"
+        },
+        {
+            "quote": "O'z aqlingdan foydalanishga jur'at et! Mustaqil fikrlash — ma'rifatning asosidir.",
+            "author": "Immanuel Kant",
+            "de": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
+            "category": "✦ KUN HIKMATI · FALSAFA"
+        },
+        {
+            "quote": "Sog'lik barcha narsa emas, lekin sog'liksiz qolgan barcha narsa hech narsaga aylanadi.",
+            "author": "Artur Shopengauer",
+            "de": "Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.",
+            "category": "✦ KUN HIKMATI · SALOMATLIK"
+        },
+        {
+            "quote": "Vaziyatni o'zgartirish qo'limizdan kelmasa, o'zimizni o'zgartirish vaqti yetgan bo'ladi.",
+            "author": "Viktor Frankl",
+            "de": "Wenn wir eine Situation nicht mehr ändern können, müssen wir uns selbst ändern.",
+            "category": "✦ KUN HIKMATI · RUHIYAT"
+        },
+        {
+            "quote": "Bilishning o'zi kifoya emas, uni qo'llash kerak. Istashning o'zi kifoya emas, amal qilish kerak.",
+            "author": "Iogann Volfgang fon Gyote",
+            "de": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
+            "category": "✦ KUN HIKMATI · HARAKAT"
+        },
+        {
+            "quote": "Zulmatdan nolib o'tirgandan ko'ra, kichik bir sham yoqib qo'yganing ming bor afzal.",
+            "author": "Konfutsiy",
+            "de": "Es ist besser, ein einziges kleines Licht anzuzünden, als die Dunkelheit zu verfluchen.",
+            "category": "✦ KUN HIKMATI · AMAL"
+        },
+        {
+            "quote": "Ilm — barcha qorong'u yo'llarni yorituvchi so'nmas mash'aladir.",
+            "author": "Mirzo Ulug'bek",
+            "de": "Die Wissenschaft ist die unvergängliche Fackel, die alle dunklen Pfade erhellt.",
+            "category": "✦ KUN HIKMATI · ILM-FAN"
+        },
+        {
+            "quote": "Kuch — adolatdadir. Har bir ishda sabot, qat'iyat va aql bilan yo'l tut.",
+            "author": "Amir Temur",
+            "de": "Die Kraft liegt in der Gerechtigkeit. Handle in allen Dingen mit Entschlossenheit und Verstand.",
+            "category": "✦ KUN HIKMATI · ADOLAT"
+        },
+        {
+            "quote": "Tilimning chegaralari — mening olamim chegaralaridir.",
+            "author": "Lyudvig Vitgenshteyn",
+            "de": "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt.",
+            "category": "✦ KUN HIKMATI · TAFAKKUR"
+        },
+        {
+            "quote": "Tarbiya — bu alangani yoqishdir, bo'sh idishni to'ldirish emas.",
+            "author": "Sokrat",
+            "de": "Erziehung ist das Entzünden einer Flamme, nicht das Füllen eines Gefäßes.",
+            "category": "✦ KUN HIKMATI · TA'LIM"
+        },
+        {
+            "quote": "Men fikrlayapman, demak men mavjudman.",
+            "author": "Rene Dekart",
+            "de": "Ich denke, also bin ich.",
+            "category": "✦ KUN HIKMATI · ONGLILIK"
+        },
+        {
+            "quote": "G'alabalarning eng ulug'i — o'z nafsi va ojizliklari ustidan qozonilgan g'alabadir.",
+            "author": "Platon (Aflotun)",
+            "de": "Der erste und beste Sieg ist, sich selbst zu besiegen.",
+            "category": "✦ KUN HIKMATI · IRODA"
+        },
+        {
+            "quote": "Har bir yangi ibtidoda bizni asrovchi va hayot baxsh etuvchi sehr yashiringan.",
+            "author": "German Gesse",
+            "de": "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben.",
+            "category": "✦ KUN HIKMATI · YANGILIK"
+        },
+        {
+            "quote": "Kecha — bugungi kunning xotirasi, ertaga esa — bugungi kunning orzusidir.",
+            "author": "Xalil Jibron",
+            "de": "Das Gestern ist die Erinnerung von heute, das Morgen ist der Traum von heute.",
+            "category": "✦ KUN HIKMATI · HAYOT"
+        },
+        {
+            "quote": "Hamma insoniyatni o'zgartirishni istaydi, ammo hech kim o'zini o'zgartirish haqida o'ylamaydi.",
+            "author": "Lev Tolstoy",
+            "de": "Alle wollen die Menschheit verändern, doch niemand denkt daran, sich selbst zu verändern.",
+            "category": "✦ KUN HIKMATI · HAQIQAT"
+        },
+        {
+            "quote": "Baxtga yetishish uchun inson o'z aql-zakovati va axloqini kamolotga yetkazishi zarur.",
+            "author": "Al-Forobiy",
+            "de": "Um Glückseligkeit zu erlangen, muss der Mensch Verstand und Tugend vervollkommnen.",
+            "category": "✦ KUN HIKMATI · SAODAT"
+        },
+        {
+            "quote": "Ilm — bu dunyoni o'zgartirish uchun ishlatish mumkin bo'lgan eng qudratli quroldir.",
+            "author": "Nelson Mandela",
+            "de": "Bildung ist die mächtigste Waffe, die man verwenden kann, um die Welt zu verändern.",
+            "category": "✦ KUN HIKMATI · ZIYO"
+        },
+        {
+            "quote": "Bilim — bu qudratdir.",
+            "author": "Frensis Bekon",
+            "de": "Wissen ist Macht.",
+            "category": "✦ KUN HIKMATI · BILIM"
+        },
+        {
+            "quote": "Bizni tashqi hodisalar emas, balki ularga berayotgan shaxsiy munosabatimiz bezovta qiladi.",
+            "author": "Epiktet",
+            "de": "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Meinungen über die Dinge.",
+            "category": "✦ KUN HIKMATI · XOTIRJAMLIK"
+        },
+        {
+            "quote": "Bugundan 20 yil o'tib, qilgan ishlaringizdan emas, jur'at etolmay qilmagan ishlaringizdan ko'proq afsuslanasiz.",
+            "author": "Mark Tven",
+            "de": "In zwanzig Jahren wirst du mehr bereuen, was du nicht getan hast, als was du getan hast.",
+            "category": "✦ KUN HIKMATI · IMKONIYAT"
+        },
+        {
+            "quote": "Qayerda jarohat bo'lsa, nur o'sha yerdan qalbingga kirib keladi.",
+            "author": "Jaloliddin Rumiy",
+            "de": "Die Wunde ist der Ort, an dem das Licht in dich eintritt.",
+            "category": "✦ KUN HIKMATI · UMID"
+        },
+        {
+            "quote": "Eshitdim — unutdim, ko'rdim — eslab qoldim, bajardim — angladim.",
+            "author": "Konfutsiy",
+            "de": "Ich hörte und vergaß; ich sah und erinnerte mich; ich tat und verstand.",
+            "category": "✦ KUN HIKMATI · TAJRIBA"
+        },
+        {
+            "quote": "Insonning har bir jihati go'zal bo'lmog'i lozim: yuzi ham, kiyimi ham, qalbi ham, fikri ham.",
+            "author": "Anton Chexov",
+            "de": "Am Menschen muss alles schön sein: das Gesicht, die Kleidung, die Seele und die Gedanken.",
+            "category": "✦ KUN HIKMATI · GO'ZALLIK"
+        },
+        {
+            "quote": "Inson agar go'zal axloqqa ega bo'lsa — bu 1 ga teng. Agar husn sohibi bo'lsa, 0 ni qo'shing — 10 bo'ladi. Agar boylikka ega bo'lsa, yana 0 ni qo'shing — 100 bo'ladi. Ammo axloq ketsa, faqat nollar qoladi.",
+            "author": "Muhammad al-Xorazmiy",
+            "de": "Wenn der Mensch Moral besitzt, ist er eine 1. Hat er Schönheit, füge eine 0 hinzu: 10. Hat er Reichtum, füge eine 0 hinzu: 100. Verliert er aber die Moral, bleiben nur Nullen.",
+            "category": "✦ KUN HIKMATI · AXLOQ"
+        },
+        {
+            "quote": "Ilmning maqsadi — haqiqatni kashf etishdir. Haqiqatni bilish esa insonni xurofot va nodonlik zanjirlaridan ozod qiladi.",
+            "author": "Abu Rayhon Beruniy",
+            "de": "Das Ziel der Wissenschaft ist die Entdeckung der Wahrheit. Das Erkennen der Wahrheit befreit den Menschen von den Fesseln der Unwissenheit.",
+            "category": "✦ KUN HIKMATI · ILM-FAN"
+        },
+        {
+            "quote": "Har kimki vafo qilsa, vafo topqusidur, Har kimki jafo qilsa, jafo topqusidur. Yaxshi kishi ko'rmag'ay yomonlik hargiz...",
+            "author": "Zahiriddin Muhammad Bobur",
+            "de": "Wer Treue sät, wird Treue ernten; wer Unrecht tut, wird Unrecht erfahren. Ein edler Mensch wird niemals dem Bösen verfallen.",
+            "category": "✦ KUN HIKMATI · ADABIYOT"
+        },
+        {
+            "quote": "Kitob — ichimizdagi muzlagan dengizni yorib yuboruvchi bolta bo'lishi kerak.",
+            "author": "Frans Kafka",
+            "de": "Ein Buch muss die Axt sein für das gefrorene Meer in uns.",
+            "category": "✦ KUN HIKMATI · TAFAKKUR"
+        },
+        {
+            "quote": "Faqat o'z oldiga buyuk maqsadlarni qo'ygan insonlargina buyuk narsalarga erisha oladi.",
+            "author": "Fridrix Shiller",
+            "de": "Nur wer große Ziele hat, kann Großes vollbringen.",
+            "category": "✦ KUN HIKMATI · MAQSAD"
+        },
+        {
+            "quote": "Ba'zan hech kim tasavvur ham qilolmagan insonlar hech kim o'ylab topolmagan narsalarni yaratadilar.",
+            "author": "Alan Tyuring",
+            "de": "Manchmal sind es die Menschen, von denen man es sich am wenigsten vorstellt, die Dinge tun, die sich niemand vorstellen kann.",
+            "category": "✦ KUN HIKMATI · TEXNOLOGIYA"
+        },
+        {
+            "quote": "Biror narsani bolaga oddiy tushuntirib bera olmasangiz, demak uni o'zingiz ham yetarlicha tushunmabsiz.",
+            "author": "Richard Feynman",
+            "de": "Wenn du es einem Kind nicht einfach erklären kannst, hast du es selbst nicht gut genug verstanden.",
+            "category": "✦ KUN HIKMATI · ILM-FAN"
+        },
+        {
+            "quote": "Agar koinot sirlarini anglamoqchi bo'lsangiz, energiya, chastota va tebranishlar orqali fikrlang.",
+            "author": "Nikola Tesla",
+            "de": "Wenn du die Geheimnisse des Universums finden willst, denke in Begriffen wie Energie, Frequenz und Schwingung.",
+            "category": "✦ KUN HIKMATI · ILM-FAN"
+        },
+        {
+            "quote": "Gapirish oson. Menga kodni ko'rsat.",
+            "author": "Linus Torvalds",
+            "de": "Reden ist billig. Zeig mir den Code.",
+            "category": "✦ KUN HIKMATI · AMALIYOT"
+        },
+        {
+            "quote": "Qo'lingizdan keladigan yoki orzu qilayotgan har qanday ishni boshlang. Jur'atda daholik, qudrat va sehr yashiringan.",
+            "author": "Iogann Volfgang fon Gyote",
+            "de": "Was immer du tun kannst oder träumst es zu können, fang damit an! Mut hat Genie, Kraft und Zauber in sich.",
+            "category": "✦ KUN HIKMATI · JUR'AT"
+        },
+        {
+            "quote": "Ikkita narsa qalbimni doimo cheksiz hayrat bilan to'ldiradi: tepamizdagi yulduzli osmon va ichimdagi axloq qonuni.",
+            "author": "Immanuel Kant",
+            "de": "Zwei Dinge erfüllen das Gemüt mit Bewunderung und Ehrfurcht: der bestirnte Himmel über mir und das moralische Gesetz in mir.",
+            "category": "✦ KUN HIKMATI · FALSAFA"
+        },
+        {
+            "quote": "Iqtidor — hech kim ura olmagan nishonni urishdir. Daholik esa — hech kim hali ko'ra olmagan nishonni urishdir.",
+            "author": "Artur Shopengauer",
+            "de": "Das Talent trifft ein Ziel, das niemand treffen kann; das Genie trifft ein Ziel, das niemand sehen kann.",
+            "category": "✦ KUN HIKMATI · DAHOLIK"
+        },
+        {
+            "quote": "Tongda uyg'onganingizda tirik ekaningiz, nafas olayotganingiz, fikrlayotganingiz qanday buyuk ne'mat ekanini eslang.",
+            "author": "Mark Avreliy",
+            "de": "Wenn du am Morgen erwachst, denke daran, was für ein köstlicher Schatz es ist, zu leben, zu atmen und sich zu freuen.",
+            "category": "✦ KUN HIKMATI · SHUKRONALIK"
+        },
+        {
+            "quote": "Umr qisqa emas, faqat biz uning ko'p qismini behuda sarflaymiz.",
+            "author": "Seneka",
+            "de": "Wir haben nicht zu wenig Zeit, sondern wir verschwenden zu viel davon.",
+            "category": "✦ KUN HIKMATI · VAQT"
+        },
+        {
+            "quote": "Hech qachon xato qilmagan inson — hech qachon yangi narsani sinab ko'rmagan insondir.",
+            "author": "Albert Eynshteyn",
+            "de": "Wer noch nie einen Fehler gemacht hat, hat noch nie etwas Neues ausprobiert.",
+            "category": "✦ KUN HIKMATI · TAJRIBA"
+        },
+        {
+            "quote": "Ochko'z bo'ling, tentak bo'ling. Har doim o'rganishga intiling va chegaralarni buzing.",
+            "author": "Stiv Jobs",
+            "de": "Bleibt hungrig, bleibt töricht. Hört niemals auf zu lernen und Grenzen zu überwinden.",
+            "category": "✦ KUN HIKMATI · MOTIVATSIYA"
+        },
+        {
+            "quote": "Siz qashshoq tug'ilganingiz bu sizning xatoingiz emas. Ammo qashshoq vafot etsangiz — bu faqat sizning xatoingizdir.",
+            "author": "Bill Geyts",
+            "de": "Wenn du arm geboren wirst, ist es nicht dein Fehler. Aber wenn du arm stirbst, ist es dein Fehler.",
+            "category": "✦ KUN HIKMATI · MEHNAT"
+        },
+        {
+            "quote": "Eng sevimli ishingiz bilan shug'ullaning, shunda hayotingizda biror kun ham ishlashga to'g'ri kelmaydi.",
+            "author": "Konfutsiy",
+            "de": "Wähle einen Beruf, den du liebst, und du brauchst keinen Tag in deinem Leben mehr zu arbeiten.",
+            "category": "✦ KUN HIKMATI · KASB"
+        },
+        {
+            "quote": "Haqiqatni qidiring, chunki haqiqat inson qalbini yoritadi va uni adashishdan asraydi.",
+            "author": "Ibn Sino",
+            "de": "Suche nach der Wahrheit, denn die Wahrheit erleuchtet das menschliche Herz und bewahrt es vor Verirrung.",
+            "category": "✦ KUN HIKMATI · DONOLIK"
+        },
+        {
+            "quote": "Naf'ing agar xalqqa beshakdurur, Bilki, bu naf' o'zingga ko'prokdurur.",
+            "author": "Alisher Navoiy",
+            "de": "Wenn dein Tun den Menschen nützt, wisse wohl: der größte Segen kehrt zu dir selbst zurück.",
+            "category": "✦ KUN HIKMATI · EZGULIK"
+        },
+        {
+            "quote": "Bizni o'ldirmagan har qanday sinov — bizni yanada kuchliroq qiladi.",
+            "author": "Fridrix Nitsshe",
+            "de": "Was mich nicht umbringt, macht mich stärker.",
+            "category": "✦ KUN HIKMATI · MATONAT"
+        },
+        {
+            "quote": "Insonning yagona chinakam burchi — o'z taqdirini topish va uni to'liq yashab o'tishdir.",
+            "author": "German Gesse",
+            "de": "Die wahre Berufung des Menschen ist nur, zu sich selbst zu kommen und sein eigenes Schicksal zu erfüllen.",
+            "category": "✦ KUN HIKMATI · TAQDIR"
+        },
+        {
+            "quote": "Men faqat bir narsani bilaman — u ham bo'lsa, hech narsani bilmasligimdir.",
+            "author": "Sokrat",
+            "de": "Ich weiß, dass ich nichts weiß.",
+            "category": "✦ KUN HIKMATI · KAMTARLIK"
+        },
+        {
+            "quote": "Donishmand gapiradi, chunki uning aytadigan gapi bor; nodon gapiradi, chunki uning shunchaki gapirgisi keladi.",
+            "author": "Platon",
+            "de": "Weise Männer sprechen, weil sie etwas zu sagen haben; Narren, weil sie etwas sagen müssen.",
+            "category": "✦ KUN HIKMATI · DONOLIK"
+        },
+        {
+            "quote": "Ta'limning ildizlari achchiq, ammo uning mevalari shirin bo'ladi.",
+            "author": "Aristotel",
+            "de": "Die Wurzeln der Bildung sind bitter, aber ihre Früchte sind süß.",
+            "category": "✦ KUN HIKMATI · TA'LIM"
+        },
+        {
+            "quote": "Boshqalarni yenggan odam kuchlidir, o'zini yenggan odam esa qudratlidir.",
+            "author": "Lao-szi",
+            "de": "Wer andere besiegt, hat Kraft. Wer sich selber besiegt, ist mächtig.",
+            "category": "✦ KUN HIKMATI · IRODA"
+        },
+        {
+            "quote": "Inson hayotidagi ikki eng muhim kun: biri — u dunyoga kelgan kun, ikkinchisi — nega kelganini tushungan kun.",
+            "author": "Mark Tven",
+            "de": "Die zwei wichtigsten Tage in deinem Leben sind der Tag, an dem du geboren wirst, und der Tag, an dem du herausfindest, warum.",
+            "category": "✦ KUN HIKMATI · MAQSAD"
+        },
+        {
+            "quote": "Haqiqatni bilishni istagan kishi hayotida kamida bir marta barcha narsadan shubhalanib ko'rishi shart.",
+            "author": "Rene Dekart",
+            "de": "Wer nach der Wahrheit sucht, muss zumindest einmal im Leben an allem zweifeln, soweit es möglich ist.",
+            "category": "✦ KUN HIKMATI · TAFAKKUR"
+        },
+        {
+            "quote": "Sukunat — Tangrining tilidir, qolgan barcha narsa esa shunchaki zaif tarjimadir.",
+            "author": "Jaloliddin Rumiy",
+            "de": "Die Stille ist die Sprache Gottes, alles andere ist schlechte Übersetzung.",
+            "category": "✦ KUN HIKMATI · SOKINLIK"
+        },
+        {
+            "quote": "Ko'zingiz yulduzlarda bo'lsin, lekin oyog'ingiz doimo yerda tursin.",
+            "author": "Teodor Ruzvelt",
+            "de": "Halte die Augen auf die Sterne gerichtet und die Füße auf dem Boden.",
+            "category": "✦ KUN HIKMATI · VAZMINLIK"
+        }
+    ],
+    "ru": [
+        {
+            "quote": "Вчера я был умным и хотел изменить мир. Сегодня я мудр, поэтому меняю себя.",
+            "author": "Джалаладдин Руми",
+            "de": "Gestern war ich klug und wollte die Welt verändern. Heute bin ich weise und verändere mich selbst.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СМЫСЛ"
+        },
+        {
+            "quote": "Наивысшее богатство — это разум и благовоспитанность, а тягчайшая бедность — невежество.",
+            "author": "Алишер Навои",
+            "de": "Der größte Reichtum ist Verstand und Anstand, die schwerste Armut aber die Unwissenheit.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ЭТИКА"
+        },
+        {
+            "quote": "Паника — это половина болезни, спокойствие — половина здоровья, а терпение — начало исцеления.",
+            "author": "Ибн Сина (Авиценна)",
+            "de": "Panik ist die halbe Krankheit, Ruhe die halbe Gesundheit und Geduld der Beginn der Heilung.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ЗДОРОВЬЕ"
+        },
+        {
+            "quote": "У вас есть власть над своим разумом, а не над внешними событиями. Осознайте это, и вы обретете силу.",
+            "author": "Марк Аврелий",
+            "de": "Du hast die Macht über deinen Geist, nicht über die äußeren Ereignisse. Erkenne dies, und du wirst Stärke finden.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СТОИЦИЗМ"
+        },
+        {
+            "quote": "Не потому мы не смеем, что это трудно, а потому это трудно, что мы не смеем.",
+            "author": "Сенека",
+            "de": "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СМЕЛОСТЬ"
+        },
+        {
+            "quote": "Тот, у кого есть «Зачем» жить, может выдержать почти любое «Как».",
+            "author": "Фридрих Ницше",
+            "de": "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ЦЕЛЬ"
+        },
+        {
+            "quote": "Имей мужество пользоваться собственным умом!",
+            "author": "Иммануил Кант",
+            "de": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
+            "category": "✦ МУДРОСТЬ ДНЯ · ФИЛОСОФИЯ"
+        },
+        {
+            "quote": "Здоровье до того перевешивает все остальные блага, что истинно здоровый нищий счастливее больного короля.",
+            "author": "Артур Шопенгауэр",
+            "de": "Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ЗДОРОВЬЕ"
+        },
+        {
+            "quote": "Когда мы больше не можем изменить ситуацию, мы призваны изменить самих себя.",
+            "author": "Виктор Франкл",
+            "de": "Wenn wir eine Situation nicht mehr ändern können, müssen wir uns selbst ändern.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ПСИХОЛОГИЯ"
+        },
+        {
+            "quote": "Недостаточно только знать, нужно применять; недостаточно только желать, нужно действовать.",
+            "author": "Иоганн Вольфганг фон Гёте",
+            "de": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ДЕЙСТВИЕ"
+        },
+        {
+            "quote": "Логика приведет вас из пункта А в пункт Б. Воображение доставит вас куда угодно.",
+            "author": "Альберт Эйнштейн",
+            "de": "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ВДОХНОВЕНИЕ"
+        },
+        {
+            "quote": "Лучше зажечь одну маленькую свечу, чем вечно проклинать темноту.",
+            "author": "Конфуций",
+            "de": "Es ist besser, ein einziges kleines Licht anzuzünden, als die Dunkelheit zu verfluchen.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ПОСТУПКИ"
+        },
+        {
+            "quote": "Наука — это неугасимый факел, освещающий все темные пути.",
+            "author": "Мирзо Улугбек",
+            "de": "Die Wissenschaft ist die unvergängliche Fackel, die alle dunklen Pfade erhellt.",
+            "category": "✦ МУДРОСТЬ ДНЯ · НАУКА"
+        },
+        {
+            "quote": "Сила — в справедливости. В каждом деле действуй с твердостью и разумом.",
+            "author": "Амир Темур",
+            "de": "Die Kraft liegt in der Gerechtigkeit. Handle in allen Dingen mit Entschlossenheit und Verstand.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СПРАВЕДЛИВОСТЬ"
+        },
+        {
+            "quote": "Границы моего языка означают границы моего мира.",
+            "author": "Людвиг Витгенштейн",
+            "de": "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt.",
+            "category": "✦ МУДРОСТЬ ДНЯ · МЫШЛЕНИЕ"
+        },
+        {
+            "quote": "Тот, кто борется, может проиграть. Тот, кто не борется, уже проиграл.",
+            "author": "Бертольт Брехт",
+            "de": "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СИЛА ДУХА"
+        },
+        {
+            "quote": "Воспитание — это зажжение факела, а не наполнение пустого сосуда.",
+            "author": "Сократ",
+            "de": "Erziehung ist das Entzünden einer Flamme, nicht das Füllen eines Gefäßes.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ОБРАЗОВАНИЕ"
+        },
+        {
+            "quote": "Я мыслю, следовательно, я существую.",
+            "author": "Рене Декарт",
+            "de": "Ich denke, also bin ich.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ОСОЗНАННОСТЬ"
+        },
+        {
+            "quote": "Мы то, что мы делаем изо дня в день. Совершенство, таким образом, не действие, а привычка.",
+            "author": "Аристотель",
+            "de": "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ПРИВЫЧКИ"
+        },
+        {
+            "quote": "Первая и величайшая победа — это победа над самим собой.",
+            "author": "Платон",
+            "de": "Der erste und beste Sieg ist, sich selbst zu besiegen.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ВОЛЯ"
+        },
+        {
+            "quote": "В каждом начале таится волшебная сила, которая защищает нас и помогает нам жить.",
+            "author": "Герман Гессе",
+            "de": "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben.",
+            "category": "✦ МУДРОСТЬ ДНЯ · НАДЕЖДА"
+        },
+        {
+            "quote": "Вчера — это память сегодняшнего дня, а завтра — мечта сегодняшнего дня.",
+            "author": "Халиль Джебран",
+            "de": "Das Gestern ist die Erinnerung von heute, das Morgen ist der Traum von heute.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ЖИЗНЬ"
+        },
+        {
+            "quote": "Все думают о том, как изменить мир, но никто не думает о том, как изменить себя.",
+            "author": "Лев Толстой",
+            "de": "Alle wollen die Menschheit verändern, doch niemand denkt daran, sich selbst zu verändern.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ИСТИНА"
+        },
+        {
+            "quote": "Для достижения счастья человеку необходимо совершенствовать свой разум и нравственность.",
+            "author": "Аль-Фараби",
+            "de": "Um Glückseligkeit zu erlangen, muss der Mensch Verstand und Tugend vervollkommnen.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СЧАСТЬЕ"
+        },
+        {
+            "quote": "Путь в тысячу ли начинается с одного-единственного первого шага.",
+            "author": "Лао-цзы",
+            "de": "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СТОЙКОСТЬ"
+        },
+        {
+            "quote": "Образование — самое мощное оружие, с помощью которого можно изменить мир.",
+            "author": "Нельсон Мандела",
+            "de": "Bildung ist die mächtigste Waffe, die man verwenden kann, um die Welt zu verändern.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ЗНАНИЯ"
+        },
+        {
+            "quote": "Знание — сила.",
+            "author": "Фрэнсис Бэкон",
+            "de": "Wissen ist Macht.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СИЛА"
+        },
+        {
+            "quote": "Людей мучают не сами вещи, а их представления о них.",
+            "author": "Эпиктет",
+            "de": "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Meinungen über die Dinge.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СПОКОЙСТВИЕ"
+        },
+        {
+            "quote": "Делай, что можешь, с тем, что имеешь, прямо там, где ты находишься.",
+            "author": "Теодор Рузвельт",
+            "de": "Tu, was du kannst, mit dem, was du hast, dort, wo du bist.",
+            "category": "✦ МУДРОСТЬ ДНЯ · РЕШИМОСТЬ"
+        },
+        {
+            "quote": "Думаете ли вы, что сможете, или думаете, что не сможете, — в обоих случаях вы правы.",
+            "author": "Генри Форд",
+            "de": "Egal, ob du denkst, du kannst es, oder du kannst es nicht – du wirst recht behalten.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ВЕРА В СЕБЯ"
+        },
+        {
+            "quote": "Ваше время ограничено, не тратьте его, живя чужой жизнью. Имейте смелость следовать своему сердцу.",
+            "author": "Стив Джобс",
+            "de": "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ИНДИВИДУАЛЬНОСТЬ"
+        },
+        {
+            "quote": "Через двадцать лет вы будете больше сожалеть о том, чего не сделали, чем о том, что сделали.",
+            "author": "Марк Твен",
+            "de": "In zwanzig Jahren wirst du mehr bereuen, was du nicht getan hast, als was du getan hast.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ВОЗМОЖНОСТИ"
+        },
+        {
+            "quote": "Рана — это то самое место, через которое в тебя проникает Свет.",
+            "author": "Джалаладдин Руми",
+            "de": "Die Wunde ist der Ort, an dem das Licht in dich eintritt.",
+            "category": "✦ МУДРОСТЬ ДНЯ · НАДЕЖДА"
+        },
+        {
+            "quote": "Я услышал и забыл; я увидел и запомнил; я сделал и понял.",
+            "author": "Конфуций",
+            "de": "Ich hörte und vergaß; ich sah und erinnerte mich; ich tat und verstand.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ПРАКТИКА"
+        },
+        {
+            "quote": "В человеке должно быть всё прекрасно: и лицо, и одежда, и душа, и мысли.",
+            "author": "Антон Чехов",
+            "de": "Am Menschen muss alles schön sein: das Gesicht, die Kleidung, die Seele und die Gedanken.",
+            "category": "✦ МУДРОСТЬ ДНЯ · КРАСОТА"
+        },
+        {
+            "quote": "Если человек обладает нравственностью — это 1. Если он красив, добавьте 0: 10. Если богат, добавьте ещё 0: 100. Но если исчезнет нравственность, останутся только нули.",
+            "author": "Аль-Хорезми",
+            "de": "Wenn der Mensch Moral besitzt, ist er eine 1. Hat er Schönheit, füge eine 0 hinzu: 10. Hat er Reichtum, füge eine 0 hinzu: 100. Verliert er aber die Moral, bleiben nur Nullen.",
+            "category": "✦ МУДРОСТЬ ДНЯ · НРАВСТВЕННОСТЬ"
+        },
+        {
+            "quote": "Цель науки — постижение истины. Познание истины освобождает человека от оков предрассудков и невежества.",
+            "author": "Абу Райхан Беруни",
+            "de": "Das Ziel der Wissenschaft ist die Entdeckung der Wahrheit. Das Erkennen der Wahrheit befreit den Menschen von den Fesseln der Unwissenheit.",
+            "category": "✦ МУДРОСТЬ ДНЯ · НАУКА"
+        },
+        {
+            "quote": "Кто верен был, тому верность наградой, кто причинил зло, тому зло расплатой. Благородный человек никогда не узрит зла.",
+            "author": "Захириддин Мухаммад Бабур",
+            "de": "Wer Treue sät, wird Treue ernten; wer Unrecht tut, wird Unrecht erfahren. Ein edler Mensch wird niemals dem Bösen verfallen.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ЛИТЕРАТУРА"
+        },
+        {
+            "quote": "Книга должна быть топором, способным разрубить замерзшее море внутри нас.",
+            "author": "Франц Кафка",
+            "de": "Ein Buch muss die Axt sein für das gefrorene Meer in uns.",
+            "category": "✦ МУДРОСТЬ ДНЯ · КНИГИ"
+        },
+        {
+            "quote": "Только тот, кто ставит перед собой великие цели, способен совершить великие дела.",
+            "author": "Фридрих Шиллер",
+            "de": "Nur wer große Ziele hat, kann Großes vollbringen.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ЦЕЛЬ"
+        },
+        {
+            "quote": "Иногда именно те, от кого никто ничего не ждет, совершают то, что никто не мог себе представить.",
+            "author": "Алан Тьюринг",
+            "de": "Manchmal sind es die Menschen, von denen man es sich am wenigsten vorstellt, die Dinge tun, die sich niemand vorstellen kann.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ТЕХНОЛОГИИ"
+        },
+        {
+            "quote": "Если вы не можете просто объяснить что-то ребенку, значит, вы сами недостаточно хорошо это понимаете.",
+            "author": "Ричард Фейнман",
+            "de": "Wenn du es einem Kind nicht einfach erklären kannst, hast du es selbst nicht gut genug verstanden.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ПРОСТОТА"
+        },
+        {
+            "quote": "Если вы хотите познать тайны Вселенной, мыслите категориями энергии, частоты и вибрации.",
+            "author": "Никола Тесла",
+            "de": "Wenn du die Geheimnisse des Universums finden willst, denke in Begriffen wie Energie, Frequenz und Schwingung.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ВСЕЛЕННАЯ"
+        },
+        {
+            "quote": "Болтовня ничего не стоит. Покажи мне код.",
+            "author": "Линус Торвальдс",
+            "de": "Reden ist billig. Zeig mir den Code.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ДЕЙСТВИЕ"
+        },
+        {
+            "quote": "Что бы вы ни умели делать или о чем бы ни мечтали — начните! В смелости заключены гений, сила и волшебство.",
+            "author": "Иоганн Вольфганг фон Гёте",
+            "de": "Was immer du tun kannst oder träumst es zu können, fang damit an! Mut hat Genie, Kraft und Zauber in sich.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СМЕЛОСТЬ"
+        },
+        {
+            "quote": "Две вещи наполняют душу благоговением: звездное небо надо мной и моральный закон во мне.",
+            "author": "Иммануил Кант",
+            "de": "Zwei Dinge erfüllen das Gemüt mit Bewunderung und Ehrfurcht: der bestirnte Himmel über mir und das moralische Gesetz in mir.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ФИЛОСОФИЯ"
+        },
+        {
+            "quote": "Талант попадает в цель, в которую никто не может попасть; гений попадает в цель, которую никто еще не видит.",
+            "author": "Артур Шопенгауэр",
+            "de": "Das Talent trifft ein Ziel, das niemand treffen kann; das Genie trifft ein Ziel, das niemand sehen kann.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ГЕНИЙ"
+        },
+        {
+            "quote": "Просыпаясь утром, подумайте о том, какая это драгоценная привилегия — быть живым, дышать, мыслить и радоваться.",
+            "author": "Марк Аврелий",
+            "de": "Wenn du am Morgen erwachst, denke daran, was für ein köstlicher Schatz es ist, zu leben, zu atmen und sich zu freuen.",
+            "category": "✦ МУДРОСТЬ ДНЯ · БЛАГОДАРНОСТЬ"
+        },
+        {
+            "quote": "Жизнь коротка не потому, что времени мало, а потому, что мы слишком много его растрачиваем попусту.",
+            "author": "Сенека",
+            "de": "Wir haben nicht zu wenig Zeit, sondern wir verschwenden zu viel davon.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ВРЕМЯ"
+        },
+        {
+            "quote": "Тот, кто никогда не ошибался, никогда не пробовал ничего нового.",
+            "author": "Альберт Эйнштейн",
+            "de": "Wer noch nie einen Fehler gemacht hat, hat noch nie etwas Neues ausprobiert.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ОПЫТ"
+        },
+        {
+            "quote": "Оставайтесь голодными, оставайтесь безрассудными. Всегда стремитесь к знаниям и ломайте рамки.",
+            "author": "Стив Джобс",
+            "de": "Bleibt hungrig, bleibt töricht. Hört niemals auf zu lernen und Grenzen zu überwinden.",
+            "category": "✦ МУДРОСТЬ ДНЯ · МОТИВАЦИЯ"
+        },
+        {
+            "quote": "Если вы родились в бедности — это не ваша ошибка. Но если вы умерли бедным — это исключительно ваша вина.",
+            "author": "Билл Гейтс",
+            "de": "Wenn du arm geboren wirst, ist es nicht dein Fehler. Aber wenn du arm stirbst, ist es dein Fehler.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ТРУД"
+        },
+        {
+            "quote": "Выберите себе дело по душе, и вам не придется работать ни одного дня в своей жизни.",
+            "author": "Конфуций",
+            "de": "Wähle einen Beruf, den du liebst, und du brauchst keinen Tag in deinem Leben mehr zu arbeiten.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ПРИЗВАНИЕ"
+        },
+        {
+            "quote": "Ищите истину, ибо истина озаряет человеческое сердце и предохраняет его от заблуждений.",
+            "author": "Авиценна (Ибн Сина)",
+            "de": "Suche nach der Wahrheit, denn die Wahrheit erleuchtet das menschliche Herz und bewahrt es vor Verirrung.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ИСТИНА"
+        },
+        {
+            "quote": "Если дела твои несут пользу народу, знай: наибольшее благо вернется к тебе самому.",
+            "author": "Алишер Навои",
+            "de": "Wenn dein Tun den Menschen nützt, wisse wohl: der größte Segen kehrt zu dir selbst zurück.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ДОБРОТА"
+        },
+        {
+            "quote": "То, что не убивает нас, делает нас сильнее.",
+            "author": "Фридрих Ницше",
+            "de": "Was mich nicht umbringt, macht mich stärker.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СИЛА ДУХА"
+        },
+        {
+            "quote": "Истинное призвание каждого человека состоит только в одном — прийти к самому себе и исполнить свою судьбу.",
+            "author": "Герман Гессе",
+            "de": "Die wahre Berufung des Menschen ist nur, zu sich selbst zu kommen und sein eigenes Schicksal zu erfüllen.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ПРИЗВАНИЕ"
+        },
+        {
+            "quote": "Я знаю только то, что ничего не знаю.",
+            "author": "Сократ",
+            "de": "Ich weiß, dass ich nichts weiß.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СКРОМНОСТЬ"
+        },
+        {
+            "quote": "Мудрые люди говорят, потому что им есть что сказать; глупцы — потому что им просто хочется сказать что-нибудь.",
+            "author": "Платон",
+            "de": "Weise Männer sprechen, weil sie etwas zu sagen haben; Narren, weil sie etwas sagen müssen.",
+            "category": "✦ МУДРОСТЬ ДНЯ · МУДРОСТЬ"
+        },
+        {
+            "quote": "Корни образования горьки, но плоды его сладки.",
+            "author": "Аристотель",
+            "de": "Die Wurzeln der Bildung sind bitter, aber ihre Früchte sind süß.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ОБРАЗОВАНИЕ"
+        },
+        {
+            "quote": "Побеждающий других силен, побеждающий себя самого — могуществен.",
+            "author": "Лао-цзы",
+            "de": "Wer andere besiegt, hat Kraft. Wer sich selber besiegt, ist mächtig.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СИЛА"
+        },
+        {
+            "quote": "Два самых важных дня в твоей жизни: день, когда ты появился на свет, и день, когда понял, зачем.",
+            "author": "Марк Твен",
+            "de": "Die zwei wichtigsten Tage in deinem Leben sind der Tag, an dem du geboren wirst, und der Tag, an dem du herausfindest, warum.",
+            "category": "✦ МУДРОСТЬ ДНЯ · СМЫСЛ"
+        },
+        {
+            "quote": "Для того чтобы искренне стремиться к истине, необходимо хоть раз в жизни усомниться во всем.",
+            "author": "Рене Декарт",
+            "de": "Wer nach der Wahrheit sucht, muss zumindest einmal im Leben an allem zweifeln, soweit es möglich ist.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ПОЗНАНИЕ"
+        },
+        {
+            "quote": "Безмолвие — язык Всевышнего, всё остальное — лишь слабый перевод.",
+            "author": "Джалаладдин Руми",
+            "de": "Die Stille ist die Sprache Gottes, alles andere ist schlechte Übersetzung.",
+            "category": "✦ МУДРОСТЬ ДНЯ · ПОКОЙ"
+        },
+        {
+            "quote": "Устремляйте взгляд к звездам, но крепко стойте ногами на земле.",
+            "author": "Теодор Рузвельт",
+            "de": "Halte die Augen auf die Sterne gerichtet und die Füße auf dem Boden.",
+            "category": "✦ МУДРОСТЬ ДНЯ · БАЛАНС"
+        }
+    ],
+    "de": [
+        {
+            "quote": "Gestern war ich klug und wollte die Welt verändern. Heute bin ich weise und verändere mich selbst.",
+            "author": "Dschalal ad-Din Rumi",
+            "de": "Gestern war ich klug und wollte die Welt verändern. Heute bin ich weise und verändere mich selbst.",
+            "category": "✦ WEISHEIT DES TAGES · WEISHEIT"
+        },
+        {
+            "quote": "Der größte Reichtum ist Verstand und Anstand, die schwerste Armut aber die Unwissenheit.",
+            "author": "Alischer Nawoi",
+            "de": "Der größte Reichtum ist Verstand und Anstand, die schwerste Armut aber die Unwissenheit.",
+            "category": "✦ WEISHEIT DES TAGES · ETHIK"
+        },
+        {
+            "quote": "Panik ist die halbe Krankheit, Ruhe die halbe Gesundheit und Geduld der Beginn der Heilung.",
+            "author": "Avicenna (Ibn Sina)",
+            "de": "Panik ist die halbe Krankheit, Ruhe die halbe Gesundheit und Geduld der Beginn der Heilung.",
+            "category": "✦ WEISHEIT DES TAGES · GESUNDHEIT"
+        },
+        {
+            "quote": "Du hast die Macht über deinen Geist, nicht über die äußeren Ereignisse. Erkenne dies, und du wirst Stärke finden.",
+            "author": "Marc Aurel",
+            "de": "Du hast die Macht über deinen Geist, nicht über die äußeren Ereignisse. Erkenne dies, und du wirst Stärke finden.",
+            "category": "✦ WEISHEIT DES TAGES · STOIZISMUS"
+        },
+        {
+            "quote": "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.",
+            "author": "Seneca",
+            "de": "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.",
+            "category": "✦ WEISHEIT DES TAGES · MUT"
+        },
+        {
+            "quote": "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.",
+            "author": "Friedrich Nietzsche",
+            "de": "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.",
+            "category": "✦ WEISHEIT DES TAGES · SINN"
+        },
+        {
+            "quote": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
+            "author": "Immanuel Kant",
+            "de": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
+            "category": "✦ WEISHEIT DES TAGES · PHILOSOPHIE"
+        },
+        {
+            "quote": "Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.",
+            "author": "Arthur Schopenhauer",
+            "de": "Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.",
+            "category": "✦ WEISHEIT DES TAGES · GESUNDHEIT"
+        },
+        {
+            "quote": "Wenn wir eine Situation nicht mehr ändern können, müssen wir uns selbst ändern.",
+            "author": "Viktor Frankl",
+            "de": "Wenn wir eine Situation nicht mehr ändern können, müssen wir uns selbst ändern.",
+            "category": "✦ WEISHEIT DES TAGES · PSYCHOLOGIE"
+        },
+        {
+            "quote": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
+            "author": "Johann Wolfgang von Goethe",
+            "de": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
+            "category": "✦ WEISHEIT DES TAGES · TATKRAFT"
+        },
+        {
+            "quote": "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
+            "author": "Albert Einstein",
+            "de": "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
+            "category": "✦ WEISHEIT DES TAGES · INSPIRATION"
+        },
+        {
+            "quote": "Es ist besser, ein einziges kleines Licht anzuzünden, als die Dunkelheit zu verfluchen.",
+            "author": "Konfuzius",
+            "de": "Es ist besser, ein einziges kleines Licht anzuzünden, als die Dunkelheit zu verfluchen.",
+            "category": "✦ WEISHEIT DES TAGES · HANDELN"
+        },
+        {
+            "quote": "Die Wissenschaft ist die unvergängliche Fackel, die alle dunklen Pfade erhellt.",
+            "author": "Mirzo Ulugh Beg",
+            "de": "Die Wissenschaft ist die unvergängliche Fackel, die alle dunklen Pfade erhellt.",
+            "category": "✦ WEISHEIT DES TAGES · WISSENSCHAFT"
+        },
+        {
+            "quote": "Die Kraft liegt in der Gerechtigkeit. Handle in allen Dingen mit Entschlossenheit und Verstand.",
+            "author": "Amir Timur",
+            "de": "Die Kraft liegt in der Gerechtigkeit. Handle in allen Dingen mit Entschlossenheit und Verstand.",
+            "category": "✦ WEISHEIT DES TAGES · GERECHTIGKEIT"
+        },
+        {
+            "quote": "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt.",
+            "author": "Ludwig Wittgenstein",
+            "de": "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt.",
+            "category": "✦ WEISHEIT DES TAGES · SPRACHE"
+        },
+        {
+            "quote": "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
+            "author": "Bertolt Brecht",
+            "de": "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
+            "category": "✦ WEISHEIT DES TAGES · MUT"
+        },
+        {
+            "quote": "Erziehung ist das Entzünden einer Flamme, nicht das Füllen eines Gefäßes.",
+            "author": "Sokrates",
+            "de": "Erziehung ist das Entzünden einer Flamme, nicht das Füllen eines Gefäßes.",
+            "category": "✦ WEISHEIT DES TAGES · BILDUNG"
+        },
+        {
+            "quote": "Ich denke, also bin ich.",
+            "author": "René Descartes",
+            "de": "Ich denke, also bin ich.",
+            "category": "✦ WEISHEIT DES TAGES · BEWUSSTSEIN"
+        },
+        {
+            "quote": "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
+            "author": "Aristoteles",
+            "de": "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
+            "category": "✦ WEISHEIT DES TAGES · GEWOHNHEIT"
+        },
+        {
+            "quote": "Der erste und beste Sieg ist, sich selbst zu besiegen.",
+            "author": "Platon",
+            "de": "Der erste und beste Sieg ist, sich selbst zu besiegen.",
+            "category": "✦ WEISHEIT DES TAGES · WILLE"
+        },
+        {
+            "quote": "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben.",
+            "author": "Hermann Hesse",
+            "de": "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben.",
+            "category": "✦ WEISHEIT DES TAGES · HOFFNUNG"
+        },
+        {
+            "quote": "Das Gestern ist die Erinnerung von heute, das Morgen ist der Traum von heute.",
+            "author": "Khalil Gibran",
+            "de": "Das Gestern ist die Erinnerung von heute, das Morgen ist der Traum von heute.",
+            "category": "✦ WEISHEIT DES TAGES · LEBEN"
+        },
+        {
+            "quote": "Alle wollen die Menschheit verändern, doch niemand denkt daran, sich selbst zu verändern.",
+            "author": "Leo Tolstoi",
+            "de": "Alle wollen die Menschheit verändern, doch niemand denkt daran, sich selbst zu verändern.",
+            "category": "✦ WEISHEIT DES TAGES · WAHRHEIT"
+        },
+        {
+            "quote": "Um Glückseligkeit zu erlangen, muss der Mensch Verstand und Tugend vervollkommnen.",
+            "author": "Al-Farabi",
+            "de": "Um Glückseligkeit zu erlangen, muss der Mensch Verstand und Tugend vervollkommnen.",
+            "category": "✦ WEISHEIT DES TAGES · GLÜCK"
+        },
+        {
+            "quote": "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
+            "author": "Laotse",
+            "de": "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
+            "category": "✦ WEISHEIT DES TAGES · AUSDAUER"
+        },
+        {
+            "quote": "Bildung ist die mächtigste Waffe, die man verwenden kann, um die Welt zu verändern.",
+            "author": "Nelson Mandela",
+            "de": "Bildung ist die mächtigste Waffe, die man verwenden kann, um die Welt zu verändern.",
+            "category": "✦ WEISHEIT DES TAGES · BILDUNG"
+        },
+        {
+            "quote": "Wissen ist Macht.",
+            "author": "Francis Bacon",
+            "de": "Wissen ist Macht.",
+            "category": "✦ WEISHEIT DES TAGES · WISSEN"
+        },
+        {
+            "quote": "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Meinungen über die Dinge.",
+            "author": "Epiktet",
+            "de": "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Meinungen über die Dinge.",
+            "category": "✦ WEISHEIT DES TAGES · GELASSENHEIT"
+        },
+        {
+            "quote": "Tu, was du kannst, mit dem, was du hast, dort, wo du bist.",
+            "author": "Theodore Roosevelt",
+            "de": "Tu, was du kannst, mit dem, was du hast, dort, wo du bist.",
+            "category": "✦ WEISHEIT DES TAGES · ENTSCHLOSSENHEIT"
+        },
+        {
+            "quote": "Egal, ob du denkst, du kannst es, oder du kannst es nicht – du wirst recht behalten.",
+            "author": "Henry Ford",
+            "de": "Egal, ob du denkst, du kannst es, oder du kannst es nicht – du wirst recht behalten.",
+            "category": "✦ WEISHEIT DES TAGES · ZUVERSICHT"
+        },
+        {
+            "quote": "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
+            "author": "Steve Jobs",
+            "de": "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
+            "category": "✦ WEISHEIT DES TAGES · INDIVIDUALITÄT"
+        },
+        {
+            "quote": "In zwanzig Jahren wirst du mehr bereuen, was du nicht getan hast, als was du getan hast.",
+            "author": "Mark Twain",
+            "de": "In zwanzig Jahren wirst du mehr bereuen, was du nicht getan hast, als was du getan hast.",
+            "category": "✦ WEISHEIT DES TAGES · CHANCE"
+        },
+        {
+            "quote": "Die Wunde ist der Ort, an dem das Licht in dich eintritt.",
+            "author": "Dschalal ad-Din Rumi",
+            "de": "Die Wunde ist der Ort, an dem das Licht in dich eintritt.",
+            "category": "✦ WEISHEIT DES TAGES · HOFFNUNG"
+        },
+        {
+            "quote": "Ich hörte und vergaß; ich sah und erinnerte mich; ich tat und verstand.",
+            "author": "Konfuzius",
+            "de": "Ich hörte und vergaß; ich sah und erinnerte mich; ich tat und verstand.",
+            "category": "✦ WEISHEIT DES TAGES · ERFAHRUNG"
+        },
+        {
+            "quote": "Am Menschen muss alles schön sein: das Gesicht, die Kleidung, die Seele und die Gedanken.",
+            "author": "Anton Tschechow",
+            "de": "Am Menschen muss alles schön sein: das Gesicht, die Kleidung, die Seele und die Gedanken.",
+            "category": "✦ WEISHEIT DES TAGES · SCHÖNHEIT"
+        },
+        {
+            "quote": "Wenn der Mensch Moral besitzt, ist er eine 1. Hat er Schönheit, füge eine 0 hinzu: 10. Hat er Reichtum, füge eine 0 hinzu: 100. Verliert er aber die Moral, bleiben nur Nullen.",
+            "author": "Al-Chwarizmi",
+            "de": "Wenn der Mensch Moral besitzt, ist er eine 1. Hat er Schönheit, füge eine 0 hinzu: 10. Hat er Reichtum, füge eine 0 hinzu: 100. Verliert er aber die Moral, bleiben nur Nullen.",
+            "category": "✦ WEISHEIT DES TAGES · MORAL"
+        },
+        {
+            "quote": "Das Ziel der Wissenschaft ist die Entdeckung der Wahrheit. Das Erkennen der Wahrheit befreit den Menschen von den Fesseln der Unwissenheit.",
+            "author": "Al-Biruni",
+            "de": "Das Ziel der Wissenschaft ist die Entdeckung der Wahrheit. Das Erkennen der Wahrheit befreit den Menschen von den Fesseln der Unwissenheit.",
+            "category": "✦ WEISHEIT DES TAGES · WISSENSCHAFT"
+        },
+        {
+            "quote": "Wer Treue sät, wird Treue ernten; wer Unrecht tut, wird Unrecht erfahren. Ein edler Mensch wird niemals dem Bösen verfallen.",
+            "author": "Zahir ad-Din Babur",
+            "de": "Wer Treue sät, wird Treue ernten; wer Unrecht tut, wird Unrecht erfahren. Ein edler Mensch wird niemals dem Bösen verfallen.",
+            "category": "✦ WEISHEIT DES TAGES · LITERATUR"
+        },
+        {
+            "quote": "Ein Buch muss die Axt sein für das gefrorene Meer in uns.",
+            "author": "Franz Kafka",
+            "de": "Ein Buch muss die Axt sein für das gefrorene Meer in uns.",
+            "category": "✦ WEISHEIT DES TAGES · DENKEN"
+        },
+        {
+            "quote": "Nur wer große Ziele hat, kann Großes vollbringen.",
+            "author": "Friedrich Schiller",
+            "de": "Nur wer große Ziele hat, kann Großes vollbringen.",
+            "category": "✦ WEISHEIT DES TAGES · ZIELE"
+        },
+        {
+            "quote": "Manchmal sind es die Menschen, von denen man es sich am wenigsten vorstellt, die Dinge tun, die sich niemand vorstellen kann.",
+            "author": "Alan Turing",
+            "de": "Manchmal sind es die Menschen, von denen man es sich am wenigsten vorstellt, die Dinge tun, die sich niemand vorstellen kann.",
+            "category": "✦ WEISHEIT DES TAGES · TECHNOLOGIE"
+        },
+        {
+            "quote": "Wenn du es einem Kind nicht einfach erklären kannst, hast du es selbst nicht gut genug verstanden.",
+            "author": "Richard Feynman",
+            "de": "Wenn du es einem Kind nicht einfach erklären kannst, hast du es selbst nicht gut genug verstanden.",
+            "category": "✦ WEISHEIT DES TAGES · WISSENSCHAFT"
+        },
+        {
+            "quote": "Wenn du die Geheimnisse des Universums finden willst, denke in Begriffen wie Energie, Frequenz und Schwingung.",
+            "author": "Nikola Tesla",
+            "de": "Wenn du die Geheimnisse des Universums finden willst, denke in Begriffen wie Energie, Frequenz und Schwingung.",
+            "category": "✦ WEISHEIT DES TAGES · ENERGIE"
+        },
+        {
+            "quote": "Reden ist billig. Zeig mir den Code.",
+            "author": "Linus Torvalds",
+            "de": "Reden ist billig. Zeig mir den Code.",
+            "category": "✦ WEISHEIT DES TAGES · PRAXIS"
+        },
+        {
+            "quote": "Was immer du tun kannst oder träumst es zu können, fang damit an! Mut hat Genie, Kraft und Zauber in sich.",
+            "author": "Johann Wolfgang von Goethe",
+            "de": "Was immer du tun kannst oder träumst es zu können, fang damit an! Mut hat Genie, Kraft und Zauber in sich.",
+            "category": "✦ WEISHEIT DES TAGES · MUT"
+        },
+        {
+            "quote": "Zwei Dinge erfüllen das Gemüt mit Bewunderung und Ehrfurcht: der bestirnte Himmel über mir und das moralische Gesetz in mir.",
+            "author": "Immanuel Kant",
+            "de": "Zwei Dinge erfüllen das Gemüt mit Bewunderung und Ehrfurcht: der bestirnte Himmel über mir und das moralische Gesetz in mir.",
+            "category": "✦ WEISHEIT DES TAGES · PHILOSOPHIE"
+        },
+        {
+            "quote": "Das Talent trifft ein Ziel, das niemand treffen kann; das Genie trifft ein Ziel, das niemand sehen kann.",
+            "author": "Arthur Schopenhauer",
+            "de": "Das Talent trifft ein Ziel, das niemand treffen kann; das Genie trifft ein Ziel, das niemand sehen kann.",
+            "category": "✦ WEISHEIT DES TAGES · GENIE"
+        },
+        {
+            "quote": "Wenn du am Morgen erwachst, denke daran, was für ein köstlicher Schatz es ist, zu leben, zu atmen und sich zu freuen.",
+            "author": "Mark Aurel",
+            "de": "Wenn du am Morgen erwachst, denke daran, was für ein köstlicher Schatz es ist, zu leben, zu atmen und sich zu freuen.",
+            "category": "✦ WEISHEIT DES TAGES · DANKBARKEIT"
+        },
+        {
+            "quote": "Wir haben nicht zu wenig Zeit, sondern wir verschwenden zu viel davon.",
+            "author": "Seneca",
+            "de": "Wir haben nicht zu wenig Zeit, sondern wir verschwenden zu viel davon.",
+            "category": "✦ WEISHEIT DES TAGES · ZEIT"
+        },
+        {
+            "quote": "Wer noch nie einen Fehler gemacht hat, hat noch nie etwas Neues ausprobiert.",
+            "author": "Albert Einstein",
+            "de": "Wer noch nie einen Fehler gemacht hat, hat noch nie etwas Neues ausprobiert.",
+            "category": "✦ WEISHEIT DES TAGES · ERFAHRUNG"
+        },
+        {
+            "quote": "Bleibt hungrig, bleibt töricht. Hört niemals auf zu lernen und Grenzen zu überwinden.",
+            "author": "Steve Jobs",
+            "de": "Bleibt hungrig, bleibt töricht. Hört niemals auf zu lernen und Grenzen zu überwinden.",
+            "category": "✦ WEISHEIT DES TAGES · MOTIVATION"
+        },
+        {
+            "quote": "Wenn du arm geboren wirst, ist es nicht dein Fehler. Aber wenn du arm stirbst, ist es dein Fehler.",
+            "author": "Bill Gates",
+            "de": "Wenn du arm geboren wirst, ist es nicht dein Fehler. Aber wenn du arm stirbst, ist es dein Fehler.",
+            "category": "✦ WEISHEIT DES TAGES · FLEISS"
+        },
+        {
+            "quote": "Wähle einen Beruf, den du liebst, und du brauchst keinen Tag in deinem Leben mehr zu arbeiten.",
+            "author": "Konfuzius",
+            "de": "Wähle einen Beruf, den du liebst, und du brauchst keinen Tag in deinem Leben mehr zu arbeiten.",
+            "category": "✦ WEISHEIT DES TAGES · BERUFUNG"
+        },
+        {
+            "quote": "Suche nach der Wahrheit, denn die Wahrheit erleuchtet das menschliche Herz und bewahrt es vor Verirrung.",
+            "author": "Avicenna",
+            "de": "Suche nach der Wahrheit, denn die Wahrheit erleuchtet das menschliche Herz und bewahrt es vor Verirrung.",
+            "category": "✦ WEISHEIT DES TAGES · WAHRHEIT"
+        },
+        {
+            "quote": "Wenn dein Tun den Menschen nützt, wisse wohl: der größte Segen kehrt zu dir selbst zurück.",
+            "author": "Alischer Nawoi",
+            "de": "Wenn dein Tun den Menschen nützt, wisse wohl: der größte Segen kehrt zu dir selbst zurück.",
+            "category": "✦ WEISHEIT DES TAGES · GÜTE"
+        },
+        {
+            "quote": "Was mich nicht umbringt, macht mich stärker.",
+            "author": "Friedrich Nietzsche",
+            "de": "Was mich nicht umbringt, macht mich stärker.",
+            "category": "✦ WEISHEIT DES TAGES · STÄRKE"
+        },
+        {
+            "quote": "Die wahre Berufung des Menschen ist nur, zu sich selbst zu kommen und sein eigenes Schicksal zu erfüllen.",
+            "author": "Hermann Hesse",
+            "de": "Die wahre Berufung des Menschen ist nur, zu sich selbst zu kommen und sein eigenes Schicksal zu erfüllen.",
+            "category": "✦ WEISHEIT DES TAGES · BESTIMMUNG"
+        },
+        {
+            "quote": "Ich weiß, dass ich nichts weiß.",
+            "author": "Sokrates",
+            "de": "Ich weiß, dass ich nichts weiß.",
+            "category": "✦ WEISHEIT DES TAGES · BESCHEIDENHEIT"
+        },
+        {
+            "quote": "Weise Männer sprechen, weil sie etwas zu sagen haben; Narren, weil sie etwas sagen müssen.",
+            "author": "Platon",
+            "de": "Weise Männer sprechen, weil sie etwas zu sagen haben; Narren, weil sie etwas sagen müssen.",
+            "category": "✦ WEISHEIT DES TAGES · KLUGHEIT"
+        },
+        {
+            "quote": "Die Wurzeln der Bildung sind bitter, aber ihre Früchte sind süß.",
+            "author": "Aristoteles",
+            "de": "Die Wurzeln der Bildung sind bitter, aber ihre Früchte sind süß.",
+            "category": "✦ WEISHEIT DES TAGES · BILDUNG"
+        },
+        {
+            "quote": "Wer andere besiegt, hat Kraft. Wer sich selber besiegt, ist mächtig.",
+            "author": "Laotse",
+            "de": "Wer andere besiegt, hat Kraft. Wer sich selber besiegt, ist mächtig.",
+            "category": "✦ WEISHEIT DES TAGES · WILLE"
+        },
+        {
+            "quote": "Die zwei wichtigsten Tage in deinem Leben sind der Tag, an dem du geboren wirst, und der Tag, an dem du herausfindest, warum.",
+            "author": "Mark Twain",
+            "de": "Die zwei wichtigsten Tage in deinem Leben sind der Tag, an dem du geboren wirst, und der Tag, an dem du herausfindest, warum.",
+            "category": "✦ WEISHEIT DES TAGES · SINN"
+        },
+        {
+            "quote": "Wer nach der Wahrheit sucht, muss zumindest einmal im Leben an allem zweifeln, soweit es möglich ist.",
+            "author": "René Descartes",
+            "de": "Wer nach der Wahrheit sucht, muss zumindest einmal im Leben an allem zweifeln, soweit es möglich ist.",
+            "category": "✦ WEISHEIT DES TAGES · WAHRHEIT"
+        },
+        {
+            "quote": "Die Stille ist die Sprache Gottes, alles andere ist schlechte Übersetzung.",
+            "author": "Dschalal ad-Din Rumi",
+            "de": "Die Stille ist die Sprache Gottes, alles andere ist schlechte Übersetzung.",
+            "category": "✦ WEISHEIT DES TAGES · STILLE"
+        },
+        {
+            "quote": "Halte die Augen auf die Sterne gerichtet und die Füße auf dem Boden.",
+            "author": "Theodore Roosevelt",
+            "de": "Halte die Augen auf die Sterne gerichtet und die Füße auf dem Boden.",
+            "category": "✦ WEISHEIT DES TAGES · REALITÄT"
+        }
+    ],
+    "en": [
+        {
+            "quote": "Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.",
+            "author": "Rumi",
+            "de": "Gestern war ich klug und wollte die Welt verändern. Heute bin ich weise und verändere mich selbst.",
+            "category": "✦ QUOTE OF THE DAY · WISDOM"
+        },
+        {
+            "quote": "The greatest wealth is wisdom and virtue, and the heaviest poverty is ignorance.",
+            "author": "Alisher Navoiy",
+            "de": "Der größte Reichtum ist Verstand und Anstand, die schwerste Armut aber die Unwissenheit.",
+            "category": "✦ QUOTE OF THE DAY · VIRTUE"
+        },
+        {
+            "quote": "Panic is half of disease, calmness is half of health, and patience is the beginning of healing.",
+            "author": "Avicenna (Ibn Sina)",
+            "de": "Panik ist die halbe Krankheit, Ruhe die halbe Gesundheit und Geduld der Beginn der Heilung.",
+            "category": "✦ QUOTE OF THE DAY · HEALTH"
+        },
+        {
+            "quote": "You have power over your mind - not outside events. Realize this, and you will find strength.",
+            "author": "Marcus Aurelius",
+            "de": "Du hast die Macht über deinen Geist, nicht über die äußeren Ereignisse. Erkenne dies, und du wirst Stärke finden.",
+            "category": "✦ QUOTE OF THE DAY · STOICISM"
+        },
+        {
+            "quote": "It is not because things are difficult that we do not dare; it is because we do not dare that they are difficult.",
+            "author": "Seneca",
+            "de": "Nicht weil es schwer ist, wagen wir es nicht, sondern weil wir es nicht wagen, ist es schwer.",
+            "category": "✦ QUOTE OF THE DAY · COURAGE"
+        },
+        {
+            "quote": "He who has a why to live can bear almost any how.",
+            "author": "Friedrich Nietzsche",
+            "de": "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.",
+            "category": "✦ QUOTE OF THE DAY · PURPOSE"
+        },
+        {
+            "quote": "Have the courage to use your own understanding!",
+            "author": "Immanuel Kant",
+            "de": "Habe Mut, dich deines eigenen Verstandes zu bedienen!",
+            "category": "✦ QUOTE OF THE DAY · PHILOSOPHY"
+        },
+        {
+            "quote": "Health is not everything, but without health, everything is nothing.",
+            "author": "Arthur Schopenhauer",
+            "de": "Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts.",
+            "category": "✦ QUOTE OF THE DAY · HEALTH"
+        },
+        {
+            "quote": "When we are no longer able to change a situation, we are challenged to change ourselves.",
+            "author": "Viktor Frankl",
+            "de": "Wenn wir eine Situation nicht mehr ändern können, müssen wir uns selbst ändern.",
+            "category": "✦ QUOTE OF THE DAY · PSYCHOLOGY"
+        },
+        {
+            "quote": "Knowing is not enough; we must apply. Willing is not enough; we must do.",
+            "author": "Johann Wolfgang von Goethe",
+            "de": "Es ist nicht genug zu wissen, man muss auch anwenden; es ist nicht genug zu wollen, man muss auch tun.",
+            "category": "✦ QUOTE OF THE DAY · ACTION"
+        },
+        {
+            "quote": "Logic will get you from A to B. Imagination will take you everywhere.",
+            "author": "Albert Einstein",
+            "de": "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.",
+            "category": "✦ QUOTE OF THE DAY · INSPIRATION"
+        },
+        {
+            "quote": "It is better to light a candle than curse the darkness.",
+            "author": "Confucius",
+            "de": "Es ist besser, ein einziges kleines Licht anzuzünden, als die Dunkelheit zu verfluchen.",
+            "category": "✦ QUOTE OF THE DAY · DEEDS"
+        },
+        {
+            "quote": "Science is the imperishable torch that illuminates every dark path.",
+            "author": "Mirzo Ulugh Beg",
+            "de": "Die Wissenschaft ist die unvergängliche Fackel, die alle dunklen Pfade erhellt.",
+            "category": "✦ QUOTE OF THE DAY · SCIENCE"
+        },
+        {
+            "quote": "Power lies in justice. Act with resolve, perseverance, and wisdom in all matters.",
+            "author": "Amir Timur",
+            "de": "Die Kraft liegt in der Gerechtigkeit. Handle in allen Dingen mit Entschlossenheit und Verstand.",
+            "category": "✦ QUOTE OF THE DAY · JUSTICE"
+        },
+        {
+            "quote": "The limits of my language mean the limits of my world.",
+            "author": "Ludwig Wittgenstein",
+            "de": "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt.",
+            "category": "✦ QUOTE OF THE DAY · THOUGHT"
+        },
+        {
+            "quote": "Those who fight, may fail. Those who do not fight, have already failed.",
+            "author": "Bertolt Brecht",
+            "de": "Wer kämpft, kann verlieren. Wer nicht kämpft, hat schon verloren.",
+            "category": "✦ QUOTE OF THE DAY · DETERMINATION"
+        },
+        {
+            "quote": "Education is the kindling of a flame, not the filling of a vessel.",
+            "author": "Socrates",
+            "de": "Erziehung ist das Entzünden einer Flamme, nicht das Füllen eines Gefäßes.",
+            "category": "✦ QUOTE OF THE DAY · EDUCATION"
+        },
+        {
+            "quote": "I think, therefore I am.",
+            "author": "René Descartes",
+            "de": "Ich denke, also bin ich.",
+            "category": "✦ QUOTE OF THE DAY · CONSCIOUSNESS"
+        },
+        {
+            "quote": "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
+            "author": "Aristotle",
+            "de": "Wir sind das, was wir wiederholt tun. Vorzüglichkeit ist daher keine Handlung, sondern eine Gewohnheit.",
+            "category": "✦ QUOTE OF THE DAY · HABITS"
+        },
+        {
+            "quote": "The first and greatest victory is to conquer yourself.",
+            "author": "Plato",
+            "de": "Der erste und beste Sieg ist, sich selbst zu besiegen.",
+            "category": "✦ QUOTE OF THE DAY · WILLPOWER"
+        },
+        {
+            "quote": "And in every beginning there is a magic dwelling that protects us and helps us to live.",
+            "author": "Hermann Hesse",
+            "de": "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben.",
+            "category": "✦ QUOTE OF THE DAY · HOPE"
+        },
+        {
+            "quote": "Yesterday is but today's memory, and tomorrow is today's dream.",
+            "author": "Kahlil Gibran",
+            "de": "Das Gestern ist die Erinnerung von heute, das Morgen ist der Traum von heute.",
+            "category": "✦ QUOTE OF THE DAY · LIFE"
+        },
+        {
+            "quote": "Everyone thinks of changing the world, but no one thinks of changing himself.",
+            "author": "Leo Tolstoy",
+            "de": "Alle wollen die Menschheit verändern, doch niemand denkt daran, sich selbst zu verändern.",
+            "category": "✦ QUOTE OF THE DAY · TRUTH"
+        },
+        {
+            "quote": "To achieve true happiness, one must perfect their intellect and virtue.",
+            "author": "Al-Farabi",
+            "de": "Um Glückseligkeit zu erlangen, muss der Mensch Verstand und Tugend vervollkommnen.",
+            "category": "✦ QUOTE OF THE DAY · HAPPINESS"
+        },
+        {
+            "quote": "A journey of a thousand miles begins with a single step.",
+            "author": "Lao Tzu",
+            "de": "Auch eine Reise von tausend Meilen beginnt mit einem einzigen Schritt.",
+            "category": "✦ QUOTE OF THE DAY · PERSEVERANCE"
+        },
+        {
+            "quote": "Education is the most powerful weapon which you can use to change the world.",
+            "author": "Nelson Mandela",
+            "de": "Bildung ist die mächtigste Waffe, die man verwenden kann, um die Welt zu verändern.",
+            "category": "✦ QUOTE OF THE DAY · KNOWLEDGE"
+        },
+        {
+            "quote": "Knowledge is power.",
+            "author": "Francis Bacon",
+            "de": "Wissen ist Macht.",
+            "category": "✦ QUOTE OF THE DAY · POWER"
+        },
+        {
+            "quote": "Men are disturbed not by things, but by the view which they take of them.",
+            "author": "Epictetus",
+            "de": "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Meinungen über die Dinge.",
+            "category": "✦ QUOTE OF THE DAY · SERENITY"
+        },
+        {
+            "quote": "Do what you can, with what you have, where you are.",
+            "author": "Theodore Roosevelt",
+            "de": "Tu, was du kannst, mit dem, was du hast, dort, wo du bist.",
+            "category": "✦ QUOTE OF THE DAY · RESILIENCE"
+        },
+        {
+            "quote": "Whether you think you can, or you think you can't — you're right.",
+            "author": "Henry Ford",
+            "de": "Egal, ob du denkst, du kannst es, oder du kannst es nicht – du wirst recht behalten.",
+            "category": "✦ QUOTE OF THE DAY · BELIEF"
+        },
+        {
+            "quote": "Your time is limited, don't waste it living someone else's life. Have the courage to follow your heart.",
+            "author": "Steve Jobs",
+            "de": "Deine Zeit ist begrenzt, also verschwende sie nicht damit, das Leben eines anderen zu leben.",
+            "category": "✦ QUOTE OF THE DAY · INDIVIDUALITY"
+        },
+        {
+            "quote": "Twenty years from now you will be more disappointed by the things that you didn't do than by the ones you did do.",
+            "author": "Mark Twain",
+            "de": "In zwanzig Jahren wirst du mehr bereuen, was du nicht getan hast, als was du getan hast.",
+            "category": "✦ QUOTE OF THE DAY · OPPORTUNITY"
+        },
+        {
+            "quote": "The wound is the place where the Light enters you.",
+            "author": "Rumi",
+            "de": "Die Wunde ist der Ort, an dem das Licht in dich eintritt.",
+            "category": "✦ QUOTE OF THE DAY · HOPE"
+        },
+        {
+            "quote": "I hear and I forget; I see and I remember; I do and I understand.",
+            "author": "Confucius",
+            "de": "Ich hörte und vergaß; ich sah und erinnerte mich; ich tat und verstand.",
+            "category": "✦ QUOTE OF THE DAY · EXPERIENCE"
+        },
+        {
+            "quote": "Man must be beautiful in every respect: in the face, in the clothes, in the soul and in the thoughts.",
+            "author": "Anton Chekhov",
+            "de": "Am Menschen muss alles schön sein: das Gesicht, die Kleidung, die Seele und die Gedanken.",
+            "category": "✦ QUOTE OF THE DAY · BEAUTY"
+        },
+        {
+            "quote": "If a person has good character, that is 1. If they have beauty, add a 0: 10. If they have wealth, add another 0: 100. But if character is lost, only zeros remain.",
+            "author": "Al-Khwarizmi",
+            "de": "Wenn der Mensch Moral besitzt, ist er eine 1. Hat er Schönheit, füge eine 0 hinzu: 10. Hat er Reichtum, füge eine 0 hinzu: 100. Verliert er aber die Moral, bleiben nur Nullen.",
+            "category": "✦ QUOTE OF THE DAY · ETHICS"
+        },
+        {
+            "quote": "The goal of science is the discovery of truth. Knowing the truth frees a person from the chains of superstition and ignorance.",
+            "author": "Al-Biruni",
+            "de": "Das Ziel der Wissenschaft ist die Entdeckung der Wahrheit. Das Erkennen der Wahrheit befreit den Menschen von den Fesseln der Unwissenheit.",
+            "category": "✦ QUOTE OF THE DAY · SCIENCE"
+        },
+        {
+            "quote": "Whoever acts with loyalty will find loyalty, whoever acts with cruelty will suffer cruelty. A noble person shall never meet malice.",
+            "author": "Babur",
+            "de": "Wer Treue sät, wird Treue ernten; wer Unrecht tut, wird Unrecht erfahren. Ein edler Mensch wird niemals dem Bösen verfallen.",
+            "category": "✦ QUOTE OF THE DAY · INTEGRITY"
+        },
+        {
+            "quote": "A book must be the axe for the frozen sea inside us.",
+            "author": "Franz Kafka",
+            "de": "Ein Buch muss die Axt sein für das gefrorene Meer in uns.",
+            "category": "✦ QUOTE OF THE DAY · REFLECTION"
+        },
+        {
+            "quote": "Only those who set great goals can accomplish great things.",
+            "author": "Friedrich Schiller",
+            "de": "Nur wer große Ziele hat, kann Großes vollbringen.",
+            "category": "✦ QUOTE OF THE DAY · PURPOSE"
+        },
+        {
+            "quote": "Sometimes it is the people no one imagines anything of who do the things that no one can imagine.",
+            "author": "Alan Turing",
+            "de": "Manchmal sind es die Menschen, von denen man es sich am wenigsten vorstellt, die Dinge tun, die sich niemand vorstellen kann.",
+            "category": "✦ QUOTE OF THE DAY · INNOVATION"
+        },
+        {
+            "quote": "If you cannot explain something simply to a child, you do not understand it well enough yourself.",
+            "author": "Richard Feynman",
+            "de": "Wenn du es einem Kind nicht einfach erklären kannst, hast du es selbst nicht gut genug verstanden.",
+            "category": "✦ QUOTE OF THE DAY · MASTERY"
+        },
+        {
+            "quote": "If you want to find the secrets of the universe, think in terms of energy, frequency, and vibration.",
+            "author": "Nikola Tesla",
+            "de": "Wenn du die Geheimnisse des Universums finden willst, denke in Begriffen wie Energie, Frequenz und Schwingung.",
+            "category": "✦ QUOTE OF THE DAY · SCIENCE"
+        },
+        {
+            "quote": "Talk is cheap. Show me the code.",
+            "author": "Linus Torvalds",
+            "de": "Reden ist billig. Zeig mir den Code.",
+            "category": "✦ QUOTE OF THE DAY · CODING"
+        },
+        {
+            "quote": "Whatever you can do or dream you can, begin it! Boldness has genius, power, and magic in it.",
+            "author": "Johann Wolfgang von Goethe",
+            "de": "Was immer du tun kannst oder träumst es zu können, fang damit an! Mut hat Genie, Kraft und Zauber in sich.",
+            "category": "✦ QUOTE OF THE DAY · COURAGE"
+        },
+        {
+            "quote": "Two things fill the mind with ever new and increasing admiration: the starry heavens above me and the moral law within me.",
+            "author": "Immanuel Kant",
+            "de": "Zwei Dinge erfüllen das Gemüt mit Bewunderung und Ehrfurcht: der bestirnte Himmel über mir und das moralische Gesetz in mir.",
+            "category": "✦ QUOTE OF THE DAY · PHILOSOPHY"
+        },
+        {
+            "quote": "Talent hits a target no one else can hit; Genius hits a target no one else can see.",
+            "author": "Arthur Schopenhauer",
+            "de": "Das Talent trifft ein Ziel, das niemand treffen kann; das Genie trifft ein Ziel, das niemand sehen kann.",
+            "category": "✦ QUOTE OF THE DAY · GENIUS"
+        },
+        {
+            "quote": "When you arise in the morning think of what a precious privilege it is to be alive, to breathe, to think, and to enjoy.",
+            "author": "Marcus Aurelius",
+            "de": "Wenn du am Morgen erwachst, denke daran, was für ein köstlicher Schatz es ist, zu leben, zu atmen und sich zu freuen.",
+            "category": "✦ QUOTE OF THE DAY · GRATITUDE"
+        },
+        {
+            "quote": "It is not that we have a short time to live, but that we waste a lot of it.",
+            "author": "Seneca",
+            "de": "Wir haben nicht zu wenig Zeit, sondern wir verschwenden zu viel davon.",
+            "category": "✦ QUOTE OF THE DAY · TIME"
+        },
+        {
+            "quote": "Anyone who has never made a mistake has never tried anything new.",
+            "author": "Albert Einstein",
+            "de": "Wer noch nie einen Fehler gemacht hat, hat noch nie etwas Neues ausprobiert.",
+            "category": "✦ QUOTE OF THE DAY · LEARNING"
+        },
+        {
+            "quote": "Stay hungry, stay foolish. Never stop learning and breaking boundaries.",
+            "author": "Steve Jobs",
+            "de": "Bleibt hungrig, bleibt töricht. Hört niemals auf zu lernen und Grenzen zu überwinden.",
+            "category": "✦ QUOTE OF THE DAY · MOTIVATION"
+        },
+        {
+            "quote": "If you are born poor it's not your mistake, but if you die poor it's your mistake.",
+            "author": "Bill Gates",
+            "de": "Wenn du arm geboren wirst, ist es nicht dein Fehler. Aber wenn du arm stirbst, ist es dein Fehler.",
+            "category": "✦ QUOTE OF THE DAY · EFFORT"
+        },
+        {
+            "quote": "Choose a job you love, and you will never have to work a day in your life.",
+            "author": "Confucius",
+            "de": "Wähle einen Beruf, den du liebst, und du brauchst keinen Tag in deinem Leben mehr zu arbeiten.",
+            "category": "✦ QUOTE OF THE DAY · PASSION"
+        },
+        {
+            "quote": "Seek the truth, for the truth illuminates the human heart and protects it from going astray.",
+            "author": "Avicenna",
+            "de": "Suche nach der Wahrheit, denn die Wahrheit erleuchtet das menschliche Herz und bewahrt es vor Verirrung.",
+            "category": "✦ QUOTE OF THE DAY · TRUTH"
+        },
+        {
+            "quote": "If your actions truly benefit the people, know that the greatest reward returns to you.",
+            "author": "Ali-Shir Nava'i",
+            "de": "Wenn dein Tun den Menschen nützt, wisse wohl: der größte Segen kehrt zu dir selbst zurück.",
+            "category": "✦ QUOTE OF THE DAY · BENEVOLENCE"
+        },
+        {
+            "quote": "What does not kill me makes me stronger.",
+            "author": "Friedrich Nietzsche",
+            "de": "Was mich nicht umbringt, macht mich stärker.",
+            "category": "✦ QUOTE OF THE DAY · RESILIENCE"
+        },
+        {
+            "quote": "A human being's only true vocation is to find the way to himself and fulfill his own destiny.",
+            "author": "Hermann Hesse",
+            "de": "Die wahre Berufung des Menschen ist nur, zu sich selbst zu kommen und sein eigenes Schicksal zu erfüllen.",
+            "category": "✦ QUOTE OF THE DAY · DESTINY"
+        },
+        {
+            "quote": "I know one thing: that I know nothing.",
+            "author": "Socrates",
+            "de": "Ich weiß, dass ich nichts weiß.",
+            "category": "✦ QUOTE OF THE DAY · HUMILITY"
+        },
+        {
+            "quote": "Wise men speak because they have something to say; fools because they have to say something.",
+            "author": "Plato",
+            "de": "Weise Männer sprechen, weil sie etwas zu sagen haben; Narren, weil sie etwas sagen müssen.",
+            "category": "✦ QUOTE OF THE DAY · WISDOM"
+        },
+        {
+            "quote": "The roots of education are bitter, but the fruit is sweet.",
+            "author": "Aristotle",
+            "de": "Die Wurzeln der Bildung sind bitter, aber ihre Früchte sind süß.",
+            "category": "✦ QUOTE OF THE DAY · EDUCATION"
+        },
+        {
+            "quote": "Mastering others is strength. Mastering yourself is true power.",
+            "author": "Lao Tzu",
+            "de": "Wer andere besiegt, hat Kraft. Wer sich selber besiegt, ist mächtig.",
+            "category": "✦ QUOTE OF THE DAY · SELF-CONTROL"
+        },
+        {
+            "quote": "The two most important days in your life are the day you are born and the day you find out why.",
+            "author": "Mark Twain",
+            "de": "Die zwei wichtigsten Tage in deinem Leben sind der Tag, an dem du geboren wirst, und der Tag, an dem du herausfindest, warum.",
+            "category": "✦ QUOTE OF THE DAY · MEANING"
+        },
+        {
+            "quote": "If you would be a real seeker after truth, it is necessary that at least once in your life you doubt all things.",
+            "author": "René Descartes",
+            "de": "Wer nach der Wahrheit sucht, muss zumindest einmal im Leben an allem zweifeln, soweit es möglich ist.",
+            "category": "✦ QUOTE OF THE DAY · INQUIRY"
+        },
+        {
+            "quote": "Silence is the language of God, all else is poor translation.",
+            "author": "Rumi",
+            "de": "Die Stille ist die Sprache Gottes, alles andere ist schlechte Übersetzung.",
+            "category": "✦ QUOTE OF THE DAY · PEACE"
+        },
+        {
+            "quote": "Keep your eyes on the stars, and your feet on the ground.",
+            "author": "Theodore Roosevelt",
+            "de": "Halte die Augen auf die Sterne gerichtet und die Füße auf dem Boden.",
+            "category": "✦ QUOTE OF THE DAY · AMBITION"
+        }
+    ]
 };
 
     let currentQuoteItem = null;

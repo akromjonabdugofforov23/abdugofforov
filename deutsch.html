@@ -346,61 +346,101 @@
         </div>
     </footer>
 
-    <!-- Mac OS Dock Navigation Bar -->
-    <nav class="desktop-dock" id="desktop-dock" aria-label="Tezkor navigatsiya">
-        <a href="#a1" class="dock-item active" data-page="A1" title="A1 Boshlang'ich daraja">
-            <span style="font-size: 18px;">🌱</span>
-            <span class="dock-label">A1</span>
+    <!-- Mac OS Dock Navigation Bar (Ixcham 5-tabli Mobil va Desktop Dock) -->
+    <nav class="desktop-dock" id="desktop-dock" aria-label="Asosiy navigatsiya">
+        <a href="#a1" class="dock-item active" data-page="curriculum" title="Darslar">
+            <span class="dock-icon-symbol">🎓</span>
+            <span class="dock-label">Darslar</span>
         </a>
-        <a href="#a2" class="dock-item" data-page="A2" title="A2 Asosiy daraja">
-            <span style="font-size: 18px;">🌿</span>
-            <span class="dock-label">A2</span>
-        </a>
-        <a href="#b1" class="dock-item" data-page="B1" title="B1 O'rta daraja">
-            <span style="font-size: 18px;">🌳</span>
-            <span class="dock-label">B1</span>
-        </a>
-        <a href="#b2" class="dock-item" data-page="B2" title="B2 Yuqori daraja">
-            <span style="font-size: 18px;">🏔️</span>
-            <span class="dock-label">B2</span>
-        </a>
-        <a href="#tests" class="dock-item" data-page="tests" title="telc Nemis Tili Testlari">
-            <span style="font-size: 18px;">📝</span>
+        <a href="#tests" class="dock-item" data-page="tests" title="Testlar">
+            <span class="dock-icon-symbol">📝</span>
             <span class="dock-label">Testlar</span>
         </a>
-        <a href="#flashcards" class="dock-item" data-page="flashcards" title="Lug'at Kartochkalari">
-            <span style="font-size: 18px;">🎴</span>
+        <a href="#flashcards" class="dock-item" data-page="flashcards" title="Lug'at">
+            <span class="dock-icon-symbol">🎴</span>
             <span class="dock-label">Lug'at</span>
         </a>
-        <a href="#tandem" class="dock-item" data-page="tandem" title="Tandem Muloqot">
-            <span style="font-size: 18px;">💬</span>
-            <span class="dock-label">Tandem</span>
-        </a>
-        <a href="#pronounce" class="dock-item" data-page="pronounce" title="Talaffuz Murabbiyi">
-            <span style="font-size: 18px;">🎙️</span>
-            <span class="dock-label">Talaffuz</span>
-        </a>
-        <a href="#idioms" class="dock-item" data-page="idioms" title="Nemis Iboralari">
-            <span style="font-size: 18px;">🥨</span>
-            <span class="dock-label">Iboralar</span>
-        </a>
-        <a href="#corrector" class="dock-item" data-page="corrector" title="Insho Tahrirchi">
-            <span style="font-size: 18px;">✍️</span>
-            <span class="dock-label">Insho</span>
-        </a>
-        <a href="#games" class="dock-item" data-page="games" title="3D Vision Kartochka O'yinlari">
-            <span style="font-size: 18px;">🎮</span>
-            <span class="dock-label">O'yinlar</span>
-        </a>
-        <a href="#tournament" class="dock-item" data-page="tournament" title="Nemis Tili Turniri">
-            <span style="font-size: 18px;">⚔️</span>
+        <a href="#tournament" class="dock-item" data-page="tournament" title="Turnir">
+            <span class="dock-icon-symbol">⚔️</span>
             <span class="dock-label">Turnir</span>
         </a>
-        <a href="#video-lessons" class="dock-item" data-page="video-lessons" title="Video-Dialoglar">
-            <span style="font-size: 18px;">🎬</span>
-            <span class="dock-label">Dialog</span>
-        </a>
+        <button type="button" class="dock-item" id="dock-tools-trigger" aria-label="Barcha vositalar va amaliyotlar" title="Vositalar">
+            <span class="dock-icon-symbol">⚡</span>
+            <span class="dock-label">Vositalar</span>
+        </button>
     </nav>
+
+    <!-- Vositalar va Mashqlar Pardasi (Bottom Sheet) -->
+    <div class="tools-sheet-backdrop" id="tools-sheet-backdrop" aria-hidden="true">
+        <div class="tools-sheet-container" id="tools-sheet-container" role="dialog" aria-modal="true" aria-labelledby="tools-sheet-title">
+            <div class="tools-sheet-handle"></div>
+            <div class="tools-sheet-header">
+                <div>
+                    <h3 id="tools-sheet-title" class="tools-sheet-title">⚡ Amaliy Mashqlar & Vositalar</h3>
+                    <p class="tools-sheet-desc">Nemis tilini interaktiv mustahkamlash trenajyorlari</p>
+                </div>
+                <button type="button" class="tools-sheet-close" id="tools-sheet-close" aria-label="Yopish">&times;</button>
+            </div>
+            <div class="tools-sheet-grid">
+                <a href="#pronounce" class="sheet-tool-card" data-tool="pronounce">
+                    <div class="sheet-card-icon" style="background:rgba(56,189,248,0.15);color:#38bdf8;">🎙️</div>
+                    <div class="sheet-card-info">
+                        <strong>Talaffuz Murabbiyi</strong>
+                        <small>Ovozli fonetika va jonli talaffuz mashqi</small>
+                    </div>
+                </a>
+                <a href="#tandem" class="sheet-tool-card" data-tool="tandem">
+                    <div class="sheet-card-icon" style="background:rgba(45,212,191,0.15);color:#2dd4bf;">💬</div>
+                    <div class="sheet-card-info">
+                        <strong>Tandem Muloqot</strong>
+                        <small>AI suhbatdosh bilan jonli dialogni mashq qilish</small>
+                    </div>
+                </a>
+                <a href="#idioms" class="sheet-tool-card" data-tool="idioms">
+                    <div class="sheet-card-icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">🥨</div>
+                    <div class="sheet-card-info">
+                        <strong>Nemis Iboralari</strong>
+                        <small>Redewendungen va xalq iboralari to'plami</small>
+                    </div>
+                </a>
+                <a href="#corrector" class="sheet-tool-card" data-tool="corrector">
+                    <div class="sheet-card-icon" style="background:rgba(168,85,247,0.15);color:#c084fc;">✍️</div>
+                    <div class="sheet-card-info">
+                        <strong>Insho Tahrirchi</strong>
+                        <small>Nemischa insho va xatlarni grammatik tekshirish</small>
+                    </div>
+                </a>
+                <a href="#games" class="sheet-tool-card" data-tool="games">
+                    <div class="sheet-card-icon" style="background:rgba(236,72,153,0.15);color:#f472b6;">🎮</div>
+                    <div class="sheet-card-info">
+                        <strong>O'yinlar (Matching)</strong>
+                        <small>So'z va ma'nolarini juftlash 3D o'yini</small>
+                    </div>
+                </a>
+                <a href="#video-lessons" class="sheet-tool-card" data-tool="video-lessons">
+                    <div class="sheet-card-icon" style="background:rgba(239,68,68,0.15);color:#f87171;">🎬</div>
+                    <div class="sheet-card-info">
+                        <strong>Video-Dialoglar</strong>
+                        <small>Interaktiv subtitrli real hayotiy dialoglar</small>
+                    </div>
+                </a>
+                <a href="#verb-trainer" class="sheet-tool-card" id="sheet-verb-trainer-btn" data-tool="verb-trainer">
+                    <div class="sheet-card-icon" style="background:rgba(99,102,241,0.15);color:#818cf8;">⚡</div>
+                    <div class="sheet-card-info">
+                        <strong>Kuchli Fe'llar Trenajyori</strong>
+                        <small>Starke und unregelmäßige Verben jadvali</small>
+                    </div>
+                </a>
+                <a href="#myresults" class="sheet-tool-card" id="sheet-myresults-btn" data-tool="myresults">
+                    <div class="sheet-card-icon" style="background:rgba(16,185,129,0.15);color:#34d399;">🏆</div>
+                    <div class="sheet-card-info">
+                        <strong>Natijalar & Yutuqlar</strong>
+                        <small>Test ballari, sertifikatlar va shaxsiy progress</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Modallar -->
     <div class="modal-overlay" id="myresults-modal">
