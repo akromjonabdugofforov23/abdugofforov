@@ -24,6 +24,7 @@ Thumbs.db
 
 # Ma'lumotlar bazasi va zaxira nusxalari
 data/db.json
+data/backups/
 data/*.tmp
 data/*.bak
 data/*.backup
