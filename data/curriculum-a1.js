@@ -1,6 +1,6 @@
 // ========================================================================
 // DEUTSCH AKADEMIYASI — TELC A1 O'QUV DASTURI (CURRICULUM)
-// Start Deutsch A1 — Boshlang'ich daraja uchun 7 ta interaktiv modul
+// Start Deutsch A1 — Boshlang'ich daraja uchun 18 ta interaktiv modul
 // ========================================================================
 
 window.deutschCurriculum = window.deutschCurriculum || {};
@@ -9,7 +9,7 @@ window.deutschCurriculum['A1'] = {
     level: 'A1',
     badge: '🌱 Boshlang\'ich',
     title: 'A1 — Start Deutsch (Boshlang\'ich daraja)',
-    description: 'Nemis tilini noldan o\'rganuvchilar uchun 7 ta eng muhim va interaktiv dars.',
+    description: 'Nemis tilini noldan o\'rganuvchilar uchun 18 ta eng muhim va interaktiv dars.',
     topics: [
         // ====================================================================
         // TOPIC 1: Begrüßung, Alphabet & Vorstellen
@@ -1343,6 +1343,931 @@ window.deutschCurriculum['A1'] = {
                 { de: "Guten Appetit!", uz: "Yoqimli ishtaha!" },
                 { de: "Stimmt so!", uz: "Qaytimi kerak emas" }
             ]
-        }
+        },
+{
+        "id": "a1_13",
+        "number": 13,
+        "title": "Shifokor huzurida va Salomatlik",
+        "germanTitle": "Beim Arzt & Gesundheit",
+        "icon": "🩺",
+        "description": "Tana a'zolari nomlari, og'riq va shikoyatlarni ifodalash, shifokor qabuliga yozilish hamda dorixonada muloqot.",
+        "theory": {
+            "summary": "Nemis tilida salomatlik holatini bildirishda 'weh tun' (og'rimoq) fe'li va tana a'zolari keng qo'llaniladi. Shifokor qabuli uchun 'Termin' olinadi.",
+            "sections": [
+                {
+                    "heading": "1. Tana a'zolari va Og'riqni ifodalash (Körperteile & Schmerzen)",
+                    "content": "<p>Nemis tilida og'riqni ifodalashning eng asosiy usuli — <strong>weh tun</strong> ajraluvchi fe'lidir. Birlikdagi a'zolar uchun <em>tut weh</em>, ko'plikdagilar uchun <em>tun weh</em> ishlatiladi.</p><ul><li><strong>der Kopf</strong> (bosh) &rarr; Mein Kopf tut weh. (Boshim og'riyapti.)</li><li><strong>der Bauch</strong> (qorin) &rarr; Mein Bauch tut weh. (Qornim og'riyapti.)</li><li><strong>der Hals</strong> (tomoq) &rarr; Ich habe Halsschmerzen. (Tomoq og'rig'im bor.)</li><li><strong>die Augen</strong> (ko'zlar, ko'plik) &rarr; Meine Augen tun weh. (Ko'zlarim og'riyapti.)</li><li><strong>das Fieber</strong> (isitma) &rarr; Ich habe hohes Fieber. (Menda baland isitma bor.)</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Was fehlt Ihnen? — Mein Rücken tut weh.",
+                            "uz": "Sizni nima bezovta qilyapti? — Belim og'riyapti.",
+                            "tip": "Was fehlt Ihnen? — shifokorning an'anaviy savoli."
+                        },
+                        {
+                            "de": "Ich brauche einen Termin beim Arzt.",
+                            "uz": "Menga shifokor qabuliga yozilish kerak.",
+                            "tip": "der Termin — uchrashuv / qabul vaqti."
+                        },
+                        {
+                            "de": "Nehmen Sie diese Tabletten dreimal täglich.",
+                            "uz": "Ushbu dorilarni kuniga uch mahal iching.",
+                            "tip": "nehmen — dorini qabul qilmoq."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Dorixonada va Maslahatlar (In der Apotheke & Ratschläge)",
+                    "content": "<p>Dorixonada retsept (<strong>das Rezept</strong>) yoki retseptsiz dori (<strong>das Medikament</strong>) so'rash iboralari:</p><ul><li><strong>Ich brauche etwas gegen Kopfschmerzen.</strong> — Bosh og'rig'iga qarshi biror narsa kerak.</li><li><strong>Haben Sie Hustensaft?</strong> — Yo'talga qarshi siropingiz bormi?</li><li><strong>Gute Besserung!</strong> — Tezroq tuzalib keting! (Kasallarga aytiladigan ezgu tilak).</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Haben Sie ein Rezept vom Arzt?",
+                            "uz": "Sizda shifokor retsepti bormi?",
+                            "tip": "das Rezept — shifokor retsepti."
+                        },
+                        {
+                            "de": "Gute Besserung! Trinken Sie viel Tee.",
+                            "uz": "Tezroq sog'ayib keting! Ko'p choy iching.",
+                            "tip": "Gute Besserung — eng mashhur tilak."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Birlik uchun: Mein ... tut weh. Ko'plik uchun: Meine ... tun weh.",
+                "Kasallik va og'riqlarga nisbatan 'haben' ishlatiladi: Ich habe Fieber / Grippe / Schmerzen.",
+                "Kasallarga 'Gute Besserung!' (Tezroq sog'ayib keting!) deb tilak bildiriladi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "der Arzt / die Ärztin",
+                "back": "shifokor (erkak / ayol)",
+                "tip": "zum Arzt gehen"
+            },
+            {
+                "front": "das Krankenhaus (-er)",
+                "back": "shifoxona, kasalxona",
+                "tip": "im Krankenhaus liegen"
+            },
+            {
+                "front": "die Apotheke (-n)",
+                "back": "dorixona",
+                "tip": "in die Apotheke gehen"
+            },
+            {
+                "front": "das Medikament (-e)",
+                "back": "dori-darmon",
+                "tip": "Medikamente einnehmen"
+            },
+            {
+                "front": "weh tun",
+                "back": "og'rimoq",
+                "tip": "tut weh / tun weh"
+            },
+            {
+                "front": "das Fieber",
+                "back": "isitma, harorat",
+                "tip": "hohes Fieber haben"
+            },
+            {
+                "front": "die Schmerzen (Pl.)",
+                "back": "og'riqlar",
+                "tip": "Kopfschmerzen haben"
+            },
+            {
+                "front": "Gute Besserung!",
+                "back": "Tezroq tuzaling!",
+                "tip": "kasallarga tilak"
+            }
+        ],
+        "test": [
+            {
+                "q": "Ko'zlar og'riyotganda qaysi gap grammatik jihatdan to'g'ri bo'ladi?",
+                "options": [
+                    "Meine Augen tun weh.",
+                    "Meine Augen tut weh.",
+                    "Mein Auge tun weh.",
+                    "Ich tue die Augen weh."
+                ],
+                "answer": 0,
+                "explanation": "'die Augen' ko'plikda bo'lgani sababli 'tun weh' shakli qo'llaniladi."
+            },
+            {
+                "q": "Bemor do'stingizga 'Tezroq sog'ayib ket!' deb qanday tilak bildirasiz?",
+                "options": [
+                    "Gute Besserung!",
+                    "Guten Appetit!",
+                    "Herzlichen Glückwunsch!",
+                    "Schönes Wochenende!"
+                ],
+                "answer": 0,
+                "explanation": "'Gute Besserung!' kasallarga nisbatan tezroq tuzalishni tilash iborasidir."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "der Arzt",
+                "uz": "shifokor"
+            },
+            {
+                "de": "die Apotheke",
+                "uz": "dorixona"
+            },
+            {
+                "de": "das Medikament",
+                "uz": "dori"
+            },
+            {
+                "de": "weh tun",
+                "uz": "og'rimoq"
+            },
+            {
+                "de": "das Fieber",
+                "uz": "isitma"
+            },
+            {
+                "de": "das Rezept",
+                "uz": "retsept"
+            },
+            {
+                "de": "Gute Besserung!",
+                "uz": "Tezroq tuzaling!"
+            },
+            {
+                "de": "die Untersuchung",
+                "uz": "tibbiy ko'rik"
+            }
+        ]
+    },
+    {
+        "id": "a1_14",
+        "number": 14,
+        "title": "Transport va Chipta xarid qilish",
+        "germanTitle": "Verkehrsmittel & Fahrkarten kaufen",
+        "icon": "🚆",
+        "description": "Jamoat transporti turlari, poyezd yoki avtobusga chipta olish, bekat va vokzalda harakatlanish.",
+        "theory": {
+            "summary": "Germaniyada jamoat transporti juda rivojlangan. Transport vositalari bilan 'mit dem / mit der' (Dativ) qo'llaniladi: mit dem Bus, mit dem Zug, mit der U-Bahn.",
+            "sections": [
+                {
+                    "heading": "1. Transport vositalari va 'mit' predlogi (Verkehrsmittel mit Dativ)",
+                    "content": "<p><strong>mit</strong> predlogi har doim <strong>Dativ</strong> kelishigini talab qiladi:</p><ul><li><strong>der Bus</strong> &rarr; Ich fahre <strong>mit dem</strong> Bus.</li><li><strong>der Zug</strong> &rarr; Er fährt <strong>mit dem</strong> Zug.</li><li><strong>das Auto</strong> &rarr; Wir fahren <strong>mit dem</strong> Auto.</li><li><strong>das Fahrrad</strong> &rarr; Sie fährt <strong>mit dem</strong> Fahrrad.</li><li><strong>die U-Bahn</strong> &rarr; Ich fahre <strong>mit der</strong> U-Bahn.</li><li><strong>zu Fuß gehen</strong> &rarr; Men piyoda boraman (istisno ibora).</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Wie kommst du zur Arbeit? — Mit dem Bus.",
+                            "uz": "Ishga qanday borasan? — Avtobusda.",
+                            "tip": "der Bus -> mit dem Bus (Dativ)."
+                        },
+                        {
+                            "de": "Ich gehe lieber zu Fuß.",
+                            "uz": "Men piyoda borishni afzal ko'raman.",
+                            "tip": "zu Fuß gehen — piyoda yurmoq."
+                        },
+                        {
+                            "de": "Der Zug hat 10 Minuten Verspätung.",
+                            "uz": "Poyezd 10 daqiqa kechikmoqda.",
+                            "tip": "die Verspätung — kechikish."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Chipta xarid qilish va Vokzalda (Am Bahnhof & Fahrkarten)",
+                    "content": "<p>Chipta kassasida yoki avtomatida ishlatiladigan asosiy jumlalar:</p><ul><li><strong>Eine Fahrkarte nach Berlin, bitte.</strong> — Berlinga bitta chipta, iltimos.</li><li><strong>Einfach oder hin und zurück?</strong> — Bir tomongami yoki borish-kelishgami?</li><li><strong>Wann fährt der nächste Zug ab?</strong> — Keyingi poyezd qachon jo'naydi?</li><li><strong>Auf welchem Gleis?</strong> — Qaysi perronda (yo'lda)? &rarr; Auf Gleis 4.</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Ein Ticket nach München, hin und zurück, bitte.",
+                            "uz": "Myunxenga borish-kelish chiptasi, iltimos.",
+                            "tip": "hin und zurück — borish va qaytish."
+                        },
+                        {
+                            "de": "Muss ich umsteigen? — Nein, der Zug fährt direkt.",
+                            "uz": "Poyezdni almashtirishim kerakmi? — Yo'q, to'g'ridan-to'g'ri boradi.",
+                            "tip": "umsteigen — boshqa poyezdga o'tirmoq."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "'mit' predlogidan keyin doimo Dativ keladi: mit dem Zug, mit dem Auto, mit der Straßenbahn.",
+                "Piyoda yurish uchun 'zu Fuß gehen' iborasi qo'llaniladi.",
+                "Chipta turlari: 'einfach' (bir tomonga) va 'hin und zurück' (borish-qaytish)."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "der Zug (-e)",
+                "back": "poyezd",
+                "tip": "mit dem Zug fahren"
+            },
+            {
+                "front": "der Bahnhof (-e)",
+                "back": "temiryo'l vokzali",
+                "tip": "am Hauptbahnhof"
+            },
+            {
+                "front": "die Fahrkarte (-n)",
+                "back": "yo'l chiptasi",
+                "tip": "eine Fahrkarte kaufen"
+            },
+            {
+                "front": "das Gleis (-e)",
+                "back": "perron yo'li, rels",
+                "tip": "auf Gleis 3 ankommen"
+            },
+            {
+                "front": "abfahren",
+                "back": "jo'nab ketmoq",
+                "tip": "Der Zug fährt ab"
+            },
+            {
+                "front": "ankommen",
+                "back": "yetib kelmoq",
+                "tip": "Wann kommt der Zug an?"
+            },
+            {
+                "front": "umsteigen",
+                "back": "transportni almashtirmoq",
+                "tip": "in Frankfurt umsteigen"
+            },
+            {
+                "front": "die Verspätung (-en)",
+                "back": "kechikish",
+                "tip": "Verspätung haben"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Men universitetga metroda boraman' jumlasi qanday to'g'ri tarjima qilinadi?",
+                "options": [
+                    "Ich fahre mit der U-Bahn zur Universität.",
+                    "Ich fahre mit die U-Bahn zur Universität.",
+                    "Ich fahre mit dem U-Bahn zur Universität.",
+                    "Ich gehe mit U-Bahn zur Universität."
+                ],
+                "answer": 0,
+                "explanation": "'die U-Bahn' ayol jinsida, 'mit' Dativ talab qilgani uchun 'mit der U-Bahn' bo'ladi."
+            },
+            {
+                "q": "Kassirning 'Einfach oder hin und zurück?' savoliga qanday ma'no yuklangan?",
+                "options": [
+                    "Bir tomongami yoki borish-qaytish chiptasimi?",
+                    "Birinchi sinfmi yoki ikkinchi sinfmi?",
+                    "Naqd puldami yoki bank kartasidami?",
+                    "Tezkor poyezdmi yoki oddiy poyezdmi?"
+                ],
+                "answer": 0,
+                "explanation": "'einfach' — bir tomonga, 'hin und zurück' — borish va qaytish chiptasi degani."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "der Bahnhof",
+                "uz": "vokzal"
+            },
+            {
+                "de": "die Fahrkarte",
+                "uz": "yo'l chiptasi"
+            },
+            {
+                "de": "das Gleis",
+                "uz": "rels / perron"
+            },
+            {
+                "de": "abfahren",
+                "uz": "jo'namoq"
+            },
+            {
+                "de": "ankommen",
+                "uz": "yetib kelmoq"
+            },
+            {
+                "de": "umsteigen",
+                "uz": "transport almashtirmoq"
+            },
+            {
+                "de": "die Haltestelle",
+                "uz": "avtobus bekati"
+            },
+            {
+                "de": "zu Fuß",
+                "uz": "piyoda"
+            }
+        ]
+    },
+    {
+        "id": "a1_15",
+        "number": 15,
+        "title": "Telefon orqali muloqot va Qisqa xabarlar",
+        "germanTitle": "Telefongespräch & Kurznachrichten",
+        "icon": "📱",
+        "description": "Telefonda o'zini tanishtirish, uchrashuv (Termin) belgilash yoki o'zgartirish hamda do'stlarga qisqa SMS/xabar yozish.",
+        "theory": {
+            "summary": "Nemis madaniyatida telefonda suhbatlashganda ism va familiya aytiladi. Uchrashuv belgilashda 'einen Termin vereinbaren / verschieben' iboralari juda muhim.",
+            "sections": [
+                {
+                    "heading": "1. Telefonda suhbatlashish odobi (Am Telefon)",
+                    "content": "<p>Telefonga javob berishda nemislar ko'pincha o'z familiyalarini aytishadi:</p><ul><li><strong>Hier Müller, Guten Tag!</strong> — Müller eshitadi, xayrli kun!</li><li><strong>Kann ich bitte Herrn Schmidt sprechen?</strong> — Janob Schmidt bilan gaplashsam bo'ladimi?</li><li><strong>Er ist im Moment leider nicht da.</strong> — U afsuski ayni paytda bu yerda yo'q.</li><li><strong>Kann ich eine Nachricht hinterlassen?</strong> — Xabar qoldirsam bo'ladimi?</li><li><strong>Auf Wiederhören!</strong> — Telefonda xayrlashuv (Eshitishguncha xayr!).</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Guten Tag, hier spricht Alisher Karimov.",
+                            "uz": "Xayrli kun, Alisher Karimov gapiryapti.",
+                            "tip": "hier spricht... — telefonda o'zini tanishtirish."
+                        },
+                        {
+                            "de": "Ich rufe später noch einmal an.",
+                            "uz": "Men keyinroq yana bir bor qo'ng'iroq qilaman.",
+                            "tip": "anrufen — telefon qilmoq."
+                        },
+                        {
+                            "de": "Auf Wiederhören, Frau Weber!",
+                            "uz": "Eshitishguncha xayr, xonim Weber!",
+                            "tip": "Auf Wiederhören — faqat telefonda ishlatiladi."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Termin belgilash va Qisqa xabarlar (Termin vereinbaren & SMS)",
+                    "content": "<p>Nemis jamiyatida har bir ish va uchrashuv oldindan rejalashtiriladi:</p><ul><li><strong>Ich möchte einen Termin vereinbaren.</strong> — Men uchrashuv belgilamoqchiman.</li><li><strong>Passt es Ihnen am Montag um 14 Uhr?</strong> — Dushanba soat 14:00 sizga to'g'ri keladimi?</li><li><strong>Ja, das passt mir gut. / Nein, das geht leider nicht.</strong> — Ha, to'g'ri keladi. / Yo'q, afsuski bo'lmaydi.</li><li><strong>Ich verspäte mich um 15 Minuten.</strong> — Men 15 daqiqaga kechikaman.</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Können wir den Termin verschieben?",
+                            "uz": "Uchrashuv vaqtini boshqa kunga ko'chira olamizmi?",
+                            "tip": "verschieben — vaqtni ko'chirmoq."
+                        },
+                        {
+                            "de": "Bis später! Ich freue mich.",
+                            "uz": "Ko'rishguncha! Men xursandman.",
+                            "tip": "Do'stona qisqa xabar yakuni."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Telefonda xayrlashganda 'Auf Wiedersehen' emas, balki 'Auf Wiederhören!' deyiladi.",
+                "Uchrashuv ma'qul kelganda 'Das passt mir gut' (Menga to'g'ri keladi) iborasi ishlatiladi.",
+                "Qo'ng'iroq qilmoq fe'li ajraluvchi fe'l: 'Ich rufe dich an'."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "anrufen",
+                "back": "qo'ng'iroq qilmoq",
+                "tip": "Ich rufe dich an"
+            },
+            {
+                "front": "der Termin (-e)",
+                "back": "uchrashuv, qabul vaqti",
+                "tip": "einen Termin vereinbaren"
+            },
+            {
+                "front": "verschieben",
+                "back": "vaqtni ko'chirmoq",
+                "tip": "den Termin verschieben"
+            },
+            {
+                "front": "absagen",
+                "back": "bekor qilmoq",
+                "tip": "den Termin absagen"
+            },
+            {
+                "front": "die Nachricht (-en)",
+                "back": "xabar, ma'lumot",
+                "tip": "eine Nachricht hinterlassen"
+            },
+            {
+                "front": "passen",
+                "back": "to'g'ri kelmoq, mos kelmoq",
+                "tip": "Das passt mir gut"
+            },
+            {
+                "front": "Auf Wiederhören!",
+                "back": "Eshitishguncha xayr!",
+                "tip": "telefonda xayrlashuv"
+            },
+            {
+                "front": "zurückrufen",
+                "back": "qayta qo'ng'iroq qilmoq",
+                "tip": "Ich rufe zurück"
+            }
+        ],
+        "test": [
+            {
+                "q": "Telefonda suhbat yakunida qaysi xayrlashuv iborasi qo'llaniladi?",
+                "options": [
+                    "Auf Wiederhören!",
+                    "Auf Wiedersehen!",
+                    "Guten Appetit!",
+                    "Willkommen!"
+                ],
+                "answer": 0,
+                "explanation": "Telefonda bir-birini ko'rmay, faqat eshitgani uchun 'Auf Wiederhören!' (Eshitishguncha xayr!) deyiladi."
+            },
+            {
+                "q": "'Dushanba kuni menga to'g'ri keladi' jumlasi qaysi?",
+                "options": [
+                    "Am Montag passt es mir gut.",
+                    "Am Montag geht es mir schlecht.",
+                    "Ich passe am Montag nicht.",
+                    "Montag ist kein Tag."
+                ],
+                "answer": 0,
+                "explanation": "'Es passt mir gut' — Menga juda yaxshi to'g'ri keladi, qulay degani."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "anrufen",
+                "uz": "telefon qilmoq"
+            },
+            {
+                "de": "der Termin",
+                "uz": "qabul vaqti"
+            },
+            {
+                "de": "verschieben",
+                "uz": "ko'chirmoq"
+            },
+            {
+                "de": "absagen",
+                "uz": "bekor qilmoq"
+            },
+            {
+                "de": "die Nachricht",
+                "uz": "xabar"
+            },
+            {
+                "de": "zurückrufen",
+                "uz": "qayta qo'ng'iroq qilmoq"
+            },
+            {
+                "de": "Auf Wiederhören!",
+                "uz": "Eshitishguncha xayr!"
+            },
+            {
+                "de": "vereinbaren",
+                "uz": "kelishmoq"
+            }
+        ]
+    },
+    {
+        "id": "a1_16",
+        "number": 16,
+        "title": "Ta'til, Sayohat va Mehmonxona",
+        "germanTitle": "Urlaub, Reisen & Hotel buchen",
+        "icon": "🏖️",
+        "description": "Dam olish rejalari, mehmonxonadan xona band qilish, qulayliklar va sayohat taassurotlarini o'rtoqlashish.",
+        "theory": {
+            "summary": "Ta'tilda yangi shaharlarni ziyorat qilish, mehmonxona xonalarini (Einzelzimmer / Doppelzimmer) tanlash va nonushta (Frühstück) haqida ma'lumot olishni o'rganamiz.",
+            "sections": [
+                {
+                    "heading": "1. Mehmonxonada xona band qilish (Im Hotel reservieren)",
+                    "content": "<p>Mehmonxonaga borganingizda yoki bron qilayotganingizda kerak bo'ladigan asosiy iboralar:</p><ul><li><strong>Ich habe eine Reservierung auf den Namen Karimov.</strong> — Karimov nomiga bronim bor.</li><li><strong>Ich möchte ein Einzelzimmer / Doppelzimmer buchen.</strong> — Bir kishilik / ikki kishilik xona band qilmoqchiman.</li><li><strong>Ist das Frühstück im Preis inbegriffen?</strong> — Nonushta narx ichiga kiritilganmi?</li><li><strong>Gibt es kostenloses WLAN im Zimmer?</strong> — Xonada bepul Wi-Fi bormi?</li><li><strong>Der Schlüssel für Zimmer 204, bitte.</strong> — 204-xona kalitini bersangiz, iltimos.</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Für wie viele Nächte möchten Sie bleiben? — Für drei Nächte.",
+                            "uz": "Necha kechaga qolmoqchisiz? — Uch kechaga.",
+                            "tip": "die Nacht -> für drei Nächte (Akkusativ)."
+                        },
+                        {
+                            "de": "Um wie viel Uhr gibt es Frühstück?",
+                            "uz": "Nonushta soat nechada bo'ladi?",
+                            "tip": "das Frühstück — nonushta."
+                        },
+                        {
+                            "de": "Gute Reise und einen schönen Aufenthalt!",
+                            "uz": "Oq yo'l va maroqli dam olish tilayman!",
+                            "tip": "Mehmonxona xodimining samimiy tilagi."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Sayohat va Ta'til mashg'ulotlari (Urlaubsaktivitäten)",
+                    "content": "<p>Dam olish paytida qilinadigan mashg'ulotlar:</p><ul><li><strong>am Strand liegen</strong> — plyajda yotmoq</li><li><strong>im Meer schwimmen</strong> — dengizda suzmoq</li><li><strong>Sehenswürdigkeiten besichtigen</strong> — diqqatga sazovor joylarni tomosha qilmoq</li><li><strong>Fotos machen</strong> — rasmga olmoq</li><li><strong>Souvenirs kaufen</strong> — esdalik sovg'alari xarid qilmoq</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Wir machen im Sommer Urlaub in den Bergen.",
+                            "uz": "Biz yozda tog'larda dam olamiz.",
+                            "tip": "Urlaub machen — ta'tilda bo'lmoq."
+                        },
+                        {
+                            "de": "Berlin hat viele interessante Sehenswürdigkeiten.",
+                            "uz": "Berlinda juda ko'p qiziqarli ziyoratgohlar bor.",
+                            "tip": "die Sehenswürdigkeit — diqqatga sazovor joy."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Xona turlari: 'das Einzelzimmer' (1 kishilik) va 'das Doppelzimmer' (2 kishilik).",
+                "Nonushta haqida so'rash: 'Ist das Frühstück inklusive?' (Nonushta kiritilganmi?).",
+                "Mehmonxonada ro'yxatdan o'tish 'einchecken', chiqish esa 'auschecken' deb ataladi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "der Urlaub (-e)",
+                "back": "ta'til, mehnat ta'tili",
+                "tip": "Urlaub machen"
+            },
+            {
+                "front": "das Hotel (-s)",
+                "back": "mehmonxona",
+                "tip": "im Hotel übernachten"
+            },
+            {
+                "front": "das Einzelzimmer (-)",
+                "back": "bir kishilik xona",
+                "tip": "ein Einzelzimmer buchen"
+            },
+            {
+                "front": "das Doppelzimmer (-)",
+                "back": "ikki kishilik xona",
+                "tip": "ein Doppelzimmer reservieren"
+            },
+            {
+                "front": "das Frühstück",
+                "back": "nonushta",
+                "tip": "Frühstück inklusive"
+            },
+            {
+                "front": "der Schlüssel (-)",
+                "back": "kalit",
+                "tip": "der Zimmerschlüssel"
+            },
+            {
+                "front": "die Reise (-n)",
+                "back": "sayohat",
+                "tip": "eine Reise machen"
+            },
+            {
+                "front": "buchen / reservieren",
+                "back": "band qilmoq",
+                "tip": "ein Zimmer buchen"
+            }
+        ],
+        "test": [
+            {
+                "q": "Agar siz mehmonxonadan 2 kishilik xona olmoqchi bo'lsangiz, nima deysiz?",
+                "options": [
+                    "Ich möchte ein Doppelzimmer buchen.",
+                    "Ich möchte ein Einzelzimmer buchen.",
+                    "Ich brauche keine Zimmer.",
+                    "Zimmer ist voll."
+                ],
+                "answer": 0,
+                "explanation": "'das Doppelzimmer' — ikki kishilik xona degan ma'noni bildiradi."
+            },
+            {
+                "q": "Nonushta narxga kiritilganmi deb qanday so'raladi?",
+                "options": [
+                    "Ist das Frühstück im Preis inklusive?",
+                    "Kostet Frühstück extra teuer?",
+                    "Ich will kein Frühstück essen.",
+                    "Wo ist der Bahnhof?"
+                ],
+                "answer": 0,
+                "explanation": "'inklusive' yoki 'im Preis inbegriffen' — narx ichiga kiritilgan deganidir."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "der Urlaub",
+                "uz": "ta'til"
+            },
+            {
+                "de": "das Hotel",
+                "uz": "mehmonxona"
+            },
+            {
+                "de": "das Einzelzimmer",
+                "uz": "bir kishilik xona"
+            },
+            {
+                "de": "das Doppelzimmer",
+                "uz": "ikki kishilik xona"
+            },
+            {
+                "de": "das Frühstück",
+                "uz": "nonushta"
+            },
+            {
+                "de": "der Schlüssel",
+                "uz": "kalit"
+            },
+            {
+                "de": "buchen",
+                "uz": "band qilmoq"
+            },
+            {
+                "de": "die Reise",
+                "uz": "sayohat"
+            }
+        ]
+    },
+    {
+        "id": "a1_17",
+        "number": 17,
+        "title": "Kasblar va Ish o'rni",
+        "germanTitle": "Berufe & Arbeitsplatz",
+        "icon": "💼",
+        "description": "Kasb-hunar nomlari, erkak va ayol kasb shakllari (-in), ish joyi, ofis anjomlari va faoliyat haqida so'zlash.",
+        "theory": {
+            "summary": "Nemis tilida ayol kishining kasbini ifodalash uchun so'z oxiriga '-in' qo'shimchasi qo'shiladi. Kasb aytilganda artikl ishlatilmaydi: 'Ich bin Lehrer'.",
+            "sections": [
+                {
+                    "heading": "1. Kasb nomlari va Jinslar (Berufsbezeichnungen)",
+                    "content": "<p>Erkak va ayol kasb nomlari:</p><ul><li><strong>der Lehrer</strong> (o'qituvchi erkak) &rarr; <strong>die Lehrerin</strong> (o'qituvchi ayol)</li><li><strong>der Arzt</strong> (shifokor erkak) &rarr; <strong>die Ärztin</strong> (shifokor ayol)</li><li><strong>der Ingenieur</strong> (muhandis erkak) &rarr; <strong>die Ingenieurin</strong> (muhandis ayol)</li><li><strong>der Verkäufer</strong> (sotuvchi erkak) &rarr; <strong>die Verkäuferin</strong> (sotuvchi ayol)</li><li><strong>der Student</strong> (talaba yigit) &rarr; <strong>die Studentin</strong> (talaba qiz)</li></ul><p><strong>Muhim qoida:</strong> Kasbni aytganda noaniq artikl (ein/eine) qo'yilmaydi: <em>Ich bin Programmierer. / Sie ist Ärztin.</em></p>",
+                    "examples": [
+                        {
+                            "de": "Was sind Sie von Beruf? — Ich bin Informatiker.",
+                            "uz": "Kasbingiz nima? — Men dasturchiman.",
+                            "tip": "Was sind Sie von Beruf? — kasbni so'rashning rasmiy usuli."
+                        },
+                        {
+                            "de": "Ich arbeite als Verkäuferin bei Siemens.",
+                            "uz": "Men Siemens kompaniyasida sotuvchi bo'lib ishlayman.",
+                            "tip": "arbeiten als... bei... (kim bo'lib, qayerda ishlamoq)."
+                        },
+                        {
+                            "de": "Was macht dein Bruder? — Er studiert Medizin.",
+                            "uz": "Akang nima ish qiladi? — U tibbiyotda o'qiydi.",
+                            "tip": "studieren — oliygohda ta'lim olmoq."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Ish joyi va Ofis jihozlari (Der Arbeitsplatz & Büro)",
+                    "content": "<p>Zamonaviy ish joyidagi asosiy buyumlar:</p><ul><li><strong>der Computer / der Laptop</strong> — kompyuter / noutbuk</li><li><strong>der Schreibtisch</strong> — yozuv stoli</li><li><strong>das Telefon</strong> — telefon</li><li><strong>der Drucker</strong> — printer</li><li><strong>die E-Mail</strong> — elektron xat</li><li><strong>die Kollegen (Pl.)</strong> — hamkasblar</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Ich arbeite jeden Tag im Büro.",
+                            "uz": "Men har kuni ofisda ishlayman.",
+                            "tip": "im Büro arbeiten."
+                        },
+                        {
+                            "de": "Meine Kollegen sind sehr nett und hilfsbereit.",
+                            "uz": "Hamkasblarim juda samimiy va yordamga tayyor.",
+                            "tip": "der Kollege / die Kollegin."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Ayol kasb shakli uchun '-in' qo'shiladi: der Koch &rarr; die Köchin.",
+                "Kasb aytilganda artikl tushib qoladi: 'Ich bin Arzt' (Ich bin ein Arzt emas).",
+                "Kasbni so'rash iboralari: 'Was sind Sie von Beruf?' yoki 'Was machen Sie beruflich?'"
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "der Beruf (-e)",
+                "back": "kasb, hunar",
+                "tip": "Was bist du von Beruf?"
+            },
+            {
+                "front": "der Lehrer / die Lehrerin",
+                "back": "o'qituvchi (erkak / ayol)",
+                "tip": "in der Schule unterrichten"
+            },
+            {
+                "front": "der Verkäufer / die Verkäuferin",
+                "back": "sotuvchi (erkak / ayol)",
+                "tip": "im Geschäft arbeiten"
+            },
+            {
+                "front": "der Ingenieur (-e)",
+                "back": "muhandis",
+                "tip": "Maschinen bauen"
+            },
+            {
+                "front": "das Büro (-s)",
+                "back": "ofis, idora",
+                "tip": "im Büro sitzen"
+            },
+            {
+                "front": "der Kollege / die Kollegin",
+                "back": "hamkasb",
+                "tip": "nette Kollegen haben"
+            },
+            {
+                "front": "arbeiten als",
+                "back": "bo'lib ishlamoq",
+                "tip": "als Manager arbeiten"
+            },
+            {
+                "front": "der Schreibtisch (-e)",
+                "back": "yozuv stoli",
+                "tip": "am Schreibtisch arbeiten"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Men shifokorman' (ayol kishi aytganda) qanday to'g'ri bo'ladi?",
+                "options": [
+                    "Ich bin Ärztin.",
+                    "Ich bin eine Ärztin.",
+                    "Ich bin Arzt.",
+                    "Ich arbeite Arzt."
+                ],
+                "answer": 0,
+                "explanation": "Ayol kishi bo'lgani uchun 'Ärztin' va kasb oldidan artikl qo'yilmaydi."
+            },
+            {
+                "q": "Rasmiy suhbatda insonning kasbini so'rash qaysi jumlada to'g'ri berilgan?",
+                "options": [
+                    "Was sind Sie von Beruf?",
+                    "Wer ist dein Beruf?",
+                    "Haben Sie einen Beruf?",
+                    "Was kaufst du im Beruf?"
+                ],
+                "answer": 0,
+                "explanation": "'Was sind Sie von Beruf?' — kasbni so'rashning eng madaniy va rasmiy qolipidir."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "der Beruf",
+                "uz": "kasb"
+            },
+            {
+                "de": "der Lehrer",
+                "uz": "o'qituvchi"
+            },
+            {
+                "de": "die Ärztin",
+                "uz": "shifokor ayol"
+            },
+            {
+                "de": "das Büro",
+                "uz": "ofis"
+            },
+            {
+                "de": "der Kollege",
+                "uz": "hamkasb"
+            },
+            {
+                "de": "der Schreibtisch",
+                "uz": "yozuv stoli"
+            },
+            {
+                "de": "arbeiten",
+                "uz": "ishlamoq"
+            },
+            {
+                "de": "die Arbeit",
+                "uz": "ish / mehnat"
+            }
+        ]
+    },
+    {
+        "id": "a1_18",
+        "number": 18,
+        "title": "Rasmiy anketalar va Imtihon trenaji",
+        "germanTitle": "Formulare ausfüllen & Prüfungstraining A1",
+        "icon": "📝",
+        "description": "Rasmiy blank va anketalarni to'ldirish, shaxsiy ma'lumotlar ustunlari hamda Goethe/telc A1 imtihoniga yakuniy tayyorgarlik.",
+        "theory": {
+            "summary": "Start Deutsch A1 imtihonining yozma qismida (Schreiben Teil 1) anketani to'g'ri to'ldirish va Teil 2 da qisqa rasmiy/norasmiy xat yozish talab etiladi.",
+            "sections": [
+                {
+                    "heading": "1. Nemis anketalari va Blank atamalari (Formulare verstehen)",
+                    "content": "<p>Germaniyada aeroport, mehmonxona, bank yoki til maktabida to'ldiriladigan blanklar:</p><ul><li><strong>der Familienname / Nachname</strong> — Familiya</li><li><strong>der Vorname</strong> — Ism</li><li><strong>das Geburtsdatum</strong> — Tug'ilgan sana (kun.oy.yil)</li><li><strong>der Geburtsort</strong> — Tug'ilgan joy / shahar</li><li><strong>die Staatsangehörigkeit / Nationalität</strong> — Fuqarolik</li><li><strong>der Wohnort / die Stadt</strong> — Yashash shahri</li><li><strong>die Straße und Hausnummer</strong> — Ko'cha va uy raqami</li><li><strong>die Postleitzahl (PLZ)</strong> — Pochta indeksi (5 xonali son)</li><li><strong>die Unterschrift</strong> — Imzo</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Bitte tragen Sie hier Ihren Familiennamen ein.",
+                            "uz": "Iltimos, bu yerga familiyangizni yozing.",
+                            "tip": "eintragen — kiritmoq, yozmoq."
+                        },
+                        {
+                            "de": "Vergessen Sie nicht die Postleitzahl und die Unterschrift.",
+                            "uz": "Pochta indeksi va imzoni unutmang.",
+                            "tip": "die Unterschrift — imzo."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Goethe / telc A1 Imtihon Strategiyasi (Prüfungstipps)",
+                    "content": "<p>A1 imtihoni 4 ta qismdan iborat:</p><ol><li><strong>Hören (Eshitish ~20 daqiqa):</strong> E'lonlar va qisqa dialoglar, har bir topshiriq 2 marta eshittiriladi.</li><li><strong>Lesen (O'qish ~25 daqiqa):</strong> E'lonlar, xatlar va ko'rsatkichlarni tushunish.</li><li><strong>Schreiben (~15 daqiqa):</strong> 5 ta bo'sh katakli anketani to'ldirish va 30 so'zli xat/SMS yozish.</li><li><strong>Sprechen (~15 daqiqa):</strong> O'zini tanishtirish, harflab aytish (Buchstabieren), raqam aytish va kartochkalar bo'yicha savol-javob qilish.</li></ol>",
+                    "examples": [
+                        {
+                            "de": "Können Sie Ihren Namen bitte buchstabieren?",
+                            "uz": "Ismingizni harflab ayta olasizmi?",
+                            "tip": "A1 og'zaki imtihonining majburiy savoli."
+                        },
+                        {
+                            "de": "Wie ist Ihre Telefonnummer?",
+                            "uz": "Telefon raqamingiz qanday?",
+                            "tip": "Raqamlarni aniq va ravon aytish zarur."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "'Familienname' — bu familiyangiz, 'Vorname' esa ismingizdir. Adashtirmang!",
+                "Nemis manzilida dastlab ko'cha nomi, keyin uy raqami yoziladi: 'Hauptstraße 12'.",
+                "Blank ostida doim sana va imzo (Ort, Datum, Unterschrift) qo'yilishi shart."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "das Formular (-e)",
+                "back": "anketa, rasmiy blank",
+                "tip": "ein Formular ausfüllen"
+            },
+            {
+                "front": "der Nachname (-n)",
+                "back": "familiya",
+                "tip": "Familienname"
+            },
+            {
+                "front": "der Vorname (-n)",
+                "back": "ism",
+                "tip": "Ihr Vorname bitte"
+            },
+            {
+                "front": "das Geburtsdatum",
+                "back": "tug'ilgan sana",
+                "tip": "am 15.04.2000 geboren"
+            },
+            {
+                "front": "die Staatsangehörigkeit",
+                "back": "fuqarolik",
+                "tip": "usbekisch"
+            },
+            {
+                "front": "die Postleitzahl (PLZ)",
+                "back": "pochta indeksi",
+                "tip": "5-stellige Nummer"
+            },
+            {
+                "front": "die Unterschrift (-en)",
+                "back": "imzo",
+                "tip": "hier unterschreiben"
+            },
+            {
+                "front": "buchstabieren",
+                "back": "harflab aytmoq",
+                "tip": "Bitte buchstabieren Sie!"
+            }
+        ],
+        "test": [
+            {
+                "q": "Anketadagi 'PLZ' qisqartmasi nimani bildiradi?",
+                "options": [
+                    "Postleitzahl (Pochta indeksi)",
+                    "Personalausweis (Pasport)",
+                    "Platznummer (O'rindiq raqami)",
+                    "Preisliste (Narxlar ro'yxati)"
+                ],
+                "answer": 0,
+                "explanation": "PLZ — 'Postleitzahl' bo'lib, Germaniyada 5 xonali pochta indeksidir."
+            },
+            {
+                "q": "Start Deutsch A1 og'zaki imtihonida ismni so'rashgandan keyin imtihon oluvchi nima deb so'rashi mumkin?",
+                "options": [
+                    "Können Sie das bitte buchstabieren?",
+                    "Können Sie bitte ein Lied singen?",
+                    "Haben Sie ein Auto gekauft?",
+                    "Wo ist Ihr Geld?"
+                ],
+                "answer": 0,
+                "explanation": "Imtihon oluvchi har doim nomzoddan ismini alifbo bo'yicha harflab aytishni (buchstabieren) so'raydi."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "das Formular",
+                "uz": "anketa"
+            },
+            {
+                "de": "der Nachname",
+                "uz": "familiya"
+            },
+            {
+                "de": "der Vorname",
+                "uz": "ism"
+            },
+            {
+                "de": "das Geburtsdatum",
+                "uz": "tug'ilgan sana"
+            },
+            {
+                "de": "die Unterschrift",
+                "uz": "imzo"
+            },
+            {
+                "de": "ausfüllen",
+                "uz": "to'ldirmoq"
+            },
+            {
+                "de": "die Postleitzahl",
+                "uz": "pochta indeksi"
+            },
+            {
+                "de": "buchstabieren",
+                "uz": "harflab aytmoq"
+            }
+        ]
+    }
     ]
 };

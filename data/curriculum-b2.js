@@ -1,7 +1,7 @@
 // ============================================================
 // DEUTSCH AKADEMIYASI — B2 O'QUV DASTURI (CURRICULUM)
 // Daraja: B2 (Mittelstufe Deutsch / Yuqori O'rta)
-// Mavzular soni: 7 ta to'liq modul
+// Mavzular soni: 18 ta to'liq modul
 // ============================================================
 
 window.deutschCurriculum = window.deutschCurriculum || {};
@@ -1670,6 +1670,912 @@ window.deutschCurriculum['B2'] = {
                 { de: "sich integrieren", uz: "jamiyatga qo'shilmoq" },
                 { de: "auf offene Türen stoßen", uz: "iliq kutib olinmoq" }
             ]
-        }
+        },
+{
+        "id": "b2_13",
+        "number": 13,
+        "title": "Nominaluslub va Verbaluslub",
+        "germanTitle": "Nominalstil vs. Verbalstil (Wissenschaftssprache)",
+        "icon": "🔬",
+        "description": "Akademik va ilmiy nemis tilining asosi bo'lgan otlashgan konstruksiyalar (Nominalstil) va fe'lli ergash gaplar (Verbalstil) o'rtasidagi ikki tomonlama transformatsiya.",
+        "theory": {
+            "summary": "Verbalstil odatda jonli nutqda ergash gaplar (weil, wenn, obwohl) orqali ifodalansa, Nominalstil ilmiy matnlar, xabarlar va qonunlarda predlog + ot (wegen, bei, trotz) orqali zich ifodalanadi.",
+            "sections": [
+                {
+                    "heading": "1. Bog'lovchilar va Predloglar Transformatsiyasi",
+                    "content": "<p>Verbal gaplarni Nominal birikmaga aylantirish jadvali:</p><table style=\"width:100%; border-collapse:collapse; margin:10px 0;\"><thead><tr style=\"background:rgba(255,255,255,0.08); text-align:left;\"><th style=\"padding:8px;\">Ma'no</th><th style=\"padding:8px;\">Verbalstil (Ergash gap)</th><th style=\"padding:8px;\">Nominalstil (Predlog + Genitiv/Dativ)</th></tr></thead><tbody><tr><td style=\"padding:8px;\">Sabab</td><td style=\"padding:8px;\"><strong>weil / da</strong> es regnet</td><td style=\"padding:8px;\"><strong>wegen des Regens</strong></td></tr><tr><td style=\"padding:8px;\">Shart</td><td style=\"padding:8px;\"><strong>wenn / falls</strong> die Temperatur steigt</td><td style=\"padding:8px;\"><strong>bei steigender Temperatur</strong></td></tr><tr><td style=\"padding:8px;\">Zidlik</td><td style=\"padding:8px;\"><strong>obwohl</strong> er krank ist</td><td style=\"padding:8px;\"><strong>trotz seiner Krankheit</strong></td></tr><tr><td style=\"padding:8px;\">Vaqt</td><td style=\"padding:8px;\"><strong>während</strong> wir diskutierten</td><td style=\"padding:8px;\"><strong>während unserer Diskussion</strong></td></tr><tr><td style=\"padding:8px;\">Maqsad</td><td style=\"padding:8px;\"><strong>damit</strong> man das Ziel erreicht</td><td style=\"padding:8px;\"><strong>zur Erreichung des Ziels</strong></td></tr></tbody></table>",
+                    "examples": [
+                        {
+                            "de": "Verbal: Weil die Preise drastisch steigen, sparen die Bürger mehr.",
+                            "uz": "Verbal: Narxlar keskin oshgani sababli fuqarolar ko'proq tejashmoqda.",
+                            "tip": "weil + fe'l oxirida."
+                        },
+                        {
+                            "de": "Nominal: Wegen des drastischen Preisanstiegs sparen die Bürger mehr.",
+                            "uz": "Nominal: Narxlarning keskin oshishi tufayli fuqarolar ko'proq tejashmoqda.",
+                            "tip": "wegen + Genitiv ot (Preisanstieg)."
+                        },
+                        {
+                            "de": "Bei genauer Betrachtung der Daten erkennt man die Tendenz.",
+                            "uz": "Ma'lumotlar sinchiklab o'rganilganda ushbu tendensiya ko'rinadi.",
+                            "tip": "bei + Dativ ot (wenn man die Daten genau betrachtet o'rniga)."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Fe'llarni Otga Aylantirish (Nominalisierung)",
+                    "content": "<p>Fe'llardan ot yasash qo'shimchalari: <strong>-ung</strong> (untersuchen &rarr; die Untersuchung), <strong>-t</strong> (anreisen &rarr; die Ankunft), <strong>-e</strong> (fragen &rarr; die Frage), <strong>substantivierter Infinitiv</strong> (lesen &rarr; das Lesen).</p><p>Ilmiy matnlarda Nominalstil ma'lumotni nihoyatda qisqa va zich berish imkonini yaratadi.</p>",
+                    "examples": [
+                        {
+                            "de": "Vor Beginn der Vorlesung schalten alle Telefone aus.",
+                            "uz": "Ma'ruza boshlanishidan oldin barcha telefonlar o'chiriladi.",
+                            "tip": "Bevor die Vorlesung beginnt o'rniga Vor Beginn."
+                        },
+                        {
+                            "de": "Durch den Einsatz moderner Technologien wird Zeit gespart.",
+                            "uz": "Zamonaviy texnologiyalarni qo'llash orqali vaqt tejaladi.",
+                            "tip": "durch + Akkusativ ot."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Verbalstil fe'l va bog'lovchiga tayanadi (weil, wenn, obwohl), Nominalstil esa predlog va otga tayanadi (wegen, bei, trotz).",
+                "wegen, trotz, während, anlässlich, statt predloglari qat'iy Genitiv talab qiladi.",
+                "B2/C1 imtihonlarida matnni qayta tuzish (Textumformung) talab qilinganda ushbu qoidalar eng ko'p ball olib keladi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "der Nominalstil",
+                "back": "otli uslub (ilmiy va rasmiy)",
+                "tip": "wegen des Regens"
+            },
+            {
+                "front": "der Verbalstil",
+                "back": "fe'lli uslub (kundalik va jonli)",
+                "tip": "weil es regnet"
+            },
+            {
+                "front": "wegen (+ Genitiv)",
+                "back": "tufayli, sababli (weil o'rniga)",
+                "tip": "wegen der Krise"
+            },
+            {
+                "front": "trotz (+ Genitiv)",
+                "back": "qaramasdan (obwohl o'rniga)",
+                "tip": "trotz des Regens"
+            },
+            {
+                "front": "bei (+ Dativ)",
+                "back": "...gan paytda, ...da (wenn o'rniga)",
+                "tip": "bei der Ankunft"
+            },
+            {
+                "front": "nach (+ Dativ)",
+                "back": "...gandan so'ng (nachdem o'rniga)",
+                "tip": "nach Abschluss des Studiums"
+            },
+            {
+                "front": "zwecks (+ Genitiv)",
+                "back": "maqsadida (damit o'rniga)",
+                "tip": "zwecks Optimierung"
+            },
+            {
+                "front": "die Umformung (-en)",
+                "back": "gapni qayta o'zgartirish, transformatsiya",
+                "tip": "Verbal in Nominal"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Obwohl das Wetter schlecht war, machten wir den Ausflug.' gapining to'g'ri Nominalstil shakli qaysi?",
+                "options": [
+                    "Trotz des schlechten Wetters machten wir den Ausflug.",
+                    "Wegen des schlechten Wetters machten wir den Ausflug.",
+                    "Bei schlechtem Wetter machten wir den Ausflug.",
+                    "Statt des schlechten Wetters machten wir den Ausflug."
+                ],
+                "answer": 0,
+                "explanation": "'obwohl' zidlik bog'lovchisining nominal ekvivalenti 'trotz + Genitiv' hisoblanadi."
+            },
+            {
+                "q": "'Bevor der Zug abfährt,...' birikmasining nominal shaklini toping:",
+                "options": [
+                    "Vor der Abfahrt des Zuges,...",
+                    "Nach der Abfahrt des Zuges,...",
+                    "Bei der Abfahrt des Zuges,...",
+                    "Wegen der Abfahrt des Zuges,..."
+                ],
+                "answer": 0,
+                "explanation": "'bevor' (oldin) bog'lovchisi 'vor + Dativ' predlogiga aylanadi: Vor der Abfahrt."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "weil (verbal)",
+                "uz": "wegen (nominal)"
+            },
+            {
+                "de": "obwohl (verbal)",
+                "uz": "trotz (nominal)"
+            },
+            {
+                "de": "wenn (verbal)",
+                "uz": "bei (nominal)"
+            },
+            {
+                "de": "nachdem (verbal)",
+                "uz": "nach (nominal)"
+            },
+            {
+                "de": "bevor (verbal)",
+                "uz": "vor (nominal)"
+            },
+            {
+                "de": "damit (verbal)",
+                "uz": "zu / zwecks (nominal)"
+            },
+            {
+                "de": "der Anstieg",
+                "uz": "o'sish / ko'tarilish"
+            },
+            {
+                "de": "der Rückgang",
+                "uz": "pasayish / kamayish"
+            }
+        ]
+    },
+    {
+        "id": "b2_14",
+        "number": 14,
+        "title": "Subyektiv modal fe'llar: Ehtimollik va Gumon",
+        "germanTitle": "Subjektive Modalverben (Vermutung & Distanzierung)",
+        "icon": "🕵️",
+        "description": "Modal fe'llarning subyektiv ma'noda (ishonch, ehtimollik, taxmin, mish-mish va da'vo) hozirgi va o'tgan zamonda qo'llanishi.",
+        "theory": {
+            "summary": "Obyektiv modal fe'llar qobiliyat yoki majburiyatni bildirsa (Er kann schwimmen), subyektiv modal fe'llar so'zlovchining ishonch darajasini yoki mish-mishni bildiradi (Er dürfte krank sein).",
+            "sections": [
+                {
+                    "heading": "1. Ishonch va Ehtimollik Darajalari (Vermutungsgrade)",
+                    "content": "<p>Nemis tilida taxmin va gumon darajasi quyidagi modal fe'llar orqali ifodalanadi:</p><table style=\"width:100%; border-collapse:collapse; margin:10px 0;\"><thead><tr style=\"background:rgba(255,255,255,0.08); text-align:left;\"><th style=\"padding:8px;\">Ishonch %</th><th style=\"padding:8px;\">Modal fe'l</th><th style=\"padding:8px;\">Misol va Ma'nosi</th></tr></thead><tbody><tr><td style=\"padding:8px;\"><strong>100%</strong></td><td style=\"padding:8px;\"><strong>müssen</strong></td><td style=\"padding:8px;\">Er <strong>muss</strong> zu Hause sein. (U aniq uyda, shubhasiz.)</td></tr><tr><td style=\"padding:8px;\"><strong>80%</strong></td><td style=\"padding:8px;\"><strong>müsste / dürfte</strong></td><td style=\"padding:8px;\">Sie <strong>dürfte</strong> die Prüfung bestanden haben. (U ehtimol imtihondan o'tgan bo'lsa kerak.)</td></tr><tr><td style=\"padding:8px;\"><strong>50%</strong></td><td style=\"padding:8px;\"><strong>könnte</strong></td><td style=\"padding:8px;\">Das <strong>könnte</strong> stimmen. (Bu to'g'ri bo'lishi mumkin.)</td></tr><tr><td style=\"padding:8px;\"><strong>0% (Inkor)</strong></td><td style=\"padding:8px;\"><strong>kann nicht</strong></td><td style=\"padding:8px;\">Das <strong>kann nicht</strong> wahr sein! (Bu haqiqat bo'lishi mutlaqo mumkin emas!)</td></tr></tbody></table>",
+                    "examples": [
+                        {
+                            "de": "Das Licht brennt. Er muss im Büro sein.",
+                            "uz": "Chiroq yoniq. U aniq ofisda bo'lsa kerak.",
+                            "tip": "müssen = 99% mantiqiy xulosa."
+                        },
+                        {
+                            "de": "Er müsste jeden Moment eintreffen.",
+                            "uz": "U har daqiqada yetib kelishi kutilmoqda.",
+                            "tip": "müsste = yuqori ehtimol."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Mish-mish va O'zgalar Da'vosi: sollen va wollen",
+                    "content": "<p>Juda muhim ikki subyektiv modal fe'l:</p><ul><li><strong>sollen</strong> (mish-mish / eshitishimcha): <em>Der Minister soll zurücktreten.</em> (Eshitishimizga ko'ra, vazir iste'foga chiqar emish — manba noma'lum).</li><li><strong>wollen</strong> (o'zini ... deb da'vo qilmoq, lekin boshqalar ishonmaydi): <em>Er will ein Millionär sein.</em> (U o'zini millioner deb da'vo qilmoqda, ammo biz shubhalanamiz).</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Er will den Zeugen nicht gesehen haben.",
+                            "uz": "U guvohni ko'rmaganligini da'vo qilmoqda.",
+                            "tip": "wollen + Partizip II + haben (o'tgan zamondagi subyektiv da'vo)."
+                        },
+                        {
+                            "de": "Das Medikament soll sehr wirksam sein.",
+                            "uz": "Bu dori juda ta'sirli emish (boshqalar aytishicha).",
+                            "tip": "sollen = mish-mish."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "O'tgan zamondagi subyektiv taxmin formulasi: Modal fe'l + Partizip II + haben / sein: 'Er muss das gewusst haben'.",
+                "'sollen' birovdan eshitilgan xabar/mish-mishni bildiradi (Man sagt, dass...).",
+                "'wollen' shaxsning o'zini da'vo qilishini, lekin bu shubhali ekanligini ifodalaydi (Er behauptet, dass...)."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "subjektive Modalverben",
+                "back": "subyektiv modal fe'llar",
+                "tip": "taxmin va gumon ifodasi"
+            },
+            {
+                "front": "muss sein (100%)",
+                "back": "aniq shunday bo'lsa kerak",
+                "tip": "absolut sicher"
+            },
+            {
+                "front": "dürfte sein (80%)",
+                "back": "katta ehtimol bilan shunday",
+                "tip": "sehr wahrscheinlich"
+            },
+            {
+                "front": "könnte sein (50%)",
+                "back": "bo'lishi mumkin (ehtimol)",
+                "tip": "möglich"
+            },
+            {
+                "front": "kann nicht sein (0%)",
+                "back": "bo'lishi mumkin emas",
+                "tip": "unmöglich"
+            },
+            {
+                "front": "soll sein",
+                "back": "emish (mish-mishlarga ko'ra)",
+                "tip": "man sagt, dass..."
+            },
+            {
+                "front": "will sein",
+                "back": "o'zini shunday deb da'vo qilmoqda",
+                "tip": "er behauptet von sich"
+            },
+            {
+                "front": "muss gemacht haben",
+                "back": "aniq qilgan bo'lsa kerak (o'tmish)",
+                "tip": "Perfekt Infinitiv"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Matbuotning yozishicha, ushbu kompaniya bankrot bo'lar emish.' Qaysi modal fe'l to'g'ri keladi?",
+                "options": [
+                    "Die Firma soll pleite sein.",
+                    "Die Firma will pleite sein.",
+                    "Die Firma muss pleite sein.",
+                    "Die Firma darf pleite sein."
+                ],
+                "answer": 0,
+                "explanation": "Boshqalar tomonidan tarqatilgan xabar yoki mish-mish uchun 'sollen' fe'li ishlatiladi."
+            },
+            {
+                "q": "'U kalitini uyda qoldirib ketgan bo'lsa kerak (99% ishonch bilan xulosa).' gapini tanlang:",
+                "options": [
+                    "Er muss den Schlüssel zu Hause vergessen haben.",
+                    "Er kann den Schlüssel zu Hause vergessen haben.",
+                    "Er will den Schlüssel zu Hause vergessen haben.",
+                    "Er soll den Schlüssel zu Hause vergessen haben."
+                ],
+                "answer": 0,
+                "explanation": "To'liq mantiqiy ishonch 'müssen' va o'tgan zamon infinitivi 'vergessen haben' orqali beriladi."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "muss sein",
+                "uz": "aniq shunday"
+            },
+            {
+                "de": "dürfte sein",
+                "uz": "katta ehtimol bilan"
+            },
+            {
+                "de": "könnte sein",
+                "uz": "bo'lishi mumkin"
+            },
+            {
+                "de": "kann nicht sein",
+                "uz": "mutlaqo mumkin emas"
+            },
+            {
+                "de": "soll sein",
+                "uz": "...emish (eshitishimcha)"
+            },
+            {
+                "de": "will sein",
+                "uz": "da'vo qilmoqda"
+            },
+            {
+                "de": "die Vermutung",
+                "uz": "taxmin / faraz"
+            },
+            {
+                "de": "die Behauptung",
+                "uz": "da'vo / tasdiq"
+            }
+        ]
+    },
+    {
+        "id": "b2_15",
+        "number": 15,
+        "title": "Kengaytirilgan sifatdosh konstruksiyalari",
+        "germanTitle": "Erweiterte Partizipialattribute & Partizipialgruppen",
+        "icon": "🧩",
+        "description": "Ilmiy maqola va jiddiy matbuotda qo'llaniladigan uzun, kengaytirilgan sifatdoshli birikmalarni tushunish, ularni nisbiy gaplarga (Relativsatz) aylantirish va aksincha.",
+        "theory": {
+            "summary": "Artikl va ot o'rtasida bir necha to'ldiruvchi va sifatdosh joylashgan konstruksiya 'kengaytirilgan sifatdosh' (erweitertes Partizipialattribut) deyiladi. Masalan: die [von Experten intensiv diskutierten] Reformen.",
+            "sections": [
+                {
+                    "heading": "1. Kengaytirilgan Sifatdosh Tuzilishi (Klammerstruktur)",
+                    "content": "<p>Nemis tilida sifatdosh o'ziga tobe bo'lgan so'zlarni ergashtirib, ot oldida kelishi mumkin:</p><p style=\"background:rgba(255,255,255,0.05); padding:10px; border-left:4px solid #2dd4bf;\"><strong>die</strong> [vom Parlament gestern beschlossenen] <strong>Gesetze</strong><br><em>(Parlament tomonidan kecha qabul qilingan qonunlar)</em></p><p>Ushbu birikmani tushunish uchun avval qavs ichidagi to'ldiruvchilarni ochib, oddiy nisbiy gapga (Relativsatz) aylantirish usuli o'rganiladi:</p><ul><li>&rarr; <em>die Gesetze, die gestern vom Parlament beschlossen wurden.</em></li></ul>",
+                    "examples": [
+                        {
+                            "de": "Die in vielen Ländern dramatisch ansteigende Inflation beunruhigt die Bürger.",
+                            "uz": "Ko'plab mamlakatlarda dramatik tarzda o'sayotgan inflyatsiya fuqarolarni tashvishga solmoqda.",
+                            "tip": "Partizip I asosidagi kengaytma: ansteigende."
+                        },
+                        {
+                            "de": "Das seit Jahren leer stehende Gebäude wird abgerissen.",
+                            "uz": "Yillardan buyon bo'sh turgan bino buzib tashlanadi.",
+                            "tip": "leer stehende -> das seit Jahren leer steht."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Kengaytirilgan Sifatdoshlarni Nisbiy Gapga Aylantirish Qoidasi",
+                    "content": "<p>Transformatsiya qadamlari:</p><ol><li>Artikl va otni toping: <strong>das</strong> ... <strong>Auto</strong></li><li>Partizip shaklini aniqlang: <em>reparierte</em> (Partizip II = Passiv / Perfekt) yoki <em>fahrende</em> (Partizip I = Aktiv Präsens).</li><li>Nisbiy olmosh (das) bilan boshlanadigan ergash gap yasang:<br><em>das vor kurzem von der Werkstatt reparierte Auto</em> &rarr;<br><em>das Auto, das vor kurzem von der Werkstatt repariert wurde.</em></li></ol>",
+                    "examples": [
+                        {
+                            "de": "Alle an der Konferenz teilnehmenden Wissenschaftler erhielten Unterlagen.",
+                            "uz": "Konferensiyada qatnashayotgan barcha olimlar materiallarni qabul qilib olishdi.",
+                            "tip": "= die Wissenschaftler, die an der Konferenz teilnahmen."
+                        },
+                        {
+                            "de": "Die von den Studenten verfassten Berichte waren hervorragend.",
+                            "uz": "Talabalar tomonidan yozilgan hisobotlar a'lo darajada edi.",
+                            "tip": "= die Berichte, die von den Studenten verfasst wurden."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Qavs ochilishida artikl (der/die/das), qavs yopilishida esa sifatdosh + ot turadi.",
+                "Partizip I kengaytmasi Aktiv ma'noda hozirgi zamon nisbiy gapiga aylanadi (teilnehmende &rarr; die teilnehmen).",
+                "Partizip II kengaytmasi esa Passiv nisbiy gapiga aylanadi (beschlossene &rarr; die beschlossen wurden)."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "das Partizipialattribut",
+                "back": "kengaytirilgan sifatdosh aniqlovchi",
+                "tip": "artikl va ot o'rtasida"
+            },
+            {
+                "front": "die Klammerstruktur",
+                "back": "qavssimon struktura (nemis grammatikasida)",
+                "tip": "artikl ... sifatdosh + ot"
+            },
+            {
+                "front": "beschlossen &rarr; die beschlossenen Gesetze",
+                "back": "qabul qilingan qonunlar",
+                "tip": "Partizip II kengaytmasi"
+            },
+            {
+                "front": "ansteigend &rarr; die ansteigenden Kosten",
+                "back": "o'sib borayotgan xarajatlar",
+                "tip": "Partizip I kengaytmasi"
+            },
+            {
+                "front": "die Auflösung in einen Relativsatz",
+                "back": "nisbiy gapga aylantirib yechish",
+                "tip": "B2/C1 imtihon topshirig'i"
+            },
+            {
+                "front": "verfassen",
+                "back": "yozmoq, qoralama tuzmoq",
+                "tip": "einen Text verfassen"
+            },
+            {
+                "front": "die Veröffentlichung (-en)",
+                "back": "nashr, chop etish",
+                "tip": "eine wissenschaftliche Veröffentlichung"
+            },
+            {
+                "front": "hervorragend",
+                "back": "ajoyib, a'lo darajadagi",
+                "tip": "eine hervorragende Leistung"
+            }
+        ],
+        "test": [
+            {
+                "q": "'das von den Schülern gelesene Buch' birikmasining nisbiy gapga aylantirilgan to'g'ri shakli qaysi?",
+                "options": [
+                    "das Buch, das von den Schülern gelesen wurde",
+                    "das Buch, das die Schüler gelesen werden",
+                    "das Buch, das von den Schülern lesen wird",
+                    "das Buch, das die Schüler lesend war"
+                ],
+                "answer": 0,
+                "explanation": "Partizip II (gelesene) Passiv ma'nosini bergani uchun: 'das Buch, das von den Schülern gelesen wurde'."
+            },
+            {
+                "q": "'die an dem Projekt arbeitenden Forscher' birikmasidagi 'arbeitenden' qaysi zamon va ma'noda?",
+                "options": [
+                    "Partizip I (Aktiv, ayni paytda ishlayotgan)",
+                    "Partizip II (Passiv, ishlatilgan)",
+                    "Infinitiv",
+                    "Konjunktiv II"
+                ],
+                "answer": 0,
+                "explanation": "-end qo'shimchasi bilan Partizip I yasalgan bo'lib, loyihada ishlayotgan faol tadqiqotchilarni bildiradi."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "das reparierte Auto",
+                "uz": "ta'mirlangan mashina"
+            },
+            {
+                "de": "das fahrende Auto",
+                "uz": "harakatlanayotgan mashina"
+            },
+            {
+                "de": "die beschlossenen Reformen",
+                "uz": "qabul qilingan islohotlar"
+            },
+            {
+                "de": "die steigenden Preise",
+                "uz": "o'sayotgan narxlar"
+            },
+            {
+                "de": "verfassen",
+                "uz": "matn yozmoq"
+            },
+            {
+                "de": "die Veröffentlichung",
+                "uz": "chop etilgan maqola"
+            },
+            {
+                "de": "hervorragend",
+                "uz": "a'lo darajada"
+            },
+            {
+                "de": "die Klammerstruktur",
+                "uz": "ramkali tuzilma"
+            }
+        ]
+    },
+    {
+        "id": "b2_16",
+        "number": 16,
+        "title": "Matn tuzilishi, Kogerensiya va Mantiqiy bog'lovchilar",
+        "germanTitle": "Textkohärenz, Konnektoren & Satzverknüpfung im Diskurs",
+        "icon": "🧱",
+        "description": "B2 darajasida insho (Stellungnahme / Erörterung) yozishda abzatslar va fikrlarni mantiqiy bog'lash, dalillar zanjirini qurish vositalari.",
+        "theory": {
+            "summary": "Mustaqil va savodli B2 darajasida yozish uchun oddiy 'und, aber, weil' so'zlaridan tashqariga chiqib, ravish-bog'lovchilar (Adverbkonnektoren) va dalil vositalaridan erkin foydalanish lozim.",
+            "sections": [
+                {
+                    "heading": "1. Bog'lovchi Ravishlar (Konnektoren mit Inversion)",
+                    "content": "<p>Ushbu vositalar yangi gap boshida kelganda darhol <strong>inversiya</strong> yuz beradi (fe'l 2-o'ringa, ega esa 3-o'ringa suriladi):</p><table style=\"width:100%; border-collapse:collapse; margin:10px 0;\"><thead><tr style=\"background:rgba(255,255,255,0.08); text-align:left;\"><th style=\"padding:8px;\">Funksiyasi</th><th style=\"padding:8px;\">Konnektorlar</th><th style=\"padding:8px;\">Misol</th></tr></thead><tbody><tr><td style=\"padding:8px;\">Zidlik</td><td style=\"padding:8px;\"><strong>dennoch, jedoch, allerdings, stattdessen</strong></td><td style=\"padding:8px;\">Es regnete stark. <strong>Dennoch</strong> gingen wir spazieren.</td></tr><tr><td style=\"padding:8px;\">Natija / Xulosa</td><td style=\"padding:8px;\"><strong>infolgedessen, demzufolge, folglich</strong></td><td style=\"padding:8px;\">Er verpasste den Flug. <strong>Folglich</strong> musste er umbuchen.</td></tr><tr><td style=\"padding:8px;\">Qo'shimcha dalil</td><td style=\"padding:8px;\"><strong>darüber hinaus, außerdem, ferner</strong></td><td style=\"padding:8px;\"><strong>Darüber hinaus</strong> spielen finanzielle Aspekte eine Rolle.</td></tr><tr><td style=\"padding:8px;\">Shart</td><td style=\"padding:8px;\"><strong>andernfalls, sonst</strong></td><td style=\"padding:8px;\">Beeil dich, <strong>andernfalls</strong> verpassen wir den Bus.</td></tr></tbody></table>",
+                    "examples": [
+                        {
+                            "de": "Das Projekt war sehr anspruchsvoll. Dennoch konnten wir es rechtzeitig fertigstellen.",
+                            "uz": "Loyiha juda murakkab edi. Shunga qaramasdan biz uni o'z vaqtida yakunladik.",
+                            "tip": "dennoch + fe'l (konnten) + ega (wir)."
+                        },
+                        {
+                            "de": "Die Kosten stiegen unerwartet. Infolgedessen musste das Budget gekürzt werden.",
+                            "uz": "Xarajatlar kutilmaganda oshdi. Oqibatda budjet qisqartirilishi kerak bo'ldi.",
+                            "tip": "infolgedessen = buning oqibatida."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Argumentatsiya Qoliplari (Stellungnahme / Erörterung)",
+                    "content": "<p>B2 inshosida o'z fikrini himoya qilish qoliplari:</p><ul><li><strong>Einerseits ..., andererseits ...</strong> — Bir tomondan ..., boshqa tomondan esa ...</li><li><strong>Es steht außer Zweifel, dass...</strong> — ...ekanligiga hech qanday shubha yo'qki...</li><li><strong>Dagegen spricht, dass...</strong> — Bunga qarshi dalil shuki...</li><li><strong>Abschließend lässt sich sagen, dass...</strong> — Xulosa qilib aytganda...</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Einerseits bietet die Digitalisierung Chancen, andererseits birgt sie Risiken.",
+                            "uz": "Bir tomondan raqamlashtirish imkoniyatlar yaratsa, ikkinchi tomondan xavf-xatarlar tug'diradi.",
+                            "tip": "Klassik muvozanatli argument."
+                        },
+                        {
+                            "de": "Es ist unbestritten, dass der Klimawandel ein globales Problem darstellt.",
+                            "uz": "Iqlim o'zgarishi global muammo ekanligi shubhasiz haqiqatdir.",
+                            "tip": "es ist unbestritten = bahssiz."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "dennoch, folglich, darüber hinaus kabi konnektorlardan keyin fe'l ikkinchi o'rinda keladi (inversiya).",
+                "Faqat 0-pozitsiyadagi bog'lovchilarda (und, aber, denn, oder, sondern — ADUSO) tartib o'zgarmaydi.",
+                "Inshoda har bir yangi argument yangi abzatsdan va maxsus konnektor bilan boshlanishi matn kogerensiyasini ta'minlaydi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "dennoch / jedoch",
+                "back": "shunga qaramasdan, ammo",
+                "tip": "fe'l darhol keladi"
+            },
+            {
+                "front": "folglich / infolgedessen",
+                "back": "natijada, oqibatda",
+                "tip": "Kausalfolge"
+            },
+            {
+                "front": "darüber hinaus",
+                "back": "bundan tashqari, qolaversa",
+                "tip": "Zusatzargument"
+            },
+            {
+                "front": "andernfalls / sonst",
+                "back": "aks holda, aks taqdirda",
+                "tip": "Konditionaladverb"
+            },
+            {
+                "front": "einerseits ..., andererseits ...",
+                "back": "bir tomondan ..., ikkinchi tomondan ...",
+                "tip": "juft bog'lovchi"
+            },
+            {
+                "front": "es steht außer Zweifel",
+                "back": "shubhasizki, shubha yo'q",
+                "tip": "kuchli dalil"
+            },
+            {
+                "front": "die Argumentation (-en)",
+                "back": "dalillash, bahs yuritish",
+                "tip": "eine Argumentation aufbauen"
+            },
+            {
+                "front": "die Textkohärenz",
+                "back": "matnning mantiqiy yaxlitligi",
+                "tip": "rotiq bog'lanish"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Wir müssen jetzt sofort losfahren, ___ verpassen wir unseren Flug.' Bo'sh joyga qaysi so'z mos?",
+                "options": [
+                    "andernfalls",
+                    "weil",
+                    "obwohl",
+                    "denn"
+                ],
+                "answer": 0,
+                "explanation": "'andernfalls' (aks holda) so'zidan keyin inversiya bo'ladi va shart-oqibatni bog'laydi."
+            },
+            {
+                "q": "Quyidagi qaysi bog'lovchidan keyin fe'l ikkinchi o'ringa suriladi (inversiya yuz beradi)?",
+                "options": [
+                    "Darüber hinaus",
+                    "Und",
+                    "Aber",
+                    "Sondern"
+                ],
+                "answer": 0,
+                "explanation": "'Darüber hinaus' ravish-bog'lovchi bo'lib, o'zidan keyin darhol fe'lni talab qiladi (1-o'rinda turadi)."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "dennoch",
+                "uz": "shunga qaramay"
+            },
+            {
+                "de": "folglich",
+                "uz": "oqibatda"
+            },
+            {
+                "de": "darüber hinaus",
+                "uz": "bundan tashqari"
+            },
+            {
+                "de": "andernfalls",
+                "uz": "aks holda"
+            },
+            {
+                "de": "einerseits",
+                "uz": "bir tomondan"
+            },
+            {
+                "de": "andererseits",
+                "uz": "ikkinchi tomondan"
+            },
+            {
+                "de": "zweifellos",
+                "uz": "shubhasiz"
+            },
+            {
+                "de": "die Kohärenz",
+                "uz": "mantiqiy yaxlitlik"
+            }
+        ]
+    },
+    {
+        "id": "b2_17",
+        "number": 17,
+        "title": "Iqtisodiyot nemis tili va Grafiklarni tasvirlash",
+        "germanTitle": "Wirtschaftsdeutsch & Grafikbeschreibung",
+        "icon": "📊",
+        "description": "B2/TestDaF imtihonlarining majburiy qismi: diagramma, grafik va jadvallarni nemis tilida professional tahlil qilish, o'sish va pasayish dinamikasini tasvirlash.",
+        "theory": {
+            "summary": "Grafiklarni tasvirlash (Grafikbeschreibung) B2 yozma imtihonlarida eng ko'p uchraydigan vazifalardan biridir. Bu yerda aniq iqtisodiy leksika va tendensiya fe'llari talab etiladi.",
+            "sections": [
+                {
+                    "heading": "1. Grafik Tavsifi Strukturasi va Kirish Iboralari",
+                    "content": "<p>Grafik tahlili 4 ta asosiy qismdan tashkil topadi:</p><ol><li><strong>Grafik manbasi va mavzusi:</strong><br>• <em>Die vorliegende Grafik gibt Auskunft über...</em> (Ushbu grafik ... haqida ma'lumot beradi.)<br>• <em>Die Daten stammen vom Statistischen Bundesamt aus dem Jahr...</em> (Ma'lumotlar Statistika idorasidan olingan.)<br>• <em>Die Angaben erfolgen in Prozent / absoluten Zahlen.</em> (Ko'rsatkichlar foizda / mutlaq sonlarda keltirilgan.)</li><li><strong>Eng yuqori va eng past ko'rsatkichlar:</strong><br>• <em>An erster Stelle steht...</em> (Birinchi o'rinda ... turibdi.)<br>• <em>Den letzten Platz belegt...</em> (Oxirgi o'rinni ... egallagan.)</li><li><strong>Taqqoslash va O'zgarishlar (Tendensiyalar):</strong><br>• Dinamika fe'llari (ansteigen, sinken, stagnieren).</li><li><strong>Xulosa va Izoh:</strong><br>• <em>Zusammenfassend lässt sich feststellen, dass...</em></li></ol>",
+                    "examples": [
+                        {
+                            "de": "Die Grafik mit dem Titel 'Energieverbrauch' stammt aus dem Jahr 2024.",
+                            "uz": "'Energiya iste'moli' nomli grafik 2024-yilga tegishli.",
+                            "tip": "Grafik kirish qismi."
+                        },
+                        {
+                            "de": "Mit einem Anteil von fast 40 Prozent liegt Deutschland an der Spitze.",
+                            "uz": "Deyarli 40 foizlik ulush bilan Germaniya yetakchilik qilmoqda.",
+                            "tip": "an der Spitze liegen = yetakchi bo'lmoq."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Dinamika va O'zgarish Fe'llari (Verben der Veränderung)",
+                    "content": "<p>Grafikdagi chiziqlar va ustunlar harakatini ifodalovchi asosiy fe'llar:</p><ul><li><strong>O'sish:</strong> <em>steigen, ansteigen, wachsen, sich erhöhen, zunehmen</em><br>&rarr; Die Zahl der Erwerbstätigen ist kontinuierlich gestiegen.</li><li><strong>Pasayish:</strong> <em>sinken, abnehmen, fallen, zurückgehen, schrumpfen</em><br>&rarr; Der Absatz ging um 15 Prozent zurück.</li><li><strong>Turg'unlik (O'zgarishsiz qolish):</strong> <em>stagnieren, unverändert bleiben</em><br>&rarr; Die Preise sind auf hohem Niveau stagniert.</li><li><strong>Cho'qqiga chiqish:</strong> <em>einen Höchststand erreichen</em> (cho'qqiga erishmoq)</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Im Vergleich zum Vorjahr verzeichnete der Markt einen Zuwachs von 5%.",
+                            "uz": "O'tgan yilga nisbatan bozor 5 foizlik o'sishni qayd etdi.",
+                            "tip": "einen Zuwachs verzeichnen."
+                        },
+                        {
+                            "de": "Die Arbeitslosenquote ging drastisch zurück.",
+                            "uz": "Ishsizlik darajasi keskin pasaydi.",
+                            "tip": "zurückgehen = kamaymoq, pasaymoq."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Grafik manbasi va birligini (Prozent, Euro, Tonnen) ko'rsatish shart.",
+                "Farqlarni aytganda: 'um 5 Prozent gestiegen' (5 foizga oshdi) vs 'auf 80 Prozent gestiegen' (80 foizgacha yetdi). 'um' va 'auf' farqi juda muhim!",
+                "Grafik tasvirlashda faqat raqamlarni sanash emas, balki eng asosiy tendensiyalarni guruhlab xulosa chiqarish baholanadi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "die Grafikbeschreibung",
+                "back": "grafik va diagramma tavsifi",
+                "tip": "B2/TestDaF imtihoni"
+            },
+            {
+                "front": "ansteigen / zunehmen",
+                "back": "o'smoq, ko'paymoq",
+                "tip": "ist gestiegen"
+            },
+            {
+                "front": "sinken / zurückgehen",
+                "back": "kamaymoq, pasaymoq",
+                "tip": "ist gesunken"
+            },
+            {
+                "front": "stagnieren",
+                "back": "o'zgarmay turg'un qolmoq",
+                "tip": "hat stagniert"
+            },
+            {
+                "front": "an erster Stelle stehen",
+                "back": "birinchi o'rinda turmoq",
+                "tip": "Spitzenreiter sein"
+            },
+            {
+                "front": "den letzten Platz belegen",
+                "back": "oxirgi o'rinni egallamoq",
+                "tip": "Schlusslicht sein"
+            },
+            {
+                "front": "der Höchststand (-e)",
+                "back": "eng yuqori cho'qqi, rekord ko'rsatkich",
+                "tip": "den Höchststand erreichen"
+            },
+            {
+                "front": "im Vergleich zu (+ Dat)",
+                "back": "...ga taqqoslaganda",
+                "tip": "im Vergleich zum Vorjahr"
+            }
+        ],
+        "test": [
+            {
+                "q": "Narx 100 yevrodan 120 yevroga ko'tarilganida qaysi predlog qo'llaniladi: 'Der Preis ist ___ 20 Euro gestiegen'?",
+                "options": [
+                    "um",
+                    "auf",
+                    "in",
+                    "an"
+                ],
+                "answer": 0,
+                "explanation": "O'zgarish farqi (qanchaga oshgani) 'um' predlogi bilan ifodalanadi: um 20 Euro gestiegen."
+            },
+            {
+                "q": "Grafik tasvirida 'Germaniya yetakchi o'rinda turibdi' iborasi qaysi?",
+                "options": [
+                    "Deutschland liegt an der Spitze.",
+                    "Deutschland liegt am Ende.",
+                    "Deutschland hat keine Zahlen.",
+                    "Deutschland sinkt ab."
+                ],
+                "answer": 0,
+                "explanation": "'an der Spitze liegen' yoki 'an erster Stelle stehen' — birinchi, yetakchi o'rinda turish deganidir."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "ansteigen",
+                "uz": "o'smoq"
+            },
+            {
+                "de": "sinken",
+                "uz": "pasaymoq"
+            },
+            {
+                "de": "stagnieren",
+                "uz": "turg'un qolmoq"
+            },
+            {
+                "de": "die Spitze",
+                "uz": "cho'qqi / yetakchilik"
+            },
+            {
+                "de": "der Anteil",
+                "uz": "ulush / foiz"
+            },
+            {
+                "de": "die Quelle",
+                "uz": "manba"
+            },
+            {
+                "de": "der Zuwachs",
+                "uz": "o'sish sur'ati"
+            },
+            {
+                "de": "der Rückgang",
+                "uz": "pasayish tendensiyasi"
+            }
+        ]
+    },
+    {
+        "id": "b2_18",
+        "number": 18,
+        "title": "telc B2 / Goethe B2 / TestDaF Imtihon Strategiyasi",
+        "germanTitle": "Prüfungsstrategie, Stellungnahme & Mündliche Prüfung",
+        "icon": "🎯",
+        "description": "B2 darajadagi xalqaro imtihonlarning (telc B2, Goethe B2, TestDaF) to'liq tuzilishi, yozma insho va rasmiy shikoyat xatlari shablonlari, og'zaki bahs ssenariylari.",
+        "theory": {
+            "summary": "B2 sertifikatiga ega bo'lish Germaniyada tibbiyot xodimlari, kasbiy faoliyat va universitetga kirish uchun asosiy kalit hisoblanadi. Imtihonda vaqtni to'g'ri taqsimlash va shablonlardan foydalanish g'alaba keltiradi.",
+            "sections": [
+                {
+                    "heading": "1. B2 Yozma Qismi (Schriftlicher Ausdruck) Taktikasi",
+                    "content": "<p>B2 yozma imtihonida ikkita asosiy vazifadan biri tanlanadi:</p><ol><li><strong>Die Beschwerde (Shikoyat va Reklamatsiya xati):</strong><br>• Reklamada va'da qilingan xizmat va real holat o'rtasidagi ziddiyatni 4 ta nuqta bo'yicha ko'rsatish.<br>• Murojaat, sabab, dalillar va tovon puli talabi (Erstattung / Entschädigung).</li><li><strong>Die Stellungnahme / Bitte um Information:</strong><br>• Dolzarb mavzuda (masalan, masofaviy ta'lim, ekologiya) shaxsiy fikr va dalillar bayoni.</li></ol>",
+                    "examples": [
+                        {
+                            "de": "Aufgrund Ihrer vielversprechenden Anzeige habe ich mich für Ihr Seminar entschieden.",
+                            "uz": "Katta va'dalar berilgan e'loningiz asosida men sizning seminaringizni tanlagan edim.",
+                            "tip": "Shikoyat xatining nafis kirish qismi."
+                        },
+                        {
+                            "de": "Aus den genannten Gründen fordere ich eine Rückerstattung von 50 Prozent der Kosten.",
+                            "uz": "Sanab o'tilgan sabablarga ko'ra men xarajatlarning 50 foizini qaytarib berishingizni talab qilaman.",
+                            "tip": "Rasmiy talab bildirish."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. B2 Og'zaki Qismi (Mündliche Prüfung): Taqdimot va Bahs",
+                    "content": "<p>Og'zaki imtihon 3 ta qismdan iborat bo'ladi:</p><ul><li><strong>Teil 1: Das Buch / die Reise / ein Erlebnis vorstellen:</strong> O'qilgan kitob, film yoki qiziqarli voqea haqida erkin monolog (2-3 daqiqa).</li><li><strong>Teil 2: Das Gespräch / die Diskussion:</strong> Hamkor bilan dolzarb mavzuda bahslashish (fikr bildirish, e'tiroz bildirish, murosaga kelish).</li><li><strong>Teil 3: Gemeinsam ein Problem lösen:</strong> Berilgan muammoni birgalikda hal qilish (tashkiliy reja tuzish).</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Ich verstehe Ihren Standpunkt, allerdings muss man auch bedenken, dass...",
+                            "uz": "Sizning nuqtai nazaringizni tushunaman, ammo shuni ham hisobga olish kerakki...",
+                            "tip": "B2 darajasidagi muloyim e'tiroz bildirish."
+                        },
+                        {
+                            "de": "Lassen Sie uns einen Kompromiss finden.",
+                            "uz": "Keling, o'zaro murosaga kelaylik.",
+                            "tip": "Bahsda murosaga chaqirish."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "B2 yozma ishida kamida 150-180 so'z yozilishi va topshiriqdagi barcha 4 ta yo'riqnoma to'liq yoritilishi shart.",
+                "Shikoyat xatida 'Ich bin wütend' deb qo'pol yozmasdan, 'Zu meinem großen Bedauern entsprachen die Leistungen keineswegs Ihren Angaben' kabi nafis ilmiy leksikani qo'llash yuqori ball keltiradi.",
+                "Og'zaki qismda sherigingizning gapiga quloq solib, uning fikriga munosabat bildirish (Interaktion) alohida mezon sifatida baholanadi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "die Prüfungsstrategie (-n)",
+                "back": "imtihon strategiyasi va taktikasi",
+                "tip": "Erfolgsfaktor"
+            },
+            {
+                "front": "die Stellungnahme (-n)",
+                "back": "munosabat bildirish, insho",
+                "tip": "eine Stellungnahme verfassen"
+            },
+            {
+                "front": "die Beschwerde (-n)",
+                "back": "rasmiy shikoyat xati",
+                "tip": "Beschwerde einlegen"
+            },
+            {
+                "front": "entsprechen (+ Dat)",
+                "back": "mos kelmoq, to'g'ri kelmoq",
+                "tip": "den Erwartungen entsprechen"
+            },
+            {
+                "front": "die Rückerstattung (-en)",
+                "back": "to'langan pulni qaytarib berish",
+                "tip": "eine Rückerstattung fordern"
+            },
+            {
+                "front": "der Standpunkt (-e)",
+                "back": "nuqtai nazar, qarash",
+                "tip": "meinen Standpunkt vertreten"
+            },
+            {
+                "front": "der Kompromiss (-e)",
+                "back": "murosa, kelishuv",
+                "tip": "einen Kompromiss schließen"
+            },
+            {
+                "front": "überzeugen",
+                "back": "ishontirmoq, dalillar bilan ko'ndirmoq",
+                "tip": "mit Argumenten überzeugen"
+            }
+        ],
+        "test": [
+            {
+                "q": "Rasmiy shikoyat xatida tovon pulini talab qilishning eng madaniy shakli qaysi?",
+                "options": [
+                    "Daher fordere ich eine angemessene Entschädigung.",
+                    "Gebt mir sofort mein ganzes Geld zurück!",
+                    "Ich brauche kein Geld von Ihnen.",
+                    "Geld ist mir egal, Sie sind Lügner."
+                ],
+                "answer": 0,
+                "explanation": "'Daher fordere ich eine angemessene Entschädigung / Rückerstattung' — B2 rasmiy tilidagi eng to'g'ri talab bildirish formulasidir."
+            },
+            {
+                "q": "B2 og'zaki bahsida suhbatdoshning fikrini inkor qilmasdan, muloyim ravishda boshqa tomonga e'tibor qaratish iborasi qaysi?",
+                "options": [
+                    "Ich verstehe Ihren Standpunkt, allerdings sollte man bedenken, dass...",
+                    "Sie haben überhaupt keine Ahnung!",
+                    "Das ist falsch und dumm.",
+                    "Ich will Ihnen nicht zuhören."
+                ],
+                "answer": 0,
+                "explanation": "'Ich verstehe Ihren Standpunkt, allerdings...' — diplomatiya va professional B2 muloqotining oltin qoidasidir."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "die Beschwerde",
+                "uz": "rasmiy shikoyat"
+            },
+            {
+                "de": "die Erstattung",
+                "uz": "pulni qaytarish"
+            },
+            {
+                "de": "der Standpunkt",
+                "uz": "nuqtai nazar"
+            },
+            {
+                "de": "der Kompromiss",
+                "uz": "murosa"
+            },
+            {
+                "de": "die Entschädigung",
+                "uz": "tovon to'lovi"
+            },
+            {
+                "de": "überzeugen",
+                "uz": "ishontirmoq"
+            },
+            {
+                "de": "der Einwand",
+                "uz": "e'tiroz"
+            },
+            {
+                "de": "das Fazit",
+                "uz": "yakuniy xulosa"
+            }
+        ]
+    }
+    
     ]
 };

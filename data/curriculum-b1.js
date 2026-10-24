@@ -1876,6 +1876,917 @@ window.deutschCurriculum['B1'] = {
                 { de: "sich interessieren für", uz: "...ga qiziqmoq" },
                 { de: "die Verschwendung", uz: "isrofgarchilik" }
             ]
-        }
+        },
+{
+        "id": "b1_13",
+        "number": 13,
+        "title": "O'tgan zamon istak mayli — Konjunktiv II der Vergangenheit",
+        "germanTitle": "Der Konjunktiv II der Vergangenheit (hätte / wäre + Partizip II)",
+        "icon": "⏳",
+        "description": "O'tmishdagi amalga oshmagan orzular, afsuslanishlar, nereal shart gaplar ('Agar bilganimda edi...') va o'tgan zamondagi tavsiyalar.",
+        "theory": {
+            "summary": "O'tgan zamon Konjunktiv II shakli afsuslanish yoki o'tmishda boshqacha bo'lishi mumkin bo'lgan voqealarni ifodalaydi. Formulash: hätte / wäre + Partizip II.",
+            "sections": [
+                {
+                    "heading": "1. Tuzilishi: hätte yoki wäre + Partizip II",
+                    "content": "<p>O'tgan zamondagi amalga oshmagan vaziyatlar <strong>hätte</strong> yoki <strong>wäre</strong> yordamchi fe'llari hamda asosiy fe'lning <strong>Partizip II</strong> shakli bilan yasaladi (xuddi Perfekt kabi, lekin haben/sein o'rniga hätte/wäre ishlatiladi):</p><table style=\"width:100%; border-collapse:collapse; margin:10px 0;\"><thead><tr style=\"background:rgba(255,255,255,0.08); text-align:left;\"><th style=\"padding:8px;\">Turi</th><th style=\"padding:8px;\">Misol (Real voqea)</th><th style=\"padding:8px;\">Konjunktiv II (Afsuslanish)</th></tr></thead><tbody><tr><td style=\"padding:8px;\">mit haben</td><td style=\"padding:8px;\">Ich habe nicht gelernt. (O'qimadim.)</td><td style=\"padding:8px;\"><strong>Ich hätte mehr gelernt!</strong> (Ko'proq o'qiganimda edi!)</td></tr><tr><td style=\"padding:8px;\">mit sein</td><td style=\"padding:8px;\">Er ist zu spät gekommen. (Kechikdi.)</td><td style=\"padding:8px;\"><strong>Er wäre pünktlich gekommen.</strong> (U o'z vaqtida kelgan bo'lardi.)</td></tr></tbody></table>",
+                    "examples": [
+                        {
+                            "de": "Wenn ich mehr Zeit gehabt hätte, wäre ich mitgekommen.",
+                            "uz": "Agar ko'proq vaqtim bo'lganida, men birga borgan bo'lardim.",
+                            "tip": "Klassik nereal shart gap (Konditionalsatz)."
+                        },
+                        {
+                            "de": "Ich hätte dich anrufen sollen.",
+                            "uz": "Men senga qo'ng'iroq qilishim kerak edi (lekin qilmadim).",
+                            "tip": "Modal fe'llar bilan: hätte + Infinitiv + Infinitiv."
+                        },
+                        {
+                            "de": "Fast hätte ich den Zug verpasst!",
+                            "uz": "Poyezdga sal qolsa kechikayozgan ekanman!",
+                            "tip": "fast / beinahe + Konjunktiv II = deyarli yuz berayozgan hodisa."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Afsuslanish va O'tgan zamondagi tanbehlar",
+                    "content": "<p>O'tmishdagi xatolar uchun tanbeh berish yoki o'z afsusini ifodalash vositalari:</p><ul><li><strong>Du hättest mich fragen können!</strong> — Mendan so'rasang bo'lardi-ku!</li><li><strong>Hätte ich das nur gewusst!</strong> — Qaniydi shuni bilganimda edi! (Istak gapi: fe'l boshda).</li><li><strong>Wäre ich doch zu Hause geblieben!</strong> — Uyda qolsam bo'larkan!</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Wenn wir doch früher losgefahren wären!",
+                            "uz": "Qaniydi ertaroq yo'lga chiqqanimizda edi!",
+                            "tip": "'doch' yoki 'nur' istakni kuchaytiradi."
+                        },
+                        {
+                            "de": "Du hättest vorsichtiger sein müssen.",
+                            "uz": "Sen ehtiyotkorroq bo'lishing kerak edi.",
+                            "tip": "O'tgan zamondagi tanbeh."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Formulasi: hätte / wäre (shaxsga mos tuslanadi) + gap oxirida Partizip II.",
+                "Harakat fe'llari (fahren, gehen, kommen) va holat o'zgarishi uchun 'wäre' ishlatiladi.",
+                "Shart gaplarda 'wenn' bilan boshlangan qismda fe'l eng oxirida turadi: 'Wenn ich Zeit gehabt hätte,...'"
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "ich hätte gemacht",
+                "back": "qilgan bo'lardim",
+                "tip": "Konjunktiv II Vergangenheit"
+            },
+            {
+                "front": "ich wäre gegangen",
+                "back": "borgan bo'lardim",
+                "tip": "sein bilan harakat fe'li"
+            },
+            {
+                "front": "das Bedauern",
+                "back": "afsuslanish",
+                "tip": "mit großem Bedauern"
+            },
+            {
+                "front": "die verpasste Chance",
+                "back": "qo'ldan boy berilgan imkoniyat",
+                "tip": "eine Chance verpassen"
+            },
+            {
+                "front": "hätte wissen müssen",
+                "back": "bilishi kerak edi",
+                "tip": "Doppel-Infinitiv"
+            },
+            {
+                "front": "beinahe / fast",
+                "back": "sal qolsa, deyarli",
+                "tip": "fast hätte ich vergessen"
+            },
+            {
+                "front": "die Reue",
+                "back": "pushaymonlik, pushaymon",
+                "tip": "voller Reue sein"
+            },
+            {
+                "front": "Wenn... doch / nur",
+                "back": "Qaniydi... edi",
+                "tip": "istak mayli ifodasi"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Agar mening pulim bo'lganida, men Germaniyaga borgan bo'lardim' gapi qanday yoziladi?",
+                "options": [
+                    "Wenn ich Geld gehabt hätte, wäre ich nach Deutschland gereist.",
+                    "Wenn ich Geld hätte, würde ich nach Deutschland reisen.",
+                    "Wenn ich Geld hatte, bin ich nach Deutschland gereist.",
+                    "Wenn ich Geld gehabt habe, reise ich nach Deutschland."
+                ],
+                "answer": 0,
+                "explanation": "O'tmishdagi nereal shart: 'gehabt hätte' va harakat fe'li uchun 'wäre gereist' ishlatiladi."
+            },
+            {
+                "q": "'Du ___ mich gestern anrufen können!' Bo'sh joyni to'ldiring:",
+                "options": [
+                    "hättest",
+                    "wärst",
+                    "würdest",
+                    "hattest"
+                ],
+                "answer": 0,
+                "explanation": "O'tgan zamonda modal fe'l bilan tanbeh berishda 'hättest + Infinitiv + Infinitiv' qo'llaniladi."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "ich hätte gewusst",
+                "uz": "bilganimda edi"
+            },
+            {
+                "de": "ich wäre geblieben",
+                "uz": "qolgan bo'lardim"
+            },
+            {
+                "de": "das Bedauern",
+                "uz": "afsuslanish"
+            },
+            {
+                "de": "die Reue",
+                "uz": "pushaymonlik"
+            },
+            {
+                "de": "beinahe",
+                "uz": "sal qolsa"
+            },
+            {
+                "de": "verpassen",
+                "uz": "o'tkazib yubormoq"
+            },
+            {
+                "de": "die Chance",
+                "uz": "imkoniyat"
+            },
+            {
+                "de": "hätte tun sollen",
+                "uz": "qilishi kerak edi"
+            }
+        ]
+    },
+    {
+        "id": "b1_14",
+        "number": 14,
+        "title": "Holat passivi — Zustandspassiv",
+        "germanTitle": "Das Zustandspassiv (sein + Partizip II vs. Vorgangspassiv)",
+        "icon": "🚪",
+        "description": "Jarayon emas, balki ish-harakatning tugallangan natijasi va mavjud holatini ko'rsatuvchi 'sein + Partizip II' konstruksiyasi.",
+        "theory": {
+            "summary": "Vorgangspassiv harakat jarayonini ko'rsatsa (wird geöffnet), Zustandspassiv harakat tugab, natijaviy holat yuzaga kelganini bildiradi (ist geöffnet).",
+            "sections": [
+                {
+                    "heading": "1. Vorgangspassiv va Zustandspassiv farqi",
+                    "content": "<p>Nemis tilida ikki xil majhul nisbat mavjud:</p><ul><li><strong>Vorgangspassiv (Jarayon):</strong> werden + Partizip II<br><em>Die Tür wird geschlossen.</em> — Eshik yopilmoqda (kimdir hozir yopyapti).</li><li><strong>Zustandspassiv (Natija / Holat):</strong> sein + Partizip II<br><em>Die Tür ist geschlossen.</em> — Eshik yopiq (allaqachon yopilgan, hozir yopiq holatda).</li></ul><table style=\"width:100%; border-collapse:collapse; margin:10px 0;\"><thead><tr style=\"background:rgba(255,255,255,0.08); text-align:left;\"><th style=\"padding:8px;\">Vaziyat</th><th style=\"padding:8px;\">Vorgangspassiv (Jarayon)</th><th style=\"padding:8px;\">Zustandspassiv (Holat)</th></tr></thead><tbody><tr><td style=\"padding:8px;\">Do'kon</td><td style=\"padding:8px;\">Das Geschäft wird um 20 Uhr geschlossen.</td><td style=\"padding:8px;\"><strong>Das Geschäft ist geschlossen.</strong> (Yopiq)</td></tr><tr><td style=\"padding:8px;\">Mashina</td><td style=\"padding:8px;\">Das Auto wird repariert. (tuzatilmoqda)</td><td style=\"padding:8px;\"><strong>Das Auto ist repariert.</strong> (tuzatilgan)</td></tr></tbody></table>",
+                    "examples": [
+                        {
+                            "de": "Das Restaurant ist heute leider geschlossen.",
+                            "uz": "Restoran bugun afsuski yopiq.",
+                            "tip": "Holat passivi: sein + geschlossen."
+                        },
+                        {
+                            "de": "Alle Rechnungen sind bereits bezahlt.",
+                            "uz": "Barcha hisob-kitoblar allaqachon to'langan.",
+                            "tip": "To'langan holatda turibdi."
+                        },
+                        {
+                            "de": "Das Problem ist gelöst.",
+                            "uz": "Muammo hal qilingan (hal bo'ldi).",
+                            "tip": "Natija aniq ko'rinib turibdi."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Zustandspassiv zamonlari",
+                    "content": "<p>Zustandspassiv asosan hozirgi (Präsens) va o'tgan (Präteritum) zamonlarda ishlatiladi:</p><ul><li><strong>Präsens:</strong> Das Fenster <em>ist geöffnet</em>. (Deraza ochiq.)</li><li><strong>Präteritum:</strong> Das Fenster <em>war geöffnet</em>. (Deraza ochiq edi.)</li><li><strong>Perfekt:</strong> Das Fenster <em>ist geöffnet gewesen</em>. (Juda kam qo'llanadi).</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Als ich ankam, war die Tür bereits verschlossen.",
+                            "uz": "Men yetib kelganimda, eshik allaqachon qulflangan edi.",
+                            "tip": "Präteritumdagi holat passivi: war + verschlossen."
+                        },
+                        {
+                            "de": "Die Straße ist wegen Bauarbeiten gesperrt.",
+                            "uz": "Qurilish ishlari sababli yo'l to'silgan.",
+                            "tip": "ist gesperrt — to'silgan holatda."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Formulasi: sein (tuslangan) + Partizip II.",
+                "Zustandspassiv harakat tugallangandan keyingi turg'un holatni sifat kabi ifodalaydi.",
+                "E'tibor bering: 'wird geöffnet' = ochilyapti; 'ist geöffnet' = ochiq turibdi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "das Zustandspassiv",
+                "back": "holat passivi",
+                "tip": "sein + Partizip II"
+            },
+            {
+                "front": "ist geöffnet",
+                "back": "ochiq (turibdi)",
+                "tip": "Die Tür ist geöffnet"
+            },
+            {
+                "front": "ist geschlossen",
+                "back": "yopiq",
+                "tip": "Das Geschäft ist geschlossen"
+            },
+            {
+                "front": "ist repariert",
+                "back": "ta'mirlangan, soz",
+                "tip": "Das Auto ist repariert"
+            },
+            {
+                "front": "ist bezahlt",
+                "back": "to'langan",
+                "tip": "Die Rechnung ist bezahlt"
+            },
+            {
+                "front": "ist gesperrt",
+                "back": "to'silgan, yopiq (yo'l)",
+                "tip": "Die Straße ist gesperrt"
+            },
+            {
+                "front": "ist vorbereitet",
+                "back": "tayyorlangan, tayyor",
+                "tip": "Alles ist vorbereitet"
+            },
+            {
+                "front": "ist verletzt",
+                "back": "jarohatlangan",
+                "tip": "Der Spieler ist verletzt"
+            }
+        ],
+        "test": [
+            {
+                "q": "Qaysi gapda ish-harakatning hozirgi holati va natijasi (Zustandspassiv) ifodalangan?",
+                "options": [
+                    "Das Zimmer ist sauber gemacht.",
+                    "Das Zimmer wird sauber gemacht.",
+                    "Der Junge macht das Zimmer sauber.",
+                    "Das Zimmer wird sauber gemacht werden."
+                ],
+                "answer": 0,
+                "explanation": "'ist + Partizip II' strukturasi bajarilgan ishning natijaviy holatini bildiradi."
+            },
+            {
+                "q": "'Men kelganimda do'kon yopiq edi' gapi qaysi?",
+                "options": [
+                    "Als ich kam, war der Laden geschlossen.",
+                    "Als ich kam, wurde der Laden geschlossen.",
+                    "Als ich kam, ist der Laden geschlossen.",
+                    "Als ich kam, schloss der Laden."
+                ],
+                "answer": 0,
+                "explanation": "O'tgan zamondagi holat uchun 'war + Partizip II' ishlatiladi: war geschlossen."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "ist geöffnet",
+                "uz": "ochiq"
+            },
+            {
+                "de": "ist geschlossen",
+                "uz": "yopiq"
+            },
+            {
+                "de": "ist repariert",
+                "uz": "ta'mirlangan"
+            },
+            {
+                "de": "ist vorbereitet",
+                "uz": "tayyorlangan"
+            },
+            {
+                "de": "ist gelöst",
+                "uz": "hal qilingan"
+            },
+            {
+                "de": "ist gesperrt",
+                "uz": "to'silgan"
+            },
+            {
+                "de": "ist bezahlt",
+                "uz": "to'langan"
+            },
+            {
+                "de": "ist beendet",
+                "uz": "yakunlangan"
+            }
+        ]
+    },
+    {
+        "id": "b1_15",
+        "number": 15,
+        "title": "Sifatdosh I va II asoslari",
+        "germanTitle": "Partizip I & II als Adjektive",
+        "icon": "🎨",
+        "description": "Fe'ldan sifat yasash: Partizip I (-end, davom etayotgan harakat) va Partizip II (tugallangan harakat) hamda ularning ot oldida sifat kabi tuslanishi.",
+        "theory": {
+            "summary": "Nemis tilida fe'llar sifatdoshga aylanib, ot oldida sifat kabi artikl va qo'shimchalar oladi. Masalan: das spielende Kind (o'ynayotgan bola), das gekaufte Buch (sotib olingan kitob).",
+            "sections": [
+                {
+                    "heading": "1. Partizip I (Partizip Präsens) — Davom etayotgan faoliyat",
+                    "content": "<p>Partizip I fe'l infinitiviga <strong>-d</strong> qo'shish orqali yasaladi va ayni damda davom etayotgan aktiv harakatni bildiradi:</p><ul><li><strong>spielen &rarr; spielend</strong> (o'ynayotgan): <em>das spielende Kind</em></li><li><strong>lachen &rarr; lachend</strong> (kulayotgan): <em>die lachende Frau</em></li><li><strong>kochen &rarr; kochend</strong> (qaynayotgan): <em>kochendes Wasser</em></li><li><strong>fahren &rarr; fahrend</strong> (harakatlanayotgan): <em>ein fahrender Zug</em></li></ul><p>Ot oldida kelganda oddiy sifat kabi deklanatsiya (qo'shimcha) oladi!</p>",
+                    "examples": [
+                        {
+                            "de": "Der Hund lief bellend auf uns zu.",
+                            "uz": "It vovullagan holda biz tomonga yugurib keldi.",
+                            "tip": "Ravish sifatida: qo'shimchasiz 'bellend'."
+                        },
+                        {
+                            "de": "Die Zahl der Deutsch lernenden Studenten steigt.",
+                            "uz": "Nemis tilini o'rganayotgan talabalar soni o'smoqda.",
+                            "tip": "Sifatdosh birikmasi."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Partizip II (Partizip Perfekt) — Tugallangan yoki passiv natija",
+                    "content": "<p>Partizip II esa tugallangan harakatni yoki passiv holatni ifodalaydi (ge-...-t / ge-...-en):</p><ul><li><strong>schreiben &rarr; geschrieben</strong>: <em>ein geschriebener Brief</em> (yozilgan xat)</li><li><strong>stehlen &rarr; gestohlen</strong>: <em>das gestohlene Fahrrad</em> (o'g'irlangan velosiped)</li><li><strong>gebrauchen &rarr; gebraucht</strong>: <em>ein gebrauchtes Auto</em> (ishlatilgan mashina)</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Hier ist die Liste der eingeladenen Gäste.",
+                            "uz": "Mana taklif qilingan mehmonlar ro'yxati.",
+                            "tip": "einladen -> eingeladene Gäste (Plural Genitiv/Dativ)."
+                        },
+                        {
+                            "de": "Er kaufte ein renoviertes Haus.",
+                            "uz": "U ta'mirlangan uyni sotib oldi.",
+                            "tip": "renovieren -> renoviertes Haus (Akkusativ Neutrum)."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Partizip I = Infinitiv + d (faol, ayni paytda sodir bo'layotgan harakat).",
+                "Partizip II = o'tgan zamon sifatdoshi (tugallangan yoki majhul harakat).",
+                "Ot oldida sifat vazifasida kelganda sifatlar kabi jins, son va kelishik qo'shimchalarini oladi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "das Partizip I",
+                "back": "hozirgi zamon sifatdoshi (infinitiv + d)",
+                "tip": "spielend, lachend"
+            },
+            {
+                "front": "das Partizip II",
+                "back": "o'tgan zamon sifatdoshi",
+                "tip": "gekocht, geschrieben"
+            },
+            {
+                "front": "das spielende Kind",
+                "back": "o'ynayotgan bola",
+                "tip": "Partizip I"
+            },
+            {
+                "front": "das gebrauchte Auto",
+                "back": "ishlatilgan mashina",
+                "tip": "Partizip II"
+            },
+            {
+                "front": "kochendes Wasser",
+                "back": "qaynayotgan suv",
+                "tip": "Partizip I"
+            },
+            {
+                "front": "die eingeladenen Gäste",
+                "back": "taklif qilingan mehmonlar",
+                "tip": "Partizip II"
+            },
+            {
+                "front": "steigend",
+                "back": "o'sib boruvchi, ko'tariluvchi",
+                "tip": "steigende Preise"
+            },
+            {
+                "front": "die abgeschlossene Prüfung",
+                "back": "muvaffaqiyatli topshirilgan imtihon",
+                "tip": "Partizip II"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Qaynayotgan suv' jumlasi qaysi javobda to'g'ri berilgan?",
+                "options": [
+                    "kochendes Wasser",
+                    "gekochtes Wasser",
+                    "kocht Wasser",
+                    "Wasser mit kochen"
+                ],
+                "answer": 0,
+                "explanation": "Hozir qaynayotgan holat uchun Partizip I kerak: kochend + es (o'rta jins) = kochendes Wasser."
+            },
+            {
+                "q": "'Das ___ Auto stand vor der Tür.' (ta'mirlangan mashina) — qaysi so'z to'g'ri keladi?",
+                "options": [
+                    "reparierte",
+                    "reparierende",
+                    "reparieren",
+                    "repariert"
+                ],
+                "answer": 0,
+                "explanation": "Ta'mirlab bo'lingan mashina (tugallangan natija) uchun Partizip II sifat qo'shimchasi bilan: das reparierte Auto."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "spielend",
+                "uz": "o'ynayotgan"
+            },
+            {
+                "de": "lachend",
+                "uz": "kulayotgan"
+            },
+            {
+                "de": "kochend",
+                "uz": "qaynayotgan"
+            },
+            {
+                "de": "gebraucht",
+                "uz": "ishlatilgan"
+            },
+            {
+                "de": "gestohlen",
+                "uz": "o'g'irlangan"
+            },
+            {
+                "de": "geschrieben",
+                "uz": "yozilgan"
+            },
+            {
+                "de": "steigend",
+                "uz": "o'sayotgan"
+            },
+            {
+                "de": "eingeladen",
+                "uz": "taklif etilgan"
+            }
+        ]
+    },
+    {
+        "id": "b1_16",
+        "number": 16,
+        "title": "Vaqt ergash gaplari va Zamonlar moslashuvi",
+        "germanTitle": "Temporale Nebensätze: nachdem, während, seitdem, bis, bevor",
+        "icon": "⏱️",
+        "description": "Harakatlarning vaqt bo'yicha ketma-ketligi (nachdem), bir vaqtda sodir bo'lishi (während), boshlanishi (seitdem) va tugashi (bis).",
+        "theory": {
+            "summary": "Vaqt ergash gaplari (Temporalsätze) harakat qachon yuz berganini bildiradi. Har bir bog'lovchining o'ziga xos zamonlar moslashuv qoidasi bor.",
+            "sections": [
+                {
+                    "heading": "1. nachdem va Zamonlar moslashuvi (Vorzeitigkeit)",
+                    "content": "<p><strong>nachdem</strong> (...gandan so'ng) bog'lovchisi doimo asosiy gapdan bir pog'ona OLDINGI zamonni talab qiladi:</p><ul><li>Asosiy gap <strong>Präsens / Futur</strong> bo'lsa &rarr; nachdem gapi <strong>Perfekt</strong> bo'ladi:<br><em>Nachdem ich die Hausaufgaben gemacht habe, gehe ich spazieren.</em></li><li>Asosiy gap <strong>Präteritum</strong> bo'lsa &rarr; nachdem gapi <strong>Plusquamperfekt</strong> bo'ladi:<br><em>Nachdem er gefrühstückt hatte, ging er zur Arbeit.</em></li></ul>",
+                    "examples": [
+                        {
+                            "de": "Nachdem sie die Prüfung bestanden hatte, feierte sie mit Freunden.",
+                            "uz": "U imtihondan o'tganidan so'ng, do'stlari bilan nishonladi.",
+                            "tip": "Plusquamperfekt (bestanden hatte) + Präteritum (feierte)."
+                        },
+                        {
+                            "de": "Nachdem wir gegessen haben, trinken wir einen Kaffee.",
+                            "uz": "Ovqatlanib bo'lganimizdan so'ng, qahva ichamiz.",
+                            "tip": "Perfekt + Präsens."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. während, seitdem, bevor va bis bog'lovchilari",
+                    "content": "<p>Boshqa muhim vaqt bog'lovchilari:</p><ul><li><strong>während</strong> (davomida, ayni bir paytda): <em>Während ich koche, hört mein Mann Musik.</em></li><li><strong>bevor / ehe</strong> (...dan oldin): <em>Bevor du gehst, mach das Licht aus.</em></li><li><strong>seitdem / seit</strong> (...dan beri): <em>Seitdem er in Berlin wohnt, spricht er fließend Deutsch.</em></li><li><strong>bis</strong> (...gacha): <em>Warte hier, bis ich zurückkomme.</em></li></ul>",
+                    "examples": [
+                        {
+                            "de": "Während der Lehrer sprach, hörten alle Schüler aufmerksam zu.",
+                            "uz": "O'qituvchi gapirayotgan paytda barcha o'quvchilar diqqat bilan tinglashdi.",
+                            "tip": "während — parallel harakatlar."
+                        },
+                        {
+                            "de": "Ich lerne weiter, bis ich das B1-Zertifikat habe.",
+                            "uz": "B1 sertifikatini olgunimgacha o'qishda davom etaman.",
+                            "tip": "bis — chegaralangan vaqt nuqtasi."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Barcha temporale bog'lovchilarda (nachdem, während, bevor, seitdem, bis) fe'l ergash gap oxirida keladi.",
+                "nachdem bilan harakatlar ketma-ketligi qat'iy saqlanadi: o'tgan zamonda Plusquamperfekt + Präteritum.",
+                "während harakatlarning ayni bir paytda yuz berishini ifodalaydi va zamonlari ko'pincha bir xil bo'ladi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "nachdem",
+                "back": "...gandan so'ng (oldingi harakat)",
+                "tip": "zamonlar moslashuvi shart"
+            },
+            {
+                "front": "während",
+                "back": "...paytda, davomida (parallel)",
+                "tip": "Während ich lese, schläft er"
+            },
+            {
+                "front": "bevor",
+                "back": "...dan oldin",
+                "tip": "Bevor du schläfst"
+            },
+            {
+                "front": "seitdem",
+                "back": "...dan beri",
+                "tip": "Seitdem ich hier bin"
+            },
+            {
+                "front": "bis",
+                "back": "...gacha",
+                "tip": "bis morgen, bis ich komme"
+            },
+            {
+                "front": "solange",
+                "back": "modomiki ... ekan, davomida",
+                "tip": "solange du lebst"
+            },
+            {
+                "front": "sobald",
+                "back": "...bilanoq, zahoti",
+                "tip": "sobald ich ankomme"
+            },
+            {
+                "front": "die Gleichzeitigkeit",
+                "back": "bir vaqtda sodir bo'lish",
+                "tip": "während qo'llanilganda"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Nachdem er die Arbeit beendet ___, ging er nach Hause.' Bo'sh joyga qaysi fe'l shakli mos keladi?",
+                "options": [
+                    "hatte",
+                    "hat",
+                    "hätte",
+                    "wurde"
+                ],
+                "answer": 0,
+                "explanation": "Asosiy gap Präteritumda (ging) bo'lgani uchun nachdem qismida Plusquamperfekt (beendet hatte) bo'lishi shart."
+            },
+            {
+                "q": "Ayni bir vaqtda parallel sodir bo'layotgan ikkita harakatni bog'lash uchun qaysi bog'lovchi ishlatiladi?",
+                "options": [
+                    "während",
+                    "nachdem",
+                    "bevor",
+                    "nach"
+                ],
+                "answer": 0,
+                "explanation": "'während' bir paytda ro'y berayotgan harakatlarni ifodalaydi."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "nachdem",
+                "uz": "...gandan so'ng"
+            },
+            {
+                "de": "während",
+                "uz": "...paytda / davomida"
+            },
+            {
+                "de": "bevor",
+                "uz": "...dan oldin"
+            },
+            {
+                "de": "seitdem",
+                "uz": "...dan beri"
+            },
+            {
+                "de": "bis",
+                "uz": "...gacha"
+            },
+            {
+                "de": "sobald",
+                "uz": "...zahoti"
+            },
+            {
+                "de": "solange",
+                "uz": "toki ... ekan"
+            },
+            {
+                "de": "gleichzeitig",
+                "uz": "bir vaqtda"
+            }
+        ]
+    },
+    {
+        "id": "b1_17",
+        "number": 17,
+        "title": "Ilmiy ta'lim, Universitet va Ausbildung",
+        "germanTitle": "Studium an der Universität, Ausbildung & Bewerbungsunterlagen",
+        "icon": "🎓",
+        "description": "Germaniyada oliy ta'lim va kasb-hunar ta'limi (Duales System), universitetga qabul, hujjatlar to'plami va rezyume topshirish.",
+        "theory": {
+            "summary": "Germaniyaning ta'lim tizimi ikki yo'nalishga ega: Universitet (akademik) va Duale Ausbildung (amaliy kasb-hunar). Nemis tilida o'qishga kirish va hujjat topshirish muhim B1 leksikasidir.",
+            "sections": [
+                {
+                    "heading": "1. Germaniyada Oliy ta'lim va Ausbildung tizimi",
+                    "content": "<p>Germaniyada o'qish turlari va asosiy atamalar:</p><ul><li><strong>die Universität / die Hochschule</strong> — Universitet / Oliy maktab</li><li><strong>das Studium</strong> — Universitetdagi oliy ta'lim (<em>studieren</em> fe'li bilan)</li><li><strong>die Ausbildung</strong> — Kasbiy amaliy ta'lim (korxonada ishlab o'qish)</li><li><strong>der Bachelor / der Master</strong> — Bakalavr / Magistratura darajalari</li><li><strong>die Vorlesung (-en)</strong> — Ma'ruza darsi</li><li><strong>das Seminar (-e)</strong> — Amaliy seminar mashg'uloti</li><li><strong>die Immatrikulation / sich einschreiben</strong> — Talabalar safiga qabul qilinish / ro'yxatdan o'tish</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Ich möchte mich für den Studiengang Informatik bewerben.",
+                            "uz": "Men informatika yo'nalishiga hujjat topshirmoqchiman.",
+                            "tip": "sich bewerben um/für — hujjat topshirmoq."
+                        },
+                        {
+                            "de": "In Deutschland machen viele Jugendliche eine duale Ausbildung.",
+                            "uz": "Germaniyada ko'plab yoshlar dual kasb-hunar ta'limi olishadi.",
+                            "tip": "Duale Ausbildung — ham nazariya, ham amaliy maoshli ish."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Hujjatlar to'plami (Die Bewerbungsmappe)",
+                    "content": "<p>Universitet yoki ishga qabul uchun talab etiladigan rasmiy hujjatlar:</p><ul><li><strong>das Anschreiben / das Motivationsschreiben</strong> — Kuzatuv xati / Motivatsiya xati</li><li><strong>der tabellarische Lebenslauf</strong> — Jadval shaklidagi rezyume (CV)</li><li><strong>die Zeugnisse (Pl.)</strong> — Diplom, attestat va baholar varaqasi</li><li><strong>das Sprachzertifikat</strong> — Til sertifikati (Goethe/telc B1/B2)</li><li><strong>das Praktikum</strong> — Ishlab chiqarish amaliyoti</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Mein Lebenslauf ist auf dem neuesten Stand.",
+                            "uz": "Mening rezyumeyim eng so'nggi ma'lumotlar bilan yangilangan.",
+                            "tip": "auf dem neuesten Stand sein."
+                        },
+                        {
+                            "de": "Ich habe alle Zeugnisse beglaubigen und übersetzen lassen.",
+                            "uz": "Men barcha diplom va baholarni notarial tasdiqlatib tarjima qildirdim.",
+                            "tip": "beglaubigen lassen — tasdiqlatmoq."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "'studieren' faqat oliygohda ta'lim olishga nisbatan ishlatiladi. Maktabda yoki tilda o'qish uchun 'lernen' deyiladi.",
+                "Hujjat topshirish: 'sich bewerben um eine Stelle' (ish o'rniga) yoki 'für ein Studium' (o'qishga).",
+                "Germaniya rezyumesida (Lebenslauf) rasmiy fotosurat, sana va shaxsiy imzo bo'lishi an'anaga ko'ra muhim."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "das Studium",
+                "back": "oliy ta'lim (universitetda)",
+                "tip": "ein Studium beginnen"
+            },
+            {
+                "front": "die Ausbildung",
+                "back": "kasb-hunar ta'limi",
+                "tip": "eine Ausbildung machen"
+            },
+            {
+                "front": "der Studiengang (-e)",
+                "back": "ta'lim yo'nalishi, mutaxassislik",
+                "tip": "Medizin studieren"
+            },
+            {
+                "front": "die Vorlesung (-en)",
+                "back": "ma'ruza",
+                "tip": "eine Vorlesung besuchen"
+            },
+            {
+                "front": "das Motivationsschreiben",
+                "back": "motivatsiya xati",
+                "tip": "für die Bewerbung"
+            },
+            {
+                "front": "der Lebenslauf (-e)",
+                "back": "rezyume (CV)",
+                "tip": "tabellarischer Lebenslauf"
+            },
+            {
+                "front": "das Zeugnis (-se)",
+                "back": "shahodatnoma, diplom",
+                "tip": "Zeugnisse beilegen"
+            },
+            {
+                "front": "die Immatrikulation",
+                "back": "talabalikka qabul",
+                "tip": "sich immatrikulieren"
+            }
+        ],
+        "test": [
+            {
+                "q": "Universitetda o'qish haqida gapirganda qaysi fe'l to'g'ri ishlatiladi?",
+                "options": [
+                    "studieren",
+                    "lernen",
+                    "unterrichten",
+                    "arbeiten"
+                ],
+                "answer": 0,
+                "explanation": "Oliy o'quv yurtidagi akademik ta'lim faqat 'studieren' fe'li bilan ifodalanadi."
+            },
+            {
+                "q": "Germaniyada ishga yoki o'qishga topshiriladigan hujjatlar to'plami qanday ataladi?",
+                "options": [
+                    "die Bewerbungsunterlagen",
+                    "die Reisepapiere",
+                    "die Hausaufgaben",
+                    "die Speisekarte"
+                ],
+                "answer": 0,
+                "explanation": "'die Bewerbungsunterlagen' (yoki Bewerbungsmappe) — rezyume, xat va diplomlardan iborat hujjatlar jamlanmasidir."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "das Studium",
+                "uz": "oliy ta'lim"
+            },
+            {
+                "de": "die Ausbildung",
+                "uz": "kasb-hunar ta'limi"
+            },
+            {
+                "de": "der Lebenslauf",
+                "uz": "rezyume"
+            },
+            {
+                "de": "die Vorlesung",
+                "uz": "ma'ruza darsi"
+            },
+            {
+                "de": "das Zeugnis",
+                "uz": "diplom / attestat"
+            },
+            {
+                "de": "das Praktikum",
+                "uz": "amaliyot"
+            },
+            {
+                "de": "die Bewerbung",
+                "uz": "ariza / hujjat topshirish"
+            },
+            {
+                "de": "sich einschreiben",
+                "uz": "ro'yxatdan o'tmoq"
+            }
+        ]
+    },
+    {
+        "id": "b1_18",
+        "number": 18,
+        "title": "B1 Imtihon Taqdimoti va Munozara nutqi",
+        "germanTitle": "Vortrag halten, Argumentieren & Goethe/telc B1 Prüfungstraining",
+        "icon": "🏆",
+        "description": "Goethe / telc B1 og'zaki imtihonida (Sprechen Teil 2) 3 daqiqalik taqdimot qilish, slayd tuzilishi, ijobiy/salbiy tomonlarni solishtirish va reja tuzish.",
+        "theory": {
+            "summary": "B1 og'zaki imtihonining markaziy qismi — mavzu bo'yicha mustaqil taqdimot (Präsentation) qilishdir. Buning uchun maxsus nutq qoliplari (Redemittel) yodlanishi shart.",
+            "sections": [
+                {
+                    "heading": "1. B1 Taqdimotining 5 ta bosqichi va Redemittel",
+                    "content": "<p>Har bir B1 taqdimoti quyidagi 5 ta qismdan iborat bo'lishi talab etiladi:</p><ol><li><strong>Mavzuni tanishtirish va tuzilishi:</strong><br>• <em>Das Thema meiner Präsentation lautet...</em> (Mening taqdimotim mavzusi...)<br>• <em>Mein Vortrag besteht aus folgenden Teilen: Zuerst..., dann..., danach...</em></li><li><strong>Shaxsiy tajriba (Eigene Erfahrung):</strong><br>• <em>In meinem Heimatland Usbekistan ist es so, dass...</em><br>• <em>Ich persönlich habe die Erfahrung gemacht, dass...</em></li><li><strong>O'z vatanidagi holat (Situation im Heimatland):</strong><br>• <em>In Usbekistan nutzen viele Menschen...</em></li><li><strong>Ijobiy va salbiy tomonlar (Vor- und Nachteile):</strong><br>• <em>Ein großer Vorteil ist, dass...</em> (Katta afzalligi shuki...)<br>• <em>Ein wesentlicher Nachteil besteht darin, dass...</em> (Asosiy kamchiligi...)</li><li><strong>Xulosa va Tinglovchilarga minnatdorchilik (Fazit & Dank):</strong><br>• <em>Meiner Meinung nach sollte man...</em> (Mening fikrimcha...)<br>• <em>Ich bedanke mich herzlich für Ihre Aufmerksamkeit. Haben Sie Fragen?</em></li></ol>",
+                    "examples": [
+                        {
+                            "de": "Das Thema meiner Präsentation ist 'Braucht man heutzutage noch ein Auto?'.",
+                            "uz": "Taqdimotim mavzusi: 'Bugungi kunda odamlarga hali ham avtomobil kerakmi?'.",
+                            "tip": "Sarlavhani aniq va ravon e'lon qilish."
+                        },
+                        {
+                            "de": "Ein Vorteil ist Flexibilität, aber ein Nachteil sind die hohen Kosten.",
+                            "uz": "Bir afzalligi erkinlik, ammo kamchiligi bu yuqori xarajatlardir.",
+                            "tip": "Vor- und Nachteile taqqoslash."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Sprechen Teil 3: Gemeinsam etwas planen (Birgalikda rejalashtirish)",
+                    "content": "<p>Imtihon juftingiz bilan tadbir, sayohat yoki sovg'a sotib olishni rejalashtirish iboralari:</p><ul><li><strong>Was hältst du davon, wenn wir...?</strong> — ...qilsak qanday fikrdasan?</li><li><strong>Ich schlage vor, dass wir am Samstag gehen.</strong> — Men shanba kuni borishni taklif qilaman.</li><li><strong>Das ist eine tolle Idee! / Das sehe ich auch so.</strong> — Bu ajoyib g'oya! / Men ham shunday deb o'ylayman.</li><li><strong>Da bin ich mir nicht sicher. Vielleicht sollten wir lieber...</strong> — Bunga unchalik ishonchim komil emas. Balki yaxshisi...</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Wann und wo wollen wir uns treffen?",
+                            "uz": "Qachon va qayerda uchrashamiz?",
+                            "tip": "Aniq vaqt va joyni kelishib olish."
+                        },
+                        {
+                            "de": "Wer kümmert sich um die Getränke? — Das übernehme ich gern.",
+                            "uz": "Ichimliklarga kim qaraydi? — Buni men o'z zimmamga olaman.",
+                            "tip": "Vazifalarni bo'lib olish."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Taqdimot yakunida har doim 'Vielen Dank für Ihre Aufmerksamkeit. Haben Sie Fragen?' deb aytish shart.",
+                "Fikr bildirayotganda 'Meiner Meinung nach...' dan keyin fe'l ikkinchi o'rinda keladi: 'Meiner Meinung nach ist das gut'.",
+                "Hamkoringiz gapirayotganda diqqat bilan eshiting va savol bering (aktiv muloqot uchun qo'shimcha ball beriladi)."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "die Präsentation (-en)",
+                "back": "taqdimot",
+                "tip": "eine Präsentation halten"
+            },
+            {
+                "front": "das Thema lautet...",
+                "back": "mavzu shundan iboratki...",
+                "tip": "taqdimot boshlanishi"
+            },
+            {
+                "front": "der Vorteil (-e)",
+                "back": "afzallik, ustunlik",
+                "tip": "ein großer Vorteil"
+            },
+            {
+                "front": "der Nachteil (-e)",
+                "back": "kamchilik, zararli tomon",
+                "tip": "ein wesentlicher Nachteil"
+            },
+            {
+                "front": "meiner Meinung nach",
+                "back": "mening fikrimcha",
+                "tip": "fe'l darhol keladi"
+            },
+            {
+                "front": "ich schlage vor, dass...",
+                "back": "men taklif qilamanki...",
+                "tip": "rejalashtirishda taklif"
+            },
+            {
+                "front": "das Fazit (-s)",
+                "back": "xulosa, yakuniy fikr",
+                "tip": "als Fazit ziehen"
+            },
+            {
+                "front": "Vielen Dank für die Aufmerksamkeit!",
+                "back": "E'tiboringiz uchun katta rahmat!",
+                "tip": "taqdimot yakuniy jumlasi"
+            }
+        ],
+        "test": [
+            {
+                "q": "B1 taqdimotini yakunlaganda tinglovchilarga nima deb murojaat qilinadi?",
+                "options": [
+                    "Vielen Dank für Ihre Aufmerksamkeit. Haben Sie noch Fragen?",
+                    "Ich bin fertig, jetzt seid ihr dran.",
+                    "Hört auf zu reden, danke.",
+                    "Auf Wiedersehen, ich gehe jetzt."
+                ],
+                "answer": 0,
+                "explanation": "'Vielen Dank für Ihre Aufmerksamkeit. Haben Sie noch Fragen?' — rasmiy va xushmuomala taqdimot yakunidir."
+            },
+            {
+                "q": "'Meiner Meinung nach ___ dieses Thema sehr wichtig.' Bo'sh joyga qaysi so'z keladi?",
+                "options": [
+                    "ist",
+                    "das ist",
+                    "sein",
+                    "wird sein"
+                ],
+                "answer": 0,
+                "explanation": "'Meiner Meinung nach' iborasidan keyin fe'l ikkinchi o'rinda turishi shart: 'Meiner Meinung nach ist dieses Thema...'"
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "die Präsentation",
+                "uz": "taqdimot"
+            },
+            {
+                "de": "der Vorteil",
+                "uz": "afzallik"
+            },
+            {
+                "de": "der Nachteil",
+                "uz": "kamchilik"
+            },
+            {
+                "de": "meiner Meinung nach",
+                "uz": "mening fikrimcha"
+            },
+            {
+                "de": "ich schlage vor",
+                "uz": "men taklif qilaman"
+            },
+            {
+                "de": "das Fazit",
+                "uz": "xulosa"
+            },
+            {
+                "de": "die Erfahrung",
+                "uz": "tajriba"
+            },
+            {
+                "de": "die Aufmerksamkeit",
+                "uz": "diqqat / e'tibor"
+            }
+        ]
+    }
+    
     ]
 };

@@ -1411,7 +1411,923 @@ window.deutschCurriculum['A2'] = {
                 { de: "den Kundenservice anrufen", uz: "mijozlar xizmatiga qo'ng'iroq qilmoq" },
                 { de: "ich möchte wissen, ob...", uz: "bilmoqchimanki, ...mi" }
             ]
-        }
+        },
+{
+        "id": "a2_13",
+        "number": 13,
+        "title": "Kelasi zamon — Futur I",
+        "germanTitle": "Das Futur I: werden + Infinitiv",
+        "icon": "🔮",
+        "description": "Kelajakdagi rejalar, bashoratlar, niyatlar va va'dalarni ifodalash uchun 'werden' yordamchi fe'li va asosiy fe'l infinitividan foydalanish.",
+        "theory": {
+            "summary": "Futur I kelasi zamonni ifodalashda qo'llaniladi. Formulash: werden (tuslangan) + gap oxirida Infinitiv (bosh shakl).",
+            "sections": [
+                {
+                    "heading": "1. Futur I yasalishi va 'werden' fe'lining tuslanishi",
+                    "content": "<p>Futur I zamoni <strong>werden</strong> yordamchi fe'lining hozirgi zamon shakli va mustaqil fe'lning <strong>Infinitiv</strong> (asl) shakli orqali yasaladi:</p><table style=\"width:100%; border-collapse:collapse; margin:10px 0;\"><thead><tr style=\"background:rgba(255,255,255,0.08); text-align:left;\"><th style=\"padding:8px;\">Shaxs</th><th style=\"padding:8px;\">werden</th><th style=\"padding:8px;\">Misol (reisen)</th></tr></thead><tbody><tr><td style=\"padding:8px;\">ich</td><td style=\"padding:8px;\"><strong>werde</strong></td><td style=\"padding:8px;\">Ich werde nach Berlin reisen.</td></tr><tr><td style=\"padding:8px;\">du</td><td style=\"padding:8px;\"><strong>wirst</strong></td><td style=\"padding:8px;\">Du wirst die Prüfung bestehen.</td></tr><tr><td style=\"padding:8px;\">er / sie / es</td><td style=\"padding:8px;\"><strong>wird</strong></td><td style=\"padding:8px;\">Es wird morgen regnen.</td></tr><tr><td style=\"padding:8px;\">wir</td><td style=\"padding:8px;\"><strong>werden</strong></td><td style=\"padding:8px;\">Wir werden ein neues Haus bauen.</td></tr><tr><td style=\"padding:8px;\">ihr</td><td style=\"padding:8px;\"><strong>werdet</strong></td><td style=\"padding:8px;\">Ihr werdet viel Deutsch lernen.</td></tr><tr><td style=\"padding:8px;\">sie / Sie</td><td style=\"padding:8px;\"><strong>werden</strong></td><td style=\"padding:8px;\">Sie werden in Deutschland arbeiten.</td></tr></tbody></table>",
+                    "examples": [
+                        {
+                            "de": "Nächstes Jahr werde ich nach Deutschland fliegen.",
+                            "uz": "Kelasi yili men Germaniyaga uchaman.",
+                            "tip": "werden 2-o'rinda, fliegen esa gap oxirida infinitivda."
+                        },
+                        {
+                            "de": "Keine Sorge, alles wird gut werden!",
+                            "uz": "Xavotir olmang, hammasi yaxshi bo'ladi!",
+                            "tip": "Bashorat va dalda berishda Futur I juda mashhur."
+                        },
+                        {
+                            "de": "Morgen wird es wahrscheinlich schneien.",
+                            "uz": "Ertaga ehtimol qor yog'adi.",
+                            "tip": "Ob-havo bashoratlarida keng qo'llaniladi."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Futur I va Präsens o'rtasidagi farq",
+                    "content": "<p>Nemis tilida kelajak vaqt ko'rsatkichi (<em>morgen, nächste Woche, bald</em>) bo'lsa, oddiy <strong>Präsens</strong> (hozirgi zamon) ham kelasi zamon ma'nosida ishlatilishi mumkin: <em>Ich fliege morgen nach Berlin.</em></p><p>Biroq rasmiy va'dalar, jiddiy niyatlar yoki taxmin/bashoratlarda aniq <strong>Futur I</strong> qo'llaniladi.</p>",
+                    "examples": [
+                        {
+                            "de": "Ich werde dich für immer lieben.",
+                            "uz": "Men seni bir umr se幅aman (va'da).",
+                            "tip": "Va'dalarda Futur I emotsional kuch beradi."
+                        },
+                        {
+                            "de": "Er wird wohl zu Hause sein.",
+                            "uz": "U ehtimol uyda bo'lsa kerak (taxmin).",
+                            "tip": "Futur I + wohl/vielleicht = hozirgi zamon haqidagi taxmin."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "werden fe'li shaxsga qarab tuslanib 2-o'rinda keladi, asosiy fe'l esa gapning eng oxirida Infinitiv shaklida turadi.",
+                "du wirst va er/sie/es wird shakllarida ildizdagi unli o'zgaradi.",
+                "Kelajak niyati qat'iy bo'lganda yoki bashorat qilinganda Futur I ishlatiladi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "werden",
+                "back": "bo'lmoq (yordamchi fe'l)",
+                "tip": "ich werde, du wirst, er wird"
+            },
+            {
+                "front": "die Zukunft",
+                "back": "kelajak",
+                "tip": "in der Zukunft"
+            },
+            {
+                "front": "die Absicht (-en)",
+                "back": "niyat, reja",
+                "tip": "eine Absicht haben"
+            },
+            {
+                "front": "die Vermutung (-en)",
+                "back": "taxmin, faraz",
+                "tip": "eine Vermutung anstellen"
+            },
+            {
+                "front": "wahrscheinlich",
+                "back": "ehtimol, katta ehtimol bilan",
+                "tip": "sehr wahrscheinlich"
+            },
+            {
+                "front": "bestehen",
+                "back": "(imtihondan) o'tmoq",
+                "tip": "die Prüfung bestehen"
+            },
+            {
+                "front": "das Versprechen (-)",
+                "back": "va'da",
+                "tip": "ein Versprechen geben"
+            },
+            {
+                "front": "nächstes Jahr",
+                "back": "kelasi yili",
+                "tip": "kelasi zamon ko'rsatkichi"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Ular kelasi oy yangi mashina sotib olishadi' gapining to'g'ri shakli qaysi?",
+                "options": [
+                    "Sie werden nächsten Monat ein neues Auto kaufen.",
+                    "Sie wird nächsten Monat ein neues Auto kaufen.",
+                    "Sie werden nächsten Monat ein neues Auto kauft.",
+                    "Sie kaufen werden nächsten Monat ein Auto."
+                ],
+                "answer": 0,
+                "explanation": "Sie (ular) uchun 'werden' va gap oxirida infinitiv 'kaufen' bo'lishi kerak."
+            },
+            {
+                "q": "'du' olmoshi bilan 'werden' fe'lining to'g'ri tuslanishini tanlang:",
+                "options": [
+                    "wirst",
+                    "werdest",
+                    "wird",
+                    "werdet"
+                ],
+                "answer": 0,
+                "explanation": "du olmoshi bilan 'du wirst' shakli to'g'ri."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "die Zukunft",
+                "uz": "kelajak"
+            },
+            {
+                "de": "das Versprechen",
+                "uz": "va'da"
+            },
+            {
+                "de": "die Vermutung",
+                "uz": "taxmin"
+            },
+            {
+                "de": "wahrscheinlich",
+                "uz": "ehtimol"
+            },
+            {
+                "de": "die Absicht",
+                "uz": "niyat"
+            },
+            {
+                "de": "bestehen",
+                "uz": "o'tmoq (sinovdan)"
+            },
+            {
+                "de": "planen",
+                "uz": "rejalashtirmoq"
+            },
+            {
+                "de": "passieren",
+                "uz": "sodir bo'lmoq"
+            }
+        ]
+    },
+    {
+        "id": "a2_14",
+        "number": 14,
+        "title": "Hikoyaviy o'tgan zamon — Präteritum asoslari",
+        "germanTitle": "Das Präteritum: sein, haben & Modalverben",
+        "icon": "📜",
+        "description": "Matnlar, yangiliklar va ertaklarda ishlatiladigan Präteritum zamoni hamda sein, haben va modal fe'llarning o'tgan zamon shakllari.",
+        "theory": {
+            "summary": "Og'zaki nutqda o'tgan zamon uchun Perfekt ishlatilsa-da, sein (war), haben (hatte) va modal fe'llar uchun har doim Präteritum afzal ko'riladi.",
+            "sections": [
+                {
+                    "heading": "1. sein va haben fe'llarining Präteritum shakli",
+                    "content": "<p>Nemis tilida <em>war</em> (edi) va <em>hatte</em> (bor edi) shakllari og'zaki nutqda ham, yozma nutqda ham doimo ishlatiladi:</p><table style=\"width:100%; border-collapse:collapse; margin:10px 0;\"><thead><tr style=\"background:rgba(255,255,255,0.08); text-align:left;\"><th style=\"padding:8px;\">Shaxs</th><th style=\"padding:8px;\">sein &rarr; war</th><th style=\"padding:8px;\">haben &rarr; hatte</th></tr></thead><tbody><tr><td style=\"padding:8px;\">ich</td><td style=\"padding:8px;\"><strong>war</strong></td><td style=\"padding:8px;\"><strong>hatte</strong></td></tr><tr><td style=\"padding:8px;\">du</td><td style=\"padding:8px;\"><strong>warst</strong></td><td style=\"padding:8px;\"><strong>hattest</strong></td></tr><tr><td style=\"padding:8px;\">er/sie/es</td><td style=\"padding:8px;\"><strong>war</strong></td><td style=\"padding:8px;\"><strong>hatte</strong></td></tr><tr><td style=\"padding:8px;\">wir</td><td style=\"padding:8px;\"><strong>waren</strong></td><td style=\"padding:8px;\"><strong>hatten</strong></td></tr><tr><td style=\"padding:8px;\">ihr</td><td style=\"padding:8px;\"><strong>wart</strong></td><td style=\"padding:8px;\"><strong>hattet</strong></td></tr><tr><td style=\"padding:8px;\">sie/Sie</td><td style=\"padding:8px;\"><strong>waren</strong></td><td style=\"padding:8px;\"><strong>hatten</strong></td></tr></tbody></table>",
+                    "examples": [
+                        {
+                            "de": "Gestern war ich den ganzen Tag zu Hause.",
+                            "uz": "Kecha men kun bo'yi uyda edim.",
+                            "tip": "Gestern bin ich zu Hause gewesen o'rniga war ishlatish tabiiyroq."
+                        },
+                        {
+                            "de": "Wir hatten damals kein Auto.",
+                            "uz": "O'sha paytlarda bizda mashina yo'q edi.",
+                            "tip": "hatten — bor edi / egalik qilgan edi."
+                        },
+                        {
+                            "de": "Wo warst du am Wochenende?",
+                            "uz": "Dam olish kunlari qayerda eding?",
+                            "tip": "du warst — sen eding."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Modal fe'llarning Präteritumi",
+                    "content": "<p>Modal fe'llar o'tgan zamonda umlautlarini (ä, ö, ü) yo'qotadi va <strong>-te</strong> qo'shimchasini oladi:</p><ul><li><strong>können</strong> &rarr; ich <em>konnte</em> (qila oldim)</li><li><strong>müssen</strong> &rarr; ich <em>musste</em> (majbur edim)</li><li><strong>dürfen</strong> &rarr; ich <em>durfte</em> (ruxsatim bor edi)</li><li><strong>wollen</strong> &rarr; ich <em>wollte</em> (xohladim)</li><li><strong>sollen</strong> &rarr; ich <em>sollte</em> (kerak edi / aytilgandi)</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Ich konnte gestern nicht kommen, weil ich krank war.",
+                            "uz": "Men kecha kela olmadim, chunki kasal edim.",
+                            "tip": "konnte + infinitiv gap oxirida."
+                        },
+                        {
+                            "de": "Er musste sehr viel für die Schule lernen.",
+                            "uz": "U maktab uchun juda ko'p o'qishga majbur edi.",
+                            "tip": "musste — majbur edi."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "ich va er/sie/es shaxslarida Präteritum qo'shimchasi bir xil bo'ladi: ich war = er war; ich konnte = er konnte.",
+                "Modal fe'llar o'tgan zamonda hech qachon umlaut olmaydi (konnte, musste, durfte).",
+                "Kundalik og'zaki nutqda sein, haben va modal fe'llar uchun Perfekt deyarli ishlatilmaydi, faqat Präteritum ishlatiladi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "war (sein)",
+                "back": "edi (bo'lgan edi)",
+                "tip": "ich war, er war"
+            },
+            {
+                "front": "hatte (haben)",
+                "back": "bor edi (egalik qilgan)",
+                "tip": "ich hatte keine Zeit"
+            },
+            {
+                "front": "konnte (können)",
+                "back": "qila oldi",
+                "tip": "ich konnte schwimmen"
+            },
+            {
+                "front": "musste (müssen)",
+                "back": "majbur edi",
+                "tip": "ich musste arbeiten"
+            },
+            {
+                "front": "wollte (wollen)",
+                "back": "xohladi / niyat qildi",
+                "tip": "ich wollte reisen"
+            },
+            {
+                "front": "durfte (dürfen)",
+                "back": "ruxsat berilgan edi",
+                "tip": "ich durfte nicht ausgehen"
+            },
+            {
+                "front": "damals",
+                "back": "o'sha paytlarda, qadimda",
+                "tip": "damals war alles anders"
+            },
+            {
+                "front": "früher",
+                "back": "ilgari, avvallari",
+                "tip": "früher lebten wir auf dem Land"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Kecha mening vaqtim yo'q edi' gapi qanday ifodalanadi?",
+                "options": [
+                    "Gestern hatte ich keine Zeit.",
+                    "Gestern habe ich keine Zeit gewesen.",
+                    "Gestern war ich keine Zeit.",
+                    "Gestern bin ich keine Zeit gehabt."
+                ],
+                "answer": 0,
+                "explanation": "'haben' fe'lining o'tgan zamoni 'hatte' bo'ladi: Ich hatte keine Zeit."
+            },
+            {
+                "q": "'können' modal fe'lining 'er' shaxsidagi Präteritum shakli qaysi?",
+                "options": [
+                    "konnte",
+                    "könnte",
+                    "gekonnt",
+                    "kann"
+                ],
+                "answer": 0,
+                "explanation": "Präteritumda umlaut tushib qoladi: er konnte."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "ich war",
+                "uz": "men edim"
+            },
+            {
+                "de": "ich hatte",
+                "uz": "menda bor edi"
+            },
+            {
+                "de": "ich konnte",
+                "uz": "qila oldim"
+            },
+            {
+                "de": "ich musste",
+                "uz": "majbur edim"
+            },
+            {
+                "de": "ich wollte",
+                "uz": "xohladim"
+            },
+            {
+                "de": "damals",
+                "uz": "o'sha paytda"
+            },
+            {
+                "de": "früher",
+                "uz": "ilgari"
+            },
+            {
+                "de": "gestern",
+                "uz": "kecha"
+            }
+        ]
+    },
+    {
+        "id": "a2_15",
+        "number": 15,
+        "title": "Majhul nisbat asoslari — Vorgangspassiv",
+        "germanTitle": "Das Passiv im Präsens: werden + Partizip II",
+        "icon": "⚙️",
+        "description": "Harakatni bajaruvchi emas, balki bajarilayotgan ish yoki jarayon muhim bo'lganda qo'llaniladigan majhul nisbat (Passiv) strukturasi.",
+        "theory": {
+            "summary": "Vorgangspassiv jarayonga e'tibor qaratadi. Formulash: werden (tuslangan) + Partizip II (gap oxirida). Masalan: 'Das Auto wird repariert'.",
+            "sections": [
+                {
+                    "heading": "1. Vorgangspassiv tuzilishi va Formulalari",
+                    "content": "<p>Passiv gapda harakatni kim bajarganligi ikkinchi darajali bo'lib, harakatning o'zi markazda turadi:</p><ul><li><strong>Aktiv:</strong> Der Mechaniker repariert das Auto. (Mexanik mashinani ta'mirlayapti.)</li><li><strong>Passiv:</strong> <em>Das Auto wird repariert.</em> (Mashina ta'mirlanmoqda.)</li></ul><p>Formulasi: <strong>werden (2-o'rinda) + ... + Partizip II (oxirida)</strong></p>",
+                    "examples": [
+                        {
+                            "de": "Hier wird Deutsch gesprochen.",
+                            "uz": "Bu yerda nemischa gapiriladi.",
+                            "tip": "Keng tarqalgan klassik Passiv ibora."
+                        },
+                        {
+                            "de": "Die Briefe werden vom Postboten gebracht.",
+                            "uz": "Xatlar pochtachi tomonidan keltiriladi.",
+                            "tip": "Bajaruvchi ko'rsatilsa 'von + Dativ' ishlatiladi."
+                        },
+                        {
+                            "de": "Das Frühstück wird ab 7 Uhr serviert.",
+                            "uz": "Nonushta soat 7 dan boshlab tortiladi.",
+                            "tip": "Mehmonxona va restoranlarda Passiv juda ko'p ishlatiladi."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Qoidalar va Taqiqlarda Passiv qo'llanishi",
+                    "content": "<p>Germaniyada jamoat joylari, e'lonlar va yo'riqnomalarda ko'pincha Passiv uchraydi:</p><ul><li><strong>Hier darf nicht geraucht werden.</strong> — Bu yerda chekish taqiqlanadi.</li><li><strong>Die Rechnung wird sofort bezahlt.</strong> — Hisob darhol to'lanadi.</li><li><strong>Wird dieses Zimmer täglich gereinigt?</strong> — Bu xona har kuni tozalanadimi?</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Das Museum wird um 18 Uhr geschlossen.",
+                            "uz": "Muzey soat 18:00 da yopiladi.",
+                            "tip": "werden + geschlossen (Partizip II)."
+                        },
+                        {
+                            "de": "Der Kuchen wird mit Schokolade gebacken.",
+                            "uz": "Pirog shokolad bilan pishiriladi.",
+                            "tip": "gebacken — backen fe'lining Partizip II shakli."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Formulasi: werden (shaxsga mos tuslanadi) + gap oxirida Partizip II.",
+                "Aktiv gapdagi Akkusativ to'ldiruvchi Passiv gapda Nominativ (ega)ga aylanadi.",
+                "Agar ishni kim qilayotgani aytilmoqchi bo'lsa, 'von + Dativ' qo'shiladi."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "das Passiv",
+                "back": "majhul nisbat",
+                "tip": "werden + Partizip II"
+            },
+            {
+                "front": "reparieren &rarr; repariert werden",
+                "back": "ta'mirlanmoq",
+                "tip": "Das Auto wird repariert"
+            },
+            {
+                "front": "öffnen &rarr; geöffnet werden",
+                "back": "ochilmoq",
+                "tip": "Die Tür wird geöffnet"
+            },
+            {
+                "front": "schließen &rarr; geschlossen werden",
+                "back": "yopilmoq",
+                "tip": "Das Geschäft wird geschlossen"
+            },
+            {
+                "front": "reinigen &rarr; gereinigt werden",
+                "back": "tozalanmoq",
+                "tip": "Das Zimmer wird gereinigt"
+            },
+            {
+                "front": "kochen &rarr; gekocht werden",
+                "back": "pishirilmoq",
+                "tip": "Die Suppe wird gekocht"
+            },
+            {
+                "front": "bauen &rarr; gebaut werden",
+                "back": "qurilmoq",
+                "tip": "Ein Haus wird gebaut"
+            },
+            {
+                "front": "von (+ Dativ)",
+                "back": "tomonidan (Passivda ijrochi)",
+                "tip": "vom Arzt untersucht"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Ushbu uy qurilmoqda' gapi nemis tilida qanday bo'ladi?",
+                "options": [
+                    "Dieses Haus wird gebaut.",
+                    "Dieses Haus baut sich.",
+                    "Dieses Haus ist gebaut werden.",
+                    "Dieses Haus hat gebaut."
+                ],
+                "answer": 0,
+                "explanation": "Passiv hozirgi zamonda 'wird + Partizip II' shaklida bo'ladi: wird gebaut."
+            },
+            {
+                "q": "Quyidagi gapda bo'sh joyga nima qo'yiladi: 'Die E-Mails ___ täglich verschickt.'",
+                "options": [
+                    "werden",
+                    "wird",
+                    "wurden",
+                    "werdet"
+                ],
+                "answer": 0,
+                "explanation": "'Die E-Mails' ko'plikda bo'lgani sababli 'werden' yordamchi fe'li to'g'ri keladi."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "wird gebaut",
+                "uz": "qurilmoqda"
+            },
+            {
+                "de": "wird repariert",
+                "uz": "ta'mirlanmoqda"
+            },
+            {
+                "de": "wird gekocht",
+                "uz": "pishirilmoqda"
+            },
+            {
+                "de": "wird gereinigt",
+                "uz": "tozalanmoqda"
+            },
+            {
+                "de": "wird bezahlt",
+                "uz": "to'lanmoqda"
+            },
+            {
+                "de": "wird geschlossen",
+                "uz": "yopilmoqda"
+            },
+            {
+                "de": "wird geöffnet",
+                "uz": "ochilmoqda"
+            },
+            {
+                "de": "von mir",
+                "uz": "men tomonimdan"
+            }
+        ]
+    },
+    {
+        "id": "a2_16",
+        "number": 16,
+        "title": "Nisbiy olmoshlar va sodda nisbiy gaplar",
+        "germanTitle": "Relativsätze im Nominativ und Akkusativ",
+        "icon": "🔗",
+        "description": "Shaxs yoki buyumlarni aniqlab tasvirlash, 'qaysiki', 'qaysi' ma'nosidagi der, die, das, den nisbiy olmoshlarini qo'llash.",
+        "theory": {
+            "summary": "Nisbiy ergash gaplar asosiy gapdagi otni izohlaydi. Vergul bilan ajratiladi va fe'l ergash gapning eng oxiriga suriladi.",
+            "sections": [
+                {
+                    "heading": "1. Nominativdagi nisbiy olmoshlar (Ega vazifasida)",
+                    "content": "<p>Agar nisbiy gapda olmosh ega (kim? nima?) bo'lib kelsa, artikl shaklini saqlaydi:</p><ul><li><strong>der Mann</strong> &rarr; Das ist der Mann, <strong>der</strong> dort drüben steht. (Bu ana u yerda turgan erkak.)</li><li><strong>die Frau</strong> &rarr; Das ist die Frau, <strong>die</strong> Deutsch unterrichtet. (Bu nemis tilidan dars beradigan ayol.)</li><li><strong>das Kind</strong> &rarr; Das ist das Kind, <strong>das</strong> so schön singt. (Bu shunchalik chiroyli kuylayotgan bola.)</li><li><strong>die Leute (Pl.)</strong> &rarr; Das sind die Leute, <strong>die</strong> uns helfen. (Bu bizga yordam berayotgan odamlar.)</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Kennst du den Arzt, der hier arbeitet?",
+                            "uz": "Bu yerda ishlaydigan shifokorni taniysanmi?",
+                            "tip": "der Arzt (erkak) -> der."
+                        },
+                        {
+                            "de": "Ich habe ein Buch, das sehr spannend ist.",
+                            "uz": "Menda juda qiziqarli bo'lgan kitob bor.",
+                            "tip": "das Buch (o'rta) -> das."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Akkusativdagi nisbiy olmoshlar (To'ldiruvchi vazifasida)",
+                    "content": "<p>Agar nisbiy olmosh gapda to'ldiruvchi (kimni? nimani?) bo'lsa, faqat erkak jinsi <strong>den</strong> ga o'zgaradi, qolganlari bir xil qoladi:</p><ul><li><strong>der Film</strong> &rarr; Der Film, <strong>den</strong> wir gestern gesehen haben, war super. (Biz kecha ko'rgan film ajoyib edi.)</li><li><strong>die Tasche</strong> &rarr; Die Tasche, <strong>die</strong> sie gekauft hat, ist teuer. (U sotib olgan sumka qimmat.)</li><li><strong>das Handy</strong> &rarr; Das Handy, <strong>das</strong> ich suche, liegt auf dem Tisch. (Men qidirayotgan telefon stol ustida turibdi.)</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Das ist der Kuchen, den meine Mutter gebacken hat.",
+                            "uz": "Bu onam pishirgan tort.",
+                            "tip": "der Kuchen -> den (chunki onam uni pishirgan - Akkusativ)."
+                        },
+                        {
+                            "de": "Hier ist der Schlüssel, den du verloren hast.",
+                            "uz": "Mana sen yo'qotib qo'ygan kalit.",
+                            "tip": "den Schlüssel suchen/verlieren."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Nisbiy gaplar har doim vergul bilan ajratiladi.",
+                "Nisbiy gap ichida tuslangan fe'l doimo gapning eng oxirida turadi.",
+                "Akkusativda faqat erkak jinsi o'zgaradi: der &rarr; den. Qolganlari: die &rarr; die, das &rarr; das, ko'plik &rarr; die."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "der Relativsatz (-e)",
+                "back": "nisbiy ergash gap",
+                "tip": "fe'l oxirda turadi"
+            },
+            {
+                "front": "der (Relativpronomen)",
+                "back": "u (erkak jinsidagi otni izohlovchi)",
+                "tip": "der Mann, der lacht"
+            },
+            {
+                "front": "die (Relativpronomen)",
+                "back": "u (ayol jinsi va ko'plik)",
+                "tip": "die Frau, die spricht"
+            },
+            {
+                "front": "das (Relativpronomen)",
+                "back": "u (o'rta jins)",
+                "tip": "das Kind, das spielt"
+            },
+            {
+                "front": "den (Akkusativ)",
+                "back": "uni (erkak jinsida)",
+                "tip": "der Mann, den ich kenne"
+            },
+            {
+                "front": "kennen",
+                "back": "tanimoq",
+                "tip": "den kenne ich gut"
+            },
+            {
+                "front": "gefallen",
+                "back": "yoqmoq (Dativ)",
+                "tip": "das Buch, das mir gefällt"
+            },
+            {
+                "front": "beschreiben",
+                "back": "tasvirlamoq",
+                "tip": "eine Person beschreiben"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Das ist der Mann, ___ ich gestern im Park gesehen habe.' Bo'sh joyga qaysi nisbiy olmosh tushadi?",
+                "options": [
+                    "den",
+                    "der",
+                    "dem",
+                    "des"
+                ],
+                "answer": 0,
+                "explanation": "Erkak kishini men ko'rdim (Akkusativ: wen habe ich gesehen? -> den Mann)."
+            },
+            {
+                "q": "Nisbiy gaplarda tuslangan fe'l qaysi o'rinda keladi?",
+                "options": [
+                    "Gapning eng oxirida",
+                    "Ikkinchi o'rinda",
+                    "Gapning boshida",
+                    "Nisbiy olmoshdan keyin darhol"
+                ],
+                "answer": 0,
+                "explanation": "Barcha ergash gaplarda bo'lgani kabi, nisbiy gaplarda ham tuslangan fe'l eng oxirida turadi."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "der Mann, der...",
+                "uz": "o'sha erkak, qaysiki..."
+            },
+            {
+                "de": "die Frau, die...",
+                "uz": "o'sha ayol, qaysiki..."
+            },
+            {
+                "de": "das Kind, das...",
+                "uz": "o'sha bola, qaysiki..."
+            },
+            {
+                "de": "der Freund, den...",
+                "uz": "men ko'rgan do'st..."
+            },
+            {
+                "de": "das Buch, das...",
+                "uz": "men o'qigan kitob..."
+            },
+            {
+                "de": "kennen",
+                "uz": "tanimoq"
+            },
+            {
+                "de": "beschreiben",
+                "uz": "tasvirlamoq"
+            },
+            {
+                "de": "verlieren",
+                "uz": "yo'qotmoq"
+            }
+        ]
+    },
+    {
+        "id": "a2_17",
+        "number": 17,
+        "title": "Predlogli fe'llar va olmoshli ravishlar",
+        "germanTitle": "Verben mit Präpositionen & Da- / Wo-Komposita",
+        "icon": "🎯",
+        "description": "Nemis tilidagi qat'iy predlog talab qiluvchi fe'llar (warten auf, sich freuen über/auf, sprechen über) va worauf/darauf tuzilmalari.",
+        "theory": {
+            "summary": "Ko'plab nemis fe'llari ma'lum bir predlog bilan bog'lanadi. Narsalar haqida so'rashda 'wo(r)-', javob berishda 'da(r)-' birikmalari ishlatiladi.",
+            "sections": [
+                {
+                    "heading": "1. Eng muhim predlogli fe'llar",
+                    "content": "<p>Nemis tilida fe'llarni o'z predlogi va kelishigi bilan yodlash shart:</p><ul><li><strong>warten auf (+ Akk.)</strong> — kutmoq: <em>Ich warte auf den Bus.</em></li><li><strong>sich freuen auf (+ Akk.)</strong> — kelgusidagi narsadan quvonmoq: <em>Ich freue mich auf den Urlaub.</em></li><li><strong>sich freuen über (+ Akk.)</strong> — bo'lib o'tgan narsadan quvonmoq: <em>Ich freue mich über das Geschenk.</em></li><li><strong>sich interessieren für (+ Akk.)</strong> — qiziqmoq: <em>Er interessiert sich für Sport.</em></li><li><strong>träumen von (+ Dat.)</strong> — orzu qilmoq: <em>Wir träumen von einer Weltreise.</em></li><li><strong>sprechen über (+ Akk.) / mit (+ Dat.)</strong> — gaplashmoq: <em>Wir sprechen über das Wetter.</em></li></ul>",
+                    "examples": [
+                        {
+                            "de": "Auf wen wartest du? — Ich warte auf meine Schwester.",
+                            "uz": "Kimni kutyapsan? — Singlimni kutyapman.",
+                            "tip": "Insonlar uchun: Auf wen? (Akkusativ)."
+                        },
+                        {
+                            "de": "Worauf wartest du? — Ich warte auf den Bus.",
+                            "uz": "Nimani kutyapsan? — Avtobusni kutyapman.",
+                            "tip": "Narsalar uchun: Worauf? (Wo + r + auf)."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Wo- va Da- Kompozitalari (Savol va Javob)",
+                    "content": "<p>Narsalarga nisbatan savol va javob tuzish qoidasi:</p><table style=\"width:100%; border-collapse:collapse; margin:10px 0;\"><thead><tr style=\"background:rgba(255,255,255,0.08); text-align:left;\"><th style=\"padding:8px;\">Predlog</th><th style=\"padding:8px;\">Savol (Narsa)</th><th style=\"padding:8px;\">Javob (U haqida/undan)</th></tr></thead><tbody><tr><td style=\"padding:8px;\">auf</td><td style=\"padding:8px;\"><strong>worauf?</strong></td><td style=\"padding:8px;\"><strong>darauf</strong> (unga / uni)</td></tr><tr><td style=\"padding:8px;\">für</td><td style=\"padding:8px;\"><strong>wofür?</strong></td><td style=\"padding:8px;\"><strong>dafür</strong> (uning uchun)</td></tr><tr><td style=\"padding:8px;\">über</td><td style=\"padding:8px;\"><strong>worüber?</strong></td><td style=\"padding:8px;\"><strong>darüber</strong> (bu haqda)</td></tr><tr><td style=\"padding:8px;\">von</td><td style=\"padding:8px;\"><strong>wovon?</strong></td><td style=\"padding:8px;\"><strong>davon</strong> (undan)</td></tr><tr><td style=\"padding:8px;\">mit</td><td style=\"padding:8px;\"><strong>womit?</strong></td><td style=\"padding:8px;\"><strong>damit</strong> (u bilan)</td></tr></tbody></table>",
+                    "examples": [
+                        {
+                            "de": "Interessierst du dich für Kunst? — Ja, ich interessiere mich sehr dafür.",
+                            "uz": "San'atga qiziqasanmi? — Ha, unga juda qiziqaman.",
+                            "tip": "dafür = für Kunst."
+                        },
+                        {
+                            "de": "Worüber lacht ihr? — Wir lachen über einen Witz.",
+                            "uz": "Nimaning ustidan kulyapsizlar? — Latifa ustidan.",
+                            "tip": "lachen über + Akk."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Insonlar uchun oddiy predlog + olmosh ishlatiladi: Auf wen wartest du? (Auf ihn).",
+                "Jonli bo'lmagan narsalar uchun wo-/da- birikmasi olinadi: Worauf wartest du? (Darauf).",
+                "Agar predlog unli bilan boshlansa, o'rtaga 'r' harfi qo'shiladi: wo + r + auf = worauf; da + r + über = darüber."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "warten auf (+ Akk)",
+                "back": "kutmoq",
+                "tip": "Ich warte auf dich"
+            },
+            {
+                "front": "sich freuen auf (+ Akk)",
+                "back": "intizorlik bilan kutmoq",
+                "tip": "auf die Ferien freuen"
+            },
+            {
+                "front": "sich interessieren für (+ Akk)",
+                "back": "qiziqmoq",
+                "tip": "für Musik interessieren"
+            },
+            {
+                "front": "träumen von (+ Dat)",
+                "back": "orzu qilmoq",
+                "tip": "von einer Reise träumen"
+            },
+            {
+                "front": "denken an (+ Akk)",
+                "back": "o'ylamoq, xotirlamoq",
+                "tip": "Ich denke an dich"
+            },
+            {
+                "front": "worauf / darauf",
+                "back": "nimani? / unga, uni",
+                "tip": "Worauf wartest du?"
+            },
+            {
+                "front": "worüber / darüber",
+                "back": "nima haqida? / bu haqda",
+                "tip": "Worüber sprecht ihr?"
+            },
+            {
+                "front": "angst haben vor (+ Dat)",
+                "back": "qo'rqmoq",
+                "tip": "Angst vor Hunden haben"
+            }
+        ],
+        "test": [
+            {
+                "q": "'Ular ta'til haqida gaplashishyapti' — bo'sh joyni to'ldiring: 'Sie sprechen ___ den Urlaub.'",
+                "options": [
+                    "über",
+                    "auf",
+                    "für",
+                    "nach"
+                ],
+                "answer": 0,
+                "explanation": "Mavzu haqida gaplashganda 'sprechen über + Akkusativ' qo'llaniladi."
+            },
+            {
+                "q": "'Sen nimani kutyapsan?' savoli qanday to'g'ri tuziladi?",
+                "options": [
+                    "Worauf wartest du?",
+                    "Was wartest du?",
+                    "Wovon wartest du?",
+                    "Warum wartest du?"
+                ],
+                "answer": 0,
+                "explanation": "'warten auf' fe'li uchun narsani so'raganda 'worauf' ishlatiladi."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "warten auf",
+                "uz": "kutmoq"
+            },
+            {
+                "de": "träumen von",
+                "uz": "orzu qilmoq"
+            },
+            {
+                "de": "denken an",
+                "uz": "o'ylamoq"
+            },
+            {
+                "de": "sich interessieren für",
+                "uz": "qiziqmoq"
+            },
+            {
+                "de": "worauf",
+                "uz": "nimani / nimaga"
+            },
+            {
+                "de": "darüber",
+                "uz": "bu haqda"
+            },
+            {
+                "de": "damit",
+                "uz": "u bilan"
+            },
+            {
+                "de": "sprechen über",
+                "uz": "haqida gapirmoq"
+            }
+        ]
+    },
+    {
+        "id": "a2_18",
+        "number": 18,
+        "title": "Rasmiy xat yozish va Imtihon trenaji A2",
+        "germanTitle": "Formelle Briefe & E-Mails schreiben (A2 Prüfung)",
+        "icon": "✉️",
+        "description": "Goethe / telc A2 imtihoni uchun xat yozish qoidalari, murojaat shakllari, sabab tushuntirish va xayrlashuv andozalari.",
+        "theory": {
+            "summary": "A2 yozma imtihonida (Schreiben) berilgan 3-4 ta yo'riqnoma asosida 30-40 so'zdan iborat rasmiy yoki yarim rasmiy E-Mail yozish talab etiladi.",
+            "sections": [
+                {
+                    "heading": "1. Rasmiy xat strukturasi va Standart iboralar",
+                    "content": "<p>Nemischa rasmiy xat 5 ta majburiy qismdan iborat:</p><ol><li><strong>Anrede (Murojaat):</strong><br>• <em>Sehr geehrte Damen und Herren,</em> (Noma'lum qabul qiluvchiga)<br>• <em>Sehr geehrter Herr Müller,</em> (Erkak kishiga)<br>• <em>Sehr geehrte Frau Weber,</em> (Ayol kishiga)</li><li><strong>Einleitung (Kirish va Sabab):</strong><br>• <em>Ich schreibe Ihnen, weil...</em> (Men sizga yozyapman, chunki...)<br>• <em>Vielen Dank für Ihre E-Mail.</em> (Xatingiz uchun rahmat.)</li><li><strong>Hauptteil (Asosiy qism):</strong><br>Berilgan topshiriqning har bir nuqtasiga (Leitpunkte) 1-2 ta to'liq gap yoziladi.</li><li><strong>Schluss (Iltimos va Yakun):</strong><br>• <em>Könnten Sie mir bitte antworten?</em> (Menga javob bera olasizmi?)<br>• <em>Ich freue mich auf Ihre Antwort.</em> (Javobingizni kutib qolaman.)</li><li><strong>Grußformel & Name (Xayrlashuv va Ism):</strong><br>• <em>Mit freundlichen Grüßen</em> (Hurmat bilan - vergul qo'yilmaydi!)<br>• Ism Familiya (Pastki satrda).</li></ol>",
+                    "examples": [
+                        {
+                            "de": "Sehr geehrte Frau Schmidt, ich kann leider nicht zum Deutschkurs kommen, weil ich krank bin.",
+                            "uz": "Muhtarama xonim Schmidt, kasal bo'lganim sababli nemis tili kursiga kela olmayman.",
+                            "tip": "Anrede'dan keyin vergul qo'yiladi va yangi satr kichik harf bilan boshlanadi!"
+                        },
+                        {
+                            "de": "Mit freundlichen Grüßen, Alisher Karimov",
+                            "uz": "Hurmat bilan, Alisher Karimov",
+                            "tip": "Xayrlashuv formulasidan keyin vergul qo'yilmaydi."
+                        }
+                    ]
+                },
+                {
+                    "heading": "2. Goethe / telc A2 Imtihon qismlari va Maslahatlar",
+                    "content": "<p>A2 imtihonida eng ko'p ball to'plash qoidalari:</p><ul><li><strong>Lesen (O'qish):</strong> E'lonlar, gazeta maqolalari va elektron xatlardan kalit so'zlarni qidirish.</li><li><strong>Hören (Eshitish):</strong> Telefon avtojavoblagichlari, radio yangiliklar va dialoglarni diqqat bilan tinglash.</li><li><strong>Schreiben (Yozish):</strong> Grammatik xatolardan qochish, murakkab gaplar tuzishga urinmasdan, toza va to'g'ri yozish.</li><li><strong>Sprechen (Gapirish):</strong> O'z hayoti haqida gapirib berish, sherik bilan ma'lumot almashish va birgalikda biror narsani rejalashtirish.</li></ul>",
+                    "examples": [
+                        {
+                            "de": "Entschuldigen Sie bitte die Verspätung.",
+                            "uz": "Kechikkanim uchun uzr so'rayman.",
+                            "tip": "Kechirim so'rash iborasi."
+                        },
+                        {
+                            "de": "Wann treffen wir uns? — Um 15 Uhr am Bahnhof.",
+                            "uz": "Qachon uchrashamiz? — Soat 15:00 da vokzalda.",
+                            "tip": "Sprechen 3-qismida kelishuv tuzish."
+                        }
+                    ]
+                }
+            ],
+            "keyRules": [
+                "Murojaatdan keyin vergul qo'yiladi va keyingi satr kichik harf bilan boshlanadi: 'Sehr geehrte Damen und Herren,\nich schreibe Ihnen...'",
+                "'Mit freundlichen Grüßen' iborasidan keyin nemis tilida VERGUL QO'YILMAYDI!",
+                "Imtihon topshirig'idagi barcha ko'rsatilgan nuqtalarga (3 ta punkt) javob berilishi shart."
+            ]
+        },
+        "flashcards": [
+            {
+                "front": "Sehr geehrte Damen und Herren,",
+                "back": "Muhtaram xonimlar va janoblar,",
+                "tip": "rasmiy murojaat"
+            },
+            {
+                "front": "Sehr geehrter Herr...",
+                "back": "Muhtaram janob...",
+                "tip": "erkak kishiga rasmiy"
+            },
+            {
+                "front": "Sehr geehrte Frau...",
+                "back": "Muhtarama xonim...",
+                "tip": "ayol kishiga rasmiy"
+            },
+            {
+                "front": "Mit freundlichen Grüßen",
+                "back": "Hurmat bilan (samimiy salomlar)",
+                "tip": "rasmiy xat yakuni"
+            },
+            {
+                "front": "Ich schreibe Ihnen, weil...",
+                "back": "Sizga yozyapman, chunki...",
+                "tip": "xat yozish sababi"
+            },
+            {
+                "front": "Könnten Sie mir bitte...?",
+                "back": "Menga ... qilib bera olarmidingiz?",
+                "tip": "muloyim iltimos"
+            },
+            {
+                "front": "Ich freue mich auf Ihre Antwort.",
+                "back": "Javobingizni kutib qolaman.",
+                "tip": "xatning xulosa qismi"
+            },
+            {
+                "front": "die Entschuldigung (-en)",
+                "back": "uzr, kechirim",
+                "tip": "um Entschuldigung bitten"
+            }
+        ],
+        "test": [
+            {
+                "q": "Rasmiy xat yakunidagi 'Mit freundlichen Grüßen' dan keyin qanday tinish belgisi qo'yiladi?",
+                "options": [
+                    "Hech qanday belgi qo'yilmaydi (bo'sh qoldiriladi)",
+                    "Vergul (,)",
+                    "Nuqta (.)",
+                    "Undov belgisi (!)"
+                ],
+                "answer": 0,
+                "explanation": "Nemis tili imlosida 'Mit freundlichen Grüßen' dan keyin vergul qo'yilmaydi, to'g'ridan-to'g'ri yangi satrdan ism yoziladi."
+            },
+            {
+                "q": "Familiyasi noma'lum bo'lgan tashkilot yoki idoraga xat yozish qanday boshlanadi?",
+                "options": [
+                    "Sehr geehrte Damen und Herren,",
+                    "Hallo meine Freunde,",
+                    "Guten Morgen Herr Schmidt,",
+                    "Liebe Kollegen,"
+                ],
+                "answer": 0,
+                "explanation": "Qabul qiluvchining shaxsi aniq bo'lmaganda 'Sehr geehrte Damen und Herren,' deb murojaat qilinadi."
+            }
+        ],
+        "gamePairs": [
+            {
+                "de": "Sehr geehrte Damen und Herren",
+                "uz": "Muhtaram xonimlar va janoblar"
+            },
+            {
+                "de": "Mit freundlichen Grüßen",
+                "uz": "Hurmat bilan"
+            },
+            {
+                "de": "Ich schreibe Ihnen",
+                "uz": "Men sizga yozyapman"
+            },
+            {
+                "de": "Ich bitte um Entschuldigung",
+                "uz": "Uzr so'rayman"
+            },
+            {
+                "de": "Könnten Sie mir helfen?",
+                "uz": "Yordam bera olasizmi?"
+            },
+            {
+                "de": "Ich freue mich auf die Antwort",
+                "uz": "Javobingizni kutaman"
+            },
+            {
+                "de": "der Absender",
+                "uz": "jo'natuvchi"
+            },
+            {
+                "de": "der Empfänger",
+                "uz": "qabul qiluvchi"
+            }
+        ]
+    }
+    
     ]
 };
 
