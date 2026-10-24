@@ -39,13 +39,13 @@ async function verifyTelegramMiniAppInitData(initDataRaw, botToken) {
     const hash = params.get('hash');
     if (!hash) return null;
 
-    // auth_date tekshiruvi (24 soat)
+    // auth_date tekshiruvi (Replay attack oldini olish uchun 2 soatlik cheklov)
     const authDate = params.get('auth_date');
     if (authDate) {
       const authTime = parseInt(authDate, 10);
       const nowSec = Math.floor(Date.now() / 1000);
-      if (isNaN(authTime) || Math.abs(nowSec - authTime) > 86400) {
-        return { error: 'Eskirgan autentifikatsiya ma\'lumoti' };
+      if (isNaN(authTime) || Math.abs(nowSec - authTime) > 7200) {
+        return { error: 'Eskirgan autentifikatsiya ma\'lumoti (qayta kiring)' };
       }
     }
 

@@ -4,7 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execSync, spawnSync } = require('child_process');
 
 console.log('🔍 [HEALTH-CHECK] Loyiha avtomatik auditi boshlandi...\n');
 
@@ -181,6 +181,21 @@ try {
     logPass("HTTP Security Headers (Helmet, CSP, HSTS 2-yil, Permissions-Policy) yuklandi");
 } catch (e) {
     logFail(`securityLayer2 yuklanmadi: ${e.message}`);
+}
+
+// -------------------------------------------------------------
+// 6. MAXFIY KALITLAR VA TOKENLAR SIZISHI (SECRET LEAK AUDIT)
+// -------------------------------------------------------------
+console.log('\n📌 6. Maxfiy Kalitlar va Tokenlar Sizishi (Zero Leak Secret Audit):');
+try {
+    const scanProc = spawnSync(process.execPath, [path.join(__dirname, 'secret-scanner.mjs')], { encoding: 'utf8' });
+    if (scanProc.status === 0) {
+        logPass("Loyihada birorta ham ochiq token yoki maxfiy kalit topilmadi (100% toza)");
+    } else {
+        logFail("Loyihada ochiq maxfiy kalit yoki tokenlar aniqlandi!\n" + (scanProc.stderr || scanProc.stdout));
+    }
+} catch (e) {
+    logFail(`Secret scanner tekshiruvida xatolik: ${e.message}`);
 }
 
 // -------------------------------------------------------------

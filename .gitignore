@@ -2,21 +2,50 @@
 node_modules/
 npm-debug.log
 yarn-error.log
-.env
-.DS_Store
 
-# OS generated files
+# Muhit o'zgaruvchilari va maxfiy konfiguratsiyalar
+.env
+.env.*
+!.env.example
+credentials.json
+service-account*.json
+id_rsa*
+
+# Maxfiy kalitlar va sertifikatlar
+*.pem
+*.key
+*.cert
+*.pfx
+*.crt
+
+# Operatsion tizim fayllari
+.DS_Store
 Thumbs.db
 
-# Other
+# Ma'lumotlar bazasi va zaxira nusxalari
+data/db.json
+data/*.tmp
+data/*.bak
+data/*.backup
+users.json
+*.sql
+*.sqlite
+*.db
+*.dump
+*.bak
+*.backup
+*.old
+*.swp
+
+# IDE va tahrirlovchilar
+.vscode/
+.idea/
+
+# Boshqa vaqtincha va generatsiya qilinadigan fayllar
 dist/
 *.log
 *.ps1
-data/db.json
-data/*.tmp
-users.json
 
 # Maxfiy Lokal AI Boshqaruv Jurnali (Hech qachon GitHub'ga push qilinmasin)
 gemini.md
 GEMINI.md
-

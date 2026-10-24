@@ -1,0 +1,10 @@
+# Security Policy for abdugofforov.uz
+# RFC 9116: https://www.rfc-editor.org/rfc/rfc9116
+
+Contact: mailto:akromjonabdugofforov23@gmail.com
+Contact: https://t.me/abdugofforov_uz
+Preferred-Languages: uz, en, ru, de
+Canonical: https://abdugofforov.uz/.well-known/security.txt
+Policy: https://abdugofforov.uz/
+Expires: 2028-12-31T23:59:59.000Z
+Acknowledgments: https://abdugofforov.uz/
